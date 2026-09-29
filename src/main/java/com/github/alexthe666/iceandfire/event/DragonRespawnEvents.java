@@ -20,17 +20,23 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 public class DragonRespawnEvents {
     private static final int CHECK_INTERVAL_TICKS = 1200;
 
+    private static void markFreed(EntityDragonBase dragon) {
+        DragonRespawnData data = DragonRespawnData.get(dragon.level().getServer());
+        data.drainPending(); // sites registered by worldgen threads may not be merged yet
+        data.markFreed(dragon.getUUID());
+    }
+
     @SubscribeEvent
     public void onDeath(LivingDeathEvent event) {
         if (event.getEntity() instanceof EntityDragonBase dragon && !dragon.level().isClientSide()) {
-            DragonRespawnData.get(dragon.level().getServer()).markFreed(dragon.getUUID());
+            markFreed(dragon);
         }
     }
 
     @SubscribeEvent
     public void onTame(AnimalTameEvent event) {
         if (event.getAnimal() instanceof EntityDragonBase dragon && !dragon.level().isClientSide()) {
-            DragonRespawnData.get(dragon.level().getServer()).markFreed(dragon.getUUID());
+            markFreed(dragon);
         }
     }
 
