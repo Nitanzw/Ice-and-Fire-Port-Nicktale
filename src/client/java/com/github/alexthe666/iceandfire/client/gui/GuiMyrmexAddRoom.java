@@ -61,7 +61,7 @@ public class GuiMyrmexAddRoom extends Screen {
         return Button.builder(Component.translatable("myrmex.message.establishroom_" + key), button -> {
                     action.run();
                     onGuiClosed();
-                    Minecraft.getInstance().setScreen(null);
+                    Minecraft.getInstance().setScreenAndShow(null);
                 })
                 .pos(left + 50, y)
                 .size(150, 20)

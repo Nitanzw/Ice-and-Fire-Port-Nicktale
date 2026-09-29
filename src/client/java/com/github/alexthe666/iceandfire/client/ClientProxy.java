@@ -138,19 +138,19 @@ public class ClientProxy extends CommonProxy {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void openBestiaryGui(ItemStack book) {
-        Minecraft.getInstance().setScreen(new GuiBestiary(book));
+        Minecraft.getInstance().setScreenAndShow(new GuiBestiary(book));
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void openMyrmexStaffGui(ItemStack staff) {
-        Minecraft.getInstance().setScreen(new GuiMyrmexStaff(staff));
+        Minecraft.getInstance().setScreenAndShow(new GuiMyrmexStaff(staff));
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void openMyrmexAddRoomGui(ItemStack staff, BlockPos pos, Direction facing) {
-        Minecraft.getInstance().setScreen(new GuiMyrmexAddRoom(staff, pos, facing));
+        Minecraft.getInstance().setScreenAndShow(new GuiMyrmexAddRoom(staff, pos, facing));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -187,7 +187,7 @@ public class ClientProxy extends CommonProxy {
     @OnlyIn(Dist.CLIENT)
     @Override
     public boolean shouldSeeBestiaryContents() {
-        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 340) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), 344);
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().handle(), 340) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().handle(), 344);
     }
 
     @Override

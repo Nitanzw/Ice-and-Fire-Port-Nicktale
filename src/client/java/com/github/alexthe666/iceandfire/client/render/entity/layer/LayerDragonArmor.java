@@ -45,7 +45,7 @@ public class LayerDragonArmor extends RenderLayer<DragonRenderState, com.nicktal
         if (texture == null) {
             texture = Identifier.fromNamespaceAndPath("iceandfire", "dragon_armor_" + key);
             var layers = Arrays.stream(state.armorLayerTextures).map(Identifier::toString).collect(Collectors.toList());
-            Minecraft.getInstance().getTextureManager().register(texture, new ArrayLayeredTexture(layers));
+            Minecraft.getInstance().getTextureManager().register(texture, new ArrayLayeredTexture(texture, layers));
             LAYERED_ARMOR_CACHE.put(key, texture);
         }
         collector.submitModel(getParentModel(), state, poseStack, RenderTypes.entityCutoutCull(texture), lightCoords,

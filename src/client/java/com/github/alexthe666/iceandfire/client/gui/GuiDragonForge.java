@@ -59,13 +59,8 @@ public class GuiDragonForge extends AbstractContainerScreen<ContainerDragonForge
             return 0;
         }
 
-        List<DragonForgeRecipe> recipes = this.minecraft.level.getRecipeManager()
-                .getAllRecipesFor(IafRecipeRegistry.DRAGON_FORGE_TYPE.get())
-                .stream()
-                .filter(recipe -> recipe.isValidInput(this.menu.getSlot(0).getItem())
-                        && recipe.isValidBlood(this.menu.getSlot(1).getItem()))
-                .toList();
-        int maxCookTime = recipes.isEmpty() ? 100 : Math.max(1, recipes.getFirst().getCookTime());
+        // Recipes only exist on the server; the tile falls back to its default cook time on the client.
+        int maxCookTime = Math.max(1, forge.getMaxCookTime());
         int cookTime = Math.min(forge.cookTime, maxCookTime);
         return cookTime == 0 ? 0 : cookTime * progressWidth / maxCookTime;
     }

@@ -146,7 +146,7 @@ public class GuiLectern extends AbstractContainerScreen<ContainerLectern> {
 
         float flap = (this.flipT - this.flip) * 0.4F;
         if (this.flapTimer > 0) {
-            flap = (this.ticks + this.minecraft.getFrameTime()) * 0.5F;
+            flap = (this.ticks + this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false)) * 0.5F;
             this.flapTimer--;
         }
         flap = Mth.clamp(flap, -0.2F, 0.2F);

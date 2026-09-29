@@ -1,10 +1,6 @@
 package com.github.alexthe666.iceandfire.client;
 
-import net.neoforged.fml.common.EventBusSubscriber;
-
-import com.nicktale.api.client.model.TabulaModel;
 import com.github.alexthe666.iceandfire.IceAndFire;
-import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import com.github.alexthe666.iceandfire.client.gui.IafGuiRegistry;
 import com.github.alexthe666.iceandfire.client.model.*;
 import com.github.alexthe666.iceandfire.client.model.animator.FireDragonTabulaModelAnimator;
@@ -17,29 +13,19 @@ import com.github.alexthe666.iceandfire.client.render.pathfinding.PathfindingDeb
 import com.github.alexthe666.iceandfire.client.render.tile.*;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry;
-import com.github.alexthe666.iceandfire.item.IafItemRegistry;
-import com.github.alexthe666.iceandfire.item.ItemDragonBow;
-import com.github.alexthe666.iceandfire.item.ItemDragonHorn;
-import com.github.alexthe666.iceandfire.item.ItemSummoningCrystal;
 import com.github.alexthe666.iceandfire.message.PathfindingDebugSync;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.MNode;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import net.minecraft.core.BlockPos;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.entity.EntityRenderers;
+import com.nicktale.api.client.model.TabulaModel;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.client.renderer.item.ItemPropertyFunction;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.resources.ResourceProvider;
-import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -52,94 +38,92 @@ public class IafClientSetup {
     public static TabulaModel ICE_DRAGON_BASE_MODEL;
     public static TabulaModel SEA_SERPENT_BASE_MODEL;
     public static TabulaModel LIGHTNING_DRAGON_BASE_MODEL;
-    private static ShaderInstance rendertypeDreadPortalShader;
     public static final Identifier GHOST_CHEST_LOCATION = Identifier.fromNamespaceAndPath(IceAndFire.MODID, "models/ghost/ghost_chest");
     public static final Identifier GHOST_CHEST_LEFT_LOCATION = Identifier.fromNamespaceAndPath(IceAndFire.MODID, "models/ghost/ghost_chest_left");
     public static final Identifier GHOST_CHEST_RIGHT_LOCATION = Identifier.fromNamespaceAndPath(IceAndFire.MODID, "models/ghost/ghost_chest_right");
 
-
+    /** Kept for the proxy hook; renderer registration happens through {@link #registerRenderers}. */
     public static void clientInit() {
-        EntityRenderers.register(IafEntityRegistry.FIRE_DRAGON.get(), x -> new RenderDragonBase(x, FIRE_DRAGON_BASE_MODEL, 0));
-        EntityRenderers.register(IafEntityRegistry.ICE_DRAGON.get(), manager -> new RenderDragonBase(manager, ICE_DRAGON_BASE_MODEL, 1));
-        EntityRenderers.register(IafEntityRegistry.LIGHTNING_DRAGON.get(), manager -> new RenderLightningDragon(manager, LIGHTNING_DRAGON_BASE_MODEL, 2));
-        EntityRenderers.register(IafEntityRegistry.DRAGON_EGG.get(), RenderDragonEgg::new);
-        EntityRenderers.register(IafEntityRegistry.DRAGON_ARROW.get(), RenderDragonArrow::new);
-        EntityRenderers.register(IafEntityRegistry.DRAGON_SKULL.get(), manager -> new RenderDragonSkull(manager, FIRE_DRAGON_BASE_MODEL, ICE_DRAGON_BASE_MODEL, LIGHTNING_DRAGON_BASE_MODEL));
-        EntityRenderers.register(IafEntityRegistry.FIRE_DRAGON_CHARGE.get(), manager -> new RenderDragonFireCharge(manager, true));
-        EntityRenderers.register(IafEntityRegistry.ICE_DRAGON_CHARGE.get(), manager -> new RenderDragonFireCharge(manager, false));
-        EntityRenderers.register(IafEntityRegistry.LIGHTNING_DRAGON_CHARGE.get(), RenderDragonLightningCharge::new);
-        EntityRenderers.register(IafEntityRegistry.HIPPOGRYPH_EGG.get(), ThrownItemRenderer::new);
-        EntityRenderers.register(IafEntityRegistry.HIPPOGRYPH.get(), RenderHippogryph::new);
-        EntityRenderers.register(IafEntityRegistry.STONE_STATUE.get(), RenderStoneStatue::new);
-        EntityRenderers.register(IafEntityRegistry.GORGON.get(), RenderGorgon::new);
-        EntityRenderers.register(IafEntityRegistry.PIXIE.get(), RenderPixie::new);
-        EntityRenderers.register(IafEntityRegistry.CYCLOPS.get(), RenderCyclops::new);
-        EntityRenderers.register(IafEntityRegistry.SIREN.get(), RenderSiren::new);
-        EntityRenderers.register(IafEntityRegistry.HIPPOCAMPUS.get(), RenderHippocampus::new);
-        EntityRenderers.register(IafEntityRegistry.DEATH_WORM.get(), RenderDeathWorm::new);
-        EntityRenderers.register(IafEntityRegistry.DEATH_WORM_EGG.get(), ThrownItemRenderer::new);
-        EntityRenderers.register(IafEntityRegistry.COCKATRICE.get(), RenderCockatrice::new);
-        EntityRenderers.register(IafEntityRegistry.COCKATRICE_EGG.get(), ThrownItemRenderer::new);
-        EntityRenderers.register(IafEntityRegistry.STYMPHALIAN_BIRD.get(), RenderStymphalianBird::new);
-        EntityRenderers.register(IafEntityRegistry.STYMPHALIAN_FEATHER.get(), RenderStymphalianFeather::new);
-        EntityRenderers.register(IafEntityRegistry.STYMPHALIAN_ARROW.get(), RenderStymphalianArrow::new);
-        EntityRenderers.register(IafEntityRegistry.TROLL.get(), RenderTroll::new);
-        EntityRenderers.register(IafEntityRegistry.MYRMEX_WORKER.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexWorker(), 0.5F));
-        EntityRenderers.register(IafEntityRegistry.MYRMEX_SOLDIER.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexSoldier(), 0.75F));
-        EntityRenderers.register(IafEntityRegistry.MYRMEX_QUEEN.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexQueen(), 1.25F));
-        EntityRenderers.register(IafEntityRegistry.MYRMEX_EGG.get(), RenderMyrmexEgg::new);
-        EntityRenderers.register(IafEntityRegistry.MYRMEX_SENTINEL.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexSentinel(), 0.85F));
-        EntityRenderers.register(IafEntityRegistry.MYRMEX_ROYAL.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexRoyal(), 0.75F));
-        EntityRenderers.register(IafEntityRegistry.MYRMEX_SWARMER.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexRoyal(), 0.25F));
-        EntityRenderers.register(IafEntityRegistry.AMPHITHERE.get(), RenderAmphithere::new);
-        EntityRenderers.register(IafEntityRegistry.AMPHITHERE_ARROW.get(), RenderAmphithereArrow::new);
-        EntityRenderers.register(IafEntityRegistry.SEA_SERPENT.get(), manager -> new RenderSeaSerpent(manager, SEA_SERPENT_BASE_MODEL));
-        EntityRenderers.register(IafEntityRegistry.SEA_SERPENT_BUBBLES.get(), RenderNothing::new);
-        EntityRenderers.register(IafEntityRegistry.SEA_SERPENT_ARROW.get(), RenderSeaSerpentArrow::new);
-        EntityRenderers.register(IafEntityRegistry.CHAIN_TIE.get(), RenderChainTie::new);
-        EntityRenderers.register(IafEntityRegistry.PIXIE_CHARGE.get(), RenderNothing::new);
-        EntityRenderers.register(IafEntityRegistry.TIDE_TRIDENT.get(), RenderTideTrident::new);
-        EntityRenderers.register(IafEntityRegistry.MOB_SKULL.get(), manager -> new RenderMobSkull(manager, SEA_SERPENT_BASE_MODEL));
-        EntityRenderers.register(IafEntityRegistry.DREAD_SCUTTLER.get(), RenderDreadScuttler::new);
-        EntityRenderers.register(IafEntityRegistry.DREAD_GHOUL.get(), RenderDreadGhoul::new);
-        EntityRenderers.register(IafEntityRegistry.DREAD_BEAST.get(), RenderDreadBeast::new);
-        EntityRenderers.register(IafEntityRegistry.DREAD_SCUTTLER.get(), RenderDreadScuttler::new);
-        EntityRenderers.register(IafEntityRegistry.DREAD_THRALL.get(), RenderDreadThrall::new);
-        EntityRenderers.register(IafEntityRegistry.DREAD_LICH.get(), RenderDreadLich::new);
-        EntityRenderers.register(IafEntityRegistry.DREAD_LICH_SKULL.get(), RenderDreadLichSkull::new);
-        EntityRenderers.register(IafEntityRegistry.DREAD_KNIGHT.get(), RenderDreadKnight::new);
-        EntityRenderers.register(IafEntityRegistry.DREAD_HORSE.get(), RenderDreadHorse::new);
-        EntityRenderers.register(IafEntityRegistry.HYDRA.get(), RenderHydra::new);
-        EntityRenderers.register(IafEntityRegistry.HYDRA_BREATH.get(), RenderNothing::new);
-        EntityRenderers.register(IafEntityRegistry.HYDRA_ARROW.get(), RenderHydraArrow::new);
-        EntityRenderers.register(IafEntityRegistry.SLOW_MULTIPART.get(), RenderNothing::new);
-        EntityRenderers.register(IafEntityRegistry.DRAGON_MULTIPART.get(), RenderNothing::new);
-        EntityRenderers.register(IafEntityRegistry.CYCLOPS_MULTIPART.get(), RenderNothing::new);
-        EntityRenderers.register(IafEntityRegistry.HYDRA_MULTIPART.get(), RenderNothing::new);
-        EntityRenderers.register(IafEntityRegistry.GHOST.get(), RenderGhost::new);
-        EntityRenderers.register(IafEntityRegistry.GHOST_SWORD.get(), RenderGhostSword::new);
-
-        BlockEntityRenderers.register(IafTileEntityRegistry.PODIUM.get(), RenderPodium::new);
-        BlockEntityRenderers.register(IafTileEntityRegistry.IAF_LECTERN.get(), RenderLectern::new);
-        BlockEntityRenderers.register(IafTileEntityRegistry.EGG_IN_ICE.get(), RenderEggInIce::new);
-        BlockEntityRenderers.register(IafTileEntityRegistry.PIXIE_HOUSE.get(), RenderPixieHouse::new);
-        BlockEntityRenderers.register(IafTileEntityRegistry.PIXIE_JAR.get(), RenderJar::new);
-        BlockEntityRenderers.register(IafTileEntityRegistry.DREAD_PORTAL.get(), RenderDreadPortal::new);
-        BlockEntityRenderers.register(IafTileEntityRegistry.DREAD_SPAWNER.get(), RenderDreadSpawner::new);
-        BlockEntityRenderers.register(IafTileEntityRegistry.GHOST_CHEST.get(), RenderGhostChest::new);
-
     }
 
     @SubscribeEvent
-    public static void setupShaders(RegisterShadersEvent event) throws IOException {
-        ResourceProvider provider = event.getResourceProvider();
-        event.registerShader(new ShaderInstance(provider, Identifier.fromNamespaceAndPath(IceAndFire.MODID, "rendertype_dread_portal"), DefaultVertexFormat.POSITION_COLOR), (p_172782_) -> {
-            rendertypeDreadPortalShader = p_172782_;
-        });
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(IafEntityRegistry.FIRE_DRAGON.get(), x -> new RenderDragonBase(x, FIRE_DRAGON_BASE_MODEL, 0));
+        event.registerEntityRenderer(IafEntityRegistry.ICE_DRAGON.get(), manager -> new RenderDragonBase(manager, ICE_DRAGON_BASE_MODEL, 1));
+        event.registerEntityRenderer(IafEntityRegistry.LIGHTNING_DRAGON.get(), manager -> new RenderLightningDragon(manager, LIGHTNING_DRAGON_BASE_MODEL, 2));
+        event.registerEntityRenderer(IafEntityRegistry.DRAGON_EGG.get(), RenderDragonEgg::new);
+        event.registerEntityRenderer(IafEntityRegistry.DRAGON_ARROW.get(), RenderDragonArrow::new);
+        event.registerEntityRenderer(IafEntityRegistry.DRAGON_SKULL.get(), manager -> new RenderDragonSkull(manager, FIRE_DRAGON_BASE_MODEL, ICE_DRAGON_BASE_MODEL, LIGHTNING_DRAGON_BASE_MODEL));
+        event.registerEntityRenderer(IafEntityRegistry.FIRE_DRAGON_CHARGE.get(), manager -> new RenderDragonFireCharge(manager, true));
+        event.registerEntityRenderer(IafEntityRegistry.ICE_DRAGON_CHARGE.get(), manager -> new RenderDragonFireCharge(manager, false));
+        event.registerEntityRenderer(IafEntityRegistry.LIGHTNING_DRAGON_CHARGE.get(), RenderDragonLightningCharge::new);
+        event.registerEntityRenderer(IafEntityRegistry.HIPPOGRYPH_EGG.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(IafEntityRegistry.HIPPOGRYPH.get(), RenderHippogryph::new);
+        event.registerEntityRenderer(IafEntityRegistry.STONE_STATUE.get(), RenderStoneStatue::new);
+        event.registerEntityRenderer(IafEntityRegistry.GORGON.get(), RenderGorgon::new);
+        event.registerEntityRenderer(IafEntityRegistry.PIXIE.get(), RenderPixie::new);
+        event.registerEntityRenderer(IafEntityRegistry.CYCLOPS.get(), RenderCyclops::new);
+        event.registerEntityRenderer(IafEntityRegistry.SIREN.get(), RenderSiren::new);
+        event.registerEntityRenderer(IafEntityRegistry.HIPPOCAMPUS.get(), RenderHippocampus::new);
+        event.registerEntityRenderer(IafEntityRegistry.DEATH_WORM.get(), RenderDeathWorm::new);
+        event.registerEntityRenderer(IafEntityRegistry.DEATH_WORM_EGG.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(IafEntityRegistry.COCKATRICE.get(), RenderCockatrice::new);
+        event.registerEntityRenderer(IafEntityRegistry.COCKATRICE_EGG.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(IafEntityRegistry.STYMPHALIAN_BIRD.get(), RenderStymphalianBird::new);
+        event.registerEntityRenderer(IafEntityRegistry.STYMPHALIAN_FEATHER.get(), RenderStymphalianFeather::new);
+        event.registerEntityRenderer(IafEntityRegistry.STYMPHALIAN_ARROW.get(), RenderStymphalianArrow::new);
+        event.registerEntityRenderer(IafEntityRegistry.TROLL.get(), RenderTroll::new);
+        event.registerEntityRenderer(IafEntityRegistry.MYRMEX_WORKER.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexWorker(), 0.5F));
+        event.registerEntityRenderer(IafEntityRegistry.MYRMEX_SOLDIER.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexSoldier(), 0.75F));
+        event.registerEntityRenderer(IafEntityRegistry.MYRMEX_QUEEN.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexQueen(), 1.25F));
+        event.registerEntityRenderer(IafEntityRegistry.MYRMEX_EGG.get(), RenderMyrmexEgg::new);
+        event.registerEntityRenderer(IafEntityRegistry.MYRMEX_SENTINEL.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexSentinel(), 0.85F));
+        event.registerEntityRenderer(IafEntityRegistry.MYRMEX_ROYAL.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexRoyal(), 0.75F));
+        event.registerEntityRenderer(IafEntityRegistry.MYRMEX_SWARMER.get(), manager -> new RenderMyrmexBase(manager, new ModelMyrmexRoyal(), 0.25F));
+        event.registerEntityRenderer(IafEntityRegistry.AMPHITHERE.get(), RenderAmphithere::new);
+        event.registerEntityRenderer(IafEntityRegistry.AMPHITHERE_ARROW.get(), RenderAmphithereArrow::new);
+        event.registerEntityRenderer(IafEntityRegistry.SEA_SERPENT.get(), manager -> new RenderSeaSerpent(manager, SEA_SERPENT_BASE_MODEL));
+        event.registerEntityRenderer(IafEntityRegistry.SEA_SERPENT_BUBBLES.get(), RenderNothing::new);
+        event.registerEntityRenderer(IafEntityRegistry.SEA_SERPENT_ARROW.get(), RenderSeaSerpentArrow::new);
+        event.registerEntityRenderer(IafEntityRegistry.CHAIN_TIE.get(), RenderChainTie::new);
+        event.registerEntityRenderer(IafEntityRegistry.PIXIE_CHARGE.get(), RenderNothing::new);
+        event.registerEntityRenderer(IafEntityRegistry.TIDE_TRIDENT.get(), RenderTideTrident::new);
+        event.registerEntityRenderer(IafEntityRegistry.MOB_SKULL.get(), manager -> new RenderMobSkull(manager, SEA_SERPENT_BASE_MODEL));
+        event.registerEntityRenderer(IafEntityRegistry.DREAD_SCUTTLER.get(), RenderDreadScuttler::new);
+        event.registerEntityRenderer(IafEntityRegistry.DREAD_GHOUL.get(), RenderDreadGhoul::new);
+        event.registerEntityRenderer(IafEntityRegistry.DREAD_BEAST.get(), RenderDreadBeast::new);
+        event.registerEntityRenderer(IafEntityRegistry.DREAD_THRALL.get(), RenderDreadThrall::new);
+        event.registerEntityRenderer(IafEntityRegistry.DREAD_LICH.get(), RenderDreadLich::new);
+        event.registerEntityRenderer(IafEntityRegistry.DREAD_LICH_SKULL.get(), RenderDreadLichSkull::new);
+        event.registerEntityRenderer(IafEntityRegistry.DREAD_KNIGHT.get(), RenderDreadKnight::new);
+        event.registerEntityRenderer(IafEntityRegistry.DREAD_HORSE.get(), RenderDreadHorse::new);
+        event.registerEntityRenderer(IafEntityRegistry.HYDRA.get(), RenderHydra::new);
+        event.registerEntityRenderer(IafEntityRegistry.HYDRA_BREATH.get(), RenderNothing::new);
+        event.registerEntityRenderer(IafEntityRegistry.HYDRA_ARROW.get(), RenderHydraArrow::new);
+        event.registerEntityRenderer(IafEntityRegistry.SLOW_MULTIPART.get(), RenderNothing::new);
+        event.registerEntityRenderer(IafEntityRegistry.DRAGON_MULTIPART.get(), RenderNothing::new);
+        event.registerEntityRenderer(IafEntityRegistry.CYCLOPS_MULTIPART.get(), RenderNothing::new);
+        event.registerEntityRenderer(IafEntityRegistry.HYDRA_MULTIPART.get(), RenderNothing::new);
+        event.registerEntityRenderer(IafEntityRegistry.GHOST.get(), RenderGhost::new);
+        event.registerEntityRenderer(IafEntityRegistry.GHOST_SWORD.get(), RenderGhostSword::new);
+        event.registerBlockEntityRenderer(IafTileEntityRegistry.PODIUM.get(), RenderPodium::new);
+        event.registerBlockEntityRenderer(IafTileEntityRegistry.IAF_LECTERN.get(), RenderLectern::new);
+        event.registerBlockEntityRenderer(IafTileEntityRegistry.EGG_IN_ICE.get(), RenderEggInIce::new);
+        event.registerBlockEntityRenderer(IafTileEntityRegistry.PIXIE_HOUSE.get(), RenderPixieHouse::new);
+        event.registerBlockEntityRenderer(IafTileEntityRegistry.PIXIE_JAR.get(), RenderJar::new);
+        event.registerBlockEntityRenderer(IafTileEntityRegistry.DREAD_PORTAL.get(), RenderDreadPortal::new);
+        event.registerBlockEntityRenderer(IafTileEntityRegistry.DREAD_SPAWNER.get(), RenderDreadSpawner::new);
+        event.registerBlockEntityRenderer(IafTileEntityRegistry.GHOST_CHEST.get(), RenderGhostChest::new);
     }
 
-    public static ShaderInstance getRendertypeDreadPortalShader() {
-        return rendertypeDreadPortalShader;
+    @SubscribeEvent
+    public static void registerScreens(RegisterMenuScreensEvent event) {
+        IafGuiRegistry.register(event);
+    }
+
+    @SubscribeEvent
+    public static void registerKeys(RegisterKeyMappingsEvent event) {
+        IafKeybindRegistry.register(event);
     }
 
     @SubscribeEvent
@@ -160,7 +144,6 @@ public class IafClientSetup {
             }
         });
         event.enqueueWork(() -> {
-            IafGuiRegistry.register();
             EnumSeaSerpentAnimations.initializeSerpentModels();
             DragonAnimationsLibrary.register(EnumDragonPoses.values(), EnumDragonModelTypes.values());
 
@@ -172,76 +155,6 @@ public class IafClientSetup {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.GOLD_PILE.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.SILVER_PILE.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.LECTERN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PODIUM_OAK.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PODIUM_BIRCH.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PODIUM_SPRUCE.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PODIUM_JUNGLE.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PODIUM_ACACIA.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PODIUM_DARK_OAK.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PODIUM_CRIMSON.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PODIUM_WARPED.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PODIUM_MANGROVE.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PODIUM_CHERRY.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.FIRE_LILY.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.FROST_LILY.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.LIGHTNING_LILY.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.DRAGON_ICE_SPIKES.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.MYRMEX_DESERT_RESIN_BLOCK.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.MYRMEX_DESERT_RESIN_GLASS.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.MYRMEX_JUNGLE_RESIN_BLOCK.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.MYRMEX_JUNGLE_RESIN_GLASS.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.MYRMEX_DESERT_BIOLIGHT.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.MYRMEX_JUNGLE_BIOLIGHT.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.DREAD_STONE_FACE.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.DREAD_TORCH.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.BURNT_TORCH.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.EGG_IN_ICE.get(), RenderType.translucent());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.JAR_EMPTY.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.JAR_PIXIE_0.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.JAR_PIXIE_1.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.JAR_PIXIE_2.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.JAR_PIXIE_3.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.JAR_PIXIE_4.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PIXIE_HOUSE_MUSHROOM_BROWN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PIXIE_HOUSE_MUSHROOM_RED.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PIXIE_HOUSE_OAK.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PIXIE_HOUSE_BIRCH.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PIXIE_HOUSE_SPRUCE.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.PIXIE_HOUSE_DARK_OAK.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.DREAD_SPAWNER.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.DREAD_TORCH_WALL.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(IafBlockRegistry.BURNT_TORCH_WALL.get(), RenderType.cutout());
-        ItemPropertyFunction pulling = ItemProperties.getProperty(Items.BOW, Identifier.parse("pulling"));
-        ItemPropertyFunction pull = (stack, worldIn, entity, p) -> {
-            if (entity == null) {
-                return 0.0F;
-            } else {
-                ItemDragonBow item = ((ItemDragonBow) stack.getItem());
-                return entity.getUseItem() != stack ? 0.0F : (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F;
-            }
-        };
-
-            ItemProperties.register(IafItemRegistry.DRAGON_BOW.get().asItem(), Identifier.parse("pulling"), pulling);
-            ItemProperties.register(IafItemRegistry.DRAGON_BOW.get().asItem(), Identifier.parse("pull"), pull);
-            ItemProperties.register(IafItemRegistry.DRAGON_HORN.get(), Identifier.parse("iceorfire"), (stack, level, entity, p) -> {
-                return ItemDragonHorn.getDragonType(stack) * 0.25F;
-            });
-            ItemProperties.register(IafItemRegistry.SUMMONING_CRYSTAL_FIRE.get(), Identifier.parse("has_dragon"), (stack, level, entity, p) -> {
-                return ItemSummoningCrystal.hasDragon(stack) ? 1.0F : 0.0F;
-            });
-            ItemProperties.register(IafItemRegistry.SUMMONING_CRYSTAL_ICE.get(), Identifier.parse("has_dragon"), (stack, level, entity, p) -> {
-                return ItemSummoningCrystal.hasDragon(stack) ? 1.0F : 0.0F;
-            });
-            ItemProperties.register(IafItemRegistry.SUMMONING_CRYSTAL_LIGHTNING.get(), Identifier.parse("has_dragon"), (stack, level, entity, p) -> {
-                return ItemSummoningCrystal.hasDragon(stack) ? 1.0F : 0.0F;
-            });
-            ItemProperties.register(IafItemRegistry.TIDE_TRIDENT.get(), Identifier.parse("throwing"), (stack, level, entity, p) -> {
-                return entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F;
-            });
         });
     }
 

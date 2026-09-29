@@ -98,11 +98,9 @@ public class PathfindingDebugRenderer {
 
         poseStack.pushPose();
         poseStack.translate(0.125F, 0.75F, 0.125F);
-        poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
+        poseStack.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
         poseStack.scale(-0.014F, -0.014F, 0.014F);
         poseStack.translate(0.0F, 18.0F, 0.0F);
-        collector.submitTextBackground(poseStack, -halfWidth - 1, -5, halfWidth + 1, 12,
-                0x7f000000, Font.DisplayMode.NORMAL, 15728880);
         poseStack.translate(0.0F, -5.0F, 0.0F);
         collector.submitText(poseStack, -font.width(f) / 2.0F, 1, Component.literal(f).getVisualOrderText(),
                 false, Font.DisplayMode.NORMAL, 15728880, 0xffffffff, 0, 0);
