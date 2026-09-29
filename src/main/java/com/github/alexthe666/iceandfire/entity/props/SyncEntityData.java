@@ -35,7 +35,9 @@ public record SyncEntityData(int entityId, CompoundTag tag) implements CustomPac
             Player player = context.player();
             if (player != null) {
                 Entity entity = player.level().getEntity(message.entityId());
-                EntityDataProvider.getCapability(entity).ifPresent(data -> data.deserialize(message.tag()));
+                if (entity != null) {
+                    EntityDataProvider.getCapability(entity).ifPresent(data -> data.deserialize(message.tag()));
+                }
             }
         });
     }

@@ -193,7 +193,7 @@ private IntOpenHashSet piercedEntities;
             entity.igniteForSeconds(5);
         }
 
-        if (entity.hurt(damagesource, i)) {
+        if (entity.hurtOrSimulate(damagesource, i)) {
             if (flag) {
                 return;
             }

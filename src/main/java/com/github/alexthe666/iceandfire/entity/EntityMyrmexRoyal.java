@@ -36,7 +36,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.item.trading.VillagerTrades;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -73,12 +73,12 @@ public class EntityMyrmexRoyal extends EntityMyrmexBase {
     }
 
     @Override
-    protected VillagerTrades.ItemListing[] getLevel1Trades() {
+    protected MyrmexTrades.TradeFactory[] getLevel1Trades() {
         return isJungle() ? MyrmexTrades.JUNGLE_ROYAL.get(1) : MyrmexTrades.DESERT_ROYAL.get(1);
     }
 
     @Override
-    protected VillagerTrades.ItemListing[] getLevel2Trades() {
+    protected MyrmexTrades.TradeFactory[] getLevel2Trades() {
         return isJungle() ? MyrmexTrades.JUNGLE_ROYAL.get(2) : MyrmexTrades.DESERT_ROYAL.get(2);
     }
 
@@ -152,9 +152,9 @@ public class EntityMyrmexRoyal extends EntityMyrmexBase {
         super.readAdditionalSaveData(input);
         CompoundTag tag = EntityDataIO.readLegacyFields(input);
 
-        this.hiveTicks = tag.getInt("HiveTicks");
-        this.releaseTicks = tag.getInt("ReleaseTicks");
-        this.setFlying(tag.getBoolean("Flying"));
+        this.hiveTicks = tag.getIntOr("HiveTicks", 0);
+        this.releaseTicks = tag.getIntOr("ReleaseTicks", 0);
+        this.setFlying(tag.getBooleanOr("Flying", false));
 
     }
 

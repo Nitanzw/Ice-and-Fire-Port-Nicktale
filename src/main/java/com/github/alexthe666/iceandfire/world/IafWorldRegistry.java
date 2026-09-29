@@ -1,6 +1,6 @@
 package com.github.alexthe666.iceandfire.world;
 
-import com.github.alexthe666.citadel.config.biome.SpawnBiomeData;
+import com.nicktale.api.config.biome.SpawnBiomeData;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.config.BiomeConfig;

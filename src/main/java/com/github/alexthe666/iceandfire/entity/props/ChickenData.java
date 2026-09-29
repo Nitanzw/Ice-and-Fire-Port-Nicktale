@@ -45,8 +45,8 @@ public class ChickenData {
     }
 
     public void deserialize(final CompoundTag tag) {
-        CompoundTag chickenData = tag.getCompound("chickenData");
-        timeUntilNextEgg = chickenData.getInt("timeUntilNextEgg");
+        CompoundTag chickenData = tag.getCompoundOrEmpty("chickenData");
+        timeUntilNextEgg = chickenData.getIntOr("timeUntilNextEgg", 0);
     }
 
     private int createDefaultTime(@NotNull final RandomSource random) {

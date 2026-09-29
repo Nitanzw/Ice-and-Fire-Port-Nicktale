@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "iceandfire:scribe/level_3/dragonbone_emerald",
+    "iceandfire:scribe/level_3/chain_emerald",
+    "iceandfire:scribe/level_3/emerald_pixie_dust",
+    "iceandfire:scribe/level_3/emerald_fire_dragon_flesh",
+    "iceandfire:scribe/level_3/emerald_ice_dragon_flesh",
+    "iceandfire:scribe/level_3/emerald_lightning_dragon_flesh"
+  ]
+}

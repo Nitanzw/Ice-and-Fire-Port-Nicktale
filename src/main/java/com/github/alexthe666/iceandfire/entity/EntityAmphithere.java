@@ -1,11 +1,12 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
-import com.github.alexthe666.iceandfire.client.model.IFChainBuffer;
+import com.github.alexthe666.iceandfire.entity.util.ChainBuffer;
 import com.github.alexthe666.iceandfire.datagen.tags.IafItemTags;
 import com.github.alexthe666.iceandfire.entity.ai.*;
 import com.github.alexthe666.iceandfire.entity.props.EntityDataProvider;
@@ -74,9 +75,9 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
     public float sitProgress = 0;
     public float diveProgress = 0;
 
-    public IFChainBuffer roll_buffer;
-    public IFChainBuffer tail_buffer;
-    public IFChainBuffer pitch_buffer;
+    public ChainBuffer roll_buffer;
+    public ChainBuffer tail_buffer;
+    public ChainBuffer pitch_buffer;
     @Nullable
     public BlockPos orbitPos = null;
     public float orbitRadius = 0.0F;
@@ -105,9 +106,9 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
     public EntityAmphithere(EntityType<EntityAmphithere> type, Level worldIn) {
         super(type, worldIn);
         if (worldIn.isClientSide()) {
-            roll_buffer = new IFChainBuffer();
-            pitch_buffer = new IFChainBuffer();
-            tail_buffer = new IFChainBuffer();
+            roll_buffer = new ChainBuffer();
+            pitch_buffer = new ChainBuffer();
+            tail_buffer = new ChainBuffer();
         }
         this.setMaxUpStep(1F);
         switchNavigator(0);
@@ -629,15 +630,15 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        this.setVariant(compound.getInt("Variant"));
-        this.setFlying(compound.getBoolean("Flying"));
-        flightCooldown = compound.getInt("FlightCooldown");
-        ridingTime = compound.getInt("RidingTime");
-        this.hasHomePosition = compound.getBoolean("HasHomePosition");
-        if (hasHomePosition && compound.getInt("HomeAreaX") != 0 && compound.getInt("HomeAreaY") != 0 && compound.getInt("HomeAreaZ") != 0) {
-            homePos = new BlockPos(compound.getInt("HomeAreaX"), compound.getInt("HomeAreaY"), compound.getInt("HomeAreaZ"));
+        this.setVariant(compound.getIntOr("Variant", 0));
+        this.setFlying(compound.getBooleanOr("Flying", false));
+        flightCooldown = compound.getIntOr("FlightCooldown", 0);
+        ridingTime = compound.getIntOr("RidingTime", 0);
+        this.hasHomePosition = compound.getBooleanOr("HasHomePosition", false);
+        if (hasHomePosition && compound.getIntOr("HomeAreaX", 0) != 0 && compound.getIntOr("HomeAreaY", 0) != 0 && compound.getIntOr("HomeAreaZ", 0) != 0) {
+            homePos = new BlockPos(compound.getIntOr("HomeAreaX", 0), compound.getIntOr("HomeAreaY", 0), compound.getIntOr("HomeAreaZ", 0));
         }
-        this.setCommand(compound.getInt("Command"));
+        this.setCommand(compound.getIntOr("Command", 0));
         this.setConfigurableAttributes();
 
     }
@@ -889,6 +890,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override
@@ -950,7 +952,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
 
     @Override
     public void travel(@NotNull Vec3 travelVector) {
-        if (this.isControlledByLocalInstance()) {
+        if (this.isLocalInstanceAuthoritative()) {
             if (this.isInWater()) {
                 this.moveRelative(0.02F, travelVector);
                 this.move(MoverType.SELF, this.getDeltaMovement());
@@ -977,7 +979,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
         Vec2 vec2 = this.getRiddenRotation(player);
         this.setRot(vec2.y, vec2.x);
         this.yRotO = this.yBodyRot = this.yHeadRot = this.getYRot();
-        if (this.isControlledByLocalInstance()) {
+        if (this.isLocalInstanceAuthoritative()) {
             Vec3 vec3 = this.getDeltaMovement();
             float vertical = this.isGoingUp() ? 0.2F : this.isGoingDown() ? -0.2F : 0F;
             if (!this.isFlying() && !this.isHovering()) {

@@ -1,6 +1,9 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.entity.util.MyrmexTrades;
+
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -21,8 +24,11 @@ import com.github.alexthe666.iceandfire.world.MyrmexWorldData;
 import com.github.alexthe666.iceandfire.world.gen.WorldGenMyrmexHive;
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.ListTag;
@@ -43,7 +49,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.item.trading.VillagerTrades;
+import net.minecraft.world.level.portal.TeleportTransition;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -279,22 +286,22 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
         tag.putInt("GrowthTicks", growthTicks);
         tag.putBoolean("Variant", this.isJungle());
         if (this.getHive() != null) {
-            tag.putUUID("HiveUUID", this.getHive().hiveUUID);
+            tag.store("HiveUUID", UUIDUtil.CODEC, this.getHive().hiveUUID);
         }
         MerchantOffers merchantoffers = this.getOffers();
         if (!merchantoffers.isEmpty()) {
-            tag.put("Offers", merchantoffers.createTag());
+            output.store("Offers", MerchantOffers.CODEC, merchantoffers);
         }
 
-        ListTag listnbt = new ListTag();
-
+        ValueOutput.ValueOutputList inventory = output.childrenList("Inventory");
         for (int i = 0; i < this.villagerInventory.getContainerSize(); ++i) {
             ItemStack itemstack = this.villagerInventory.getItem(i);
             if (!itemstack.isEmpty()) {
-                listnbt.add(itemstack.save(new CompoundTag()));
+                ValueOutput slot = inventory.addChild();
+                slot.putInt("Slot", i);
+                slot.store("Stack", ItemStack.CODEC, itemstack);
             }
         }
-        tag.put("Inventory", listnbt);
 
         output.store(tag);
     }
@@ -304,22 +311,19 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
         super.readAdditionalSaveData(input);
         CompoundTag tag = EntityDataIO.readLegacyFields(input);
 
-        this.setGrowthStage(tag.getInt("GrowthStage"));
-        this.growthTicks = tag.getInt("GrowthTicks");
-        this.setJungleVariant(tag.getBoolean("Variant"));
-        if (tag.hasUUID("HiveUUID")) {
-            this.setHive(MyrmexWorldData.get(level()).getHiveFromUUID(tag.getUUID("HiveUUID")));
+        this.setGrowthStage(tag.getIntOr("GrowthStage", 0));
+        this.growthTicks = tag.getIntOr("GrowthTicks", 0);
+        this.setJungleVariant(tag.getBooleanOr("Variant", false));
+        if (tag.read("HiveUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).isPresent()) {
+            this.setHive(MyrmexWorldData.get(level()).getHiveFromUUID(tag.read("HiveUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).orElse(null)));
         }
-        if (tag.contains("Offers", 10)) {
-            this.offers = new MerchantOffers(tag.getCompound("Offers"));
-        }
-
-        ListTag listnbt = tag.getList("Inventory", 10);
-
-        for (int i = 0; i < listnbt.size(); ++i) {
-            ItemStack itemstack = ItemStack.of(listnbt.getCompound(i));
-            if (!itemstack.isEmpty()) {
-                this.villagerInventory.addItem(itemstack);
+        this.offers = input.read("Offers", MerchantOffers.CODEC).orElseGet(MerchantOffers::new);
+        this.villagerInventory.clearContent();
+        for (ValueInput slot : input.childrenListOrEmpty("Inventory")) {
+            int index = slot.getIntOr("Slot", -1);
+            ItemStack stack = slot.read("Stack", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+            if (index >= 0 && index < this.villagerInventory.getContainerSize() && !stack.isEmpty()) {
+                this.villagerInventory.setItem(index, stack);
             }
         }
         this.setConfigurableAttributes();
@@ -413,6 +417,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override
@@ -489,10 +494,12 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     }
 
     public void onStaffInteract(Player player, ItemStack itemstack) {
-        if (itemstack.getTag() == null) {
+        CustomData component = itemstack.get(DataComponents.CUSTOM_DATA);
+        if (component == null) {
             return;
         }
-        UUID staffUUID = itemstack.getTag().hasUUID("HiveUUID") ? itemstack.getTag().getUUID("HiveUUID") : null;
+        CompoundTag tag = component.copyTag();
+        UUID staffUUID = tag.read("HiveUUID", UUIDUtil.LENIENT_CODEC).orElse(null);
         if (level().isClientSide()) {
             return;
         }
@@ -516,7 +523,8 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
                 } else {
                     player.sendOverlayMessage(Component.translatable("myrmex.message.staff_set_unnamed", center.getX(), center.getY(), center.getZ()));
                 }
-                itemstack.getTag().putUUID("HiveUUID", this.getHive().hiveUUID);
+                tag.store("HiveUUID", UUIDUtil.CODEC, this.getHive().hiveUUID);
+                CustomData.set(DataComponents.CUSTOM_DATA, itemstack, tag);
             }
 
         }
@@ -791,9 +799,9 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
 
     @Override
     @Nullable
-    public Entity changeDimension(@NotNull ServerLevel server, net.neoforged.neoforge.common.util.@NotNull ITeleporter teleporter) {
+    public @Nullable Entity teleport(TeleportTransition transition) {
         this.resetCustomer();
-        return super.changeDimension(server, teleporter);
+        return super.teleport(transition);
     }
 
     public SimpleContainer getVillagerInventory() {
@@ -818,7 +826,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
         }
     }
 
-    protected void addTrades(MerchantOffers givenMerchantOffers, VillagerTrades.ItemListing[] newTrades, int maxNumbers) {
+    protected void addTrades(MerchantOffers givenMerchantOffers, MyrmexTrades.TradeFactory[] newTrades, int maxNumbers) {
         Set<Integer> set = Sets.newHashSet();
         if (newTrades.length > maxNumbers) {
             while (set.size() < maxNumbers) {
@@ -831,7 +839,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
         }
 
         for (Integer integer : set) {
-            VillagerTrades.ItemListing villagertrades$itrade = newTrades[integer];
+            MyrmexTrades.TradeFactory villagertrades$itrade = newTrades[integer];
             MerchantOffer merchantoffer = villagertrades$itrade.getOffer(this, this.random);
             if (merchantoffer != null) {
                 givenMerchantOffers.add(merchantoffer);
@@ -844,13 +852,13 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
         this.populateTradeData();
     }
 
-    protected abstract VillagerTrades.ItemListing[] getLevel1Trades();
+    protected abstract MyrmexTrades.TradeFactory[] getLevel1Trades();
 
-    protected abstract VillagerTrades.ItemListing[] getLevel2Trades();
+    protected abstract MyrmexTrades.TradeFactory[] getLevel2Trades();
 
     protected void populateTradeData() {
-        VillagerTrades.ItemListing[] level1 = getLevel1Trades();
-        VillagerTrades.ItemListing[] level2 = getLevel2Trades();
+        MyrmexTrades.TradeFactory[] level1 = getLevel1Trades();
+        MyrmexTrades.TradeFactory[] level2 = getLevel2Trades();
         if (level1 != null && level2 != null) {
             MerchantOffers merchantoffers = this.getOffers();
             this.addTrades(merchantoffers, level1, 5);
@@ -867,9 +875,9 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
                 k = this.random.nextInt(level2.length);
                 rolls++;
             }
-            VillagerTrades.ItemListing rareTrade1 = level2[i];
-            VillagerTrades.ItemListing rareTrade2 = level2[j];
-            VillagerTrades.ItemListing rareTrade3 = level2[k];
+            MyrmexTrades.TradeFactory rareTrade1 = level2[i];
+            MyrmexTrades.TradeFactory rareTrade2 = level2[j];
+            MyrmexTrades.TradeFactory rareTrade3 = level2[k];
             MerchantOffer merchantoffer1 = rareTrade1.getOffer(this, this.random);
             if (merchantoffer1 != null) {
                 merchantoffers.add(merchantoffer1);

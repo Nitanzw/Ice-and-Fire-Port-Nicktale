@@ -1,9 +1,10 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
-import com.github.alexthe666.citadel.server.entity.collision.ICustomCollisions;
+import com.nicktale.api.server.entity.collision.ICustomCollisions;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
@@ -11,6 +12,7 @@ import com.github.alexthe666.iceandfire.api.event.GenericGriefEvent;
 import com.github.alexthe666.iceandfire.entity.ai.*;
 import com.github.alexthe666.iceandfire.entity.util.*;
 import com.github.alexthe666.iceandfire.message.MessageDeathWormHitbox;
+import com.github.alexthe666.iceandfire.message.IafNetwork;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.github.alexthe666.iceandfire.pathfinding.PathNavigateDeathWormLand;
 import com.github.alexthe666.iceandfire.pathfinding.PathNavigateDeathWormSand;
@@ -316,12 +318,12 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        this.setVariant(compound.getInt("Variant"));
-        this.growthCounter = compound.getInt("GrowthCounter");
-        this.setDeathWormScale(compound.getFloat("Scale"));
-        this.setWormAge(compound.getInt("WormAge"));
-        this.setWormHome(BlockPos.of(compound.getLong("WormHome")));
-        this.willExplode = compound.getBoolean("WillExplode");
+        this.setVariant(compound.getIntOr("Variant", 0));
+        this.growthCounter = compound.getIntOr("GrowthCounter", 0);
+        this.setDeathWormScale(compound.getFloatOr("Scale", 0.0F));
+        this.setWormAge(compound.getIntOr("WormAge", 0));
+        this.setWormHome(BlockPos.of(compound.getLongOr("WormHome", 0L)));
+        this.willExplode = compound.getBooleanOr("WillExplode", false);
         this.setConfigurableAttributes();
 
     }
@@ -394,7 +396,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         clearSegments();
         if (!this.level().isClientSide()) {
             initSegments(scale * (this.getWormAge() / 5F));
-            IceAndFire.sendMSGToAll(new MessageDeathWormHitbox(this.getId(), scale * (this.getWormAge() / 5F)));
+            IafNetwork.sendToAll(new MessageDeathWormHitbox(this.getId(), scale * (this.getWormAge() / 5F)));
         }
     }
 
@@ -803,6 +805,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override

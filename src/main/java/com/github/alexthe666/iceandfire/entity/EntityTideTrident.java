@@ -1,6 +1,5 @@
 package com.github.alexthe666.iceandfire.entity;
 
-import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -12,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -56,8 +55,8 @@ public class EntityTideTrident extends ThrownTrident {
         if (entitiesHit >= getMaxPiercing())
             this.dealtDamage = true;
         SoundEvent soundevent = SoundEvents.TRIDENT_HIT;
-        if (entity.hurt(damagesource, f)) {
-            if (entity.getType() == EntityTypes.ENDERMAN) {
+        if (entity.hurtOrSimulate(damagesource, f)) {
+            if (entity.getType() == EntityType.ENDERMAN) {
                 return;
             }
 
@@ -76,7 +75,7 @@ public class EntityTideTrident extends ThrownTrident {
         if (this.level()instanceof ServerLevel && this.level().isThundering() && EnchantmentHelper.hasChanneling(this.tridentItem)) {
             BlockPos blockpos = entity.blockPosition();
             if (this.level().canSeeSky(blockpos)) {
-                LightningBolt lightningboltentity = EntityTypes.LIGHTNING_BOLT.create(this.level());
+                LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.level());
                 lightningboltentity.moveTo(Vec3.atCenterOf(blockpos));
                 lightningboltentity.setCause(entity1 instanceof ServerPlayer ? (ServerPlayer) entity1 : null);
                 this.level().addFreshEntity(lightningboltentity);

@@ -12,6 +12,8 @@ import com.github.alexthe666.iceandfire.world.gen.WorldGenMyrmexHive;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -25,6 +27,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +61,7 @@ public class EntityMyrmexEgg extends LivingEntity implements IBlacklistedFromSta
         tag.putBoolean("Jungle", this.isJungle());
         tag.putInt("MyrmexAge", this.getMyrmexAge());
         tag.putInt("MyrmexCaste", this.getMyrmexCaste());
-        tag.putUUID("HiveUUID", hiveUUID == null ? hiveUUID = UUID.randomUUID() : hiveUUID);
+        tag.store("HiveUUID", net.minecraft.core.UUIDUtil.CODEC, hiveUUID == null ? hiveUUID = UUID.randomUUID() : hiveUUID);
 
         output.store(tag);
     }
@@ -68,10 +71,10 @@ public class EntityMyrmexEgg extends LivingEntity implements IBlacklistedFromSta
         super.readAdditionalSaveData(input);
         CompoundTag tag = EntityDataIO.readLegacyFields(input);
 
-        this.setJungle(tag.getBoolean("Jungle"));
-        this.setMyrmexAge(tag.getInt("MyrmexAge"));
-        this.setMyrmexCaste(tag.getInt("MyrmexCaste"));
-        hiveUUID = tag.getUUID("HiveUUID");
+        this.setJungle(tag.getBooleanOr("Jungle", false));
+        this.setMyrmexAge(tag.getIntOr("MyrmexAge", 0));
+        this.setMyrmexCaste(tag.getIntOr("MyrmexCaste", 0));
+        hiveUUID = tag.read("HiveUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).orElse(null);
 
     }
 
@@ -197,22 +200,22 @@ public class EntityMyrmexEgg extends LivingEntity implements IBlacklistedFromSta
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource dmg, float var2) {
+    public boolean hurtServer(ServerLevel level, @NotNull DamageSource dmg, float var2) {
         if (dmg.is(DamageTypes.IN_WALL) || dmg.is(DamageTypes.FALL)) {
             return false;
         }
         if (!level().isClientSide() && !dmg.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            this.spawnAtLocation(this.getItem(), 0);
+            this.spawnAtLocation(level, this.getItem(), 0);
         }
         this.remove(RemovalReason.KILLED);
-        return super.hurt(dmg, var2);
+        return super.hurtServer(level, dmg, var2);
     }
 
     private ItemStack getItem() {
         ItemStack egg = new ItemStack(this.isJungle() ? IafItemRegistry.MYRMEX_JUNGLE_EGG.get() : IafItemRegistry.MYRMEX_DESERT_EGG.get(), 1);
         CompoundTag newTag = new CompoundTag();
         newTag.putInt("EggOrdinal", this.getMyrmexCaste());
-        egg.setTag(newTag);
+        CustomData.set(DataComponents.CUSTOM_DATA, egg, newTag);
         return egg;
     }
 

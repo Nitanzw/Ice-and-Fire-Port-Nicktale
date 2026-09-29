@@ -141,16 +141,16 @@ public class SirenData {
     }
 
     public void deserialize(final CompoundTag tag) {
-        CompoundTag sirenData = tag.getCompound("sirenData");
+        CompoundTag sirenData = tag.getCompoundOrEmpty("sirenData");
         Tag uuidTag = sirenData.get("charmedByUUID");
 
         if (uuidTag != null) {
             charmedByUUID = NbtUtils.loadUUID(uuidTag);
         }
 
-        charmedById = sirenData.getInt("charmedById");
-        charmTime = sirenData.getInt("charmTime");
-        isCharmed = sirenData.getBoolean("isCharmed");
+        charmedById = sirenData.getIntOr("charmedById", 0);
+        charmTime = sirenData.getIntOr("charmTime", 0);
+        isCharmed = sirenData.getBooleanOr("isCharmed", false);
         isInitialized = false;
     }
 

@@ -1,13 +1,13 @@
 package com.github.alexthe666.iceandfire.entity.props;
 
-import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
-import com.github.alexthe666.iceandfire.message.IafNetwork;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.server.level.ServerPlayer;
 
 public class EntityData implements ValueIOSerializable {
     public FrozenData frozenData = new FrozenData();
@@ -29,7 +29,12 @@ public class EntityData implements ValueIOSerializable {
         triggerClientUpdate = miscData.doesClientNeedUpdate() || triggerClientUpdate;
 
         if (triggerClientUpdate && !entity.level().isClientSide()) {
-            IafNetwork.sendToAll(new SyncEntityData(entity.getId(), serialize()));
+            SyncEntityData payload = new SyncEntityData(entity.getId(), serialize());
+            if (entity instanceof ServerPlayer) {
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, payload);
+            } else {
+                PacketDistributor.sendToPlayersTrackingEntity(entity, payload);
+            }
         }
     }
 

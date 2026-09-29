@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -383,14 +384,14 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        this.setVariant(compound.getInt("Variant"));
-        ticksSinceRoar = compound.getInt("TicksSinceRoar");
-        jumpCooldown = compound.getInt("JumpCooldown");
-        this.setSeaSerpentScale(compound.getFloat("Scale"));
-        this.setJumpingOutOfWater(compound.getBoolean("JumpingOutOfWater"));
-        attackDecision = compound.getBoolean("AttackDecision");
-        this.setBreathing(compound.getBoolean("Breathing"));
-        this.setAncient(compound.getBoolean("Ancient"));
+        this.setVariant(compound.getIntOr("Variant", 0));
+        ticksSinceRoar = compound.getIntOr("TicksSinceRoar", 0);
+        jumpCooldown = compound.getIntOr("JumpCooldown", 0);
+        this.setSeaSerpentScale(compound.getFloatOr("Scale", 0.0F));
+        this.setJumpingOutOfWater(compound.getBooleanOr("JumpingOutOfWater", false));
+        attackDecision = compound.getBooleanOr("AttackDecision", false);
+        this.setBreathing(compound.getBooleanOr("Breathing", false));
+        this.setAncient(compound.getBooleanOr("Ancient", false));
         this.setConfigurableAttributes();
 
     }
@@ -718,6 +719,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override

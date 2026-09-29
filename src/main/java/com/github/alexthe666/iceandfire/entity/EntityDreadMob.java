@@ -96,7 +96,7 @@ public class EntityDreadMob extends Monster implements IDreadMob {
         CompoundTag compound = new CompoundTag();
 
         if (this.getCommanderId() != null) {
-            compound.putUUID("CommanderUUID", this.getCommanderId());
+            compound.store("CommanderUUID", net.minecraft.core.UUIDUtil.CODEC, this.getCommanderId());
         }
 
         output.store(compound);
@@ -108,10 +108,10 @@ public class EntityDreadMob extends Monster implements IDreadMob {
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
         UUID uuid;
-        if (compound.hasUUID("CommanderUUID")) {
-            uuid = compound.getUUID("CommanderUUID");
+        if (compound.read("CommanderUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).isPresent()) {
+            uuid = compound.read("CommanderUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).orElse(null);
         } else {
-            String s = compound.getString("CommanderUUID");
+            String s = compound.getStringOr("CommanderUUID", "");
             uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s);
         }
 

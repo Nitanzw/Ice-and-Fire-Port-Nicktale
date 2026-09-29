@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -18,6 +19,7 @@ import com.github.alexthe666.iceandfire.entity.util.IVillagerFear;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.message.MessageSirenSong;
+import com.github.alexthe666.iceandfire.message.IafNetwork;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.google.common.base.Predicate;
 import net.minecraft.core.BlockPos;
@@ -45,6 +47,7 @@ import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -307,11 +310,11 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (source.getEntity() != null && source.getEntity() instanceof LivingEntity) {
             this.triggerOtherSirens((LivingEntity) source.getEntity());
         }
-        return super.hurt(source, amount);
+        return super.hurtServer(level, source, amount);
     }
 
     public void triggerOtherSirens(LivingEntity aggressor) {
@@ -365,12 +368,12 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
         super.readAdditionalSaveData(input);
         CompoundTag tag = EntityDataIO.readLegacyFields(input);
 
-        this.setHairColor(tag.getInt("HairColor"));
-        this.setAggressive(tag.getBoolean("Aggressive"));
-        this.setSingingPose(tag.getInt("SingingPose"));
-        this.setSinging(tag.getBoolean("Singing"));
-        this.setSwimming(tag.getBoolean("Swimming"));
-        this.setCharmed(tag.getBoolean("Passive"));
+        this.setHairColor(tag.getIntOr("HairColor", 0));
+        this.setAggressive(tag.getBooleanOr("Aggressive", false));
+        this.setSingingPose(tag.getIntOr("SingingPose", 0));
+        this.setSinging(tag.getBooleanOr("Singing", false));
+        this.setSwimming(tag.getBooleanOr("Swimming", false));
+        this.setCharmed(tag.getBooleanOr("Passive", false));
         this.setConfigurableAttributes();
 
     }
@@ -389,7 +392,7 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
         this.entityData.set(SINGING, singing);
         if (!level().isClientSide()) {
             this.isSinging = singing;
-            IceAndFire.sendMSGToAll(new MessageSirenSong(this.getId(), singing));
+            IafNetwork.sendToAll(new MessageSirenSong(this.getId(), singing));
         }
     }
 
@@ -516,6 +519,7 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override

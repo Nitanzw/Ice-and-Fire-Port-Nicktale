@@ -1,7 +1,5 @@
 package com.github.alexthe666.iceandfire.entity.util;
 
-import com.nicktale.api.client.model.AdvancedModelBox;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -12,6 +10,21 @@ public class ChainBuffer {
     private float pitchVariation;
     private float prevYawVariation;
     private float prevPitchVariation;
+
+    private static boolean compareDouble(double a, double b) {
+        double c = a - b;
+        return Math.abs(c - 1.0) <= 0.01D;
+    }
+
+    /** Returns the interpolated yaw-chain value in degrees for client rendering. */
+    public float getInterpolatedYawVariation(float partialTick) {
+        return Mth.lerp(partialTick, this.prevYawVariation, this.yawVariation);
+    }
+
+    /** Returns the interpolated pitch-chain value in degrees for client rendering. */
+    public float getInterpolatedPitchVariation(float partialTick) {
+        return Mth.lerp(partialTick, this.prevPitchVariation, this.pitchVariation);
+    }
 
     /**
      * Resets this ChainBuffer's rotations.
@@ -121,31 +134,71 @@ public class ChainBuffer {
         this.calculateChainWaveBuffer(maxAngle, bufferTime, angleDecrement, 1.0F, entity);
     }
 
-    /**
-     * Applies this buffer on the Y axis to the given array of model boxes.
-     *
-     * @param boxes the box array
-     */
-    public void applyChainSwingBuffer(BasicModelPart... boxes) {
-        float rotateAmount = 0.01745329251F * Mth.lerp(getPartialTicks(), this.prevYawVariation, this.yawVariation) / boxes.length;
-        for (BasicModelPart box : boxes) {
-            box.rotateAngleY += rotateAmount;
+    public void calculateChainPitchBuffer(float maxAngle, int bufferTime, float angleDecrement, float divisor, LivingEntity entity) {
+        this.prevPitchVariation = entity.xRotO;
+        this.pitchVariation = entity.getXRot();
+    }
+
+    public void calculateChainFlapBuffer(float maxAngle, int bufferTime, float angleDecrement, float divisor, LivingEntity entity) {
+        this.prevYawVariation = this.yawVariation;
+        if (!compareDouble(entity.yBodyRot, entity.yBodyRotO) && Mth.abs(this.yawVariation) < maxAngle) {
+            this.yawVariation += Mth.clamp((entity.yBodyRotO - entity.yBodyRot) / divisor, -maxAngle, maxAngle);
+            if (entity instanceof IFlapable flapable && Math.abs(entity.yBodyRotO - entity.yBodyRot) > 15D) {
+                flapable.flapWings();
+            }
+        }
+        if (this.yawVariation > angleDecrement) {
+            if (this.yawTimer > bufferTime) {
+                this.yawVariation -= angleDecrement;
+                if (Mth.abs(this.yawVariation) < angleDecrement) {
+                    this.yawVariation = 0.0F;
+                    this.yawTimer = 0;
+                }
+            } else {
+                this.yawTimer++;
+            }
+        } else if (this.yawVariation < -angleDecrement) {
+            if (this.yawTimer > bufferTime) {
+                this.yawVariation += angleDecrement;
+                if (Mth.abs(this.yawVariation) < angleDecrement) {
+                    this.yawVariation = 0.0F;
+                    this.yawTimer = 0;
+                }
+            } else {
+                this.yawTimer++;
+            }
         }
     }
 
-    private float getPartialTicks() {
-        return Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
-    }
-
-    /**
-     * Applies this buffer on the X axis to the given array of model boxes.
-     *
-     * @param boxes the box array
-     */
-    public void applyChainWaveBuffer(BasicModelPart... boxes) {
-        float rotateAmount = 0.01745329251F * Mth.lerp(getPartialTicks(), this.prevYawVariation, this.yawVariation) / boxes.length;
-        for (BasicModelPart box : boxes) {
-            box.rotateAngleX += rotateAmount;
+    public void calculateChainFlapBufferHead(float maxAngle, int bufferTime, float angleDecrement, float divisor, LivingEntity entity) {
+        this.prevYawVariation = this.yawVariation;
+        if (!compareDouble(entity.yHeadRotO, entity.yHeadRot) && Mth.abs(this.yawVariation) < maxAngle) {
+            this.yawVariation += Mth.clamp((entity.yHeadRot - entity.yHeadRotO) / divisor, -maxAngle, maxAngle);
+            if (entity instanceof IFlapable flapable && Math.abs(entity.yHeadRot - entity.yHeadRotO) > 15D) {
+                flapable.flapWings();
+            }
+        }
+        if (this.yawVariation > angleDecrement) {
+            if (this.yawTimer > bufferTime) {
+                this.yawVariation -= angleDecrement;
+                if (Mth.abs(this.yawVariation) < angleDecrement) {
+                    this.yawVariation = 0.0F;
+                    this.yawTimer = 0;
+                }
+            } else {
+                this.yawTimer++;
+            }
+        } else if (this.yawVariation < -angleDecrement) {
+            if (this.yawTimer > bufferTime) {
+                this.yawVariation += angleDecrement;
+                if (Mth.abs(this.yawVariation) < angleDecrement) {
+                    this.yawVariation = 0.0F;
+                    this.yawTimer = 0;
+                }
+            } else {
+                this.yawTimer++;
+            }
         }
     }
+
 }

@@ -152,17 +152,14 @@ public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        String s = "";
-        if (compound.hasUUID("SummonerUUID")) {
-            s = compound.getString("SummonerUUID");
-        }
+        String s = compound.getStringOr("SummonerUUID", "");
         if (!s.isEmpty()) {
             try {
                 this.setSummonerID(UUID.fromString(s));
             } catch (Throwable var4) {
             }
         }
-        this.setTicksAlive(compound.getInt("SummonTicks"));
+        this.setTicksAlive(compound.getIntOr("SummonTicks", 0));
 
     }
 

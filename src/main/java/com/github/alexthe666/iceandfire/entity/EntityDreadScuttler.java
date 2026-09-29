@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -126,7 +127,7 @@ public class EntityDreadScuttler extends EntityDreadMob implements IAnimatedEnti
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        this.setSize(compound.getFloat("Scale"));
+        this.setSize(compound.getFloatOr("Scale", 0.0F));
 
     }
 
@@ -233,6 +234,7 @@ public class EntityDreadScuttler extends EntityDreadMob implements IAnimatedEnti
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override

@@ -30,8 +30,9 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.item.trading.VillagerTrades;
+
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,12 +61,12 @@ public class EntityMyrmexSentinel extends EntityMyrmexBase {
     }
 
     @Override
-    protected VillagerTrades.ItemListing[] getLevel1Trades() {
+    protected MyrmexTrades.TradeFactory[] getLevel1Trades() {
         return isJungle() ? MyrmexTrades.JUNGLE_SENTINEL.get(1) : MyrmexTrades.DESERT_SENTINEL.get(1);
     }
 
     @Override
-    protected VillagerTrades.ItemListing[] getLevel2Trades() {
+    protected MyrmexTrades.TradeFactory[] getLevel2Trades() {
         return isJungle() ? MyrmexTrades.JUNGLE_SENTINEL.get(2) : MyrmexTrades.DESERT_SENTINEL.get(2);
     }
 
@@ -241,8 +242,8 @@ public class EntityMyrmexSentinel extends EntityMyrmexBase {
         super.readAdditionalSaveData(input);
         CompoundTag tag = EntityDataIO.readLegacyFields(input);
 
-        this.setHiding(tag.getBoolean("Hiding"));
-        this.daylightTicks = tag.getInt("DaylightTicks");
+        this.setHiding(tag.getBooleanOr("Hiding", false));
+        this.daylightTicks = tag.getIntOr("DaylightTicks", 0);
 
     }
 
@@ -279,7 +280,7 @@ public class EntityMyrmexSentinel extends EntityMyrmexBase {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (amount >= 1.0D && !this.getPassengers().isEmpty() && random.nextInt(2) == 0) {
             for (Entity entity : this.getPassengers()) {
                 entity.stopRiding();
@@ -287,7 +288,7 @@ public class EntityMyrmexSentinel extends EntityMyrmexBase {
         }
         visibleTicks = 300;
         this.setHiding(false);
-        return super.hurt(source, amount);
+        return super.hurtServer(level, source, amount);
     }
 
     @Override

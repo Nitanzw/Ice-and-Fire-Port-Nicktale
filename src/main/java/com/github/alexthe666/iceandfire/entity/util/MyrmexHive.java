@@ -6,6 +6,7 @@ import com.github.alexthe666.iceandfire.entity.EntityMyrmexBase;
 import com.github.alexthe666.iceandfire.entity.EntityMyrmexQueen;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import com.github.alexthe666.iceandfire.world.gen.WorldGenMyrmexHive;
+import com.mojang.serialization.Codec;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
@@ -30,6 +31,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class MyrmexHive {
+    public static final Codec<MyrmexHive> CODEC = CompoundTag.CODEC.xmap(MyrmexHive::fromNBT, MyrmexHive::toNBT);
+
     private final List<BlockPos> foodRooms = Lists.newArrayList();
     private final List<BlockPos> babyRooms = Lists.newArrayList();
     private final List<BlockPos> miscRooms = Lists.newArrayList();
@@ -290,70 +293,70 @@ public class MyrmexHive {
      * Read this village's data from NBT.
      */
     public void readVillageDataFromNBT(CompoundTag compound) {
-        this.numMyrmex = compound.getInt("PopSize");
-        this.reproduces = compound.getBoolean("Reproduces");
-        this.hasOwner = compound.getBoolean("HasOwner");
-        if (compound.hasUUID("OwnerUUID")) {
-            this.ownerUUID = compound.getUUID("OwnerUUID");
+        this.numMyrmex = compound.getIntOr("PopSize", 0);
+        this.reproduces = compound.getBooleanOr("Reproduces", false);
+        this.hasOwner = compound.getBooleanOr("HasOwner", false);
+        if (compound.read("OwnerUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).isPresent()) {
+            this.ownerUUID = compound.read("OwnerUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).orElse(null);
         }
-        this.colonyName = compound.getString("ColonyName");
-        this.villageRadius = compound.getInt("Radius");
-        if (compound.hasUUID("WanderRadius")) {
-            this.wanderRadius = compound.getInt("WanderRadius");
+        this.colonyName = compound.getStringOr("ColonyName", "");
+        this.villageRadius = compound.getIntOr("Radius", 0);
+        if (compound.contains("WanderRadius")) {
+            this.wanderRadius = compound.getIntOr("WanderRadius", 0);
         }
-        this.lastAddDoorTimestamp = compound.getInt("Stable");
-        this.tickCounter = compound.getInt("Tick");
-        this.noBreedTicks = compound.getInt("MTick");
-        this.center = new BlockPos(compound.getInt("CX"), compound.getInt("CY"), compound.getInt("CZ"));
-        this.centerHelper = new BlockPos(compound.getInt("ACX"), compound.getInt("ACY"), compound.getInt("ACZ"));
-        ListTag hiveMembers = compound.getList("HiveMembers", 10);
+        this.lastAddDoorTimestamp = compound.getIntOr("Stable", 0);
+        this.tickCounter = compound.getIntOr("Tick", 0);
+        this.noBreedTicks = compound.getIntOr("MTick", 0);
+        this.center = new BlockPos(compound.getIntOr("CX", 0), compound.getIntOr("CY", 0), compound.getIntOr("CZ", 0));
+        this.centerHelper = new BlockPos(compound.getIntOr("ACX", 0), compound.getIntOr("ACY", 0), compound.getIntOr("ACZ", 0));
+        ListTag hiveMembers = compound.getListOrEmpty("HiveMembers");
         this.myrmexList.clear();
         for (int i = 0; i < hiveMembers.size(); ++i) {
-            CompoundTag CompoundNBT = hiveMembers.getCompound(i);
-            this.myrmexList.add(CompoundNBT.getUUID("MyrmexUUID"));
+            CompoundTag CompoundNBT = hiveMembers.getCompoundOrEmpty(i);
+            this.myrmexList.add(CompoundNBT.read("MyrmexUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).orElse(null));
         }
-        ListTag foodRoomList = compound.getList("FoodRooms", 10);
+        ListTag foodRoomList = compound.getListOrEmpty("FoodRooms");
         this.foodRooms.clear();
         for (int i = 0; i < foodRoomList.size(); ++i) {
-            CompoundTag CompoundNBT = foodRoomList.getCompound(i);
-            this.foodRooms.add(new BlockPos(CompoundNBT.getInt("X"), CompoundNBT.getInt("Y"), CompoundNBT.getInt("Z")));
+            CompoundTag CompoundNBT = foodRoomList.getCompoundOrEmpty(i);
+            this.foodRooms.add(new BlockPos(CompoundNBT.getIntOr("X", 0), CompoundNBT.getIntOr("Y", 0), CompoundNBT.getIntOr("Z", 0)));
         }
-        ListTag babyRoomList = compound.getList("BabyRooms", 10);
+        ListTag babyRoomList = compound.getListOrEmpty("BabyRooms");
         this.babyRooms.clear();
         for (int i = 0; i < babyRoomList.size(); ++i) {
-            CompoundTag CompoundNBT = babyRoomList.getCompound(i);
-            this.babyRooms.add(new BlockPos(CompoundNBT.getInt("X"), CompoundNBT.getInt("Y"), CompoundNBT.getInt("Z")));
+            CompoundTag CompoundNBT = babyRoomList.getCompoundOrEmpty(i);
+            this.babyRooms.add(new BlockPos(CompoundNBT.getIntOr("X", 0), CompoundNBT.getIntOr("Y", 0), CompoundNBT.getIntOr("Z", 0)));
         }
-        ListTag miscRoomList = compound.getList("MiscRooms", 10);
+        ListTag miscRoomList = compound.getListOrEmpty("MiscRooms");
         this.miscRooms.clear();
         for (int i = 0; i < miscRoomList.size(); ++i) {
-            CompoundTag CompoundNBT = miscRoomList.getCompound(i);
-            this.miscRooms.add(new BlockPos(CompoundNBT.getInt("X"), CompoundNBT.getInt("Y"), CompoundNBT.getInt("Z")));
+            CompoundTag CompoundNBT = miscRoomList.getCompoundOrEmpty(i);
+            this.miscRooms.add(new BlockPos(CompoundNBT.getIntOr("X", 0), CompoundNBT.getIntOr("Y", 0), CompoundNBT.getIntOr("Z", 0)));
         }
-        ListTag entrancesList = compound.getList("Entrances", 10);
+        ListTag entrancesList = compound.getListOrEmpty("Entrances");
         this.entrances.clear();
         for (int i = 0; i < entrancesList.size(); ++i) {
-            CompoundTag CompoundNBT = entrancesList.getCompound(i);
-            this.entrances.put(new BlockPos(CompoundNBT.getInt("X"), CompoundNBT.getInt("Y"), CompoundNBT.getInt("Z")), Direction.from2DDataValue(CompoundNBT.getInt("Facing")));
+            CompoundTag CompoundNBT = entrancesList.getCompoundOrEmpty(i);
+            this.entrances.put(new BlockPos(CompoundNBT.getIntOr("X", 0), CompoundNBT.getIntOr("Y", 0), CompoundNBT.getIntOr("Z", 0)), Direction.from2DDataValue(CompoundNBT.getIntOr("Facing", 0)));
         }
 
-        ListTag entranceBottomsList = compound.getList("EntranceBottoms", 10);
+        ListTag entranceBottomsList = compound.getListOrEmpty("EntranceBottoms");
         this.entranceBottoms.clear();
         for (int i = 0; i < entranceBottomsList.size(); ++i) {
-            CompoundTag CompoundNBT = entranceBottomsList.getCompound(i);
-            this.entranceBottoms.put(new BlockPos(CompoundNBT.getInt("X"), CompoundNBT.getInt("Y"), CompoundNBT.getInt("Z")), Direction.from2DDataValue(CompoundNBT.getInt("Facing")));
+            CompoundTag CompoundNBT = entranceBottomsList.getCompoundOrEmpty(i);
+            this.entranceBottoms.put(new BlockPos(CompoundNBT.getIntOr("X", 0), CompoundNBT.getIntOr("Y", 0), CompoundNBT.getIntOr("Z", 0)), Direction.from2DDataValue(CompoundNBT.getIntOr("Facing", 0)));
         }
-        hiveUUID = compound.getUUID("HiveUUID");
-        ListTag nbttaglist1 = compound.getList("Players", 10);
+        hiveUUID = compound.read("HiveUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).orElse(this.hiveUUID);
+        ListTag nbttaglist1 = compound.getListOrEmpty("Players");
         this.playerReputation.clear();
         for (int j = 0; j < nbttaglist1.size(); ++j) {
-            CompoundTag CompoundNBT1 = nbttaglist1.getCompound(j);
+            CompoundTag CompoundNBT1 = nbttaglist1.getCompoundOrEmpty(j);
 
-            if (CompoundNBT1.hasUUID("UUID")) {
-                this.playerReputation.put(CompoundNBT1.getUUID("UUID"), CompoundNBT1.getInt("S"));
+            if (CompoundNBT1.read("UUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).isPresent()) {
+                this.playerReputation.put(CompoundNBT1.read("UUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).orElse(null), CompoundNBT1.getIntOr("S", 0));
             } else {
                 //World is never set here, so this will always be offline UUIDs, sadly there is no way to convert this.
-                this.playerReputation.put(findUUID(CompoundNBT1.getString("Name")), CompoundNBT1.getInt("S"));
+                this.playerReputation.put(findUUID(CompoundNBT1.getStringOr("Name", "")), CompoundNBT1.getIntOr("S", 0));
             }
         }
     }
@@ -366,7 +369,7 @@ public class MyrmexHive {
         compound.putBoolean("Reproduces", this.reproduces);
         compound.putBoolean("HasOwner", this.hasOwner);
         if (this.ownerUUID != null) {
-            compound.putUUID("OwnerUUID", this.ownerUUID);
+            compound.store("OwnerUUID", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
         compound.putString("ColonyName", this.colonyName);
         compound.putInt("Radius", this.villageRadius);
@@ -383,7 +386,7 @@ public class MyrmexHive {
         ListTag hiveMembers = new ListTag();
         for (UUID memberUUID : this.myrmexList) {
             CompoundTag CompoundNBT = new CompoundTag();
-            CompoundNBT.putUUID("MyrmexUUID", memberUUID);
+            CompoundNBT.store("MyrmexUUID", net.minecraft.core.UUIDUtil.CODEC, memberUUID);
             hiveMembers.add(CompoundNBT);
         }
         compound.put("HiveMembers", hiveMembers);
@@ -435,7 +438,7 @@ public class MyrmexHive {
             entranceBottomsList.add(CompoundNBT);
         }
         compound.put("EntranceBottoms", entranceBottomsList);
-        compound.putUUID("HiveUUID", this.hiveUUID);
+        compound.store("HiveUUID", net.minecraft.core.UUIDUtil.CODEC, this.hiveUUID);
         ListTag nbttaglist1 = new ListTag();
 
         for (UUID s : this.playerReputation.keySet()) {
@@ -443,7 +446,7 @@ public class MyrmexHive {
 
             try {
                 {
-                    CompoundNBT1.putUUID("UUID", s);
+                    CompoundNBT1.store("UUID", net.minecraft.core.UUIDUtil.CODEC, s);
                     CompoundNBT1.putInt("S", this.playerReputation.get(s).intValue());
                     nbttaglist1.add(CompoundNBT1);
                 }
