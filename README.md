@@ -1,27 +1,24 @@
-<img src="https://user-images.githubusercontent.com/12676257/137376396-a758fd67-5b6a-4a95-8a51-3aa7a22dc540.png"  width="128" height="128" />
+# Ice and Fire Port Nicktale
 
-[![CurseForge downloads](http://cf.way2muchnoise.eu/full_264231_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/ice-and-fire-dragons)
+**Unofficial** NeoForge port of [Ice and Fire](https://github.com/AlexModGuy/Ice_and_Fire) (dragons, hippogryphs, myrmex, sirens, hydras and more)
+to Minecraft **26.2** (26.3 planned, as a dual build), by Nicktale. It is **not affiliated with, endorsed by or supported by the original authors.**
 
-# Ice and Fire
+> **Status: work in progress — not playable yet.** The code base was migrated from the Forge 1.20.1 branch; the migration is still being
+> finished (see `docs/PROGRESO.md`). No release jars exist.
 
-Ice and Fire is a minecraft mod created by Raptorfarian and Alexthe666 which adds various mythical creatures like dragons, hypogriffs, faries and many more to the game!
+## Credits
+Ice and Fire is created by **Raptorfarian** and **Alexthe666** and their contributors. All original content, code and art belong to them and are used
+under the terms of the license below. This port only adapts the code to NeoForge / Minecraft 26.x; it keeps the original copyright and history.
 
-## Reporting issues
-If you encounter any bugs or problems with the mod you can open an issue [here](https://github.com/Alex-the-666/Ice_and_Fire/issues).
-**Please make sure that the issue you are encountering hasn't been reported yet.**
-You can do this by using the search tool.
+## License
+[GNU LGPL-3.0](LICENSE), the same license as the original project. Files added by the port are released under the same license.
 
-Make sure to carefully read and follow the issue template. Issues that are duplicates or don't contain the necessary information to triage and debug it may be closed.
-### **Please post your suggestions over [here](https://github.com/Alex-the-666/Ice-and-Fire-Suggestions/issues)**
+## Project layout
+- `src/main`, `src/client` — the mod (client-only code lives in the `client` source set).
+- `docs/ESTADO_DEL_PROYECTO.md` — current state and what remains.
+- `tools/` — helper scripts used for the mass migration (import relocation, API renames, diagnostic-driven fixers).
+- Depends on **Nicktale API** (own animation / model library that replaces Citadel), developed alongside.
 
-## Community
-[![Discord chat](https://img.shields.io/badge/chat%20on-discord-7289DA?logo=discord&logoColor=white)](https://discord.gg/WfumvTg)
-
-We have an official Ice and Fire [discord community](https://discord.gg/WfumvTg). By joining you can:
-- Be notified whenever a new version of the mod get's released
-- Find servers that have ice and Fire installed
-- Get help if you have any issues
-- ... and much more!
-# FAQ
-Please take a look at the wiki pages on [fandom](https://ice-and-fire-mod.fandom.com/wiki/Frequently_asked_questions) and [github](https://github.com/Alex-the-666/Ice_and_Fire/wiki)
-
+## Building
+JDK 21+ to run Gradle (the Java 25 toolchain is downloaded automatically). Nicktale API must be built first (`../nicktale-api-neoforge`),
+then `./gradlew compileJava`.
