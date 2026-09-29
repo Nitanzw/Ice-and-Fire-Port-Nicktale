@@ -52,7 +52,7 @@ public class TabulaModel extends AdvancedEntityModel<EntityRenderState> {
         box.setScale(scale[0], scale[1], scale[2]);
         float[] dimensions = cube.dimensions();
         float[] offset = cube.offset();
-        if (dimensions[0] > 0 && dimensions[1] > 0 && dimensions[2] > 0) {
+        if (dimensions[0] > 0 || dimensions[1] > 0 || dimensions[2] > 0) { // flat boxes (wing membranes) have a zero dimension
             box.addBox(offset[0], offset[1], offset[2], dimensions[0], dimensions[1], dimensions[2], cube.inflate());
         }
         if (parent != null) {

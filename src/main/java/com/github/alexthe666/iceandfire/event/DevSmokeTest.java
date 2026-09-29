@@ -41,7 +41,7 @@ public class DevSmokeTest {
         int sz = 0;
         for (String st : new String[]{"gorgon_temple", "graveyard", "mausoleum"}) {
             int z = 300 * sz++;
-            loads.add("execute in minecraft:overworld run forceload add 8100 " + z);
+            loads.add("execute in minecraft:overworld run forceload add " + (8100 - 80) + " " + (z - 80) + " " + (8100 + 80) + " " + (z + 80));
             commands.add("execute in minecraft:overworld run place structure iceandfire:" + st + " 8100 @Y@ " + z);
         }
         java.util.List<String> retry = new java.util.ArrayList<>();
