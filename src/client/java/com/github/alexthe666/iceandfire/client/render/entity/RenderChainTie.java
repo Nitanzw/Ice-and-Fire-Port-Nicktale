@@ -1,19 +1,19 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
+import com.github.alexthe666.iceandfire.client.model.ChainTieRenderState;
 import com.github.alexthe666.iceandfire.client.model.ModelChainTie;
 import com.github.alexthe666.iceandfire.entity.EntityChainTie;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.CameraRenderState;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-
-public class RenderChainTie extends EntityRenderer<EntityChainTie> {
+public class RenderChainTie extends EntityRenderer<EntityChainTie, ChainTieRenderState> {
     private static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/models/misc/chain_tie.png");
     private final ModelChainTie leashKnotModel = new ModelChainTie();
 
@@ -22,22 +22,31 @@ public class RenderChainTie extends EntityRenderer<EntityChainTie> {
     }
 
     @Override
-    public void render(@NotNull EntityChainTie entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        matrixStackIn.pushPose();
-        matrixStackIn.translate(0, 0.5F, 0);
-        matrixStackIn.scale(-1.0F, -1.0F, 1.0F);
-        this.leashKnotModel.setupAnim(entityIn, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
-        this.leashKnotModel.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        matrixStackIn.popPose();
-        super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+    protected ChainTieRenderState createRenderState() {
+        return new ChainTieRenderState();
     }
 
-    /**
-     * Returns the location of an entity's texture.
-     */
     @Override
-    public @NotNull Identifier getTextureLocation(@NotNull EntityChainTie entity) {
+    public void extractRenderState(EntityChainTie entity, ChainTieRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.knotYaw = entity.getYRot();
+        state.knotPitch = entity.getXRot();
+    }
+
+    @Override
+    public void submit(ChainTieRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        super.submit(state, poseStack, collector, camera);
+        poseStack.pushPose();
+        poseStack.translate(0.0F, 0.5F, 0.0F);
+        poseStack.scale(-1.0F, -1.0F, 1.0F);
+        collector.submitModel(this.leashKnotModel, state, poseStack,
+                RenderTypes.entityCutoutNoCull(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY,
+                -1, null, state.outlineColor, null);
+        poseStack.popPose();
+    }
+
+    @Override
+    public @NotNull Identifier getTextureLocation(@NotNull ChainTieRenderState state) {
         return TEXTURE;
     }
 }
