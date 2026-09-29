@@ -16,8 +16,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import com.mojang.serialization.MapCodec;
 
 public class BlockMyrmexCocoon extends BaseEntityBlock {
+    private static final MapCodec<BlockMyrmexCocoon> CODEC = MapCodec.unit(new BlockMyrmexCocoon());
 
 
     public BlockMyrmexCocoon() {
@@ -33,20 +35,16 @@ public class BlockMyrmexCocoon extends BaseEntityBlock {
     }
 
     @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
     public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 
     @Override
-    public void onRemove(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        BlockEntity tileentity = worldIn.getBlockEntity(pos);
-        if (tileentity instanceof Container) {
-            Containers.dropContents(worldIn, pos, (Container) tileentity);
-            worldIn.updateNeighbourForOutputSignal(pos, this);
-        }
-        super.onRemove(state, worldIn, pos, newState, isMoving);
-    }
-
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit) {
         if (!player.isShiftKeyDown()) {

@@ -5,6 +5,7 @@ import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.ContainerUser;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -21,23 +22,22 @@ public class TileEntityGhostChest extends ChestBlockEntity {
     }
 
     @Override
-    public void startOpen(@NotNull Player player) {
-        super.startOpen(player);
-        if (this.level.getDifficulty() != Difficulty.PEACEFUL) {
+    public void startOpen(ContainerUser user) {
+        super.startOpen(user);
+        if (this.level != null && this.level.getDifficulty() != Difficulty.PEACEFUL) {
             EntityGhost ghost = IafEntityRegistry.GHOST.get().create(level);
-            ghost.absMoveTo(this.worldPosition.getX() + 0.5F, this.worldPosition.getY() + 0.5F, this.worldPosition.getZ() + 0.5F,
-                ThreadLocalRandom.current().nextFloat() * 360F, 0);
-            if (!this.level.isClientSide()) {
-                ghost.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(this.worldPosition), EntitySpawnReason.SPAWNER, null);
-                if (!player.isCreative()) {
+            if (ghost != null && this.level instanceof ServerLevel serverLevel) {
+                ghost.setPos(this.worldPosition.getX() + 0.5F, this.worldPosition.getY() + 0.5F, this.worldPosition.getZ() + 0.5F);
+                ghost.setYRot(ThreadLocalRandom.current().nextFloat() * 360F);
+                ghost.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(this.worldPosition), EntitySpawnReason.SPAWNER, null);
+                if (user.getLivingEntity() instanceof Player player && !player.isCreative()) {
                     ghost.setTarget(player);
                 }
                 ghost.setPersistenceRequired();
-                level.addFreshEntity(ghost);
+                serverLevel.addFreshEntity(ghost);
+                ghost.setAnimation(EntityGhost.ANIMATION_SCARE);
+                ghost.setFromChest(true);
             }
-            ghost.setAnimation(EntityGhost.ANIMATION_SCARE);
-            ghost.restrictTo(this.worldPosition, 4);
-            ghost.setFromChest(true);
         }
     }
 

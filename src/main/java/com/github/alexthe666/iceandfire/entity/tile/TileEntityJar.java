@@ -13,7 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.network.Connection;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
@@ -75,11 +75,11 @@ public class TileEntityJar extends BlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ValueInput input) {
-        super.onDataPacket(net, input);
-        if (this.level != null && !this.level.isClientSide()) {
-            IceAndFire.sendMSGToAll(new MessageUpdatePixieHouseModel(worldPosition.asLong(), input.getIntOr("PixieType", 0)));
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        if (this.hasPixie) {
+            this.releasePixie();
         }
+        super.preRemoveSideEffects(pos, state);
     }
 
     @Override
@@ -138,20 +138,22 @@ public class TileEntityJar extends BlockEntity {
     }
 
     public void releasePixie() {
+        if (this.level == null || this.level.isClientSide()) {
+            return;
+        }
         EntityPixie pixie = new EntityPixie(IafEntityRegistry.PIXIE.get(), this.level);
-        pixie.absMoveTo(this.worldPosition.getX() + 0.5F, this.worldPosition.getY() + 1F, this.worldPosition.getZ() + 0.5F, new Random().nextInt(360), 0);
+        pixie.setPos(this.worldPosition.getX() + 0.5F, this.worldPosition.getY() + 1F, this.worldPosition.getZ() + 0.5F);
+        pixie.setYRot(this.rand.nextInt(360));
         pixie.setItemInHand(InteractionHand.MAIN_HAND, pixieItems.get(0));
         pixie.setColor(this.pixieType);
-        level.addFreshEntity(pixie);
+        this.level.addFreshEntity(pixie);
         this.hasPixie = false;
         this.pixieType = 0;
         pixie.ticksUntilHouseAI = 500;
-        pixie.setTame(this.tamedPixie);
-        pixie.setOwnerUUID(this.pixieOwnerUUID);
+        pixie.setTame(this.tamedPixie, false);
+        pixie.setOwnerReference(this.pixieOwnerUUID == null ? null : EntityReference.of(this.pixieOwnerUUID));
 
-        if (!level.isClientSide()) {
-            IceAndFire.sendMSGToAll(new MessageUpdatePixieHouse(worldPosition.asLong(), false, 0));
-        }
+        IceAndFire.sendMSGToAll(new MessageUpdatePixieHouse(worldPosition.asLong(), false, 0));
     }
 
     @Override

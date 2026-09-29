@@ -1,6 +1,8 @@
 package com.github.alexthe666.iceandfire.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
@@ -16,7 +18,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Random;
 
 public class BlockElementalFlower extends BushBlock {
     public Item itemBlock;
@@ -31,7 +32,7 @@ public class BlockElementalFlower extends BushBlock {
                 .ignitedByLava()
                 .pushReaction(PushReaction.DESTROY)
                 .noOcclusion()
-                .noCollission()
+                .noCollision()
                 .dynamicShape()
                 .randomTicks()
                 .sound(SoundType.GRASS)
@@ -54,13 +55,13 @@ public class BlockElementalFlower extends BushBlock {
         if (this == IafBlockRegistry.FIRE_LILY.get()) {
             return soil.is(BlockTags.SAND) || soil.is(Blocks.NETHERRACK);
         } else if (this == IafBlockRegistry.LIGHTNING_LILY.get()) {
-            return soil.is(BlockTags.DIRT) || soil.is(Blocks.GRASS);
+            return soil.is(BlockTags.DIRT);
         } else {
-            return soil.is(BlockTags.ICE) || soil.is(BlockTags.SNOW) || soil.is(BlockTags.SNOW_LAYER_CAN_SURVIVE_ON);
+            return soil.is(BlockTags.ICE) || soil.is(BlockTags.SNOW);
         }
     }
 
-    public void updateTick(Level worldIn, BlockPos pos, BlockState state, Random rand) {
+    protected void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand) {
         this.checkFall(worldIn, pos);
     }
 

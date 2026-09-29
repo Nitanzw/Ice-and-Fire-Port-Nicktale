@@ -13,7 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
@@ -210,6 +209,23 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
     }
 
     @Override
+    protected NonNullList<ItemStack> getItems() {
+        return this.forgeItemStacks;
+    }
+
+    @Override
+    protected void setItems(NonNullList<ItemStack> items) {
+        this.forgeItemStacks = items;
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        if (!BlockDragonforgeCore.keepsInventoryDuringStateChange()) {
+            super.preRemoveSideEffects(pos, state);
+        }
+    }
+
+    @Override
     public int getMaxStackSize() {
         return 64;
     }
@@ -257,12 +273,24 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
     }
 
     public Optional<DragonForgeRecipe> getCurrentRecipe() {
+        if (this.level == null || this.level.getServer() == null) {
+            return Optional.empty();
+        }
         DragonForgeRecipe.Input input = new DragonForgeRecipe.Input(this.getItem(0), this.getItem(1), this.getTypeID());
-        return level.getRecipeManager().getRecipeFor(IafRecipeRegistry.DRAGON_FORGE_TYPE.get(), input, level);
+        return this.level.getServer().getRecipeManager()
+                .getRecipeFor(IafRecipeRegistry.DRAGON_FORGE_TYPE.get(), input, this.level)
+                .map(net.minecraft.world.item.crafting.RecipeHolder::value);
     }
 
     public List<DragonForgeRecipe> getRecipes() {
-        return level.getRecipeManager().getAllRecipesFor(IafRecipeRegistry.DRAGON_FORGE_TYPE.get());
+        if (this.level == null || this.level.getServer() == null) {
+            return List.of();
+        }
+        return this.level.getServer().getRecipeManager().getRecipes().stream()
+                .map(net.minecraft.world.item.crafting.RecipeHolder::value)
+                .filter(DragonForgeRecipe.class::isInstance)
+                .map(DragonForgeRecipe.class::cast)
+                .toList();
     }
 
     public boolean canSmelt() {
@@ -401,13 +429,8 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
     }
 
     @Override
-    public void onDataPacket(Connection net, ValueInput input) {
-        super.onDataPacket(net, input);
-    }
-
-    @Override
     public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return this.saveWithFullMetadata(registries);
+        return this.saveCustomOnly(registries);
     }
 
     public boolean assembled() {
@@ -435,12 +458,6 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
             }
         }
         return count > 2;
-    }
-
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player) {
-        return new ContainerDragonForge(id, this, playerInventory, new SimpleContainerData(0));
     }
 
     @Override

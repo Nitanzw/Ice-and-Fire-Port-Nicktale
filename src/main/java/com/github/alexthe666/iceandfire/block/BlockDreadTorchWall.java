@@ -27,7 +27,7 @@ public class BlockDreadTorchWall extends WallTorchBlock implements IDreadBlock {
                 .sound(SoundType.STONE)
                 .noOcclusion()
                 .dynamicShape()
-                .noCollission()
+                .noCollision()
                 .dropsLike(IafBlockRegistry.DREAD_TORCH.get()),
             DustParticleOptions.REDSTONE
         );

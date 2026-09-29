@@ -23,11 +23,17 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 public class BlockDragonforgeBricks extends BaseEntityBlock implements IDragonProof {
+    private static final MapCodec<BlockDragonforgeBricks> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+        Codec.INT.fieldOf("dragon_type").forGetter(block -> block.isFire)
+    ).apply(instance, BlockDragonforgeBricks::new));
 
     public static final BooleanProperty GRILL = BooleanProperty.create("grill");
     private final int isFire;
@@ -52,12 +58,17 @@ public class BlockDragonforgeBricks extends BaseEntityBlock implements IDragonPr
     }
 
     @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
     public @NotNull PushReaction getPistonPushReaction(@NotNull BlockState state) {
         return PushReaction.BLOCK;
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand handIn, BlockHitResult resultIn) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, BlockHitResult resultIn) {
         if (this.getConnectedTileEntity(worldIn, resultIn.getBlockPos()) != null) {
             TileEntityDragonforge forge = this.getConnectedTileEntity(worldIn, resultIn.getBlockPos());
             if (forge != null && forge.fireType == isFire) {

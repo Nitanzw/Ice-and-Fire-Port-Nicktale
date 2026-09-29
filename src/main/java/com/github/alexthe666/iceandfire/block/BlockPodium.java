@@ -22,8 +22,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import com.mojang.serialization.MapCodec;
 
 public class BlockPodium extends BaseEntityBlock {
+    private static final MapCodec<BlockPodium> CODEC = MapCodec.unit(new BlockPodium());
 
     protected static final VoxelShape AABB = Block.box(2, 0, 2, 14, 23, 14);
 
@@ -41,6 +43,11 @@ public class BlockPodium extends BaseEntityBlock {
         );
     }
 
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
 
     @Override
     public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
@@ -53,15 +60,6 @@ public class BlockPodium extends BaseEntityBlock {
     }
 
     @Override
-    public void onRemove(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        BlockEntity tileentity = worldIn.getBlockEntity(pos);
-        if (tileentity instanceof TileEntityPodium) {
-            Containers.dropContents(worldIn, pos, (TileEntityPodium) tileentity);
-            worldIn.updateNeighbourForOutputSignal(pos, this);
-        }
-        super.onRemove(state, worldIn, pos, newState, isMoving);
-    }
-
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit) {
         if (!player.isShiftKeyDown()) {

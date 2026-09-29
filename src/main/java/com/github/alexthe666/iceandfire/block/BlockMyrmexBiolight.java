@@ -28,7 +28,7 @@ public class BlockMyrmexBiolight extends BushBlock {
                 .mapColor(MapColor.PLANT)
                 .pushReaction(PushReaction.DESTROY)
                 .noOcclusion()
-                .noCollission()
+                .noCollision()
                 .dynamicShape()
                 .strength(0)
                 .lightLevel((state) -> 7)
@@ -52,7 +52,7 @@ public class BlockMyrmexBiolight extends BushBlock {
     }
 
     @Override
-    public void tick(@NotNull BlockState state, ServerLevel worldIn, @NotNull BlockPos pos, @NotNull RandomSource rand) {
+    protected void randomTick(@NotNull BlockState state, ServerLevel worldIn, @NotNull BlockPos pos, @NotNull RandomSource rand) {
         if (!worldIn.isClientSide()) {
             this.updateState(state, worldIn, pos, state.getBlock());
         }

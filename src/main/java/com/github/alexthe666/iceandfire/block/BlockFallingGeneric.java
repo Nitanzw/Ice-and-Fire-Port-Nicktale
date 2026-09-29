@@ -6,9 +6,14 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.material.MapColor;
 
 public class BlockFallingGeneric extends FallingBlock {
+    private static final MapCodec<BlockFallingGeneric> CODEC = BlockBehaviour.simpleCodec(BlockFallingGeneric::new);
     public Item itemBlock;
 
 /*    public BlockFallingGeneric(float hardness, float resistance, SoundType sound) {
@@ -44,8 +49,13 @@ public class BlockFallingGeneric extends FallingBlock {
         super(props);
     }
 
+    @Override
+    protected MapCodec<? extends FallingBlock> codec() {
+        return CODEC;
+    }
 
-    public int getDustColor(BlockState blkst) {
+    @Override
+    public int getDustColor(BlockState blkst, BlockGetter level, BlockPos pos) {
         return -8356741;
     }
 }

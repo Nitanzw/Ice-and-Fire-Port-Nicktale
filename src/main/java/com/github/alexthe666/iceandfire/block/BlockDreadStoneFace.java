@@ -15,8 +15,10 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
+import com.mojang.serialization.MapCodec;
 
 public class BlockDreadStoneFace extends HorizontalDirectionalBlock implements IDreadBlock, IDragonProof {
+    private static final MapCodec<BlockDreadStoneFace> CODEC = MapCodec.unit(new BlockDreadStoneFace());
     public static final BooleanProperty PLAYER_PLACED = BooleanProperty.create("player_placed");
 
     public BlockDreadStoneFace() {
@@ -32,13 +34,18 @@ public class BlockDreadStoneFace extends HorizontalDirectionalBlock implements I
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(PLAYER_PLACED, Boolean.FALSE));
     }
 
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public float getDestroyProgress(BlockState state, @NotNull Player player, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
         if (state.getValue(PLAYER_PLACED)) {
             float f = 8f;
             //Code from super method
-            return player.getDigSpeed(state, pos) / f / (float) 30;
+            return player.getDestroySpeed(state, pos) / f / (float) 30;
         }
         return super.getDestroyProgress(state, player, worldIn, pos);
     }

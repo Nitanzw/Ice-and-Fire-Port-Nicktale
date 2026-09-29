@@ -8,9 +8,9 @@ import com.github.alexthe666.iceandfire.enums.EnumDragonEgg;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.players.OldUsersConverter;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -45,9 +45,9 @@ public class TileEntityEggInIce extends BlockEntity {
                 dragon.setPos(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
                 dragon.setVariant(entityEggInIce.type.ordinal() - 4);
                 dragon.setGender(ThreadLocalRandom.current().nextBoolean());
-                dragon.setTame(true);
+                dragon.setTame(true, false);
                 dragon.setHunger(50);
-                dragon.setOwnerUUID(entityEggInIce.ownerUUID);
+                dragon.setOwnerReference(entityEggInIce.ownerUUID == null ? null : EntityReference.of(entityEggInIce.ownerUUID));
                 level.addFreshEntity(dragon);
                 entityEggInIce.spawned = true;
                 level.destroyBlock(pos, false);
@@ -92,11 +92,6 @@ public class TileEntityEggInIce extends BlockEntity {
     }
 
     @Override
-    public void handleUpdateTag(ValueInput input) {
-        super.handleUpdateTag(input);
-    }
-
-    @Override
     public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         return this.saveCustomOnly(registries);
     }
@@ -105,11 +100,6 @@ public class TileEntityEggInIce extends BlockEntity {
     @Nullable
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ValueInput input) {
-        super.onDataPacket(net, input);
     }
 
     public void spawnEgg() {

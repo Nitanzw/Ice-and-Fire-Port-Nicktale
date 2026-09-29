@@ -5,6 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.ticks.ScheduledTickAccess;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -79,7 +82,7 @@ public class BlockMyrmexConnectedResin extends HalfTransparentBlock {
     }
 
     @Override
-    public @NotNull BlockState updateShape(@NotNull BlockState stateIn, Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor worldIn, @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
+    protected @NotNull BlockState updateShape(@NotNull BlockState stateIn, @NotNull LevelReader worldIn, @NotNull ScheduledTickAccess ticks, @NotNull BlockPos currentPos, Direction facing, @NotNull BlockPos facingPos, @NotNull BlockState facingState, @NotNull RandomSource random) {
         BooleanProperty connect = null;
         switch (facing) {
             case NORTH:

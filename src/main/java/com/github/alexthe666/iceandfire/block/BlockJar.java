@@ -30,10 +30,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.PIXIE_JAR;
 
 public class BlockJar extends BaseEntityBlock {
+    private static final MapCodec<BlockJar> CODEC = Codec.INT.fieldOf("pixie_type").xmap(BlockJar::new, block -> block.pixieType);
     protected static final VoxelShape AABB = Block.box(3, 0, 3, 13, 16, 13);
     public Item itemBlock;
     private final boolean empty;
@@ -51,7 +54,6 @@ public class BlockJar extends BaseEntityBlock {
                     .strength(1, 2)
                     .sound(SoundType.GLASS)
                     .lightLevel((state) -> pixieType == -1 ? 0 : 10)
-                    .dropsLike(IafBlockRegistry.JAR_EMPTY.get())
 				: Properties
                 .of()
                 .mapColor(MapColor.NONE)
@@ -73,6 +75,11 @@ public class BlockJar extends BaseEntityBlock {
     }
 
     @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
     public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return AABB;
     }
@@ -83,12 +90,6 @@ public class BlockJar extends BaseEntityBlock {
     }
 
 
-    @Override
-    public void onRemove(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        dropPixie(worldIn, pos);
-        super.onRemove(state, worldIn, pos, newState, isMoving);
-    }
-
     public void dropPixie(Level world, BlockPos pos) {
         if (world.getBlockEntity(pos) != null && world.getBlockEntity(pos) instanceof TileEntityJar && ((TileEntityJar) world.getBlockEntity(pos)).hasPixie) {
             ((TileEntityJar) world.getBlockEntity(pos)).releasePixie();
@@ -96,7 +97,7 @@ public class BlockJar extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult resultIn) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult resultIn) {
         if (!empty && world.getBlockEntity(pos) != null && world.getBlockEntity(pos) instanceof TileEntityJar && ((TileEntityJar) world.getBlockEntity(pos)).hasPixie && ((TileEntityJar) world.getBlockEntity(pos)).hasProduced) {
             ((TileEntityJar) world.getBlockEntity(pos)).hasProduced = false;
             ItemEntity item = new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, new ItemStack(IafItemRegistry.PIXIE_DUST.get()));

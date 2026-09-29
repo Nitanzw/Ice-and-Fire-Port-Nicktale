@@ -6,6 +6,7 @@ import com.github.alexthe666.iceandfire.entity.util.DragonUtils;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -17,6 +18,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.redstone.Orientation;
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -24,6 +27,7 @@ import javax.annotation.Nullable;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.DREAD_PORTAL;
 
 public class BlockDreadPortal extends BaseEntityBlock implements IDreadBlock {
+    private static final MapCodec<BlockDreadPortal> CODEC = MapCodec.unit(new BlockDreadPortal());
 
     public BlockDreadPortal() {
         super(
@@ -36,6 +40,11 @@ public class BlockDreadPortal extends BaseEntityBlock implements IDreadBlock {
                 .lightLevel((state) -> 1)
                 .randomTicks()
 		);
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -71,13 +80,14 @@ public class BlockDreadPortal extends BaseEntityBlock implements IDreadBlock {
     }
 
 
-    public void updateTick(Level worldIn, BlockPos pos, BlockState state, RandomSource rand) {
+    @Override
+    protected void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource rand) {
         if (!this.canSurviveAt(worldIn, pos)) {
             worldIn.destroyBlock(pos, true);
         }
     }
 
-    public void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+    protected void neighborChanged(BlockState state, Level worldIn, BlockPos pos, Block blockIn, @Nullable Orientation orientation, boolean movedByPiston) {
         if (!this.canSurviveAt(worldIn, pos)) {
             worldIn.destroyBlock(pos, true);
         }
@@ -121,7 +131,7 @@ public class BlockDreadPortal extends BaseEntityBlock implements IDreadBlock {
 
     @Override
     public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Nullable

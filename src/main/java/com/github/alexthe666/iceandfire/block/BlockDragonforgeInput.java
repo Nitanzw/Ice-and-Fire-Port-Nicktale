@@ -25,6 +25,10 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.redstone.Orientation;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -32,6 +36,9 @@ import javax.annotation.Nullable;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.DRAGONFORGE_INPUT;
 
 public class BlockDragonforgeInput extends BaseEntityBlock implements IDragonProof {
+    private static final MapCodec<BlockDragonforgeInput> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+        Codec.INT.fieldOf("dragon_type").forGetter(block -> block.dragonType)
+    ).apply(instance, BlockDragonforgeInput::new));
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
     private final int dragonType;
 
@@ -54,6 +61,11 @@ public class BlockDragonforgeInput extends BaseEntityBlock implements IDragonPro
         return "dragonforge_%s_input".formatted(DragonType.getNameFromInt(dragonType));
     }
 
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
 
     @Override
     public @NotNull PushReaction getPistonPushReaction(@NotNull BlockState state) {
@@ -61,7 +73,7 @@ public class BlockDragonforgeInput extends BaseEntityBlock implements IDragonPro
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand handIn, BlockHitResult resultIn) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Player player, BlockHitResult resultIn) {
         if (this.getConnectedTileEntity(worldIn, resultIn.getBlockPos()) != null) {
             TileEntityDragonforge forge = this.getConnectedTileEntity(worldIn, resultIn.getBlockPos());
             if (forge != null && forge.fireType == dragonType) {
@@ -107,7 +119,7 @@ public class BlockDragonforgeInput extends BaseEntityBlock implements IDragonPro
     }
 
     @Override
-    public void neighborChanged(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving) {
+    protected void neighborChanged(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull Block blockIn, @Nullable Orientation orientation, boolean isMoving) {
         if (worldIn.getBlockEntity(pos) instanceof TileEntityDragonforgeInput) {
             ((TileEntityDragonforgeInput) worldIn.getBlockEntity(pos)).resetCore();
         }

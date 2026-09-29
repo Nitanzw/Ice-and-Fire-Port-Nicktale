@@ -12,6 +12,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.ticks.ScheduledTickAccess;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -94,8 +96,8 @@ public class BlockGoldPile extends Block {
     }
 
     @Override
-    public @NotNull BlockState updateShape(BlockState stateIn, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor worldIn, @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
-        return !stateIn.canSurvive(worldIn, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+    protected @NotNull BlockState updateShape(BlockState stateIn, @NotNull LevelReader worldIn, @NotNull ScheduledTickAccess ticks, @NotNull BlockPos currentPos, @NotNull Direction facing, @NotNull BlockPos facingPos, @NotNull BlockState facingState, @NotNull RandomSource random) {
+        return !stateIn.canSurvive(worldIn, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(stateIn, worldIn, ticks, currentPos, facing, facingPos, facingState, random);
     }
 
 
@@ -117,8 +119,7 @@ public class BlockGoldPile extends Block {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player playerIn, @NotNull InteractionHand handIn, @NotNull BlockHitResult resultIn) {
-        ItemStack item = playerIn.getInventory().getSelected();
+    protected @NotNull InteractionResult useItemOn(@NotNull ItemStack item, @NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player playerIn, @NotNull InteractionHand handIn, @NotNull BlockHitResult resultIn) {
 
         if (!item.isEmpty()) {
             if (item.getItem() != null) {
@@ -129,11 +130,6 @@ public class BlockGoldPile extends Block {
                             if (!playerIn.isCreative()) {
                                 item.shrink(1);
 
-                                if (item.isEmpty()) {
-                                    playerIn.getInventory().setItem(playerIn.getInventory().selected, ItemStack.EMPTY);
-                                } else {
-                                    playerIn.getInventory().setItem(playerIn.getInventory().selected, item);
-                                }
                             }
                             return InteractionResult.SUCCESS;
                         }

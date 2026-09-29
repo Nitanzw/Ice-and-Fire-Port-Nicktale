@@ -14,20 +14,19 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
-import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 import org.jetbrains.annotations.NotNull;
+import com.mojang.serialization.MapCodec;
 
 import javax.annotation.Nullable;
-import java.util.Random;
-import java.util.function.Consumer;
 
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.PIXIE_HOUSE;
 
 public class BlockPixieHouse extends BaseEntityBlock {
-    public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
+    private static final MapCodec<BlockPixieHouse> CODEC = MapCodec.unit(new BlockPixieHouse());
+    public static final net.minecraft.world.level.block.state.properties.EnumProperty<Direction> FACING =
+        net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
     public BlockPixieHouse() {
         super(
@@ -42,6 +41,11 @@ public class BlockPixieHouse extends BaseEntityBlock {
                 .randomTicks()
 		);
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     static String name(String type) {
@@ -59,44 +63,8 @@ public class BlockPixieHouse extends BaseEntityBlock {
     }
 
     @Override
-    public void onRemove(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        dropPixie(worldIn, pos);
-        popResource(worldIn, pos, new ItemStack(this, 0));
-        super.onRemove(state, worldIn, pos, newState, isMoving);
-    }
-
-    public void updateTick(Level worldIn, BlockPos pos, BlockState state, Random rand) {
-        this.checkFall(worldIn, pos);
-    }
-
-    private boolean checkFall(Level worldIn, BlockPos pos) {
-        if (!this.canPlaceBlockAt(worldIn, pos)) {
-            worldIn.destroyBlock(pos, true);
-            dropPixie(worldIn, pos);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    @Override
-    public void initializeClient(@NotNull Consumer<IClientBlockExtensions> consumer) {
-        super.initializeClient(consumer);
-    }
-
-    @Override
     public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
-    }
-
-    private boolean canPlaceBlockAt(Level worldIn, BlockPos pos) {
-        return true;
-    }
-
-    public void dropPixie(Level world, BlockPos pos) {
-        if (world.getBlockEntity(pos) != null && world.getBlockEntity(pos) instanceof TileEntityPixieHouse && ((TileEntityPixieHouse) world.getBlockEntity(pos)).hasPixie) {
-            ((TileEntityPixieHouse) world.getBlockEntity(pos)).releasePixie();
-        }
     }
 
     @Nullable

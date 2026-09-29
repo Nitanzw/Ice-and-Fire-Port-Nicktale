@@ -18,10 +18,12 @@ import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import com.mojang.serialization.MapCodec;
 
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.EGG_IN_ICE;
 
 public class BlockEggInIce extends BaseEntityBlock {
+    private static final MapCodec<BlockEggInIce> CODEC = MapCodec.unit(new BlockEggInIce());
     public Item itemBlock;
 
     @SuppressWarnings("deprecation")
@@ -36,6 +38,11 @@ public class BlockEggInIce extends BaseEntityBlock {
                 .dynamicShape()
                 .sound(SoundType.GLASS)
         );
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -61,12 +68,13 @@ public class BlockEggInIce extends BaseEntityBlock {
     }
 
     @Override
-    public void playerWillDestroy(Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
+    public BlockState playerWillDestroy(Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
         if (worldIn.getBlockEntity(pos) != null) {
             if (worldIn.getBlockEntity(pos) instanceof TileEntityEggInIce tile) {
                 tile.spawnEgg();
             }
         }
+        return super.playerWillDestroy(worldIn, pos, state, player);
     }
 
 }

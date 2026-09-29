@@ -17,13 +17,11 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Supplier;
 
-@Mod.EventBusSubscriber(modid = IceAndFire.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class IafBlockRegistry {
 
     public static DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, IceAndFire.MODID);
@@ -48,10 +46,10 @@ public class IafBlockRegistry {
     public static final DeferredHolder<Block, Block> GOLD_PILE = register("gold_pile", BlockGoldPile::new);
     public static final DeferredHolder<Block, Block> SILVER_PILE = register("silver_pile", BlockGoldPile::new);
     public static final DeferredHolder<Block, Block> COPPER_PILE = register("copper_pile", BlockGoldPile::new);
-    public static final DeferredHolder<Block, Block> SILVER_ORE = register("silver_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3, 3).requiresCorrectToolForDrops()));
-    public static final DeferredHolder<Block, Block> DEEPSLATE_SILVER_ORE = register("deepslate_silver_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(3,3).requiresCorrectToolForDrops()));
+    public static final DeferredHolder<Block, Block> SILVER_ORE = register("silver_ore", () -> new DropExperienceBlock(UniformInt.of(0, 0), BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3, 3).requiresCorrectToolForDrops()));
+    public static final DeferredHolder<Block, Block> DEEPSLATE_SILVER_ORE = register("deepslate_silver_ore", () -> new DropExperienceBlock(UniformInt.of(0, 0), BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(3,3).requiresCorrectToolForDrops()));
     public static final DeferredHolder<Block, Block> SILVER_BLOCK = register("silver_block", () -> BlockGeneric.builder(3.0F, 5.0F, SoundType.METAL, MapColor.METAL, null, null, false));
-    public static final DeferredHolder<Block, Block> SAPPHIRE_ORE = register("sapphire_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(4,3).requiresCorrectToolForDrops(), UniformInt.of(3,7)));
+    public static final DeferredHolder<Block, Block> SAPPHIRE_ORE = register("sapphire_ore", () -> new DropExperienceBlock(UniformInt.of(3, 7), BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(4,3).requiresCorrectToolForDrops()));
     public static final DeferredHolder<Block, Block> SAPPHIRE_BLOCK = register("sapphire_block", () -> BlockGeneric.builder(3.0F, 6.0F, SoundType.METAL, MapColor.METAL, null, null, false));
     public static final DeferredHolder<Block, Block> RAW_SILVER_BLOCK = register("raw_silver_block", () -> BlockGeneric.builder(3.0F, 5.0F, SoundType.STONE, MapColor.METAL, NoteBlockInstrument.BASEDRUM, null, false));
     public static final DeferredHolder<Block, Block> CHARRED_DIRT = register("chared_dirt", () -> BlockReturningState.builder(0.5F, 0.0F, SoundType.GRAVEL, MapColor.DIRT, null, null, false, Blocks.DIRT.defaultBlockState()));
@@ -93,7 +91,7 @@ public class IafBlockRegistry {
     public static final DeferredHolder<Block, Block> DRAGON_SCALE_BLACK = register("dragonscale_black", () -> new BlockDragonScales(EnumDragonEgg.BLACK));
 
     public static final DeferredHolder<Block, Block> DRAGON_BONE_BLOCK = register("dragon_bone_block", BlockDragonBone::new);
-    public static final DeferredHolder<Block, Block> DRAGON_BONE_BLOCK_WALL = register("dragon_bone_wall", () -> new BlockDragonBoneWall(BlockBehaviour.Properties.copy(IafBlockRegistry.DRAGON_BONE_BLOCK.get())));
+    public static final DeferredHolder<Block, Block> DRAGON_BONE_BLOCK_WALL = register("dragon_bone_wall", () -> new BlockDragonBoneWall(BlockBehaviour.Properties.ofFullCopy(IafBlockRegistry.DRAGON_BONE_BLOCK.get())));
     public static final DeferredHolder<Block, Block> DRAGONFORGE_FIRE_BRICK = register(BlockDragonforgeBricks.name(0), () -> new BlockDragonforgeBricks(0));
     public static final DeferredHolder<Block, Block> DRAGONFORGE_ICE_BRICK = register(BlockDragonforgeBricks.name(1), () -> new BlockDragonforgeBricks(1));
     public static final DeferredHolder<Block, Block> DRAGONFORGE_LIGHTNING_BRICK = register(BlockDragonforgeBricks.name(2), () -> new BlockDragonforgeBricks(2));
@@ -158,21 +156,21 @@ public class IafBlockRegistry {
 
     public static <T extends Block> DeferredHolder<Block, T> register(String name, Supplier<T> block) {
         DeferredHolder<Block, T> ret = BLOCKS.register(name, block);
-        IafItemRegistry.registerItem(name, properties -> new BlockItem(ret.get(), properties), false);
+        IafItemRegistry.registerItem(name, () -> new BlockItem(ret.get(), new Item.Properties()));
         IafTabRegistry.TAB_BLOCKS_LIST.add(ret);
         return ret;
     }
 
     public static <T extends TorchBlock> DeferredHolder<Block, T> registerWallBlock(String name, Supplier<T> block) {
         DeferredHolder<Block, T> ret = BLOCKS.register(name, block);
-        IafItemRegistry.registerItem(name, properties -> new StandingAndWallBlockItem(ret.get(), ((IWallBlock) ret.get()).wallBlock(), properties, Direction.DOWN), false);
+        IafItemRegistry.registerItem(name, () -> new StandingAndWallBlockItem(ret.get(), ((IWallBlock) ret.get()).wallBlock(), Direction.DOWN, new Item.Properties()));
         IafTabRegistry.TAB_BLOCKS_LIST.add(ret);
         return ret;
     }
 
     public static <T extends Block> DeferredHolder<Block, T> registerWithRender(String name, Supplier<T> block) {
         DeferredHolder<Block, T> ret = BLOCKS.register(name, block);
-        IafItemRegistry.registerItem(name, properties -> new BlockItemWithRender(ret.get(), properties), false);
+        IafItemRegistry.registerItem(name, () -> new BlockItemWithRender(ret.get(), new Item.Properties()));
         IafTabRegistry.TAB_BLOCKS_LIST.add(ret);
         return ret;
     }

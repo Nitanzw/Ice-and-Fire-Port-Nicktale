@@ -10,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
@@ -61,7 +60,7 @@ public class TileEntityLectern extends BaseContainerBlockEntity implements World
     public float pageHelp2;
     public EnumBestiaryPages[] selectedPages = new EnumBestiaryPages[3];
     private final Random localRand = new Random();
-    private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
+    private NonNullList<ItemStack> stacks = NonNullList.withSize(2, ItemStack.EMPTY);
 
     public TileEntityLectern(BlockPos pos, BlockState state) {
         super(IafTileEntityRegistry.IAF_LECTERN.get(), pos, state);
@@ -189,14 +188,6 @@ public class TileEntityLectern extends BaseContainerBlockEntity implements World
     }
 
     @Override
-    public void startOpen(@NotNull Player player) {
-    }
-
-    @Override
-    public void stopOpen(@NotNull Player player) {
-    }
-
-    @Override
     public boolean canPlaceItem(int index, ItemStack stack) {
         if (stack.isEmpty())
             return false;
@@ -233,11 +224,6 @@ public class TileEntityLectern extends BaseContainerBlockEntity implements World
     }
 
     @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    @Override
     public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
         return side == Direction.DOWN ? slotsBottom : (side == Direction.UP ? slotsTop : slotsSides);
     }
@@ -258,13 +244,8 @@ public class TileEntityLectern extends BaseContainerBlockEntity implements World
     }
 
     @Override
-    public void onDataPacket(Connection net, ValueInput input) {
-        super.onDataPacket(net, input);
-    }
-
-    @Override
     public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return this.saveWithFullMetadata(registries);
+        return this.saveCustomOnly(registries);
     }
 
     @Override
@@ -274,7 +255,7 @@ public class TileEntityLectern extends BaseContainerBlockEntity implements World
 
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory player) {
-        return null;
+        return new ContainerLectern(id, this, player, furnaceData);
     }
 
     @Override
@@ -288,10 +269,13 @@ public class TileEntityLectern extends BaseContainerBlockEntity implements World
     }
 
     @Override
-    @Nullable
+    protected NonNullList<ItemStack> getItems() {
+        return this.stacks;
+    }
+
     @Override
-    public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player) {
-        return new ContainerLectern(id, this, playerInventory, furnaceData);
+    protected void setItems(NonNullList<ItemStack> items) {
+        this.stacks = items;
     }
 
 

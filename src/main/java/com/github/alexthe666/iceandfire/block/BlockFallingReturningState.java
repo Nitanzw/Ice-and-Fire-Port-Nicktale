@@ -3,6 +3,8 @@ package com.github.alexthe666.iceandfire.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FallingBlock;
@@ -13,11 +15,20 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
+import com.mojang.serialization.MapCodec;
 
 public class BlockFallingReturningState extends FallingBlock {
+    private static final MapCodec<BlockFallingReturningState> CODEC = BlockBehaviour.simpleCodec(properties ->
+        new BlockFallingReturningState(0.6F, 0.0F, SoundType.GRAVEL, properties, Blocks.GRAVEL.defaultBlockState()));
     public static final BooleanProperty REVERTS = BooleanProperty.create("revert");
     public Item itemBlock;
     private final BlockState returnState;
+
+    private BlockFallingReturningState(float hardness, float resistance, SoundType sound, BlockBehaviour.Properties properties, BlockState revertState) {
+        super(properties);
+        this.returnState = revertState;
+        this.registerDefaultState(this.stateDefinition.any().setValue(REVERTS, Boolean.FALSE));
+    }
 
     public BlockFallingReturningState(float hardness, float resistance, SoundType sound, MapColor color, BlockState revertState) {
         super(
@@ -61,7 +72,13 @@ public class BlockFallingReturningState extends FallingBlock {
     }
 
 
-    public int getDustColor(BlockState blkst) {
+    @Override
+    protected MapCodec<? extends FallingBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public int getDustColor(BlockState blkst, BlockGetter level, BlockPos pos) {
         return -8356741;
     }
 

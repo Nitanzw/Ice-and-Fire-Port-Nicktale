@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.ContainerHelper;
@@ -44,9 +43,10 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
         entityPodium.ticksExisted++;
     }
 
-    @Override
     public net.minecraft.world.phys.AABB getRenderBoundingBox() {
-        return new net.minecraft.world.phys.AABB(worldPosition, worldPosition.offset(1, 3, 1));
+        return new net.minecraft.world.phys.AABB(
+            worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
+            worldPosition.getX() + 1, worldPosition.getY() + 3, worldPosition.getZ() + 1);
     }
 
     @Override
@@ -119,14 +119,6 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
     }
 
     @Override
-    public void startOpen(@NotNull Player player) {
-    }
-
-    @Override
-    public void stopOpen(@NotNull Player player) {
-    }
-
-    @Override
     public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack stack, Direction direction) {
         return index != 0 || (stack.getItem() instanceof ItemDragonEgg || stack.getItem() instanceof ItemMyrmexEgg);
     }
@@ -157,11 +149,6 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
     }
 
     @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    @Override
     public boolean canPlaceItem(int index, @NotNull ItemStack stack) {
         return false;
     }
@@ -172,13 +159,8 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
     }
 
     @Override
-    public void onDataPacket(Connection net, ValueInput input) {
-        super.onDataPacket(net, input);
-    }
-
-    @Override
     public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return this.saveWithFullMetadata(registries);
+        return this.saveCustomOnly(registries);
     }
 
     @Override
@@ -198,7 +180,7 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
 
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory player) {
-        return null;
+        return new ContainerPodium(id, this, player, new SimpleContainerData(0));
     }
 
     @Override
@@ -211,9 +193,12 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
     }
 
     @Override
-    @Nullable
+    protected NonNullList<ItemStack> getItems() {
+        return this.stacks;
+    }
+
     @Override
-    public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player) {
-        return new ContainerPodium(id, this, playerInventory, new SimpleContainerData(0));
+    protected void setItems(NonNullList<ItemStack> items) {
+        this.stacks = items;
     }
 }

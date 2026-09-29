@@ -3,7 +3,6 @@ package com.github.alexthe666.iceandfire.entity.tile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
@@ -75,12 +74,6 @@ public class TileEntityMyrmexCocoon extends RandomizableContainerBlockEntity {
         return new ChestMenu(MenuType.GENERIC_9x2, id, player, this, 2);
     }
 
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player) {
-        return new ChestMenu(MenuType.GENERIC_9x2, id, playerInventory, this, 2);
-    }
-
 
     @Override
     public int getMaxStackSize() {
@@ -99,15 +92,15 @@ public class TileEntityMyrmexCocoon extends RandomizableContainerBlockEntity {
     }
 
     @Override
-    public void startOpen(Player player) {
+    public void startOpen(net.minecraft.world.ContainerUser user) {
         this.unpackLootTable(null);
-        player.level().playLocalSound(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), SoundEvents.SLIME_JUMP, SoundSource.BLOCKS, 1, 1, false);
+        user.getLivingEntity().level().playLocalSound(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), SoundEvents.SLIME_JUMP, SoundSource.BLOCKS, 1, 1, false);
     }
 
     @Override
-    public void stopOpen(Player player) {
+    public void stopOpen(net.minecraft.world.ContainerUser user) {
         this.unpackLootTable(null);
-        player.level().playLocalSound(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), SoundEvents.SLIME_SQUISH, SoundSource.BLOCKS, 1, 1, false);
+        user.getLivingEntity().level().playLocalSound(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), SoundEvents.SLIME_SQUISH, SoundSource.BLOCKS, 1, 1, false);
     }
 
     @Override
@@ -116,13 +109,8 @@ public class TileEntityMyrmexCocoon extends RandomizableContainerBlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ValueInput input) {
-        super.onDataPacket(net, input);
-    }
-
-    @Override
     public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return this.saveWithFullMetadata(registries);
+        return this.saveCustomOnly(registries);
     }
 
     public boolean isFull(ItemStack heldStack) {

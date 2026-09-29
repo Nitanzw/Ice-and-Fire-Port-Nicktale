@@ -6,12 +6,11 @@ import com.github.alexthe666.iceandfire.entity.EntityPixie;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
 import com.github.alexthe666.iceandfire.message.MessageUpdatePixieHouse;
-import com.github.alexthe666.iceandfire.message.MessageUpdatePixieHouseModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.network.Connection;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
@@ -91,16 +90,16 @@ public class TileEntityPixieHouse extends BlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ValueInput input) {
-        super.onDataPacket(net, input);
-        if (level != null && !level.isClientSide()) {
-            IceAndFire.sendMSGToAll(new MessageUpdatePixieHouseModel(worldPosition.asLong(), input.getIntOr("HouseType", 0)));
-        }
+    public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveCustomOnly(registries);
     }
 
     @Override
-    public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return this.saveWithFullMetadata(registries);
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        if (this.hasPixie) {
+            this.releasePixie();
+        }
+        super.preRemoveSideEffects(pos, state);
     }
 
     @Override
@@ -127,21 +126,20 @@ public class TileEntityPixieHouse extends BlockEntity {
     }
 
     public void releasePixie() {
+        if (this.level == null || this.level.isClientSide()) {
+            return;
+        }
         EntityPixie pixie = new EntityPixie(IafEntityRegistry.PIXIE.get(), this.level);
-        pixie.absMoveTo(this.worldPosition.getX() + 0.5F, this.worldPosition.getY() + 1F, this.worldPosition.getZ() + 0.5F,
-            ThreadLocalRandom.current().nextInt(360), 0);
+        pixie.setPos(this.worldPosition.getX() + 0.5F, this.worldPosition.getY() + 1F, this.worldPosition.getZ() + 0.5F);
+        pixie.setYRot(ThreadLocalRandom.current().nextInt(360));
         pixie.setItemInHand(InteractionHand.MAIN_HAND, pixieItems.get(0));
         pixie.setColor(this.pixieType);
-        if (!level.isClientSide()) {
-            level.addFreshEntity(pixie);
-        }
+        this.level.addFreshEntity(pixie);
         this.hasPixie = false;
         this.pixieType = 0;
         pixie.ticksUntilHouseAI = 500;
-        pixie.setTame(this.tamedPixie);
-        pixie.setOwnerUUID(this.pixieOwnerUUID);
-        if (!level.isClientSide()) {
-            IceAndFire.sendMSGToAll(new MessageUpdatePixieHouse(worldPosition.asLong(), false, 0));
-        }
+        pixie.setTame(this.tamedPixie, false);
+        pixie.setOwnerReference(this.pixieOwnerUUID == null ? null : EntityReference.of(this.pixieOwnerUUID));
+        IceAndFire.sendMSGToAll(new MessageUpdatePixieHouse(worldPosition.asLong(), false, 0));
     }
 }

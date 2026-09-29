@@ -1,6 +1,8 @@
 package com.github.alexthe666.iceandfire.entity.tile;
 
 import net.minecraft.core.BlockPos;
+import com.mojang.datafixers.util.Either;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -36,9 +38,8 @@ public class TileEntityDreadSpawner extends SpawnerBlockEntity {
         }
 
         @Override
-        @javax.annotation.Nullable
-        public net.minecraft.world.level.block.entity.BlockEntity getSpawnerBlockEntity() {
-            return TileEntityDreadSpawner.this;
+        public Either<net.minecraft.world.level.block.entity.BlockEntity, Entity> getOwner() {
+            return Either.left(TileEntityDreadSpawner.this);
         }
     };
 

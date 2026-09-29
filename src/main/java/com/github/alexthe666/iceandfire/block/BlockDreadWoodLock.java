@@ -44,14 +44,13 @@ public class BlockDreadWoodLock extends Block implements IDragonProof, IDreadBlo
         if (state.getValue(PLAYER_PLACED)) {
             float f = 8f;
             //Code from super method
-            return player.getDigSpeed(state, pos) / f / (float) 30;
+            return player.getDestroySpeed(state, pos) / f / (float) 30;
         }
         return super.getDestroyProgress(state, player, worldIn, pos);
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult resultIn) {
-        ItemStack stack = player.getItemInHand(handIn);
+    protected @NotNull InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult resultIn) {
         if (stack.getItem() == IafItemRegistry.DREAD_KEY.get()) {
             if (!player.isCreative()) {
                 stack.shrink(1);

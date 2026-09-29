@@ -45,7 +45,7 @@ public abstract class DreadSpawnerBaseLogic extends BaseSpawner {
     }
 
     @Override
-    public double getoSpin() {
+    public double getOSpin() {
         return oSpin;
     }
 }

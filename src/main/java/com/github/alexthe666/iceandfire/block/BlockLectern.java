@@ -4,7 +4,6 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityLectern;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -18,7 +17,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
@@ -27,11 +25,14 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import com.mojang.serialization.MapCodec;
 
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.IAF_LECTERN;
 
 public class BlockLectern extends BaseEntityBlock {
-    public static final DirectionProperty FACING = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
+    private static final MapCodec<BlockLectern> CODEC = MapCodec.unit(new BlockLectern());
+    public static final net.minecraft.world.level.block.state.properties.EnumProperty<Direction> FACING =
+        net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
     protected static final VoxelShape AABB = Block.box(4, 0, 4, 12, 19, 12);
 
     public BlockLectern() {
@@ -48,6 +49,11 @@ public class BlockLectern extends BaseEntityBlock {
         );
 
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -70,17 +76,6 @@ public class BlockLectern extends BaseEntityBlock {
         return AABB;
     }
 
-
-    @Override
-    public void onRemove(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        BlockEntity tileentity = worldIn.getBlockEntity(pos);
-
-        if (tileentity instanceof TileEntityLectern) {
-            Containers.dropContents(worldIn, pos, (TileEntityLectern) tileentity);
-            worldIn.updateNeighbourForOutputSignal(pos, this);
-        }
-        super.onRemove(state, worldIn, pos, newState, isMoving);
-    }
 
     @Nullable
     @Override
@@ -105,7 +100,7 @@ public class BlockLectern extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull BlockHitResult hit) {
         if (!player.isShiftKeyDown()) {
             if (worldIn.isClientSide()) {
                 IceAndFire.PROXY.setRefrencedTE(worldIn.getBlockEntity(pos));

@@ -4,6 +4,7 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.DragonType;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityDragonforge;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
@@ -22,6 +24,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -29,6 +34,10 @@ import javax.annotation.Nullable;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.DRAGONFORGE_CORE;
 
 public class BlockDragonforgeCore extends BaseEntityBlock implements IDragonProof, INoTab {
+    private static final MapCodec<BlockDragonforgeCore> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+        Codec.INT.fieldOf("dragon_type").forGetter(block -> block.isFire),
+        Codec.BOOL.fieldOf("activated").forGetter(block -> block.activated)
+    ).apply(instance, BlockDragonforgeCore::new));
     private static boolean keepInventory;
     private final int isFire;
     private final boolean activated;
@@ -50,6 +59,15 @@ public class BlockDragonforgeCore extends BaseEntityBlock implements IDragonProo
 
     static String name(int dragonType, boolean activated) {
         return "dragonforge_%s_core%s".formatted(DragonType.getNameFromInt(dragonType), activated ? "": "_disabled");
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    public static boolean keepsInventoryDuringStateChange() {
+        return keepInventory;
     }
 
     public static void setState(int dragonType, boolean active, Level worldIn, BlockPos pos) {
@@ -94,7 +112,7 @@ public class BlockDragonforgeCore extends BaseEntityBlock implements IDragonProo
     }
 
     @Override
-    public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull InteractionHand handIn, @NotNull BlockHitResult hit) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, Player player, @NotNull BlockHitResult hit) {
         if (!player.isShiftKeyDown()) {
             if (worldIn.isClientSide()) {
                 IceAndFire.PROXY.setRefrencedTE(worldIn.getBlockEntity(pos));
@@ -128,17 +146,12 @@ public class BlockDragonforgeCore extends BaseEntityBlock implements IDragonProo
     }
 
     @Override
-    public void onRemove(@NotNull BlockState state, Level worldIn, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        BlockEntity tileentity = worldIn.getBlockEntity(pos);
-        if (tileentity instanceof TileEntityDragonforge) {
-            Containers.dropContents(worldIn, pos, (TileEntityDragonforge) tileentity);
-            worldIn.updateNeighbourForOutputSignal(pos, this);
-            worldIn.removeBlockEntity(pos);
-        }
+    protected void affectNeighborsAfterRemoval(@NotNull BlockState state, ServerLevel worldIn, @NotNull BlockPos pos, boolean isMoving) {
+        worldIn.updateNeighbourForOutputSignal(pos, this);
     }
 
     @Override
-    public int getAnalogOutputSignal(@NotNull BlockState blockState, Level worldIn, @NotNull BlockPos pos) {
+    protected int getAnalogOutputSignal(@NotNull BlockState blockState, Level worldIn, @NotNull BlockPos pos, @NotNull Direction direction) {
         return AbstractContainerMenu.getRedstoneSignalFromBlockEntity(worldIn.getBlockEntity(pos));
     }
 
