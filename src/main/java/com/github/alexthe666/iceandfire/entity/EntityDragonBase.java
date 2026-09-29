@@ -594,25 +594,25 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(HUNGER, 0);
-        this.entityData.define(AGE_TICKS, 0);
-        this.entityData.define(GENDER, false);
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(SLEEPING, false);
-        this.entityData.define(FIREBREATHING, false);
-        this.entityData.define(HOVERING, false);
-        this.entityData.define(FLYING, false);
-        this.entityData.define(DEATH_STAGE, 0);
-        this.entityData.define(MODEL_DEAD, false);
-        this.entityData.define(CONTROL_STATE, (byte) 0);
-        this.entityData.define(TACKLE, false);
-        this.entityData.define(AGINGDISABLED, false);
-        this.entityData.define(COMMAND, 0);
-        this.entityData.define(DRAGON_PITCH, 0F);
-        this.entityData.define(CRYSTAL_BOUND, false);
-        this.entityData.define(CUSTOM_POSE, "");
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HUNGER, 0);
+        builder.define(AGE_TICKS, 0);
+        builder.define(GENDER, false);
+        builder.define(VARIANT, 0);
+        builder.define(SLEEPING, false);
+        builder.define(FIREBREATHING, false);
+        builder.define(HOVERING, false);
+        builder.define(FLYING, false);
+        builder.define(DEATH_STAGE, 0);
+        builder.define(MODEL_DEAD, false);
+        builder.define(CONTROL_STATE, (byte) 0);
+        builder.define(TACKLE, false);
+        builder.define(AGINGDISABLED, false);
+        builder.define(COMMAND, 0);
+        builder.define(DRAGON_PITCH, 0F);
+        builder.define(CRYSTAL_BOUND, false);
+        builder.define(CUSTOM_POSE, "");
     }
 
     @Override

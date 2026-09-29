@@ -70,9 +70,9 @@ public class EntityIceDragon extends EntityDragonBase {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SWIMMING, Boolean.FALSE);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SWIMMING, Boolean.FALSE);
     }
 
     @Override
