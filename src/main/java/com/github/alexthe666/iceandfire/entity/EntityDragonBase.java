@@ -220,6 +220,8 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     private int prevFlightCycle;
     private boolean isModelDead;
     private int animationTick;
+    /** Dragons fly at half the configured speed so they cannot outrun the server's chunk loading. */
+    public static final float DRAGON_FLIGHT_SPEED_SCALE = 0.5F;
     private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private float lastScale;
 
@@ -2061,7 +2063,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
 //                float airSpeedModifier = (float) (5.2f + 1.0f * Mth.map(Math.min(this.getAgeInDays(), 125), 0, 125, 0f, 1.5f));
                 float airSpeedModifier = (float) (5.2f + 1.0f * Mth.map(speed, this.minimumSpeed, this.maximumSpeed, 0f, 1.5f));
                 // Apply speed mod
-                speed *= airSpeedModifier;
+                speed *= airSpeedModifier * DRAGON_FLIGHT_SPEED_SCALE;
                 // Set flag for logic and animation
                 if (forward > 0) {
                     this.setFlying(true);
@@ -2805,7 +2807,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
 
     @Override
     public double getFlightSpeedModifier() {
-        return IafConfig.dragonFlightSpeedMod;
+        return IafConfig.dragonFlightSpeedMod * DRAGON_FLIGHT_SPEED_SCALE;
     }
 
     public boolean isAllowedToTriggerFlight() {

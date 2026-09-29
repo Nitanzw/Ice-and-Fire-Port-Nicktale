@@ -344,7 +344,7 @@ public class DragonUtils {
 
 
     public static boolean canGrief(EntityDragonBase dragon) {
-        if (dragon.isTame() && !IafConfig.tamedDragonGriefing) {
+        if (dragon.isTame()) { // tamed dragons never destroy blocks
             return false;
         }
 
