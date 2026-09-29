@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.util.MyrmexTrades;
 
 import com.nicktale.api.animation.Animation;
@@ -334,7 +335,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
 
     public boolean canAttackTamable(TamableAnimal tameable) {
         if (tameable.getOwner() != null && this.getHive() != null) {
-            return this.getHive().isPlayerReputationLowEnoughToFight(tameable.getOwnerUUID());
+            return this.getHive().isPlayerReputationLowEnoughToFight(IafEntityUtil.ownerUUID(tameable));
         }
         return true;
     }

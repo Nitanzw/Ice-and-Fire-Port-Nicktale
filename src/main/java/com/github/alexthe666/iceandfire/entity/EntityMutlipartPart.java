@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.message.MessageMultipartInteract;
 import net.minecraft.world.level.storage.ValueInput;
@@ -256,12 +257,12 @@ public abstract class EntityMutlipartPart extends Entity {
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float damage) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
         Entity parent = getParent();
         if (level().isClientSide() && source.getEntity() instanceof Player && parent != null) {
             IceAndFire.NETWORK_WRAPPER.sendToServer(new MessageMultipartInteract(parent.getId(), damage * damageMultiplier));
         }
-        return parent != null && parent.hurt(source, damage * this.damageMultiplier);
+        return parent != null && IafDamage.hurt(parent, source, damage * this.damageMultiplier);
     }
 
     @Override

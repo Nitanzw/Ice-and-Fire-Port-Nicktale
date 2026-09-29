@@ -36,7 +36,7 @@ public class EntityMobSkull extends Animal implements IBlacklistedFromStatues, I
 
     public EntityMobSkull(EntityType t, Level worldIn) {
         super(t, worldIn);
-        this.noCulling = true;
+        // noCulling was removed from Entity in 1.21
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {

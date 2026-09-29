@@ -87,7 +87,7 @@ public class AmphithereAIAttackMelee extends Goal {
             return false;
         } else if (!this.longMemory) {
             return !this.attacker.getNavigation().isDone();
-        } else if (!this.attacker.isWithinRestriction(living.blockPosition())) {
+        } else if (!this.attacker.isWithinHome(living.blockPosition())) {
             return false;
         } else {
             return !(living instanceof Player) || !living.isSpectator() && !((Player) living).isCreative();

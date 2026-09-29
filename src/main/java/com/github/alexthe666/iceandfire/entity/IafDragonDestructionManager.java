@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.api.event.DragonFireDamageWorldEvent;
 import com.github.alexthe666.iceandfire.block.*;
@@ -100,7 +101,7 @@ public class IafDragonDestructionManager {
                 )
         ).forEach(target -> {
             if (!DragonUtils.onSameTeam(dragon, target) && !dragon.is(target) && dragon.hasLineOfSight(target)) {
-                target.hurt(damageSource, stageDamage);
+                IafDamage.hurt(target, damageSource, stageDamage);
                 applyDragonEffect(target, dragon, statusDuration);
             }
         });
@@ -187,7 +188,7 @@ public class IafDragonDestructionManager {
                 )
         ).forEach(target -> {
             if (!dragon.isAlliedTo(target) && !dragon.is(target) && dragon.hasLineOfSight(target)) {
-                target.hurt(damageSource, stageDamage);
+                IafDamage.hurt(target, damageSource, stageDamage);
                 applyDragonEffect(target, dragon, statusDuration);
             }
         });

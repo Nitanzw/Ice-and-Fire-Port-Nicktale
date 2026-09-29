@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityDeathWorm;
@@ -54,12 +55,12 @@ public interface DragonSteelOverrides<T extends Item> {
     default void applyMaterialHit(T item, ItemStack stack, LivingEntity target, LivingEntity attacker) {
         CustomToolMaterial material = getToolMaterial();
         if (material == IafItemRegistry.SILVER_TOOL_MATERIAL && target.getType().is(EntityTypeTags.UNDEAD)) {
-            target.hurt(attacker.level().damageSources().magic(), getAttackDamage(item) + 3.0F);
+            IafDamage.hurt(target, attacker.level().damageSources().magic(), getAttackDamage(item) + 3.0F);
         }
 
         if (material == IafItemRegistry.MYRMEX_CHITIN_TOOL_MATERIAL) {
             if (!target.getType().is(EntityTypeTags.ARTHROPOD) || target instanceof EntityDeathWorm) {
-                target.hurt(attacker.level().damageSources().generic(), getAttackDamage(item) + 5.0F);
+                IafDamage.hurt(target, attacker.level().damageSources().generic(), getAttackDamage(item) + 5.0F);
             }
         }
 

@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.block;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.entity.EntityIceDragon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -72,7 +73,7 @@ public class BlockIceSpikes extends Block {
     @Override
     public void stepOn(Level worldIn, BlockPos pos, BlockState pState, Entity entityIn) {
         if (!(entityIn instanceof EntityIceDragon)) {
-            entityIn.hurt(worldIn.damageSources().cactus(), 1);
+            IafDamage.hurt(entityIn, worldIn.damageSources().cactus(), 1);
             if (entityIn instanceof LivingEntity && entityIn.getDeltaMovement().x != 0 && entityIn.getDeltaMovement().z != 0) {
                 ((LivingEntity) entityIn).knockback(0.5D, entityIn.getDeltaMovement().x, entityIn.getDeltaMovement().z, worldIn.damageSources().cactus(), 1.0F);
             }

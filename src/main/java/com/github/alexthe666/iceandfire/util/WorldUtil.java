@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.util;
 
+import net.minecraft.world.level.gamerules.GameRules;
 import com.github.alexthe666.iceandfire.world.IafWorldData;
 import com.github.alexthe666.iceandfire.world.IafWorldRegistry;
 import net.minecraft.core.BlockPos;
@@ -192,7 +193,7 @@ public class WorldUtil {
      * @return true if peaceful
      */
     public static boolean isPeaceful(@NotNull final Level world) {
-        return !world.getLevelData().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING) || world.getDifficulty().equals(Difficulty.PEACEFUL);
+        return !IafEntityUtil.gameRule(world.getLevelData(), GameRules.SPAWN_MOBS) || world.getDifficulty().equals(Difficulty.PEACEFUL);
     }
 
     /**

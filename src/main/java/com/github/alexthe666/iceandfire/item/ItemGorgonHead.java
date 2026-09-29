@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.datagen.tags.IafEntityTags;
 import com.github.alexthe666.iceandfire.entity.EntityStoneStatue;
 import com.github.alexthe666.iceandfire.entity.util.DragonUtils;
@@ -99,7 +100,7 @@ public class ItemGorgonHead extends Item {
                 boolean wasSuccesful = true;
 
                 if (pointedEntity instanceof Player) {
-                     wasSuccesful = pointedEntity.hurt(IafDamageRegistry.causeGorgonDamage(pointedEntity), Integer.MAX_VALUE);
+                     wasSuccesful = IafDamage.hurt(pointedEntity, IafDamageRegistry.causeGorgonDamage(pointedEntity), Integer.MAX_VALUE);
                 } else {
                     if (!worldIn.isClientSide())
                         pointedEntity.remove(Entity.RemovalReason.KILLED);

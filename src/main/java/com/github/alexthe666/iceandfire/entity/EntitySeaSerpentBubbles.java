@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.util.IDragonProjectile;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
@@ -134,7 +136,7 @@ public EntitySeaSerpentBubbles(EntityType<? extends Fireball> t, Level worldIn,
 
     @Override
     protected void onHit(@NotNull HitResult movingObject) {
-        boolean flag = this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
+        boolean flag = IafEntityUtil.gameRule(this.level(), GameRules.MOB_GRIEFING);
         if (!this.level().isClientSide()) {
             if (movingObject.getType() == HitResult.Type.ENTITY) {
                 Entity entity = ((EntityHitResult) movingObject).getEntity();
@@ -148,7 +150,7 @@ public EntitySeaSerpentBubbles(EntityType<? extends Fireball> t, Level worldIn,
                     if (dragon.isAlliedTo(entity) || dragon.is(entity)) {
                         return;
                     }
-                    entity.hurt(level().damageSources().mobAttack(dragon), 6.0F);
+                    IafDamage.hurt(entity, level().damageSources().mobAttack(dragon), 6.0F);
 
                 }
             }

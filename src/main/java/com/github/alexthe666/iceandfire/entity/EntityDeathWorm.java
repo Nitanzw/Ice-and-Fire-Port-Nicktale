@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
@@ -106,7 +108,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         setPathfindingMalus(PathType.WATER, 4.0f);
         setPathfindingMalus(PathType.WATER_BORDER, 4.0f);
         this.lookHelper = new IAFLookHelper(this);
-        this.noCulling = true;
+        // noCulling was removed from Entity in 1.21
         if (worldIn.isClientSide()) {
             tail_buffer = new ChainBuffer();
         }
@@ -247,7 +249,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
             this.setAnimation(ANIMATION_BITE);
             this.playSound(this.getScale() > 3 ? IafSoundRegistry.DEATHWORM_GIANT_ATTACK : IafSoundRegistry.DEATHWORM_ATTACK, 1, 1);
         }
-        if (this.getRandom().nextInt(3) == 0 && this.getScale() > 1 && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+        if (this.getRandom().nextInt(3) == 0 && this.getScale() > 1 && IafEntityUtil.gameRule(this.level(), GameRules.MOB_GRIEFING)) {
             if (!NeoForge.EVENT_BUS.post(new GenericGriefEvent(this, entityIn.getX(), entityIn.getY(), entityIn.getZ()))) {
                 BlockLaunchExplosion explosion = new BlockLaunchExplosion(level(), this, entityIn.getX(), entityIn.getY(), entityIn.getZ(), this.getScale());
                 explosion.explode();
@@ -637,7 +639,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
             }*/
         if (this.getTarget() != null && this.distanceTo(this.getTarget()) < Math.min(4, 4D * getScale()) && this.getAnimation() == ANIMATION_BITE && this.getAnimationTick() == 5) {
             float f = (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
-            this.getTarget().hurt(this.level().damageSources().mobAttack(this), f);
+            IafDamage.hurt(this.getTarget(), this.level().damageSources().mobAttack(this), f);
             this.setDeltaMovement(this.getDeltaMovement().add(0, -0.4F, 0));
         }
 
@@ -701,7 +703,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
                 }
             }
             if (target != null) {
-                target.hurt(this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
+                IafDamage.hurt(target, this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
             }
         }
         if (this.isInSand()) {

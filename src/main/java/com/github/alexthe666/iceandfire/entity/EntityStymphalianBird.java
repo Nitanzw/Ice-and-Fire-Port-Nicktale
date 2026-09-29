@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
@@ -153,7 +154,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
             s = tag.read("VictorUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).orElse(null);
         } else {
             String s1 = tag.getStringOr("VictorUUID", "");
-            s = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s1);
+            s = OldUsersConverter.convertMobOwnerIfNecessary(this.level().getServer(), s1);
         }
 
         if (s != null) {
@@ -276,7 +277,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
             double dist = this.distanceToSqr(this.getTarget());
             if (this.getAnimation() == ANIMATION_PECK && this.getAnimationTick() == 7) {
                 if (dist < 1.5F) {
-                    this.getTarget().hurt(this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
+                    IafDamage.hurt(this.getTarget(), this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
                 }
                 if (onGround()) {
                     this.setFlying(false);

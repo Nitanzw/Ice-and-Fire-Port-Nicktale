@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.util.DragonUtils;
@@ -42,9 +43,9 @@ public class IafDragonLogic {
         }
         if (IafConfig.doDragonsSleep && !dragon.isSleeping() && !dragon.isTimeToWake() && dragon.getPassengers().isEmpty() && this.dragon.getCommand() != 2) {
             if (dragon.hasHomePosition
-                    && dragon.getRestrictCenter() != null
+                    && dragon.getHomePosition() != null
                     && DragonUtils.isInHomeDimension(dragon)
-                    && dragon.getDistanceSquared(Vec3.atCenterOf(dragon.getRestrictCenter())) > dragon.getBbWidth() * 10
+                    && dragon.getDistanceSquared(Vec3.atCenterOf(dragon.getHomePosition())) > dragon.getBbWidth() * 10
                     && this.dragon.getCommand() != 2 && this.dragon.getCommand() != 1) {
                 dragon.lookingForRoostAIFlag = true;
             } else {
@@ -280,9 +281,9 @@ public class IafDragonLogic {
 
     public boolean attackTarget(Entity target, Player ridingPlayer, float damage) {
         if (ridingPlayer == null)
-            return target.hurt(target.level().damageSources().mobAttack(dragon), damage);
+            return IafDamage.hurt(target, target.level().damageSources().mobAttack(dragon), damage);
         else
-            return target.hurt(target.level().damageSources().indirectMagic(dragon, ridingPlayer), damage);
+            return IafDamage.hurt(target, target.level().damageSources().indirectMagic(dragon, ridingPlayer), damage);
     }
 
     /*

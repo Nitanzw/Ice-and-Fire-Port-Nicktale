@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.AnimationSync;
@@ -260,7 +262,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
         legSolver = new LegSolverQuadruped(0.3F, 0.35F, 0.2F, 1.45F, 1.0F);
         this.flightManager = new IafDragonFlightManager(this);
         this.logic = createDragonLogic();
-        this.noCulling = true;
+        // noCulling was removed from Entity in 1.21
         switchNavigator(0);
         randomizeAttacks();
         resetParts(1);
@@ -286,12 +288,12 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     }
 
     @Override
-    public @NotNull BlockPos getRestrictCenter() {
-        return this.homePos == null ? super.getRestrictCenter() : homePos.getPosition();
+    public @NotNull BlockPos getHomePosition() {
+        return this.homePos == null ? super.getHomePosition() : homePos.getPosition();
     }
 
     @Override
-    public float getRestrictRadius() {
+    public float getHomeRadius() {
         return IafConfig.dragonWanderFromHomeDistance;
     }
 
@@ -300,10 +302,10 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     }
 
     @Override
-    public boolean hasRestriction() {
+    public boolean hasHome() {
         return this.hasHomePosition &&
                 getHomeDimensionName().equals(DragonUtils.getDimensionName(this.level()))
-                || super.hasRestriction();
+                || super.hasHome();
     }
 
     @Override
@@ -872,7 +874,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     public @Nullable LivingEntity getControllingPassenger() {
         for (Entity passenger : this.getPassengers()) {
             if (passenger instanceof Player player && this.getTarget() != passenger) {
-                if (this.isTame() && this.getOwnerUUID() != null && this.getOwnerUUID().equals(player.getUUID())) {
+                if (this.isTame() && IafEntityUtil.ownerUUID(this) != null && IafEntityUtil.ownerUUID(this).equals(player.getUUID())) {
                     return player;
                 }
             }
@@ -1603,7 +1605,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
         if (this.getAnimation() == ANIMATION_SHAKEPREY && this.getAnimationTick() > 55 && prey != null) {
             float baseDamage = (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
             float damage = baseDamage * 2;
-            boolean didDamage = prey.hurt(this.level().damageSources().mobAttack(this), damage);
+            boolean didDamage = IafDamage.hurt(prey, this.level().damageSources().mobAttack(this), damage);
 
             if (didDamage && IafConfig.canDragonsHealFromBiting) {
                 heal(damage * 0.5f);
@@ -1674,7 +1676,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource dmg, float i) {
+    public boolean hurtServer(ServerLevel level, DamageSource dmg, float i) {
         if (this.isModelDead() && dmg != this.level().damageSources().fellOutOfWorld()) {
             return false;
         }
@@ -1702,7 +1704,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
                 }
             }
         }
-        return super.hurt(dmg, i);
+        return super.hurtServer(level, dmg, i);
 
     }
 
@@ -1842,7 +1844,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
             return false;
         }
 
-        final boolean flag = entityIn.hurt(this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
+        final boolean flag = IafDamage.hurt(entityIn, this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
 
         if (flag) {
             this.doEnchantDamageEffects(this, entityIn);
@@ -2783,8 +2785,8 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     @Override
     public boolean wantsToAttack(@NotNull LivingEntity target, @NotNull LivingEntity owner) {
         if (this.isTame() && target instanceof TamableAnimal tamableTarget) {
-            UUID targetOwner = tamableTarget.getOwnerUUID();
-            if (targetOwner != null && targetOwner.equals(this.getOwnerUUID())) {
+            UUID targetOwner = IafEntityUtil.ownerUUID(tamableTarget);
+            if (targetOwner != null && targetOwner.equals(IafEntityUtil.ownerUUID(this))) {
                 return false;
             }
         }

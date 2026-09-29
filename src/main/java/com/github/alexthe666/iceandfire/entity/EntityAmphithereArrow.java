@@ -50,7 +50,7 @@ public EntityAmphithereArrow(EntityType type, LivingEntity shooter, Level worldI
 
     @Override
     protected void doPostHurtEffects(LivingEntity living) {
-        living.hasImpulse = true;
+        living.hurtMarked = true;
         double xRatio = this.getDeltaMovement().x;
         double zRatio = this.getDeltaMovement().z;
         float strength = -1.4F;

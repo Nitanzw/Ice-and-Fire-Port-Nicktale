@@ -1,5 +1,8 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import com.github.alexthe666.iceandfire.util.IafDamage;
+import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.util.IDragonProjectile;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
@@ -47,7 +50,7 @@ public class EntityHydraBreath extends Fireball implements IDragonProjectile {
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         return false;
     }
 
@@ -116,7 +119,7 @@ public class EntityHydraBreath extends Fireball implements IDragonProjectile {
 
     @Override
     protected void onHit(@NotNull HitResult movingObject) {
-        this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
+        IafEntityUtil.gameRule(this.level(), GameRules.MOB_GRIEFING);
         Entity shootingEntity = this.getOwner();
         if (!this.level().isClientSide()) {
             if (movingObject.getType() == HitResult.Type.ENTITY) {
@@ -130,7 +133,7 @@ public class EntityHydraBreath extends Fireball implements IDragonProjectile {
                     if (dragon.isAlliedTo(entity) || dragon.is(entity)) {
                         return;
                     }
-                    entity.hurt(level().damageSources().mobAttack(dragon), 2.0F);
+                    IafDamage.hurt(entity, level().damageSources().mobAttack(dragon), 2.0F);
                     if (entity instanceof LivingEntity) {
                         ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.POISON, 60, 0));
                     }

@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -53,7 +54,7 @@ public class EntityHippogryphEgg extends ThrownEgg {
     protected void onHit(HitResult result) {
         Entity thrower = getOwner();
         if (result.getType() == HitResult.Type.ENTITY) {
-            ((EntityHitResult) result).getEntity().hurt(level().damageSources().thrown(this, thrower), 0.0F);
+            IafDamage.hurt(((EntityHitResult) result).getEntity(), level().damageSources().thrown(this, thrower), 0.0F);
         }
 
         if (!this.level().isClientSide()) {

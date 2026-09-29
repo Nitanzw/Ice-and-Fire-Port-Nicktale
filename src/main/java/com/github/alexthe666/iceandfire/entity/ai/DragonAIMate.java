@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import com.github.alexthe666.iceandfire.entity.EntityDragonEgg;
@@ -143,7 +144,7 @@ public class DragonAIMate extends Goal {
             if (theWorld.getBlockState(dirtPos).canBeReplaced() || theWorld.getBlockState(dirtPos) == NEST) {
                 theWorld.setBlockAndUpdate(dirtPos, Blocks.DIRT_PATH.defaultBlockState());
             }
-            if (this.theWorld.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+            if (IafEntityUtil.gameRule(this.theWorld, GameRules.MOB_DROPS)) {
                 this.theWorld.addFreshEntity(new ExperienceOrb(this.theWorld, this.dragon.getX(), this.dragon.getY(), this.dragon.getZ(), random.nextInt(15) + 10));
             }
         }

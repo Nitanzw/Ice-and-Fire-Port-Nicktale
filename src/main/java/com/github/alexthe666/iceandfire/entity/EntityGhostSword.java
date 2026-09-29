@@ -106,7 +106,7 @@ public class EntityGhostSword extends AbstractArrow {
                     this.onHit(raytraceresult);
 
                 }
-                this.hasImpulse = true;
+                this.hurtMarked = true;
             }
 
             if (entityraytraceresult == null || this.getPierceLevel() <= 0) {

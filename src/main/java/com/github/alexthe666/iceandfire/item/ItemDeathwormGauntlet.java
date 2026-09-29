@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.entity.props.EntityDataProvider;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import net.minecraft.ChatFormatting;
@@ -132,7 +133,7 @@ public class ItemDeathwormGauntlet extends Item {
 
                         if (canSee) {
                             stackData.putInt("SpecialDamage", stackData.getInt("SpecialDamage") + 1);
-                            livingEntity.hurt(entity.level().damageSources().playerAttack((Player) entity), 3F);
+                            IafDamage.hurt(livingEntity, entity.level().damageSources().playerAttack((Player) entity), 3F);
                             livingEntity.knockback(0.5F, livingEntity.getX() - player.getX(), livingEntity.getZ() - player.getZ());
                         }
                     }

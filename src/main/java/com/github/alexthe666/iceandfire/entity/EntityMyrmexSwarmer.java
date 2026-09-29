@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.entity.ai.*;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.AdvancedPathNavigate;
@@ -121,7 +123,7 @@ public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
             return false;
         }
         if (entityIn instanceof TamableAnimal) {
-            UUID ownerID = ((TamableAnimal) entityIn).getOwnerUUID();
+            UUID ownerID = IafEntityUtil.ownerUUID(((TamableAnimal) entityIn));
             return ownerID != null && ownerID.equals(this.getSummonerUUID());
         }
         return entityIn.getUUID().equals(this.getSummonerUUID()) || entityIn instanceof EntityMyrmexSwarmer && ((EntityMyrmexSwarmer) entityIn).getSummonerUUID() != null && ((EntityMyrmexSwarmer) entityIn).getSummonerUUID().equals(this.getSummonerUUID());
@@ -208,14 +210,14 @@ public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
             this.playBiteSound();
             double dist = this.distanceToSqr(this.getTarget());
             if (dist < attackDistance()) {
-                this.getTarget().hurt(level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
+                IafDamage.hurt(this.getTarget(), level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
             }
         }
         if (this.getAnimation() == ANIMATION_STING && this.getTarget() != null && this.getAnimationTick() == 6) {
             this.playStingSound();
             double dist = this.distanceToSqr(this.getTarget());
             if (dist < attackDistance()) {
-                this.getTarget().hurt(level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * 2));
+                IafDamage.hurt(this.getTarget(), level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * 2));
                 // After calling hurt the target can become null due to forge hooks
                 if (this.getTarget() != null)
                     this.getTarget().addEffect(new MobEffectInstance(MobEffects.POISON, 70, 1));

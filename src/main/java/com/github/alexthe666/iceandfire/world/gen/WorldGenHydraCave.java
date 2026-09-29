@@ -149,7 +149,7 @@ public class WorldGenHydraCave extends Feature<NoneFeatureConfiguration> impleme
         }
         EntityHydra hydra = new EntityHydra(IafEntityRegistry.HYDRA.get(), worldIn.getLevel());
         hydra.setVariant(rand.nextInt(3));
-        hydra.restrictTo(position, 15);
+        hydra.setHomeTo(position, 15);
         hydra.absMoveTo(position.getX() + 0.5, position.getY() + 1.5, position.getZ() + 0.5, rand.nextFloat() * 360, 0);
         worldIn.addFreshEntity(hydra);
         return true;

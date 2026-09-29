@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
@@ -192,7 +194,7 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
             }
         }
         if (this.deathTime >= 200) {
-            if (!this.level().isClientSide() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))) {
+            if (!this.level().isClientSide() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && IafEntityUtil.gameRule(this.level(), GameRules.ENTITY_DROPS))) {
                 int i = this.getExperienceReward();
                 i = net.neoforged.neoforge.event.EventHooks.getExperienceDrop(this, this.lastHurtByPlayer, i);
                 while (i > 0) {
@@ -254,7 +256,7 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
                                 playerStatueCooldown = 40;
                                 if (attackTarget instanceof Player) {
 
-                                    attackTarget.hurt(IafDamageRegistry.causeGorgonDamage(this), Integer.MAX_VALUE);
+                                    IafDamage.hurt(attackTarget, IafDamageRegistry.causeGorgonDamage(this), Integer.MAX_VALUE);
                                 } else {
                                     attackTarget.remove(RemovalReason.KILLED);
                                 }

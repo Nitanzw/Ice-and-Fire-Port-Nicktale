@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.pathfinding.raycoms;
-/*
+
+import com.github.alexthe666.iceandfire.util.IafDamage;/*
     All of this code is used with permission from Raycoms, one of the developers of the minecolonies project.
  */
 
@@ -233,7 +234,7 @@ public class PathingStuckHandler implements IStuckHandler
             }
         }
         if (takeDamageOnCompleteStuck) {
-            entity.hurt(new DamageSource(entity.level().damageSources().inWall().typeHolder(), entity), entity.getMaxHealth() * damagePct);
+            IafDamage.hurt(entity, new DamageSource(entity.level().damageSources().inWall().typeHolder(), entity), entity.getMaxHealth() * damagePct);
         }
 
         if (completeStuckBlockBreakRange > 0)

@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
@@ -344,7 +345,7 @@ public class EntityPixie extends TamableAnimal {
                     house.pixieType = this.getColor();
                     house.pixieItems.set(0, this.getItemInHand(InteractionHand.MAIN_HAND));
                     house.tamedPixie = this.isTame();
-                    house.pixieOwnerUUID = this.getOwnerUUID();
+                    house.pixieOwnerUUID = IafEntityUtil.ownerUUID(this);
                     IafNetwork.sendToAll(new MessageUpdatePixieHouse(housePos.asLong(), true, this.getColor()));
                     this.remove(RemovalReason.DISCARDED);
                 }

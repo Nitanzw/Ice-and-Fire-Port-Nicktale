@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
@@ -120,7 +121,7 @@ public EntityPixieCharge(EntityType<? extends Fireball> t, Level worldIn, double
                     if (entity instanceof LivingEntity) {
                         ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.LEVITATION, 100, 0));
                         ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.GLOWING, 100, 0));
-                        entity.hurt(level().damageSources().indirectMagic(shootingEntity, null), 5.0F);
+                        IafDamage.hurt(entity, level().damageSources().indirectMagic(shootingEntity, null), 5.0F);
                     }
                     if (this.level().isClientSide()) {
                         for (int i = 0; i < 20; ++i) {

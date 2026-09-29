@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
@@ -241,7 +242,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
             double extraY = raiseUp;
             passenger.setPos(this.getX() + extraX, this.getY() + extraY, this.getZ() + extraZ);
             if (this.getAnimationTick() == 32) {
-                passenger.hurt(this.level().damageSources().mobAttack(this), (float) IafConfig.cyclopsBiteStrength);
+                IafDamage.hurt(passenger, this.level().damageSources().mobAttack(this), (float) IafConfig.cyclopsBiteStrength);
                 passenger.stopRiding();
             }
         }
@@ -286,10 +287,10 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
             this.playSound(IafSoundRegistry.CYCLOPS_BITE, 1, 1);
         }
         if (this.getAnimation() == ANIMATION_STOMP && this.getTarget() != null && this.distanceToSqr(this.getTarget()) < 12D && this.getAnimationTick() == 14) {
-            this.getTarget().hurt(this.level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+            IafDamage.hurt(this.getTarget(), this.level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
         }
         if (this.getAnimation() == ANIMATION_KICK && this.getTarget() != null && this.distanceToSqr(this.getTarget()) < 14D && this.getAnimationTick() == 12) {
-            this.getTarget().hurt(this.level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+            IafDamage.hurt(this.getTarget(), this.level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
             if (this.getTarget() != null)
                 this.getTarget().knockback(2, this.getX() - this.getTarget().getX(), this.getZ() - this.getTarget().getZ());
 
@@ -408,7 +409,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
             this.getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(6F);
             this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.35D);
             this.setAnimation(ANIMATION_ROAR);
-            this.hurt(source, damage * 3);
+            IafDamage.hurt(this, source, damage * 3);
         }
     }
 

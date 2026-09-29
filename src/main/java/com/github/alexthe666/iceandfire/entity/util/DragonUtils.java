@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.util;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import com.github.alexthe666.iceandfire.datagen.tags.IafBlockTags;
@@ -328,7 +329,7 @@ public class DragonUtils {
 
     public static boolean hasSameOwner(TamableAnimal cockatrice, Entity entity) {
         if (entity instanceof TamableAnimal tameable) {
-            return tameable.getOwnerUUID() != null && cockatrice.getOwnerUUID() != null && tameable.getOwnerUUID().equals(cockatrice.getOwnerUUID());
+            return IafEntityUtil.ownerUUID(tameable) != null && IafEntityUtil.ownerUUID(cockatrice) != null && IafEntityUtil.ownerUUID(tameable).equals(IafEntityUtil.ownerUUID(cockatrice));
         }
         return false;
     }

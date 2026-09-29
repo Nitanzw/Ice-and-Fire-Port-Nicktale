@@ -112,7 +112,7 @@ public class EntityDreadMob extends Monster implements IDreadMob {
             uuid = compound.read("CommanderUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).orElse(null);
         } else {
             String s = compound.getStringOr("CommanderUUID", "");
-            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s);
+            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.level().getServer(), s);
         }
 
         if (uuid != null) {

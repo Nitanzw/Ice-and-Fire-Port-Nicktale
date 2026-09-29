@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityHippogryph;
 import com.github.alexthe666.iceandfire.item.ItemHippogryphEgg;
 import net.minecraft.core.particles.ParticleTypes;
@@ -106,7 +107,7 @@ public class HippogryphAIMate extends Goal {
                 this.hippo.getZ() + d5, d0, d1, d2);
         }
 
-        if (this.world.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+        if (IafEntityUtil.gameRule(this.world, GameRules.MOB_DROPS)) {
             this.world.addFreshEntity(new ExperienceOrb(this.world, this.hippo.getX(), this.hippo.getY(),
                 this.hippo.getZ(), random.nextInt(7) + 1));
         }

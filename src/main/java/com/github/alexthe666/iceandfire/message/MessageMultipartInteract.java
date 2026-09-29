@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.message;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -61,7 +62,7 @@ public class MessageMultipartInteract implements CustomPacketPayload {
 
                         if (dist < 100) {
                             if (message.dmg > 0F) {
-                                livingEntity.hurt(player.level().damageSources().mobAttack(player), message.dmg);
+                                IafDamage.hurt(livingEntity, player.level().damageSources().mobAttack(player), message.dmg);
                             } else {
                                 livingEntity.interact(player, InteractionHand.MAIN_HAND);
                             }

@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
@@ -110,7 +112,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
     public EntitySeaSerpent(EntityType<EntitySeaSerpent> t, Level worldIn) {
         super(t, worldIn);
         switchNavigator(false);
-        this.noCulling = true;
+        // noCulling was removed from Entity in 1.21
         resetParts(1.0F);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
     }
@@ -571,7 +573,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
         List<Entity> list = level().getEntities(this, this.getBoundingBox().inflate(getWidth, getWidth * 0.5D, getWidth), NOT_SEA_SERPENT);
         for (Entity entity : list) {
             if (entity instanceof LivingEntity && DragonUtils.isAlive((LivingEntity) entity)) {
-                entity.hurt(this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
+                IafDamage.hurt(entity, this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
                 destroyBoat(entity);
                 double xRatio = this.getX() - entity.getX();
                 double zRatio = this.getZ() - entity.getZ();
@@ -588,7 +590,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
         if (sailor.getVehicle() != null && sailor.getVehicle() instanceof Boat && !level().isClientSide()) {
             Boat boat = (Boat) sailor.getVehicle();
             boat.remove(RemovalReason.KILLED);
-            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            if (IafEntityUtil.gameRule(this.level(), GameRules.ENTITY_DROPS)) {
                 for (int i = 0; i < 3; ++i) {
                     boat.spawnAtLocation(new ItemStack(boat.getVariant().getPlanks().asItem()), 0.0F);
                 }
@@ -609,7 +611,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
 
     private void hurtMob(LivingEntity entity) {
         if (this.getAnimation() == ANIMATION_BITE && entity != null && this.getAnimationTick() == 6) {
-            this.getTarget().hurt(this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
+            IafDamage.hurt(this.getTarget(), this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
             EntitySeaSerpent.this.attackDecision = this.getRandom().nextBoolean();
         }
     }

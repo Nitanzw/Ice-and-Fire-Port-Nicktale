@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.entity.EntityGorgon;
 import com.github.alexthe666.iceandfire.entity.props.EntityDataProvider;
 import com.github.alexthe666.iceandfire.entity.util.DragonUtils;
@@ -139,7 +140,7 @@ public class ItemCockatriceScepter extends Item {
 
                 if (caster.tickCount % 20 == 0) {
                     ItemStackData.update(stack, tag -> tag.putInt("SpecialWeaponDamage", tag.getInt("SpecialWeaponDamage") + 1));
-                    target.hurt(caster.level().damageSources().wither(), 2);
+                    IafDamage.hurt(target, caster.level().damageSources().wither(), 2);
                 }
 
                 drawParticleBeam(caster, target);

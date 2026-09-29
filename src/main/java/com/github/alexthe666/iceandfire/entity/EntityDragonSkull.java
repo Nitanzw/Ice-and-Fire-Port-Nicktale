@@ -43,7 +43,7 @@ public class EntityDragonSkull extends Animal implements IBlacklistedFromStatues
 
     public EntityDragonSkull(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.noCulling = true;
+        // noCulling was removed from Entity in 1.21
         // setScale(this.getDragonAge());
     }
 
@@ -133,9 +133,9 @@ public class EntityDragonSkull extends Animal implements IBlacklistedFromStatues
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource var1, float var2) {
+    public boolean hurtServer(ServerLevel level, DamageSource var1, float var2) {
         this.turnIntoItem();
-        return super.hurt(var1, var2);
+        return super.hurtServer(level, var1, var2);
     }
 
     public void turnIntoItem() {

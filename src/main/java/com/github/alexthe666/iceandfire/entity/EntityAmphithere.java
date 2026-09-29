@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
@@ -304,7 +306,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
             this.setAnimation(ANIMATION_BITE_RIDER);
         }
         if (!this.level().isClientSide() && this.getAnimation() == ANIMATION_BITE_RIDER && this.getAnimationTick() == 6 && !this.isTame()) {
-            passenger.hurt(this.level().damageSources().mobAttack(this), 1);
+            IafDamage.hurt(passenger, this.level().damageSources().mobAttack(this), 1);
         }
         float pitch_forward = 0;
         if (this.getXRot() > 0 && this.isFlying()) {
@@ -539,7 +541,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
         for (Entity passenger : this.getPassengers()) {
             if (passenger instanceof Player && this.getTarget() != passenger) {
                 Player player = (Player) passenger;
-                if (this.isTame() && this.getOwnerUUID() != null && this.getOwnerUUID().equals(player.getUUID())) {
+                if (this.isTame() && IafEntityUtil.ownerUUID(this) != null && IafEntityUtil.ownerUUID(this).equals(player.getUUID())) {
                     return player;
                 }
             }
@@ -661,7 +663,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
             double dist = this.distanceToSqr(target);
             if (dist < 10) {
                 target.knockback(0.6F, Mth.sin(this.getYRot() * 0.017453292F), -Mth.cos(this.getYRot() * 0.017453292F));
-                target.hurt(this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
+                IafDamage.hurt(target, this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
             }
         }
         if (this.getAnimation() == ANIMATION_WING_BLAST && this.getAnimationTick() == 5) {
@@ -674,10 +676,10 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
 
             double dist = this.distanceToSqr(target);
             if (dist < 25) {
-                target.hurt(this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue() / 2));
-                target.hasImpulse = true;
+                IafDamage.hurt(target, this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue() / 2));
+                target.hurtMarked = true;
                 if (!(this.random.nextDouble() < this.getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue())) {
-                    this.hasImpulse = true;
+                    this.hurtMarked = true;
                     double d1 = target.getX() - this.getX();
 
                     double d0;
@@ -693,8 +695,8 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
         if (this.getAnimation() == ANIMATION_TAIL_WHIP && target != null && this.getAnimationTick() == 7) {
             double dist = this.distanceToSqr(target);
             if (dist < 10) {
-                target.hurt(this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
-                target.hasImpulse = true;
+                IafDamage.hurt(target, this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
+                target.hurtMarked = true;
                 float f = Mth.sqrt((float) (0.5 * 0.5 + 0.5 * 0.5));
                 double d0;
                 double d1 = target.getX() - this.getX();
@@ -736,7 +738,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
                 this.setAnimation(ANIMATION_BITE);
             }
             if (riderTarget != null) {
-                riderTarget.hurt(this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
+                IafDamage.hurt(riderTarget, this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
             }
         }
         if (target != null && this.isOwnedBy(target)) {

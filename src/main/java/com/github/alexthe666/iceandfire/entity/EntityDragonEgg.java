@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
@@ -71,7 +72,7 @@ public class EntityDragonEgg extends LivingEntity implements IBlacklistedFromSta
         String owner = input.getStringOr("OwnerUUID", "");
         if (owner.isEmpty()) {
             String oldOwner = input.getStringOr("Owner", "");
-            UUID converted = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), oldOwner);
+            UUID converted = OldUsersConverter.convertMobOwnerIfNecessary(this.level().getServer(), oldOwner);
             owner = converted == null ? oldOwner : converted.toString();
         }
         if (!owner.isEmpty()) {
@@ -229,7 +230,7 @@ public class EntityDragonEgg extends LivingEntity implements IBlacklistedFromSta
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource var1, float var2) {
+    public boolean hurtServer(ServerLevel level, DamageSource var1, float var2) {
         if (var1.is(DamageTypeTags.IS_FIRE) && getEggType().dragonType == DragonType.FIRE)
             return false;
         if (!this.level().isClientSide() && !var1.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !isRemoved()) {
