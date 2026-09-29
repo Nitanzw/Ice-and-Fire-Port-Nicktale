@@ -100,7 +100,7 @@ public class RenderDragonBase extends MobRenderer<EntityDragonBase, DragonRender
                     passenger.yRotO + (passenger.getYRot() - passenger.yRotO) * partialTicks,
                     passengerModel instanceof net.minecraft.client.model.HumanoidModel<?>,
                     passengerModel instanceof net.minecraft.client.model.QuadrupedModel<?>,
-                    passengerModel instanceof HorseModel);
+                    passengerModel instanceof HorseModel));
             ClientProxy.currentDragonRiders.add(passenger.getUUID());
         }
         ItemStack banner = entity.getItemInHand(InteractionHand.OFF_HAND);
