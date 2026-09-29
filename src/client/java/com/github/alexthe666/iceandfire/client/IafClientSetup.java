@@ -12,6 +12,7 @@ import com.github.alexthe666.iceandfire.client.model.animator.LightningTabulaDra
 import com.github.alexthe666.iceandfire.client.model.animator.SeaSerpentTabulaModelAnimator;
 import com.github.alexthe666.iceandfire.client.model.util.*;
 import com.github.alexthe666.iceandfire.client.render.entity.*;
+import com.github.alexthe666.iceandfire.client.render.pathfinding.PathfindingDebugRenderer;
 import com.github.alexthe666.iceandfire.client.render.tile.*;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry;
@@ -19,7 +20,10 @@ import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.item.ItemDragonBow;
 import com.github.alexthe666.iceandfire.item.ItemDragonHorn;
 import com.github.alexthe666.iceandfire.item.ItemSummoningCrystal;
+import com.github.alexthe666.iceandfire.message.PathfindingDebugSync;
+import com.github.alexthe666.iceandfire.pathfinding.raycoms.MNode;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import net.minecraft.core.BlockPos;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -38,6 +42,8 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD, modid = IceAndFire.MODID)
 public class IafClientSetup {
@@ -138,6 +144,21 @@ public class IafClientSetup {
 
     @SubscribeEvent
     public static void setupClient(FMLClientSetupEvent event) {
+        PathfindingDebugSync.registerClientHandler(new PathfindingDebugSync.ClientHandler() {
+            @Override
+            public void onPathSync(Set<MNode> visited, Set<MNode> notVisited, Set<MNode> path) {
+                PathfindingDebugRenderer.lastDebugNodesVisited = new HashSet<>(visited);
+                PathfindingDebugRenderer.lastDebugNodesNotVisited = new HashSet<>(notVisited);
+                PathfindingDebugRenderer.lastDebugNodesPath = new HashSet<>(path);
+            }
+
+            @Override
+            public void onPathReached(Set<BlockPos> reached) {
+                for (MNode node : new HashSet<>(PathfindingDebugRenderer.lastDebugNodesPath)) {
+                    node.setReachedByWorker(reached.contains(node.pos));
+                }
+            }
+        });
         event.enqueueWork(() -> {
             IafGuiRegistry.register();
             EnumSeaSerpentAnimations.initializeSerpentModels();
