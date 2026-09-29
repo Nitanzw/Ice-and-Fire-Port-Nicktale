@@ -46,7 +46,7 @@ neoForge {
 }
 
 dependencies {
-    implementation files("../nicktale-api-neoforge/build/libs/nicktaleapi-${nicktale_api_version}.jar")
+    implementation files("nicktale-api/build/libs/nicktaleapi-${nicktale_api_version}.jar")
 }
 
 tasks.withType(JavaCompile).configureEach {

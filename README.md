@@ -20,5 +20,12 @@ under the terms of the license below. This port only adapts the code to NeoForge
 - Depends on **Nicktale API** (own animation / model library that replaces Citadel), developed alongside.
 
 ## Building
-JDK 21+ to run Gradle (the Java 25 toolchain is downloaded automatically). Nicktale API must be built first (`../nicktale-api-neoforge`),
-then `./gradlew compileJava`.
+Nicktale API is included in `nicktale-api/` and must be built first (the mod depends on its jar). JDK 21+ to run Gradle
+(the Java 25 toolchain is downloaded automatically):
+
+```bash
+./build_all.sh          # builds nicktale-api/ then runs compileJava on the mod
+```
+
+`build.gradle` keeps `-Xmaxerrs 500`; while migrating, raise it (and `org.gradle.jvmargs=-Xmx8G`) locally to see every error.
+
