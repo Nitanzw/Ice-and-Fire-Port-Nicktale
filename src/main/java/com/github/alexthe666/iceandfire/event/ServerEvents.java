@@ -68,7 +68,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
-import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -626,13 +625,6 @@ public class ServerEvents {
             }
         } catch (Exception e) {
             IceAndFire.LOGGER.warn("Tried to add unique behaviors to vanilla mobs and encountered an error");
-        }
-    }
-
-    @SubscribeEvent
-    public void onVillagerTrades(VillagerTradesEvent event) {
-        if (event.getType() == IafVillagerRegistry.SCRIBE.get()) {
-            IafVillagerRegistry.addScribeTrades(event.getTrades());
         }
     }
 

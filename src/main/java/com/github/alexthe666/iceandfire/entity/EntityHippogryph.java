@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -16,6 +17,7 @@ import com.github.alexthe666.iceandfire.enums.EnumHippogryphTypes;
 import com.github.alexthe666.iceandfire.inventory.ContainerHippogryph;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.message.MessageHippogryphArmor;
+import com.github.alexthe666.iceandfire.message.IafNetwork;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.AdvancedPathNavigate;
 import com.google.common.base.Predicate;
@@ -26,7 +28,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -233,9 +234,9 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
             if (level().isClientSide()) {
                 ItemStack saddle = animalchest.getItem(0);
                 ItemStack chest = animalchest.getItem(1);
-                IceAndFire.NETWORK_WRAPPER.sendToServer(new MessageHippogryphArmor(this.getId(), 0, saddle != null && saddle.getItem() == Items.SADDLE && !saddle.isEmpty() ? 1 : 0));
-                IceAndFire.NETWORK_WRAPPER.sendToServer(new MessageHippogryphArmor(this.getId(), 1, chest != null && chest.getItem() == Blocks.CHEST.asItem() && !chest.isEmpty() ? 1 : 0));
-                IceAndFire.NETWORK_WRAPPER.sendToServer(new MessageHippogryphArmor(this.getId(), 2, getIntFromArmor(animalchest.getItem(2))));
+                IafNetwork.sendToServer(new MessageHippogryphArmor(this.getId(), 0, saddle != null && saddle.getItem() == Items.SADDLE && !saddle.isEmpty() ? 1 : 0));
+                IafNetwork.sendToServer(new MessageHippogryphArmor(this.getId(), 1, chest != null && chest.getItem() == Blocks.CHEST.asItem() && !chest.isEmpty() ? 1 : 0));
+                IafNetwork.sendToServer(new MessageHippogryphArmor(this.getId(), 2, getIntFromArmor(animalchest.getItem(2))));
             }
         }
     }
@@ -452,17 +453,15 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
         compound.putInt("Armor", this.getArmor());
         compound.putInt("Feedings", feedings);
         if (hippogryphInventory != null) {
-            ListTag nbttaglist = new ListTag();
+            ValueOutput.ValueOutputList items = output.childrenList("Items");
             for (int i = 0; i < this.hippogryphInventory.getContainerSize(); ++i) {
                 ItemStack itemstack = this.hippogryphInventory.getItem(i);
                 if (!itemstack.isEmpty()) {
-                    CompoundTag CompoundNBT = new CompoundTag();
-                    CompoundNBT.putByte("Slot", (byte) i);
-                    itemstack.save(CompoundNBT);
-                    nbttaglist.add(CompoundNBT);
+                    ValueOutput slot = items.addChild();
+                    slot.putInt("Slot", i);
+                    slot.store("Stack", ItemStack.CODEC, itemstack);
                 }
             }
-            compound.put("Items", nbttaglist);
         }
         compound.putBoolean("HasHomePosition", this.hasHomePosition);
         if (homePos != null && this.hasHomePosition) {
@@ -480,44 +479,33 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        this.setVariant(compound.getInt("Variant"));
-        this.setChested(compound.getBoolean("Chested"));
-        this.setSaddled(compound.getBoolean("Saddled"));
-        this.setHovering(compound.getBoolean("Hovering"));
-        this.setFlying(compound.getBoolean("Flying"));
-        this.setArmor(compound.getInt("Armor"));
-        feedings = compound.getInt("Feedings");
-        if (hippogryphInventory != null) {
-            ListTag nbttaglist = compound.getList("Items", 10);
-            this.initHippogryphInv();
-            for (int i = 0; i < nbttaglist.size(); ++i) {
-                CompoundTag CompoundNBT = nbttaglist.getCompound(i);
-                int j = CompoundNBT.getByte("Slot") & 255;
-                this.hippogryphInventory.setItem(j, ItemStack.of(CompoundNBT));
-            }
-        } else {
-            ListTag nbttaglist = compound.getList("Items", 10);
-            this.initHippogryphInv();
-            for (int i = 0; i < nbttaglist.size(); ++i) {
-                CompoundTag CompoundNBT = nbttaglist.getCompound(i);
-                int j = CompoundNBT.getByte("Slot") & 255;
-                this.initHippogryphInv();
-                this.hippogryphInventory.setItem(j, ItemStack.of(CompoundNBT));
-                //this.setArmorInSlot(j, this.getIntFromArmor(ItemStack.loadItemStackFromNBT(CompoundNBT)));
-                ItemStack saddle = hippogryphInventory.getItem(0);
-                ItemStack chest = hippogryphInventory.getItem(1);
-                if (level().isClientSide()) {
-                    IceAndFire.NETWORK_WRAPPER.sendToServer(new MessageHippogryphArmor(this.getId(), 0, saddle != null && saddle.getItem() == Items.SADDLE && !saddle.isEmpty() ? 1 : 0));
-                    IceAndFire.NETWORK_WRAPPER.sendToServer(new MessageHippogryphArmor(this.getId(), 1, chest != null && chest.getItem() == Blocks.CHEST.asItem() && !chest.isEmpty() ? 1 : 0));
-                    IceAndFire.NETWORK_WRAPPER.sendToServer(new MessageHippogryphArmor(this.getId(), 2, getIntFromArmor(hippogryphInventory.getItem(2))));
-                }
+        this.setVariant(compound.getIntOr("Variant", 0));
+        this.setChested(compound.getBooleanOr("Chested", false));
+        this.setSaddled(compound.getBooleanOr("Saddled", false));
+        this.setHovering(compound.getBooleanOr("Hovering", false));
+        this.setFlying(compound.getBooleanOr("Flying", false));
+        this.setArmor(compound.getIntOr("Armor", 0));
+        feedings = compound.getIntOr("Feedings", 0);
+        this.initHippogryphInv();
+        for (ValueInput slot : input.childrenListOrEmpty("Items")) {
+            int index = slot.getIntOr("Slot", -1);
+            ItemStack stack = slot.read("Stack", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+            if (index >= 0 && index < this.hippogryphInventory.getContainerSize() && !stack.isEmpty()) {
+                this.hippogryphInventory.setItem(index, stack);
             }
         }
-        this.hasHomePosition = compound.getBoolean("HasHomePosition");
-        if (hasHomePosition && compound.getInt("HomeAreaX") != 0 && compound.getInt("HomeAreaY") != 0 && compound.getInt("HomeAreaZ") != 0) {
-            homePos = new BlockPos(compound.getInt("HomeAreaX"), compound.getInt("HomeAreaY"), compound.getInt("HomeAreaZ"));
+        if (level().isClientSide()) {
+            ItemStack saddle = this.hippogryphInventory.getItem(0);
+            ItemStack chest = this.hippogryphInventory.getItem(1);
+            IafNetwork.sendToServer(new MessageHippogryphArmor(this.getId(), 0, saddle.getItem() == Items.SADDLE && !saddle.isEmpty() ? 1 : 0));
+            IafNetwork.sendToServer(new MessageHippogryphArmor(this.getId(), 1, chest.getItem() == Blocks.CHEST.asItem() && !chest.isEmpty() ? 1 : 0));
+            IafNetwork.sendToServer(new MessageHippogryphArmor(this.getId(), 2, getIntFromArmor(this.hippogryphInventory.getItem(2))));
         }
-        this.setCommand(compound.getInt("Command"));
+        this.hasHomePosition = compound.getBooleanOr("HasHomePosition", false);
+        if (hasHomePosition && compound.getIntOr("HomeAreaX", 0) != 0 && compound.getIntOr("HomeAreaY", 0) != 0 && compound.getIntOr("HomeAreaZ", 0) != 0) {
+            homePos = new BlockPos(compound.getIntOr("HomeAreaX", 0), compound.getIntOr("HomeAreaY", 0), compound.getIntOr("HomeAreaZ", 0));
+        }
+        this.setCommand(compound.getIntOr("Command", 0));
 
         if (this.isOrderedToSit()) {
             this.sitProgress = 20.0F;
@@ -687,6 +675,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override
@@ -735,7 +724,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
 
     @Override
     public void travel(@NotNull Vec3 pTravelVector) {
-        if (this.isControlledByLocalInstance()) {
+        if (this.isLocalInstanceAuthoritative()) {
             if (this.isInWater()) {
                 this.moveRelative(0.02F, pTravelVector);
                 this.move(MoverType.SELF, this.getDeltaMovement());
@@ -762,7 +751,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
         Vec2 vec2 = this.getRiddenRotation(player);
         this.setRot(vec2.y, vec2.x);
         this.yRotO = this.yBodyRot = this.yHeadRot = this.getYRot();
-        if (this.isControlledByLocalInstance()) {
+        if (this.isLocalInstanceAuthoritative()) {
             Vec3 vec3 = this.getDeltaMovement();
             float vertical = this.isGoingUp() ? 0.2F : this.isGoingDown() ? -0.2F : 0F;
             if (!this.isFlying() && !this.isHovering()) {
@@ -1060,9 +1049,9 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
             this.setArmor(getIntFromArmor(this.hippogryphInventory.getItem(2)));
         }
         /*if (this.world.isRemote) {
-            IceAndFire.NETWORK_WRAPPER.sendToServer(new MessageHippogryphArmor(this.getEntityId(), 0, saddle != null && saddle.getItem() == Items.SADDLE && !saddle.isEmpty() ? 1 : 0));
-            IceAndFire.NETWORK_WRAPPER.sendToServer(new MessageHippogryphArmor(this.getEntityId(), 1, chest != null && chest.getItem() == Item.getItemFromBlock(Blocks.CHEST) && !chest.isEmpty() ? 1 : 0));
-            IceAndFire.NETWORK_WRAPPER.sendToServer(new MessageHippogryphArmor(this.getEntityId(), 2, this.getIntFromArmor(this.hippogryphInventory.getStackInSlot(2))));
+            IafNetwork.sendToServer(new MessageHippogryphArmor(this.getEntityId(), 0, saddle != null && saddle.getItem() == Items.SADDLE && !saddle.isEmpty() ? 1 : 0));
+            IafNetwork.sendToServer(new MessageHippogryphArmor(this.getEntityId(), 1, chest != null && chest.getItem() == Blocks.CHEST.asItem() && !chest.isEmpty() ? 1 : 0));
+            IafNetwork.sendToServer(new MessageHippogryphArmor(this.getEntityId(), 2, this.getIntFromArmor(this.hippogryphInventory.getStackInSlot(2))));
         }*/
 
     }

@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -191,9 +192,9 @@ public class EntityDreadGhoul extends EntityDreadMob implements IAnimatedEntity,
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        this.setVariant(compound.getInt("Variant"));
-        this.setScreamStage(compound.getInt("ScreamStage"));
-        this.setSize(compound.getFloat("DreadScale"));
+        this.setVariant(compound.getIntOr("Variant", 0));
+        this.setScreamStage(compound.getIntOr("ScreamStage", 0));
+        this.setSize(compound.getFloatOr("DreadScale", 0.0F));
 
     }
 
@@ -245,6 +246,7 @@ public class EntityDreadGhoul extends EntityDreadMob implements IAnimatedEntity,
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override

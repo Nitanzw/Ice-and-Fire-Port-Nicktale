@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -195,11 +196,11 @@ public class EntityDreadThrall extends EntityDreadMob implements IAnimatedEntity
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        setBodyArmorVariant(compound.getInt("ArmorVariant"));
-        setCustomArmorHead(compound.getBoolean("HasCustomHelmet"));
-        setCustomArmorChest(compound.getBoolean("HasCustomChestplate"));
-        setCustomArmorLegs(compound.getBoolean("HasCustomLeggings"));
-        setCustomArmorFeet(compound.getBoolean("HasCustomBoots"));
+        setBodyArmorVariant(compound.getIntOr("ArmorVariant", 0));
+        setCustomArmorHead(compound.getBooleanOr("HasCustomHelmet", false));
+        setCustomArmorChest(compound.getBooleanOr("HasCustomChestplate", false));
+        setCustomArmorLegs(compound.getBooleanOr("HasCustomLeggings", false));
+        setCustomArmorFeet(compound.getBooleanOr("HasCustomBoots", false));
 
     }
 
@@ -211,6 +212,7 @@ public class EntityDreadThrall extends EntityDreadMob implements IAnimatedEntity
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     public boolean hasCustomArmorHead() {

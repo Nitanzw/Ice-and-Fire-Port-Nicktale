@@ -55,7 +55,7 @@ public class EntityTideTrident extends ThrownTrident {
         if (entitiesHit >= getMaxPiercing())
             this.dealtDamage = true;
         SoundEvent soundevent = SoundEvents.TRIDENT_HIT;
-        if (entity.hurt(damagesource, f)) {
+        if (entity.hurtOrSimulate(damagesource, f)) {
             if (entity.getType() == EntityType.ENDERMAN) {
                 return;
             }

@@ -16,7 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromStatues {
@@ -54,7 +54,7 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
             IceAndFire.LOGGER.debug("Encountered issue creating stone statue from {}", parent);
         }
         statue.setTrappedTag(entityTag);
-        statue.setTrappedEntityTypeString(ForgeRegistries.ENTITY_TYPES.getKey(parent.getType()).toString());
+        statue.setTrappedEntityTypeString(BuiltInRegistries.ENTITY_TYPE.getKey(parent.getType()).toString());
         statue.setTrappedEntityWidth(parent.getBbWidth());
         statue.setTrappedHeight(parent.getBbHeight());
         statue.setTrappedScale(parent.getScale());
@@ -152,13 +152,13 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
         super.readAdditionalSaveData(input);
         CompoundTag tag = EntityDataIO.readLegacyFields(input);
 
-        this.setCrackAmount(tag.getByte("CrackAmount"));
-        this.setTrappedEntityWidth(tag.getFloat("StatueWidth"));
-        this.setTrappedHeight(tag.getFloat("StatueHeight"));
-        this.setTrappedScale(tag.getFloat("StatueScale"));
-        this.setTrappedEntityTypeString(tag.getString("StatueEntityType"));
+        this.setCrackAmount(tag.getByteOr("CrackAmount", (byte) 0));
+        this.setTrappedEntityWidth(tag.getFloatOr("StatueWidth", 0.0F));
+        this.setTrappedHeight(tag.getFloatOr("StatueHeight", 0.0F));
+        this.setTrappedScale(tag.getFloatOr("StatueScale", 0.0F));
+        this.setTrappedEntityTypeString(tag.getStringOr("StatueEntityType", ""));
         if (tag.contains("StatueEntityTag")) {
-            this.setTrappedTag(tag.getCompound("StatueEntityTag"));
+            this.setTrappedTag(tag.getCompoundOrEmpty("StatueEntityTag"));
 
         }
 

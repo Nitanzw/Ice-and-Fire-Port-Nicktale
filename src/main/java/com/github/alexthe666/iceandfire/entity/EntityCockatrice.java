@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -204,14 +205,14 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
     }
 
     @Override
-    public boolean hurt(DamageSource source, float damage) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
         if (source.getEntity() != null && ServerEvents.doesScareCockatrice(source.getEntity())) {
             damage *= 5;
         }
         if (source == this.level().damageSources().inWall()) {
             return false;
         }
-        return super.hurt(source, damage);
+        return super.hurtServer(level, source, damage);
     }
 
     private boolean canUseStareOn(Entity entity) {
@@ -363,13 +364,13 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
         super.readAdditionalSaveData(input);
         CompoundTag tag = EntityDataIO.readLegacyFields(input);
 
-        this.setHen(tag.getBoolean("Hen"));
-        this.setStaring(tag.getBoolean("Staring"));
-        this.setTamingLevel(tag.getInt("TamingLevel"));
-        this.setTamingPlayer(tag.getInt("TamingPlayer"));
-        this.setCommand(tag.getInt("Command"));
-        this.hasHomePosition = tag.getBoolean("HasHomePosition");
-        if (hasHomePosition && tag.getInt("HomeAreaX") != 0 && tag.getInt("HomeAreaY") != 0 && tag.getInt("HomeAreaZ") != 0) {
+        this.setHen(tag.getBooleanOr("Hen", false));
+        this.setStaring(tag.getBooleanOr("Staring", false));
+        this.setTamingLevel(tag.getIntOr("TamingLevel", 0));
+        this.setTamingPlayer(tag.getIntOr("TamingPlayer", 0));
+        this.setCommand(tag.getIntOr("Command", 0));
+        this.hasHomePosition = tag.getBooleanOr("HasHomePosition", false);
+        if (hasHomePosition && tag.getIntOr("HomeAreaX", 0) != 0 && tag.getIntOr("HomeAreaY", 0) != 0 && tag.getIntOr("HomeAreaZ", 0) != 0) {
             homePos = new HomePosition(tag, this.level());
         }
         this.setConfigurableAttributes();
@@ -739,6 +740,7 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override

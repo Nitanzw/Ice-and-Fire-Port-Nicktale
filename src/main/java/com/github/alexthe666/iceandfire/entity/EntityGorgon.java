@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -193,7 +194,7 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
         if (this.deathTime >= 200) {
             if (!this.level().isClientSide() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))) {
                 int i = this.getExperienceReward();
-                i = net.neoforged.neoforge.event.ForgeEventFactory.getExperienceDrop(this, this.lastHurtByPlayer, i);
+                i = net.neoforged.neoforge.event.EventHooks.getExperienceDrop(this, this.lastHurtByPlayer, i);
                 while (i > 0) {
                     int j = ExperienceOrb.getExperienceValue(i);
                     i -= j;
@@ -318,6 +319,7 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override

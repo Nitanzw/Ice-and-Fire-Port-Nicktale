@@ -105,18 +105,17 @@ public class EntityMobSkull extends Animal implements IBlacklistedFromStatues, I
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource var1, float var2) {
-        this.turnIntoItem();
-        return super.hurt(var1, var2);
+    public boolean hurtServer(ServerLevel level, @NotNull DamageSource source, float amount) {
+        this.turnIntoItem(level);
+        return super.hurtServer(level, source, amount);
     }
 
-    public void turnIntoItem() {
+    public void turnIntoItem(ServerLevel level) {
         if (isRemoved())
             return;
         this.remove(RemovalReason.DISCARDED);
         ItemStack stack = new ItemStack(getSkullType().skull_item.get(), 1);
-        if (!this.level().isClientSide())
-            this.spawnAtLocation(stack, 0.0F);
+        this.spawnAtLocation(level, stack, 0.0F);
     }
 
     @Override
@@ -137,8 +136,8 @@ public class EntityMobSkull extends Animal implements IBlacklistedFromStatues, I
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        this.setYaw(compound.getFloat("SkullYaw"));
-        this.setEnumOrdinal(compound.getInt("SkullType"));
+        this.setYaw(compound.getFloatOr("SkullYaw", 0.0F));
+        this.setEnumOrdinal(compound.getIntOr("SkullType", 0));
 
     }
 

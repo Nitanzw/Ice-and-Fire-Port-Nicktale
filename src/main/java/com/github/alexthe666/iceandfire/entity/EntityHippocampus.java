@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -16,13 +17,11 @@ import com.github.alexthe666.iceandfire.entity.util.ISyncMount;
 import com.github.alexthe666.iceandfire.inventory.HippocampusContainerMenu;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -56,11 +55,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -90,7 +88,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     public float sitProgress;
     private int animationTick;
     private Animation currentAnimation;
-    private LazyOptional<?> itemHandler = null;
+    private ItemStacksResourceHandler itemHandler;
 
     public EntityHippocampus(EntityType<? extends EntityHippocampus> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -327,7 +325,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         Vec2 vec2 = this.getRiddenRotation(player);
         this.setRot(vec2.y, vec2.x);
         this.yRotO = this.yBodyRot = this.yHeadRot = this.getYRot();
-        if (this.isControlledByLocalInstance()) {
+        if (this.isLocalInstanceAuthoritative()) {
             Vec3 vec3 = this.getDeltaMovement();
 
             if (this.isGoingUp()) {
@@ -390,17 +388,15 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         compound.putBoolean("Chested", this.isChested());
         compound.putBoolean("Saddled", this.isSaddled());
         compound.putInt("Armor", this.getArmor());
-        ListTag nbttaglist = new ListTag();
+        ValueOutput.ValueOutputList items = output.childrenList("Items");
         for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
             ItemStack itemstack = this.inventory.getItem(i);
             if (!itemstack.isEmpty()) {
-                CompoundTag CompoundNBT = new CompoundTag();
-                CompoundNBT.putByte("Slot", (byte) i);
-                itemstack.save(CompoundNBT);
-                nbttaglist.add(CompoundNBT);
+                ValueOutput slot = items.addChild();
+                slot.putInt("Slot", i);
+                slot.store("Stack", ItemStack.CODEC, itemstack);
             }
         }
-        compound.put("Items", nbttaglist);
 
         output.store(compound);
     }
@@ -410,17 +406,18 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        this.setVariant(compound.getInt("Variant"));
-        this.setChested(compound.getBoolean("Chested"));
-        this.setSaddled(compound.getBoolean("Saddled"));
-        this.setArmor(compound.getInt("Armor"));
+        this.setVariant(compound.getIntOr("Variant", 0));
+        this.setChested(compound.getBooleanOr("Chested", false));
+        this.setSaddled(compound.getBooleanOr("Saddled", false));
+        this.setArmor(compound.getIntOr("Armor", 0));
         if (inventory != null) {
-            ListTag nbttaglist = compound.getList("Items", 10);
             this.createInventory();
-            for (int i = 0; i < nbttaglist.size(); ++i) {
-                CompoundTag CompoundNBT = nbttaglist.getCompound(i);
-                int j = CompoundNBT.getByte("Slot") & 255;
-                this.inventory.setItem(j, ItemStack.of(CompoundNBT));
+            for (ValueInput slot : input.childrenListOrEmpty("Items")) {
+                int index = slot.getIntOr("Slot", -1);
+                ItemStack stack = slot.read("Stack", ItemStack.CODEC).orElse(ItemStack.EMPTY);
+                if (index >= 0 && index < this.inventory.getContainerSize() && !stack.isEmpty()) {
+                    this.inventory.setItem(index, stack);
+                }
             }
         }
 
@@ -447,7 +444,12 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
 
         this.inventory.addListener(this);
         this.updateContainerEquipment();
-        this.itemHandler = LazyOptional.of(() -> new InvWrapper(this.inventory));
+        this.itemHandler = new ItemStacksResourceHandler(this.inventory.getItems()) {
+            @Override
+            protected void onContentsChanged(int slot, ItemStack previousStack) {
+                inventory.setChanged();
+            }
+        };
     }
 
     protected void updateContainerEquipment() {
@@ -459,20 +461,8 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     }
 
     @Override
-    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
-        if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && itemHandler != null)
-            return itemHandler.cast();
-        return super.getCapability(capability, facing);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        if (itemHandler != null) {
-            LazyOptional<?> oldHandler = itemHandler;
-            itemHandler = null;
-            oldHandler.invalidate();
-        }
+    public ResourceHandler<ItemResource> getItemHandler() {
+        return this.isAlive() ? this.itemHandler : null;
     }
 
     public boolean hasInventoryChanged(Container pInventory) {
@@ -557,6 +547,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override
@@ -582,7 +573,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
 
     @Override
     public void travel(@NotNull Vec3 pTravelVector) {
-        if (this.isControlledByLocalInstance() && this.isInWater()) {
+        if (this.isLocalInstanceAuthoritative() && this.isInWater()) {
             this.moveRelative(0.1F, pTravelVector);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));

@@ -77,7 +77,7 @@ public class EntityStymphalianFeather extends AbstractArrow {
             });
             if (entity.getUseItem().isEmpty()) {
                 if (entity instanceof Player) {
-                    net.neoforged.neoforge.event.ForgeEventFactory.onPlayerDestroyItem((Player) entity, copyBeforeUse, Hand);
+                    net.neoforged.neoforge.event.EventHooks.onPlayerDestroyItem((Player) entity, copyBeforeUse, Hand);
                 }
 
                 if (Hand == net.minecraft.world.InteractionHand.MAIN_HAND) {

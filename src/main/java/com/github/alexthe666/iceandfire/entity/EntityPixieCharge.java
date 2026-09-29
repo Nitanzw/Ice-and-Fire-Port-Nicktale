@@ -79,7 +79,7 @@ public EntityPixieCharge(EntityType<? extends Fireball> t, Level worldIn, double
 
             ++this.ticksInAir;
             HitResult raytraceresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-            if (raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+            if (raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.EventHooks.onProjectileImpact(this, raytraceresult)) {
                 this.onHit(raytraceresult);
             }
 

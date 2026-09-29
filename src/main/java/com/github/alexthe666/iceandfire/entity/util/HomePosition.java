@@ -64,7 +64,7 @@ public class HomePosition {
         this.x = input.getIntOr("HomeAreaX", this.x);
         this.y = input.getIntOr("HomeAreaY", this.y);
         this.z = input.getIntOr("HomeAreaZ", this.z);
-        this.dimension = input.getString("HomeDimension").orElseGet(() ->
+        this.dimension = input.getStringOr("HomeDimension", "").orElseGet(() ->
             this.dimension == null ? DragonUtils.getDimensionName(world) : this.dimension);
         this.pos = new BlockPos(this.x, this.y, this.z);
         return this;
@@ -79,14 +79,14 @@ public class HomePosition {
 
     public HomePosition read(CompoundTag compound) {
         if (compound.contains("HomeAreaX"))
-            this.x = compound.getInt("HomeAreaX");
+            this.x = compound.getIntOr("HomeAreaX", 0);
         if (compound.contains("HomeAreaY"))
-            this.y = compound.getInt("HomeAreaY");
+            this.y = compound.getIntOr("HomeAreaY", 0);
         if (compound.contains("HomeAreaZ"))
-            this.z = compound.getInt("HomeAreaZ");
+            this.z = compound.getIntOr("HomeAreaZ", 0);
         pos = new BlockPos(x, y, z);
         if (compound.contains("HomeDimension"))
-            this.dimension = compound.getString("HomeDimension");
+            this.dimension = compound.getStringOr("HomeDimension", "");
         return this;
     }
 }

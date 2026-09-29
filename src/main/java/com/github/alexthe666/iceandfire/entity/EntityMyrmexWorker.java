@@ -27,8 +27,9 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.item.trading.VillagerTrades;
+
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -115,10 +116,10 @@ public class EntityMyrmexWorker extends EntityMyrmexBase {
         if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
             if (this.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof ItemMyrmexEgg) {
                 boolean isJungle = this.getItemInHand(InteractionHand.MAIN_HAND).getItem() == IafItemRegistry.MYRMEX_JUNGLE_EGG.get();
-                CompoundTag tag = this.getItemInHand(InteractionHand.MAIN_HAND).getTag();
+                net.minecraft.world.item.component.CustomData tag = this.getItemInHand(InteractionHand.MAIN_HAND).get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
                 int metadata = 0;
                 if (tag != null) {
-                    metadata = tag.getInt("EggOrdinal");
+                    metadata = tag.copyTag().getIntOr("EggOrdinal", 0);
                 }
                 EntityMyrmexEgg egg = new EntityMyrmexEgg(IafEntityRegistry.MYRMEX_EGG.get(), level());
                 egg.copyPosition(this);
@@ -176,12 +177,12 @@ public class EntityMyrmexWorker extends EntityMyrmexBase {
     }
 
     @Override
-    protected VillagerTrades.ItemListing[] getLevel1Trades() {
+    protected MyrmexTrades.TradeFactory[] getLevel1Trades() {
         return isJungle() ? MyrmexTrades.JUNGLE_WORKER.get(1) : MyrmexTrades.DESERT_WORKER.get(1);
     }
 
     @Override
-    protected VillagerTrades.ItemListing[] getLevel2Trades() {
+    protected MyrmexTrades.TradeFactory[] getLevel2Trades() {
         return isJungle() ? MyrmexTrades.JUNGLE_WORKER.get(2) : MyrmexTrades.DESERT_WORKER.get(2);
     }
 
@@ -220,7 +221,7 @@ public class EntityMyrmexWorker extends EntityMyrmexBase {
             this.setAnimation(this.getRandom().nextBoolean() ? ANIMATION_STING : ANIMATION_BITE);
             float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
             this.setLastHurtMob(entityIn);
-            boolean flag = entityIn.hurt(this.level().damageSources().mobAttack(this), f);
+            boolean flag = entityIn.hurtOrSimulate(this.level().damageSources().mobAttack(this), f);
             if (this.getAnimation() == ANIMATION_STING && flag) {
                 this.playStingSound();
                 if (entityIn instanceof LivingEntity) {
@@ -277,9 +278,9 @@ public class EntityMyrmexWorker extends EntityMyrmexBase {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (amount >= 1.0D && !this.level().isClientSide() && this.getRandom().nextInt(3) == 0 && this.getItemInHand(InteractionHand.MAIN_HAND) != ItemStack.EMPTY) {
-            this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0);
+            this.spawnAtLocation(level, this.getItemInHand(InteractionHand.MAIN_HAND), 0);
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         }
         if (amount >= 1.0D && !this.getPassengers().isEmpty()) {
@@ -287,7 +288,7 @@ public class EntityMyrmexWorker extends EntityMyrmexBase {
                 entity.stopRiding();
             }
         }
-        return super.hurt(source, amount);
+        return super.hurtServer(level, source, amount);
     }
 
     public Entity getHeldEntity() {

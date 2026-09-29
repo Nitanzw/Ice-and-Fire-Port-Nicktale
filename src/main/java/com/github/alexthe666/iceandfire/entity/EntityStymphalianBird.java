@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -134,7 +135,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
         CompoundTag tag = new CompoundTag();
 
         if (this.getVictorId() != null) {
-            tag.putUUID("VictorUUID", this.getVictorId());
+            tag.store("VictorUUID", net.minecraft.core.UUIDUtil.CODEC, this.getVictorId());
         }
         tag.putBoolean("Flying", this.isFlying());
 
@@ -148,10 +149,10 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
 
         UUID s;
 
-        if (tag.hasUUID("VictorUUID")) {
-            s = tag.getUUID("VictorUUID");
+        if (tag.read("VictorUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).isPresent()) {
+            s = tag.read("VictorUUID", net.minecraft.core.UUIDUtil.LENIENT_CODEC).orElse(null);
         } else {
-            String s1 = tag.getString("VictorUUID");
+            String s1 = tag.getStringOr("VictorUUID", "");
             s = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s1);
         }
 
@@ -161,7 +162,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
             } catch (Throwable var4) {
             }
         }
-        this.setFlying(tag.getBoolean("Flying"));
+        this.setFlying(tag.getBooleanOr("Flying", false));
 
     }
 
@@ -515,6 +516,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override

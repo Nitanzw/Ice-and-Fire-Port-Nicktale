@@ -8,6 +8,7 @@ import com.github.alexthe666.iceandfire.entity.ai.*;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityPixieHouse;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
 import com.github.alexthe666.iceandfire.message.MessageUpdatePixieHouse;
+import com.github.alexthe666.iceandfire.message.IafNetwork;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.google.common.base.Predicate;
 import net.minecraft.core.BlockPos;
@@ -138,9 +139,9 @@ public class EntityPixie extends TamableAnimal {
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, @NotNull DamageSource source, float amount) {
         if (!this.level().isClientSide() && this.getRandom().nextInt(3) == 0 && !this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
-            this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0);
+            this.spawnAtLocation(level, this.getItemInHand(InteractionHand.MAIN_HAND), 0);
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             this.stealCooldown = STEAL_COOLDOWN;
             return true;
@@ -148,7 +149,7 @@ public class EntityPixie extends TamableAnimal {
         if (this.isOwnerClose() && ((source.getEntity() != null && source == this.level().damageSources().fallingBlock(source.getEntity())) || source == this.level().damageSources().inWall() || this.getOwner() != null && source.getEntity() == this.getOwner())) {
             return false;
         }
-        return super.hurt(source, amount);
+        return super.hurtServer(level, source, amount);
     }
 
     @Override
@@ -344,7 +345,7 @@ public class EntityPixie extends TamableAnimal {
                     house.pixieItems.set(0, this.getItemInHand(InteractionHand.MAIN_HAND));
                     house.tamedPixie = this.isTame();
                     house.pixieOwnerUUID = this.getOwnerUUID();
-                    IceAndFire.sendMSGToAll(new MessageUpdatePixieHouse(housePos.asLong(), true, this.getColor()));
+                    IafNetwork.sendToAll(new MessageUpdatePixieHouse(housePos.asLong(), true, this.getColor()));
                     this.remove(RemovalReason.DISCARDED);
                 }
             }
@@ -372,13 +373,13 @@ public class EntityPixie extends TamableAnimal {
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        this.setColor(compound.getInt("Color"));
+        this.setColor(compound.getIntOr("Color", 0));
 
-        this.stealCooldown = compound.getInt("StealCooldown");
-        this.ticksHeldItemFor = compound.getInt("HoldingTicks");
+        this.stealCooldown = compound.getIntOr("StealCooldown", 0);
+        this.ticksHeldItemFor = compound.getIntOr("HoldingTicks", 0);
 
-        this.setPixieSitting(compound.getBoolean("PixieSitting"));
-        this.setCommand(compound.getInt("Command"));
+        this.setPixieSitting(compound.getBooleanOr("PixieSitting", false));
+        this.setCommand(compound.getIntOr("Command", 0));
 
     }
 

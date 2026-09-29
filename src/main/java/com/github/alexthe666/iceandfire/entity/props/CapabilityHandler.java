@@ -22,8 +22,8 @@ import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 /** Registration and synchronization for Ice and Fire entity data and entity inventories. */
@@ -54,6 +54,8 @@ public final class CapabilityHandler {
             (dragon, context) -> dragon.getDragonItemHandler());
         event.registerEntity(Capabilities.Item.ENTITY, IafEntityRegistry.LIGHTNING_DRAGON.get(),
             (dragon, context) -> dragon.getDragonItemHandler());
+        event.registerEntity(Capabilities.Item.ENTITY, IafEntityRegistry.HIPPOCAMPUS.get(),
+            (hippocampus, context) -> hippocampus.getItemHandler());
     }
 
     public static void handleInitialSync(EntityJoinLevelEvent event) {
@@ -76,8 +78,14 @@ public final class CapabilityHandler {
             return;
         }
 
-        EntityDataProvider.getCapability(entity).ifPresent(data ->
-            IafNetwork.sendToAll(new SyncEntityData(entity.getId(), data.serialize())));
+        EntityDataProvider.getCapability(entity).ifPresent(data -> {
+            SyncEntityData payload = new SyncEntityData(entity.getId(), data.serialize());
+            if (entity instanceof ServerPlayer) {
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, payload);
+            } else {
+                PacketDistributor.sendToPlayersTrackingEntity(entity, payload);
+            }
+        });
     }
 
     public static @Nullable Player getLocalPlayer() {

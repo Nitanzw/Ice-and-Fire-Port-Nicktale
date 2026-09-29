@@ -1,7 +1,5 @@
 package com.github.alexthe666.iceandfire.entity.util;
 
-import com.nicktale.api.client.model.AdvancedModelBox;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -12,6 +10,16 @@ public class ReversedBuffer {
     private float pitchVariation;
     private float prevYawVariation;
     private float prevPitchVariation;
+
+    /** Returns the interpolated yaw-chain value in degrees for client rendering. */
+    public float getInterpolatedYawVariation(float partialTick) {
+        return Mth.lerp(partialTick, this.prevYawVariation, this.yawVariation);
+    }
+
+    /** Returns the interpolated pitch-chain value in degrees for client rendering. */
+    public float getInterpolatedPitchVariation(float partialTick) {
+        return Mth.lerp(partialTick, this.prevPitchVariation, this.pitchVariation);
+    }
 
     public void resetRotations() {
         this.yawVariation = 0.0F;
@@ -118,32 +126,4 @@ public class ReversedBuffer {
         this.calculateChainWaveBuffer(maxAngle, bufferTime, angleDecrement, 1.0F, entity);
     }
 
-    /**
-     * Applies this buffer on the Y axis to the given array of model boxes.
-     *
-     * @param boxes the box array
-     */
-    public void applyChainSwingBuffer(BasicModelPart... boxes) {
-        float rotateAmount = 0.01745329251F * Mth.lerp(getPartialTicks(), this.prevYawVariation, this.yawVariation) / boxes.length;
-        for (BasicModelPart box : boxes) {
-            box.rotateAngleY -= rotateAmount;
-        }
-    }
-
-    /**
-     * Applies this buffer on the X axis to the given array of model boxes.
-     *
-     * @param boxes the box array
-     */
-    public void applyChainWaveBuffer(BasicModelPart... boxes) {
-        float rotateAmount = 0.01745329251F * Mth.lerp(getPartialTicks(), this.prevYawVariation, this.yawVariation) / boxes.length;
-        for (BasicModelPart box : boxes) {
-            box.rotateAngleX -= rotateAmount;
-        }
-    }
-
-
-    private float getPartialTicks() {
-        return Minecraft.getInstance().getFrameTime();
-    }
 }

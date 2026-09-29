@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -14,13 +15,13 @@ import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.recipe.IafBannerPatterns;
 import com.google.common.base.Predicate;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -39,11 +40,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BannerPatterns;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -63,13 +64,12 @@ public class EntityDreadKnight extends EntityDreadMob implements IAnimatedEntity
     }
 
     private static ItemStack generateShield() {
-        ItemStack itemstack = new ItemStack(Items.CYAN_BANNER);
-        CompoundTag compoundnbt = itemstack.getOrCreateTagElement("BlockEntityTag");
-
-        ListTag listnbt = new BannerPattern.Builder().addPattern(BannerPatterns.BASE, DyeColor.CYAN).addPattern(Holder.direct(IafBannerPatterns.PATTERN_DREAD.get()), DyeColor.WHITE).toListTag();
-        compoundnbt.put("Patterns", listnbt);
+        BannerPatternLayers patterns = new BannerPatternLayers.Builder()
+            .add(BuiltInRegistries.BANNER_PATTERN.getHolderOrThrow(BannerPatterns.BASE), DyeColor.CYAN)
+            .add(BuiltInRegistries.BANNER_PATTERN.getHolderOrThrow(IafBannerPatterns.PATTERN_DREAD.getKey()), DyeColor.WHITE)
+            .build();
         ItemStack shield = new ItemStack(Items.SHIELD, 1);
-        shield.setTag(itemstack.getTag());
+        shield.set(DataComponents.BANNER_PATTERNS, patterns);
         return shield;
     }
 
@@ -176,7 +176,7 @@ public class EntityDreadKnight extends EntityDreadMob implements IAnimatedEntity
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        setArmorVariant(compound.getInt("ArmorVariant"));
+        setArmorVariant(compound.getIntOr("ArmorVariant", 0));
 
     }
 
@@ -188,6 +188,7 @@ public class EntityDreadKnight extends EntityDreadMob implements IAnimatedEntity
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     public int getArmorVariant() {

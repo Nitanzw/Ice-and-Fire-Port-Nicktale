@@ -22,7 +22,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.item.trading.VillagerTrades;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -45,12 +45,12 @@ public class EntityMyrmexSoldier extends EntityMyrmexBase {
     }
 
     @Override
-    protected VillagerTrades.ItemListing[] getLevel1Trades() {
+    protected MyrmexTrades.TradeFactory[] getLevel1Trades() {
         return isJungle() ? MyrmexTrades.JUNGLE_SOLDIER.get(1) : MyrmexTrades.DESERT_SOLDIER.get(1);
     }
 
     @Override
-    protected VillagerTrades.ItemListing[] getLevel2Trades() {
+    protected MyrmexTrades.TradeFactory[] getLevel2Trades() {
         return isJungle() ? MyrmexTrades.JUNGLE_SOLDIER.get(2) : MyrmexTrades.DESERT_SOLDIER.get(2);
     }
 
@@ -171,7 +171,7 @@ public class EntityMyrmexSoldier extends EntityMyrmexBase {
             this.setAnimation(this.getRandom().nextBoolean() ? ANIMATION_STING : ANIMATION_BITE);
             float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
             this.setLastHurtMob(entityIn);
-            boolean flag = entityIn.hurt(level().damageSources().mobAttack(this), f);
+            boolean flag = entityIn.hurtOrSimulate(level().damageSources().mobAttack(this), f);
             if (this.getAnimation() == ANIMATION_STING && flag) {
                 this.playStingSound();
                 if (entityIn instanceof LivingEntity) {

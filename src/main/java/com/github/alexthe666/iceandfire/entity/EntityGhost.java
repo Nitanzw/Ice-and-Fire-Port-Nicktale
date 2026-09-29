@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -350,10 +351,10 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
         super.readAdditionalSaveData(input);
         CompoundTag compound = EntityDataIO.readLegacyFields(input);
 
-        this.setColor(compound.getInt("Color"));
-        this.setDaytimeMode(compound.getBoolean("DaytimeMode"));
-        this.setDaytimeCounter(compound.getInt("DaytimeCounter"));
-        this.setFromChest(compound.getBoolean("FromChest"));
+        this.setColor(compound.getIntOr("Color", 0));
+        this.setDaytimeMode(compound.getBooleanOr("DaytimeMode", false));
+        this.setDaytimeCounter(compound.getIntOr("DaytimeCounter", 0));
+        this.setFromChest(compound.getBooleanOr("FromChest", false));
 
         this.setConfigurableAttributes();
 
@@ -395,6 +396,7 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
     @Override
     public void setAnimation(Animation animation) {
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override

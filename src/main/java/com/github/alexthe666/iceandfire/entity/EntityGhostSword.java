@@ -99,7 +99,7 @@ public class EntityGhostSword extends AbstractArrow {
                 }
             }
 
-            if (raytraceresult != null && raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+            if (raytraceresult != null && raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.EventHooks.onProjectileImpact(this, raytraceresult)) {
                 if (raytraceresult.getType() != HitResult.Type.BLOCK) {
                     this.onHit(raytraceresult);
 
@@ -191,7 +191,7 @@ private IntOpenHashSet piercedEntities;
             entity.setSecondsOnFire(5);
         }
 
-        if (entity.hurt(damagesource, i)) {
+        if (entity.hurtOrSimulate(damagesource, i)) {
             if (flag) {
                 return;
             }
