@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.client.model;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.IAnimatedEntity;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.resources.Identifier;
 
 /** Everything ModelHippogryph needs from the entity, copied once per frame by the renderer. */
 public class HippogryphRenderState extends LivingEntityRenderState {
@@ -16,4 +17,9 @@ public class HippogryphRenderState extends LivingEntityRenderState {
     public boolean hovering;
     public int airBorneCounter;
     public boolean dodo;
+    public Identifier texture;
+    public int armor;
+    public boolean saddled;
+    public boolean chested;
+    public boolean hasControllingPassenger;
 }
