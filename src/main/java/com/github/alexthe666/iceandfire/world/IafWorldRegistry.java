@@ -63,6 +63,9 @@ public class IafWorldRegistry {
     }
 
     public static boolean isFarEnoughFromSpawn(final LevelAccessor level, final BlockPos position) {
+        if (com.github.alexthe666.iceandfire.util.WorldUtil.isForcingGeneration()) {
+            return true;
+        }
         if (!(level instanceof net.minecraft.world.level.ServerLevelAccessor serverAccessor)) {
             return true;
         }
@@ -76,6 +79,9 @@ public class IafWorldRegistry {
     }
 
     public static boolean isFarEnoughFromDangerousGen(final ServerLevelAccessor level, final BlockPos position, final String id, final IafWorldData.FeatureType type) {
+        if (com.github.alexthe666.iceandfire.util.WorldUtil.isForcingGeneration()) {
+            return true;
+        }
         IafWorldData data = IafWorldData.get(level.getLevel());
         return data.check(type, position, id);
     }

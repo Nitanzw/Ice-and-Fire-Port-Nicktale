@@ -88,6 +88,7 @@ public abstract class WorldGenDragonCave extends Feature<NoneFeatureConfiguratio
         generateCave(worldIn, radius, 3, position, rand);
         EntityDragonBase dragon = createDragon(worldIn, rand, position, dragonAge);
         worldIn.addFreshEntity(dragon);
+        com.github.alexthe666.iceandfire.world.DragonRespawnData.register(getId(), worldIn.getLevel().dimension().identifier().toString(), context.origin(), dragon.getUUID());
         return true;
     }
 

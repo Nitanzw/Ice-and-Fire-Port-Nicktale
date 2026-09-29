@@ -117,6 +117,7 @@ public class CommonProxy {
 
     public void setup() {
         NeoForge.EVENT_BUS.register(new ServerEvents());
+        NeoForge.EVENT_BUS.register(new com.github.alexthe666.iceandfire.event.DragonRespawnEvents());
         if (Boolean.getBoolean("iaf.smoketest") || System.getenv("IAF_WORLDGEN") != null) {
             NeoForge.EVENT_BUS.register(new com.github.alexthe666.iceandfire.event.DevSmokeTest());
         }

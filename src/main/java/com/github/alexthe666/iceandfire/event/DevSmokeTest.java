@@ -29,6 +29,36 @@ public class DevSmokeTest {
         }
         commands = new java.util.ArrayDeque<>();
         java.util.List<String> loads = new java.util.ArrayList<>();
+        if ("respawn".equals(System.getenv("IAF_WORLDGEN"))) {
+            loads.add("execute in minecraft:overworld run forceload add 15952 -48 16048 48");
+            commands.add("execute in minecraft:overworld run place feature iceandfire:fire_dragon_roost 16000 @Y@ 0");
+            commands.add("#count after placing");
+            for (int w = 0; w < 5; w++) {
+                commands.add("#wait");
+            }
+            commands.add("execute in minecraft:overworld run kill @e[type=iceandfire:fire_dragon]");
+            commands.add("#count after kill");
+            for (int w = 0; w < 200; w++) {
+                commands.add("#wait");
+            }
+            commands.add("#count after respawn window");
+            commands = withLoads(loads, commands);
+            return;
+        }
+        if ("retry".equals(System.getenv("IAF_WORLDGEN"))) {
+            String[] names = {"cyclops_cave", "fire_dragon_cave", "fire_lily", "frost_lily", "lightning_lily", "ice_dragon_roost", "sapphire_ore", "silver_ore"};
+            int n = 0;
+            for (String f : names) {
+                for (int k = 0; k < 4; k++) {
+                    int x = 12000 + 400 * n++;
+                    loads.add("execute in minecraft:overworld run forceload add " + (x - 48) + " -48 " + (x + 48) + " 48");
+                    String y = f.endsWith("_ore") ? "20" : "@Y@";
+                    commands.add("execute in minecraft:overworld run place feature iceandfire:" + f + " " + x + " " + y + " 0");
+                }
+            }
+            commands = withLoads(loads, commands);
+            return;
+        }
         int i = 0;
         for (String f : new String[]{"cyclops_cave", "fire_dragon_cave", "fire_dragon_roost", "fire_lily", "frost_lily", "hydra_cave", "ice_dragon_cave", "ice_dragon_roost", "lightning_dragon_cave", "lightning_dragon_roost", "lightning_lily", "myrmex_hive_desert", "myrmex_hive_jungle", "pixie_village", "sapphire_ore", "silver_ore", "siren_island", "spawn_death_worm", "spawn_dragon_skeleton_fire", "spawn_dragon_skeleton_ice", "spawn_dragon_skeleton_lightning", "spawn_hippocampus", "spawn_sea_serpent", "spawn_stymphalian_bird", "spawn_wandering_cyclops"}) {
             int x = 300 * ++i;
@@ -79,6 +109,18 @@ public class DevSmokeTest {
         }
         String cmd = commands.poll();
         if (cmd.equals("#wait")) {
+            return;
+        }
+        if (cmd.startsWith("#count")) {
+            int total = 0;
+            for (var lvl : server.getAllLevels()) {
+                for (var e : lvl.getAllEntities()) {
+                    if (e instanceof com.github.alexthe666.iceandfire.entity.EntityDragonBase d && !d.isModelDead()) {
+                        total++;
+                    }
+                }
+            }
+            IceAndFire.LOGGER.info("SMOKETEST dragons alive ({}): {}", cmd, total);
             return;
         }
         if (cmd.contains("@Y@")) {
