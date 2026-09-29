@@ -1,18 +1,16 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
-import com.github.alexthe666.citadel.client.model.AdvancedModelBox;
-import com.github.alexthe666.citadel.client.model.ModelAnimator;
-import net.minecraft.world.entity.Entity;
+import com.nicktale.api.client.model.AdvancedEntityModel;
+import com.nicktale.api.client.model.AdvancedModelBox;
+import com.nicktale.api.client.model.ModelAnimator;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
-public abstract class ModelDragonBase<T extends Entity> extends AdvancedEntityModel<T> implements ICustomStatueModel {
+public abstract class ModelDragonBase<S extends EntityRenderState> extends AdvancedEntityModel<S> {
 
-    @Override
     public void rotate(ModelAnimator animator, AdvancedModelBox model, float x, float y, float z) {
         animator.rotate(model, (float) Math.toRadians(x), (float) Math.toRadians(y), (float) Math.toRadians(z));
     }
 
-    @Override
     public void rotateMinus(ModelAnimator animator, AdvancedModelBox model, float x, float y, float z) {
         animator.rotate(model, (float) Math.toRadians(x) - model.defaultRotationX, (float) Math.toRadians(y) - model.defaultRotationY, (float) Math.toRadians(z) - model.defaultRotationZ);
     }
@@ -51,24 +49,5 @@ public abstract class ModelDragonBase<T extends Entity> extends AdvancedEntityMo
         model.rotationPointX += progress * x / 20.0F;
         model.rotationPointY += progress * y / 20.0F;
         model.rotationPointZ += progress * z / 20.0F;
-    }
-
-    @Override
-    public void setRotateAngle(AdvancedModelBox modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void faceTarget(float yaw, float pitch, float rotationDivisor, AdvancedModelBox... boxes) {
-        float actualRotationDivisor = rotationDivisor * (float) boxes.length;
-        float yawAmount = yaw * (float) Math.PI / 180F / actualRotationDivisor;
-        float pitchAmount = pitch * (float) Math.PI / 180F / actualRotationDivisor;
-        for (AdvancedModelBox box : boxes) {
-            box.rotateAngleY += yawAmount;
-            box.rotateAngleX += pitchAmount;
-        }
-
     }
 }
