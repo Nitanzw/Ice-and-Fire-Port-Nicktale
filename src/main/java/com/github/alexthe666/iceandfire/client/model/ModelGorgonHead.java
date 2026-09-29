@@ -1,12 +1,12 @@
 package com.github.alexthe666.iceandfire.client.model;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.world.entity.Entity;
 
-public class ModelGorgonHead extends AdvancedEntityModel<Entity> {
+public class ModelGorgonHead extends AdvancedEntityModel<EntityRenderState> {
     public AdvancedModelBox Head;
     public AdvancedModelBox Head_Details;
     public AdvancedModelBox SnakeBaseR2;
@@ -486,14 +486,10 @@ public class ModelGorgonHead extends AdvancedEntityModel<Entity> {
     }
 
     @Override
-    public void setupAnim(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    protected void animate(EntityRenderState state) {
 
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Head);
-    }
 
 
     @Override
@@ -503,8 +499,4 @@ public class ModelGorgonHead extends AdvancedEntityModel<Entity> {
         modelRenderer.rotateAngleZ = z;
     }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Head);
-    }
 }

@@ -6,7 +6,7 @@ import com.github.alexthe666.iceandfire.client.model.util.HideableModelRenderer;
 import com.github.alexthe666.iceandfire.entity.EntityGhost;
 import com.google.common.collect.ImmutableList;
 
-public class ModelGhost extends ModelBipedBase<EntityGhost> {
+public class ModelGhost extends ModelBipedBase<BipedRenderState> {
     public AdvancedModelBox robe;
     public AdvancedModelBox mask;
     public AdvancedModelBox hood;
@@ -87,7 +87,12 @@ public class ModelGhost extends ModelBipedBase<EntityGhost> {
     }
 
     @Override
-    public void setupAnim(EntityGhost entity, float f, float f1, float f2, float f3, float f4) {
+    protected void animate(BipedRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
         this.resetToDefaultPose();
         animate(entity, f, f1, f2, f3, f4, 1);
         this.faceTarget(f3, f4, 1, this.head);
@@ -122,8 +127,8 @@ public class ModelGhost extends ModelBipedBase<EntityGhost> {
     }
 
     @Override
-    public void animate(EntityGhost entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        animator.update(entity);
+    public void animate(BipedRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityGhost.ANIMATION_SCARE)) {
             animator.startKeyframe(5);
             animator.move(head, 0, -2, 0);
@@ -176,10 +181,5 @@ public class ModelGhost extends ModelBipedBase<EntityGhost> {
         }
     }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(head, headware, body, armRight, armLeft, legRight, legLeft, robe, mask, hood, jaw,
-            sleeveRight, robeLowerRight, robeLowerLeft, sleeveLeft);
-    }
 
 }

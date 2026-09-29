@@ -2,55 +2,30 @@ package com.github.alexthe666.iceandfire.client.model.util;
 
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.nicktale.api.client.model.AdvancedModelBox;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
-// The AdvancedModelRenderer/ModelBox uses a child-parent structure
-// Meaning that if you change a parents showModel field to false all the children also
-// don't get rendered. This is a workaround for that
-
+/**
+ * A bone that can hide its own cubes while its children keep rendering (hiding a normal bone
+ * hides the whole subtree). Used to make armor overlays and hidden limbs work.
+ */
 public class HideableModelRenderer extends AdvancedModelBox {
 
     public boolean invisible;
 
-    public HideableModelRenderer(AdvancedEntityModel model, String name) {
-        super(model, name);
-    }
-
-    public HideableModelRenderer(AdvancedEntityModel model, int i, int i1) {
+    public HideableModelRenderer(AdvancedEntityModel<?> model, int i, int i1) {
         super(model, i, i1);
     }
 
     @Override
-    public void render(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (invisible) {
-            invisibleRender(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        } else {
-            super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        }
-
+    public boolean hidesOwnCubes() {
+        return invisible;
     }
 
-    public void copyFrom(BasicModelPart currentModel) {
-        this.copyModelAngles(currentModel);
+    public void copyFrom(AdvancedModelBox currentModel) {
+        this.rotateAngleX = currentModel.rotateAngleX;
+        this.rotateAngleY = currentModel.rotateAngleY;
+        this.rotateAngleZ = currentModel.rotateAngleZ;
         this.rotationPointX = currentModel.rotationPointX;
         this.rotationPointY = currentModel.rotationPointY;
         this.rotationPointZ = currentModel.rotationPointZ;
-    }
-
-    public void invisibleRender(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (this.showModel && (!this.cubeList.isEmpty() || !this.childModels.isEmpty())) {
-            matrixStackIn.pushPose();
-            this.translateAndRotate(matrixStackIn);
-            if (!this.scaleChildren) {
-                matrixStackIn.scale(1.0F / Math.max(this.scaleX, 1.0E-4F), 1.0F / Math.max(this.scaleY, 1.0E-4F), 1.0F / Math.max(this.scaleZ, 1.0E-4F));
-            }
-            for (BasicModelPart renderer : this.childModels) {
-                renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }
-
-            matrixStackIn.popPose();
-        }
     }
 }

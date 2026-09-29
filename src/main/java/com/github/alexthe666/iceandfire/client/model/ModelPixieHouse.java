@@ -1,13 +1,13 @@
 package com.github.alexthe666.iceandfire.client.model;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
 
-public class ModelPixieHouse extends AdvancedEntityModel<LivingEntity> {
+public class ModelPixieHouse extends AdvancedEntityModel<EntityRenderState> {
     public AdvancedModelBox stalk;
     public AdvancedModelBox cap1;
     public AdvancedModelBox grass;
@@ -48,18 +48,10 @@ public class ModelPixieHouse extends AdvancedEntityModel<LivingEntity> {
         this.stalk.addChild(this.grass2);
     }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(stalk);
-    }
+
 
     @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(stalk);
-    }
-
-    @Override
-    public void setupAnim(LivingEntity tileEntityPixieHouse, float v, float v1, float v2, float v3, float v4) {
+    protected void animate(EntityRenderState state) {
 
     }
 

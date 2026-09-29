@@ -1,19 +1,10 @@
 package com.github.alexthe666.iceandfire.client.model;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.github.alexthe666.iceandfire.entity.props.EntityDataProvider;
-import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 
-public class ModelDeathWormGauntlet extends ModelDragonBase {
+public class ModelDeathWormGauntlet extends ModelDragonBase<EntityRenderState> {
     public AdvancedModelBox Head;
     public AdvancedModelBox JawExtender;
     public AdvancedModelBox HeadInner;
@@ -92,63 +83,17 @@ public class ModelDeathWormGauntlet extends ModelDragonBase {
     }
 
     @Override
-    public void setupAnim(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+    protected void animate(EntityRenderState state) {
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Head, JawExtender);
-    }
-
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Head, JawExtender, HeadInner, ToothB, ToothT, ToothL, ToothL_1, JawExtender2, JawExtender3, JawExtender4, TopJaw, BottomJaw, JawHook);
-    }
-
-    public void animate(ItemStack stack, float partialTick) {
+    /** Poses the gauntlet; lungeTicks (with partial tick) comes from the holder's extra entity data. */
+    public void animate(float lungeTicks) {
         this.resetToDefaultPose();
-        CompoundTag tag = stack.getOrCreateTag();
-        Entity holder = Minecraft.getInstance().level.getEntity(tag.getInt("HolderID"));
-
-        if (!(holder instanceof LivingEntity)) {
-            return;
-        }
-
-        EntityDataProvider.getCapability(holder).ifPresent(data -> {
-            float lungeTicks = data.miscData.lungeTicks + partialTick;
-            progressRotation(TopJaw, lungeTicks, (float) Math.toRadians(-30), 0, 0);
-            progressRotation(BottomJaw, lungeTicks, (float) Math.toRadians(30), 0, 0);
-            progressPosition(JawExtender, lungeTicks, 0, 0, -4);
-            progressPosition(JawExtender2, lungeTicks, 0, 0, -10);
-            progressPosition(JawExtender3, lungeTicks, 0, 0, -10);
-            progressPosition(JawExtender4, lungeTicks, 0, 0, -10);
-        });
-
-        /*animator.setAnimation(EntityDeathWorm.ANIMATION_BITE);
-        animator.startKeyframe(3);
-        this.rotate(animator, TopJaw, -20, 0, 0);
-        this.rotate(animator, BottomJaw, 20, 0, 0);
-        animator.move(JawExtender, 0, 0, -8);
-        animator.move(JawExtender2, 0, 0, -8);
-        animator.endKeyframe();
-        animator.startKeyframe(3);
-        this.rotate(animator, TopJaw, -40, 0, 0);
-        this.rotate(animator, BottomJaw, 40, 0, 0);
-        animator.move(JawExtender, 0, 0, -10);
-        animator.move(JawExtender2, 0, 0, -10);
-        animator.endKeyframe();
-        animator.startKeyframe(2);
-        this.rotate(animator, TopJaw, 5, 0, 0);
-        this.rotate(animator, BottomJaw, -5, 0, 0);
-        animator.move(JawExtender, 0, 0, -7);
-        animator.move(JawExtender2, 0, 0, -7);
-        animator.endKeyframe();
-        animator.resetKeyframe(2);*/
-    }
-
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        progressRotation(TopJaw, lungeTicks, (float) Math.toRadians(-30), 0, 0);
+        progressRotation(BottomJaw, lungeTicks, (float) Math.toRadians(30), 0, 0);
+        progressPosition(JawExtender, lungeTicks, 0, 0, -4);
+        progressPosition(JawExtender2, lungeTicks, 0, 0, -10);
+        progressPosition(JawExtender3, lungeTicks, 0, 0, -10);
+        progressPosition(JawExtender4, lungeTicks, 0, 0, -10);
     }
 }

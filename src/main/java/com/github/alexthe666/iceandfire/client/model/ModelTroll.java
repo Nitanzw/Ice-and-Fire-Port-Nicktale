@@ -1,17 +1,15 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityTroll;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 
-public class ModelTroll extends ModelDragonBase<EntityTroll> {
+public class ModelTroll extends ModelDragonBase<TrollRenderState> {
     private final ModelAnimator animator;
     public AdvancedModelBox body;
     public AdvancedModelBox upperBody;
@@ -218,23 +216,12 @@ public class ModelTroll extends ModelDragonBase<EntityTroll> {
     }
 
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(body);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(body, upperBody, loin, rightleg, leftleg, head, rightarm,
-            leftarm, chest, jaw, mouth, nose, teeth, hornL, hornR, hornL2, hornR2, nose2,
-            rightarm2, log1, log2, handle, column, blade1, blade2, blade2_1, block, blade2_2,
-            bottom, top, leftarm2, rightleg2, leftleg2);
-    }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animate(TrollRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
         this.log1.showModel = true;
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityTroll.ANIMATION_SPEAK)) {
             animator.startKeyframe(5);
             this.rotate(animator, jaw, 25, 0, 0);
@@ -345,7 +332,13 @@ public class ModelTroll extends ModelDragonBase<EntityTroll> {
     }
 
     @Override
-    public void setupAnim(EntityTroll entity, float limbSwing, float limbSwingAmount, float ageInTicks, float f3, float f4) {
+    protected void animate(TrollRenderState entity) {
+        float limbSwing = entity.walkAnimationPos;
+        float limbSwingAmount = entity.walkAnimationSpeed;
+        float ageInTicks = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
+
         this.resetToDefaultPose();
         this.log1.showModel = true;
 
@@ -395,10 +388,4 @@ public class ModelTroll extends ModelDragonBase<EntityTroll> {
         this.progressRotation(rightarm2, 20, (float) Math.toRadians(-40), 0.0F, 0.0F);
     }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        animateStatue((EntityTroll) living);
-        this.log1.showModel = false;
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
 }

@@ -1,13 +1,13 @@
 package com.github.alexthe666.iceandfire.client.model;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.Entity;
 
-public class ModelTideTrident extends AdvancedEntityModel<Entity> {
+public class ModelTideTrident extends AdvancedEntityModel<EntityRenderState> {
     public AdvancedModelBox shaft;
     public AdvancedModelBox base;
     public AdvancedModelBox blade_B;
@@ -61,20 +61,12 @@ public class ModelTideTrident extends AdvancedEntityModel<Entity> {
         this.blade_C.addChild(this.blade_C_2);
     }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(shaft, base, blade_B, blade_C, blade_A, fins, blade_C_2, blade_A_2);
-    }
 
     @Override
-    public void setupAnim(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    protected void animate(EntityRenderState state) {
 
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(shaft);
-    }
 
     public void setRotateAngle(ModelPart modelRenderer, float x, float y, float z) {
         modelRenderer.xRot = x;

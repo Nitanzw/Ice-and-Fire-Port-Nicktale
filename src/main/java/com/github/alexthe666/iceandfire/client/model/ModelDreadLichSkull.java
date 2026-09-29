@@ -1,13 +1,13 @@
 package com.github.alexthe666.iceandfire.client.model;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.client.model.util.HideableModelRenderer;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.world.entity.Entity;
 
-public class ModelDreadLichSkull extends AdvancedEntityModel {
+public class ModelDreadLichSkull extends AdvancedEntityModel<EntityRenderState> {
     public HideableModelRenderer bipedHead;
     public HideableModelRenderer bipedHeadwear;
 
@@ -28,18 +28,10 @@ public class ModelDreadLichSkull extends AdvancedEntityModel {
     }
 
     @Override
-    public void setupAnim(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    protected void animate(EntityRenderState state) {
         this.resetToDefaultPose();
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(bipedHead, bipedHeadwear);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(bipedHead, bipedHeadwear);
-    }
 
 }

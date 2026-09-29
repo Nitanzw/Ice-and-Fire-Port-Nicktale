@@ -6,7 +6,7 @@ import com.github.alexthe666.iceandfire.client.model.util.HideableModelRenderer;
 import com.github.alexthe666.iceandfire.entity.EntityDreadQueen;
 import net.minecraft.client.model.HumanoidModel;
 
-public class ModelDreadQueen extends ModelDreadBase<EntityDreadQueen> {
+public class ModelDreadQueen extends ModelDreadBase<BipedRenderState> {
     public HideableModelRenderer chestplate;
     public HideableModelRenderer cloak;
     public HideableModelRenderer necklace;
@@ -18,8 +18,6 @@ public class ModelDreadQueen extends ModelDreadBase<EntityDreadQueen> {
     public ModelDreadQueen(float modelScale) {
         this.texWidth = 128;
         this.texHeight = 64;
-        this.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-        this.rightArmPose = HumanoidModel.ArmPose.EMPTY;
         this.body = new HideableModelRenderer(this, 16, 16);
         this.body.setPos(0.0F, 0.0F, 0.0F);
         this.body.addBox(-4.0F, 0.0F, -2.0F, 8, 12, 4, modelScale);
@@ -87,12 +85,6 @@ public class ModelDreadQueen extends ModelDreadBase<EntityDreadQueen> {
         animator = ModelAnimator.create();
     }
 
-    @Override
-    public void prepareMobModel(EntityDreadQueen LivingEntityIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
-        this.rightArmPose = HumanoidModel.ArmPose.EMPTY;
-        this.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-        super.prepareMobModel(LivingEntityIn, limbSwing, limbSwingAmount, partialTickTime);
-    }
 
     @Override
     public Animation getSpawnAnimation() {

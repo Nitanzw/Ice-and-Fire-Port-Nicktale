@@ -6,13 +6,11 @@ import com.github.alexthe666.iceandfire.client.model.util.HideableModelRenderer;
 import com.github.alexthe666.iceandfire.entity.EntityDreadThrall;
 import net.minecraft.client.model.HumanoidModel;
 
-public class ModelDreadThrall extends ModelDreadBase<EntityDreadThrall> {
+public class ModelDreadThrall extends ModelDreadBase<BipedRenderState> {
 
     public ModelDreadThrall(float modelScale, boolean bodyArmorModel) {
         this.texHeight = 32;
         this.texWidth = 64;
-        this.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-        this.rightArmPose = HumanoidModel.ArmPose.EMPTY;
         this.body = new HideableModelRenderer(this, 16, 16);
         this.body.addBox(-4.0F, 0.0F, -2.0F, 8, 12, 4, modelScale);
         this.body.setPos(0.0F, 0.0F, 0.0F);
@@ -71,17 +69,11 @@ public class ModelDreadThrall extends ModelDreadBase<EntityDreadThrall> {
         this.updateDefaultPose();
     }
 
-    @Override
-    public void prepareMobModel(EntityDreadThrall LivingEntityIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
-        this.rightArmPose = HumanoidModel.ArmPose.EMPTY;
-        this.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-        super.prepareMobModel(LivingEntityIn, limbSwing, limbSwingAmount, partialTickTime);
-    }
 
     @Override
-    public void setupAnim(EntityDreadThrall entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        this.flap(body, 0.5F, 0.15F, false, 1, 0F, limbSwing, limbSwingAmount);
+    protected void animate(BipedRenderState entityIn) {
+        super.animate(entityIn);
+        this.flap(body, 0.5F, 0.15F, false, 1, 0F, entityIn.walkAnimationPos, entityIn.walkAnimationSpeed);
     }
 
     @Override

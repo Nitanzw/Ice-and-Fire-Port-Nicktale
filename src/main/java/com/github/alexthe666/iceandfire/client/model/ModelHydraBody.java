@@ -1,17 +1,14 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.github.alexthe666.iceandfire.entity.EntityHydra;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 
-public class ModelHydraBody extends ModelDragonBase<EntityHydra> {
+public class ModelHydraBody extends ModelDragonBase<HydraRenderState> {
     public AdvancedModelBox BodyUpper;
     public AdvancedModelBox BodyLower;
     public AdvancedModelBox BodySpike1;
@@ -95,13 +92,19 @@ public class ModelHydraBody extends ModelDragonBase<EntityHydra> {
         this.updateDefaultPose();
     }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animate(HydraRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
     }
 
     @Override
-    public void setupAnim(EntityHydra entity, float f, float f1, float f2, float f3, float f4) {
+    protected void animate(HydraRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
+
         animate(entity, f, f1, f2, f3, f4, 1);
         float speed_walk = 0.6F;
         float speed_idle = 0.05F;
@@ -121,22 +124,6 @@ public class ModelHydraBody extends ModelDragonBase<EntityHydra> {
         this.walk(TailSpike3, speed_idle * 1.5F, degree_idle * 0.4F, false, 4, -0.2F, f2, 1);
     }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.resetToDefaultPose();
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
-        this.resetToDefaultPose();
-    }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(BodyUpper);
-    }
-
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(BodyUpper, BodyLower, BodySpike1, BodySpike2, Tail1, BodySpike3, Tail2, Tail3,
-            Tail4, Tail5, TailSpike1, TailSpike2, TailSpike3);
-    }
 }
