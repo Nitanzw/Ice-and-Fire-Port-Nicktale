@@ -1,6 +1,6 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
-import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
+import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.github.alexthe666.iceandfire.client.particle.LightningBoltData;
 import com.github.alexthe666.iceandfire.client.particle.LightningRender;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;

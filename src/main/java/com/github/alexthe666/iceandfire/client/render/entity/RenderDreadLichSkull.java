@@ -11,14 +11,14 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 public class RenderDreadLichSkull extends EntityRenderer<EntityDreadLichSkull> {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation("iceandfire:textures/models/dread/dread_lich_skull.png");
+    public static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/models/dread/dread_lich_skull.png");
     private static final ModelDreadLichSkull MODEL_SPIRIT = new ModelDreadLichSkull();
 
     public RenderDreadLichSkull(EntityRendererProvider.Context context) {
@@ -48,7 +48,7 @@ public class RenderDreadLichSkull extends EntityRenderer<EntityDreadLichSkull> {
 
     @Nullable
     @Override
-    public ResourceLocation getTextureLocation(@NotNull EntityDreadLichSkull entity) {
+    public Identifier getTextureLocation(@NotNull EntityDreadLichSkull entity) {
         return TEXTURE;
     }
 }

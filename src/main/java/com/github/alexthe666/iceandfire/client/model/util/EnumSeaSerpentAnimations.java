@@ -1,9 +1,9 @@
 package com.github.alexthe666.iceandfire.client.model.util;
 
-import com.github.alexthe666.citadel.client.model.TabulaModel;
+import com.nicktale.api.client.model.TabulaModel;
 import com.github.alexthe666.iceandfire.IceAndFire;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 
 public enum EnumSeaSerpentAnimations {
     T_POSE("base"),

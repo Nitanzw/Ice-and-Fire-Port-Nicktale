@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.entity;
 
-import com.github.alexthe666.citadel.animation.Animation;
-import com.github.alexthe666.citadel.animation.AnimationHandler;
-import com.github.alexthe666.citadel.animation.IAnimatedEntity;
+import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationHandler;
+import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.entity.ai.DreadAITargetNonDread;
 import com.github.alexthe666.iceandfire.entity.util.DragonUtils;
 import com.github.alexthe666.iceandfire.entity.util.IAnimalFear;
@@ -136,7 +136,7 @@ public class EntityDreadScuttler extends EntityDreadMob implements IAnimatedEnti
             firstWidth = INITIAL_WIDTH * getSize();
             firstHeight = INITIAL_HEIGHT * getSize();
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.setBesideClimbableBlock(this.horizontalCollision);
         }
         if (this.getAnimation() == ANIMATION_SPAWN && this.getAnimationTick() < 30) {

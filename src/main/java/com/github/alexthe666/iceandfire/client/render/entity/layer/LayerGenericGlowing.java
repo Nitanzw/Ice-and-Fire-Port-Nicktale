@@ -8,15 +8,15 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class LayerGenericGlowing<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
     private final LivingEntityRenderer render;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
-    public LayerGenericGlowing(LivingEntityRenderer renderIn, ResourceLocation texture) {
+    public LayerGenericGlowing(LivingEntityRenderer renderIn, Identifier texture) {
         super(renderIn);
         this.render = renderIn;
         this.texture = texture;

@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.client.render.entity.layer;
 
-import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
-import com.github.alexthe666.citadel.client.model.AdvancedModelBox;
-import com.github.alexthe666.citadel.client.model.TabulaModel;
+import com.nicktale.api.client.model.AdvancedEntityModel;
+import com.nicktale.api.client.model.AdvancedModelBox;
+import com.nicktale.api.client.model.TabulaModel;
 import com.github.alexthe666.iceandfire.client.model.util.TabulaModelHandlerHelper;
 import com.github.alexthe666.iceandfire.client.render.TabulaModelAccessor;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class LayerDragonEyes extends RenderLayer<EntityDragonBase, AdvancedEntit
     }
 
     @Override
-    protected @NotNull ResourceLocation getTextureLocation(@NotNull EntityDragonBase entityIn) {
+    protected @NotNull Identifier getTextureLocation(@NotNull EntityDragonBase entityIn) {
         return null;
     }
 

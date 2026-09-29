@@ -16,9 +16,9 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraftforge.common.ToolActions;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.network.NetworkHooks;
+import net.neoforged.neoforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityStymphalianFeather extends AbstractArrow {
@@ -45,7 +45,7 @@ public class EntityStymphalianFeather extends AbstractArrow {
     public void remove(@NotNull RemovalReason reason) {
         super.remove(reason);
         if (IafConfig.stymphalianBirdFeatherDropChance > 0) {
-            if (this.level().isClientSide && this.random.nextInt(IafConfig.stymphalianBirdFeatherDropChance) == 0) {
+            if (this.level().isClientSide() && this.random.nextInt(IafConfig.stymphalianBirdFeatherDropChance) == 0) {
                 this.spawnAtLocation(getPickupItem(), 0.1F);
             }
         }
@@ -89,7 +89,7 @@ public class EntityStymphalianFeather extends AbstractArrow {
             });
             if (entity.getUseItem().isEmpty()) {
                 if (entity instanceof Player) {
-                    net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem((Player) entity, copyBeforeUse, Hand);
+                    net.neoforged.neoforge.event.ForgeEventFactory.onPlayerDestroyItem((Player) entity, copyBeforeUse, Hand);
                 }
 
                 if (Hand == net.minecraft.world.InteractionHand.MAIN_HAND) {
@@ -97,7 +97,7 @@ public class EntityStymphalianFeather extends AbstractArrow {
                 } else {
                     this.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                 }
-                this.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
+                this.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
             }
         }
     }

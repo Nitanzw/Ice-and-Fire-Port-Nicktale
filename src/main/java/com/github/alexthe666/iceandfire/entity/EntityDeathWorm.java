@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.entity;
 
-import com.github.alexthe666.citadel.animation.Animation;
-import com.github.alexthe666.citadel.animation.AnimationHandler;
-import com.github.alexthe666.citadel.animation.IAnimatedEntity;
+import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationHandler;
+import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.citadel.server.entity.collision.ICustomCollisions;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
@@ -24,7 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -59,19 +59,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICustomCollisions, IBlacklistedFromStatues, IAnimatedEntity, IVillagerFear, IAnimalFear, IGroundMount, IHasCustomizableAttributes, ICustomMoveController {
 
-    public static final ResourceLocation TAN_LOOT = new ResourceLocation("iceandfire", "entities/deathworm_tan");
-    public static final ResourceLocation WHITE_LOOT = new ResourceLocation("iceandfire", "entities/deathworm_white");
-    public static final ResourceLocation RED_LOOT = new ResourceLocation("iceandfire", "entities/deathworm_red");
-    public static final ResourceLocation TAN_GIANT_LOOT = new ResourceLocation("iceandfire", "entities/deathworm_tan_giant");
-    public static final ResourceLocation WHITE_GIANT_LOOT = new ResourceLocation("iceandfire", "entities/deathworm_white_giant");
-    public static final ResourceLocation RED_GIANT_LOOT = new ResourceLocation("iceandfire", "entities/deathworm_red_giant");
+    public static final Identifier TAN_LOOT = Identifier.fromNamespaceAndPath("iceandfire", "entities/deathworm_tan");
+    public static final Identifier WHITE_LOOT = Identifier.fromNamespaceAndPath("iceandfire", "entities/deathworm_white");
+    public static final Identifier RED_LOOT = Identifier.fromNamespaceAndPath("iceandfire", "entities/deathworm_red");
+    public static final Identifier TAN_GIANT_LOOT = Identifier.fromNamespaceAndPath("iceandfire", "entities/deathworm_tan_giant");
+    public static final Identifier WHITE_GIANT_LOOT = Identifier.fromNamespaceAndPath("iceandfire", "entities/deathworm_white_giant");
+    public static final Identifier RED_GIANT_LOOT = Identifier.fromNamespaceAndPath("iceandfire", "entities/deathworm_red_giant");
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(EntityDeathWorm.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(EntityDeathWorm.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> JUMP_TICKS = SynchedEntityData.defineId(EntityDeathWorm.class, EntityDataSerializers.INT);
@@ -102,7 +102,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         setPathfindingMalus(BlockPathTypes.WATER_BORDER, 4.0f);
         this.lookHelper = new IAFLookHelper(this);
         this.noCulling = true;
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             tail_buffer = new ChainBuffer();
         }
         this.setMaxUpStep(1F);
@@ -195,7 +195,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
 //            BlockPos blockpos = new BlockPos(i, j, k);
 //            BlockState BlockState = this.level.getBlockState(blockpos);
 //
-//            if (level.isClientSide) {
+//            if (level.isClientSide()) {
 //                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, BlockState), this.getPosX() + (double) (this.rand.nextFloat() * this.getWidth() * 2.0F) - (double) this.getWidth(), this.getSurface((int) Math.floor(this.getPosX()), (int) Math.floor(this.getPosY()), (int) Math.floor(this.getPosZ())) + 0.5F, this.getPosZ() + (double) (this.rand.nextFloat() * this.getWidth() * 2.0F) - (double) this.getWidth(), this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D, this.rand.nextGaussian() * 0.02D);
 //            }
 //        }
@@ -264,7 +264,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
 
     @Override
     @Nullable
-    protected ResourceLocation getDefaultLootTable() {
+    protected Identifier getDefaultLootTable() {
         switch (this.getVariant()) {
             case 0:
                 return this.getScale() > 3 ? TAN_GIANT_LOOT : TAN_LOOT;
@@ -382,7 +382,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         this.entityData.set(SCALE, scale);
         this.updateAttributes();
         clearSegments();
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             initSegments(scale * (this.getWormAge() / 5F));
             IceAndFire.sendMSGToAll(new MessageDeathWormHitbox(this.getId(), scale * (this.getWormAge() / 5F)));
         }
@@ -426,7 +426,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     @Override
     public @NotNull InteractionResult mobInteract(Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if (this.getWormAge() > 4 && player.getVehicle() == null && player.getMainHandItem().getItem() == Items.FISHING_ROD && player.getOffhandItem().getItem() == Items.FISHING_ROD && !this.level().isClientSide) {
+        if (this.getWormAge() > 4 && player.getVehicle() == null && player.getMainHandItem().getItem() == Items.FISHING_ROD && player.getOffhandItem().getItem() == Items.FISHING_ROD && !this.level().isClientSide()) {
             player.startRiding(this);
             return InteractionResult.SUCCESS;
         }
@@ -594,7 +594,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
             this.clearSegments();
             this.heal(15);
             this.setDeathWormScale(this.getDeathwormScale());
-            if (level().isClientSide) {
+            if (level().isClientSide()) {
                 for (int i = 0; i < 10 * this.getScale(); i++) {
                     this.level().addParticle(ParticleTypes.HAPPY_VILLAGER, this.getX() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), this.getSurface((int) Math.floor(this.getX()), (int) Math.floor(this.getY()), (int) Math.floor(this.getZ())) + 0.5F, this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D);
                     /*
@@ -696,7 +696,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
             BlockPos pos = new BlockPos(this.getBlockX(), this.getSurface(this.getBlockX(), this.getBlockY(), this.getBlockZ()), this.getBlockZ()).below();
             BlockState state = level().getBlockState(pos);
             if (state.isSolidRender(level(), pos)) {
-                if (level().isClientSide) {
+                if (level().isClientSide()) {
                     this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), this.getSurface((int) Math.floor(this.getX()), (int) Math.floor(this.getY()), (int) Math.floor(this.getZ())) + 0.5F, this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D, this.random.nextGaussian() * 0.02D);
                 }
             }
@@ -714,7 +714,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         if (!inSand && this.isSandNavigator) {
             switchNavigator(false);
         }
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             tail_buffer.calculateChainSwingBuffer(90, 20, 5F, this);
         }
 

@@ -236,7 +236,7 @@ public class EntityDragonEgg extends LivingEntity implements IBlacklistedFromSta
     public boolean hurt(@NotNull DamageSource var1, float var2) {
         if (var1.is(DamageTypeTags.IS_FIRE) && getEggType().dragonType == DragonType.FIRE)
             return false;
-        if (!this.level().isClientSide && !var1.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !isRemoved()) {
+        if (!this.level().isClientSide() && !var1.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !isRemoved()) {
             this.spawnAtLocation(this.getItem().getItem(), 1);
         }
         this.remove(RemovalReason.KILLED);

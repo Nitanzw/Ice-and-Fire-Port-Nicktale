@@ -61,7 +61,7 @@ public class BlockDragonforgeBricks extends BaseEntityBlock implements IDragonPr
         if (this.getConnectedTileEntity(worldIn, resultIn.getBlockPos()) != null) {
             TileEntityDragonforge forge = this.getConnectedTileEntity(worldIn, resultIn.getBlockPos());
             if (forge != null && forge.fireType == isFire) {
-                if (worldIn.isClientSide) {
+                if (worldIn.isClientSide()) {
                     IceAndFire.PROXY.setRefrencedTE(worldIn.getBlockEntity(forge.getBlockPos()));
                 } else {
                     MenuProvider inamedcontainerprovider = this.getMenuProvider(forge.getBlockState(), worldIn, forge.getBlockPos());

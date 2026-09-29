@@ -9,7 +9,7 @@ import com.github.alexthe666.iceandfire.world.IafWorldData;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
@@ -245,7 +245,7 @@ public abstract class WorldGenDragonRoosts extends Feature<NoneFeatureConfigurat
 
     protected abstract EntityType<? extends EntityDragonBase> getDragonType();
 
-    protected abstract ResourceLocation getRoostLootTable();
+    protected abstract Identifier getRoostLootTable();
 
     protected abstract BlockState transform(final BlockState block);
 

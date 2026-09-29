@@ -1,6 +1,6 @@
 package com.github.alexthe666.iceandfire.client.render.tile;
 
-import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
+import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.github.alexthe666.iceandfire.client.model.ModelGorgonHead;
 import com.github.alexthe666.iceandfire.client.model.ModelGorgonHeadActive;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
@@ -11,15 +11,15 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class RenderGorgonHead extends BlockEntityWithoutLevelRenderer {
 
-    private static final RenderType ACTIVE_TEXTURE = RenderType.entityCutoutNoCull(new ResourceLocation("iceandfire:textures/models/gorgon/head_active.png"), false);
-    private static final RenderType INACTIVE_TEXTURE = RenderType.entityCutoutNoCull(new ResourceLocation("iceandfire:textures/models/gorgon/head_inactive.png"), false);
+    private static final RenderType ACTIVE_TEXTURE = RenderType.entityCutoutNoCull(Identifier.parse("iceandfire:textures/models/gorgon/head_active.png"), false);
+    private static final RenderType INACTIVE_TEXTURE = RenderType.entityCutoutNoCull(Identifier.parse("iceandfire:textures/models/gorgon/head_inactive.png"), false);
     private static final AdvancedEntityModel ACTIVE_MODEL = new ModelGorgonHeadActive();
     private static final AdvancedEntityModel INACTIVE_MODEL = new ModelGorgonHead();
 

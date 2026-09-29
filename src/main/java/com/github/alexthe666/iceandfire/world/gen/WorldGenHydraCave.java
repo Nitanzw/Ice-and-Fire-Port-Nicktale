@@ -11,7 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.TreeFeatures;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 public class WorldGenHydraCave extends Feature<NoneFeatureConfiguration> implements TypedFeature {
 
-    public static final ResourceLocation HYDRA_CHEST = new ResourceLocation("iceandfire", "chest/hydra_cave");
+    public static final Identifier HYDRA_CHEST = Identifier.fromNamespaceAndPath("iceandfire", "chest/hydra_cave");
     private static final Direction[] HORIZONTALS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 
     public WorldGenHydraCave(Codec<NoneFeatureConfiguration> configFactoryIn) {

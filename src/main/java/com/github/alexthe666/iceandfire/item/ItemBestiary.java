@@ -52,7 +52,7 @@ public class ItemBestiary extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @NotNull InteractionHand handIn) {
         ItemStack itemStackIn = playerIn.getItemInHand(handIn);
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             IceAndFire.PROXY.openBestiaryGui(itemStackIn);
         }
         return new InteractionResultHolder<>(InteractionResult.PASS, itemStackIn);

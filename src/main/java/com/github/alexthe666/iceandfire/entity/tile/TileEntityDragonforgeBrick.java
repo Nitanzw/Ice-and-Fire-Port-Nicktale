@@ -4,8 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -17,7 +17,7 @@ public class TileEntityDragonforgeBrick extends BlockEntity {
     }
 
     @Override
-    public <T> net.minecraftforge.common.util.@NotNull LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.@NotNull Capability<T> capability, @Nullable Direction facing) {
+    public <T> net.neoforged.neoforge.common.util.@NotNull LazyOptional<T> getCapability(net.neoforged.neoforge.common.capabilities.@NotNull Capability<T> capability, @Nullable Direction facing) {
         if (getConnectedTileEntity() != null && capability == ForgeCapabilities.ITEM_HANDLER) {
             return getConnectedTileEntity().getCapability(capability, facing);
         }

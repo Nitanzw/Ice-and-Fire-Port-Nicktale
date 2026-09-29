@@ -32,7 +32,7 @@ public class BlockGraveyardSoil extends Block {
 
     @Override
     public void tick(@NotNull BlockState state, ServerLevel worldIn, @NotNull BlockPos pos, @NotNull RandomSource rand) {
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             if (!worldIn.isAreaLoaded(pos, 3))
                 return;
             if (!worldIn.isDay() && !worldIn.getBlockState(pos.above()).canOcclude() && rand.nextInt(9) == 0 && worldIn.getDifficulty() != Difficulty.PEACEFUL) {
@@ -42,7 +42,7 @@ public class BlockGraveyardSoil extends Block {
                     EntityGhost ghost = IafEntityRegistry.GHOST.get().create(worldIn);
                     ghost.absMoveTo(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F,
                         ThreadLocalRandom.current().nextFloat() * 360F, 0);
-                    if (!worldIn.isClientSide) {
+                    if (!worldIn.isClientSide()) {
                         ghost.finalizeSpawn(worldIn, worldIn.getCurrentDifficultyAt(pos), MobSpawnType.SPAWNER, null, null);
                         worldIn.addFreshEntity(ghost);
                     }

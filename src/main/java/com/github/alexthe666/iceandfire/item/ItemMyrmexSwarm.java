@@ -40,7 +40,7 @@ public class ItemMyrmexSwarm extends Item {
             myrmex.setJungleVariant(jungle);
             myrmex.setSummonedBy(playerIn);
             myrmex.setFlying(true);
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 worldIn.addFreshEntity(myrmex);
             }
         }

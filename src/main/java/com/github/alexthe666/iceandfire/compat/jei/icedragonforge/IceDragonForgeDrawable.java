@@ -8,12 +8,12 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import mezz.jei.api.gui.drawable.IDrawable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
 public class IceDragonForgeDrawable implements IDrawable {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("iceandfire:textures/gui/dragonforge_ice.png");
+    private static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/gui/dragonforge_ice.png");
 
     @Override
     public int getWidth() {

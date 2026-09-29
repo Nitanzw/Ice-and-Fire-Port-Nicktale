@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 
 public class GuiDragon extends AbstractContainerScreen<ContainerDragon> {
-    private static final ResourceLocation texture = new ResourceLocation("iceandfire:textures/gui/dragon.png");
+    private static final Identifier texture = Identifier.parse("iceandfire:textures/gui/dragon.png");
 
     public GuiDragon(ContainerDragon dragonInv, Inventory playerInv, Component name) {
         super(dragonInv, playerInv, name);

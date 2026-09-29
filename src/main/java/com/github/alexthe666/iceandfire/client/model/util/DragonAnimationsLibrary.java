@@ -1,6 +1,6 @@
 package com.github.alexthe666.iceandfire.client.model.util;
 
-import com.github.alexthe666.citadel.client.model.TabulaModel;
+import com.nicktale.api.client.model.TabulaModel;
 import com.github.alexthe666.iceandfire.IceAndFire;
 
 import java.io.IOException;

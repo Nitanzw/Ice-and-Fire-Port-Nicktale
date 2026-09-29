@@ -1,6 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.util;
 
-import com.github.alexthe666.citadel.client.model.basic.BasicModelPart;
+import com.nicktale.api.client.model.AdvancedModelBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;

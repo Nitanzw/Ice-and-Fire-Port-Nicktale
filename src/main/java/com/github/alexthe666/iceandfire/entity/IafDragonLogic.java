@@ -429,7 +429,7 @@ public class IafDragonLogic {
         }
 
         if ((dragon.groundAttack == IafDragonAttacks.Ground.FIRE) && dragon.getDragonStage() < 2) {
-            if (dragon.level().isClientSide) {
+            if (dragon.level().isClientSide()) {
                 dragon.spawnBabyParticles();
             }
             dragon.randomizeAttacks();
@@ -472,7 +472,7 @@ public class IafDragonLogic {
     }
 
     public void debug() {
-        String side = dragon.level().isClientSide ? "CLIENT" : "SERVER";
+        String side = dragon.level().isClientSide() ? "CLIENT" : "SERVER";
         String owner = dragon.getOwner() == null ? "null" : dragon.getOwner().getName().getString();
         String attackTarget = dragon.getTarget() == null ? "null" : dragon.getTarget().getName().getString();
         IceAndFire.LOGGER.warn("DRAGON DEBUG[" + side + "]:"

@@ -88,7 +88,7 @@ public class ItemDragonSkull extends Item {
             if (stack.hasCustomHoverName()) {
                 skull.setCustomName(stack.getHoverName());
             }
-            if (!context.getLevel().isClientSide) {
+            if (!context.getLevel().isClientSide()) {
                 context.getLevel().addFreshEntity(skull);
             }
             if (!context.getPlayer().isCreative()) {

@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.entity;
 
-import com.github.alexthe666.citadel.animation.Animation;
-import com.github.alexthe666.citadel.animation.AnimationHandler;
-import com.github.alexthe666.citadel.animation.IAnimatedEntity;
+import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationHandler;
+import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.ai.GorgonAIStareAttack;
@@ -156,7 +156,7 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
     @Override
     public void setTarget(@Nullable LivingEntity LivingEntityIn) {
         super.setTarget(LivingEntityIn);
-        if (LivingEntityIn != null && !level().isClientSide) {
+        if (LivingEntityIn != null && !level().isClientSide()) {
 
 
             boolean blindness = this.hasEffect(MobEffects.BLINDNESS) || LivingEntityIn.hasEffect(MobEffects.BLINDNESS) || LivingEntityIn instanceof IBlacklistedFromStatues && !((IBlacklistedFromStatues) LivingEntityIn).canBeTurnedToStone() || isBlindfolded(LivingEntityIn);
@@ -179,7 +179,7 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
     protected void tickDeath() {
         ++this.deathTime;
         this.ambientSoundTime = 20;
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             for (int k = 0; k < 5; ++k) {
                 double d2 = 0.4;
                 double d0 = 0.1;
@@ -188,9 +188,9 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
             }
         }
         if (this.deathTime >= 200) {
-            if (!this.level().isClientSide && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))) {
+            if (!this.level().isClientSide() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))) {
                 int i = this.getExperienceReward();
-                i = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(this, this.lastHurtByPlayer, i);
+                i = net.neoforged.neoforge.event.ForgeEventFactory.getExperienceDrop(this, this.lastHurtByPlayer, i);
                 while (i > 0) {
                     int j = ExperienceOrb.getExperienceValue(i);
                     i -= j;
@@ -235,11 +235,11 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
                 }
                 if (this.getAnimation() == ANIMATION_SCARE) {
                     if (this.getAnimationTick() > 10) {
-                        if (!level().isClientSide) {
+                        if (!level().isClientSide()) {
                             if (playerStatueCooldown == 0) {
                                 EntityStoneStatue statue = EntityStoneStatue.buildStatueEntity(attackTarget);
                                 statue.absMoveTo(attackTarget.getX(), attackTarget.getY(), attackTarget.getZ(), attackTarget.getYRot(), attackTarget.getXRot());
-                                if (!level().isClientSide) {
+                                if (!level().isClientSide()) {
                                     level().addFreshEntity(statue);
                                 }
                                 statue.setYRot(attackTarget.getYRot());

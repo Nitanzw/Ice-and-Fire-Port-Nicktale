@@ -5,7 +5,7 @@ import com.github.alexthe666.citadel.config.biome.SpawnBiomeData;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Biome;
 
 import java.lang.reflect.Field;
@@ -69,7 +69,7 @@ public class BiomeConfig {
                 if (obj instanceof Map.Entry<?,?> mapObj) {
                     String id = (String) mapObj.getKey();
                     SpawnBiomeData data = (SpawnBiomeData) mapObj.getValue();
-                    biomeConfigValues.put(id, SpawnBiomeConfig.create(new ResourceLocation(id), data));
+                    biomeConfigValues.put(id, SpawnBiomeConfig.create(Identifier.parse(id), data));
                 }
             }
                 }catch (Exception e){
@@ -91,7 +91,7 @@ public class BiomeConfig {
                         if (obj instanceof Map.Entry entry) {
                             String id = (String) entry.getKey();
                             SpawnBiomeData data = (SpawnBiomeData) entry.getValue();
-                            entries.add(Map.entry(id, SpawnBiomeConfig.create(new ResourceLocation(id), data)));
+                            entries.add(Map.entry(id, SpawnBiomeConfig.create(Identifier.parse(id), data)));
                         }
                     }
                 }catch (Exception e){
@@ -105,11 +105,11 @@ public class BiomeConfig {
         return LazyInit.BIOME_CONFIG_VALUES;
     }
 
-    private static ResourceLocation getBiomeName(Holder<Biome> biome) {
+    private static Identifier getBiomeName(Holder<Biome> biome) {
         return biome.unwrap().map(ResourceKey::location, (noKey) -> null);
     }
 
-    public static boolean test(Map.Entry<String, SpawnBiomeData> entry, Holder<Biome> biome, ResourceLocation name) {
+    public static boolean test(Map.Entry<String, SpawnBiomeData> entry, Holder<Biome> biome, Identifier name) {
         if (!init) {
             init();
         }

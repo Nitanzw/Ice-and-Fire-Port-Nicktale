@@ -19,8 +19,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.neoforge.network.NetworkHooks;
+import net.neoforged.neoforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityPixieCharge extends Fireball {
@@ -76,7 +76,7 @@ public class EntityPixieCharge extends Fireball {
     @Override
     public void tick() {
         Entity shootingEntity = this.getOwner();
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             for (int i = 0; i < 5; ++i) {
                 IceAndFire.PROXY.spawnParticle(EnumParticles.If_Pixie, this.getX() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), this.getY() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), this.getZ() + this.random.nextDouble() * 0.15F * (this.random.nextBoolean() ? -1 : 1), rgb[0], rgb[1], rgb[2]);
             }
@@ -85,7 +85,7 @@ public class EntityPixieCharge extends Fireball {
         if (this.tickCount > 30) {
             this.remove(RemovalReason.DISCARDED);
         }
-        if (this.level().isClientSide || (shootingEntity == null || shootingEntity.isAlive()) && this.level().hasChunkAt(this.blockPosition())) {
+        if (this.level().isClientSide() || (shootingEntity == null || shootingEntity.isAlive()) && this.level().hasChunkAt(this.blockPosition())) {
             this.baseTick();
             if (this.shouldBurn()) {
                 this.setSecondsOnFire(1);
@@ -93,7 +93,7 @@ public class EntityPixieCharge extends Fireball {
 
             ++this.ticksInAir;
             HitResult raytraceresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-            if (raytraceresult.getType() != HitResult.Type.MISS && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+            if (raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
                 this.onHit(raytraceresult);
             }
 
@@ -125,7 +125,7 @@ public class EntityPixieCharge extends Fireball {
     protected void onHit(@NotNull HitResult movingObject) {
         boolean flag = false;
         Entity shootingEntity = this.getOwner();
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (movingObject.getType() == HitResult.Type.ENTITY && !((EntityHitResult) movingObject).getEntity().is(shootingEntity)) {
                 Entity entity = ((EntityHitResult) movingObject).getEntity();
                 if (shootingEntity != null && shootingEntity.equals(entity)) {
@@ -136,7 +136,7 @@ public class EntityPixieCharge extends Fireball {
                         ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.GLOWING, 100, 0));
                         entity.hurt(level().damageSources().indirectMagic(shootingEntity, null), 5.0F);
                     }
-                    if (this.level().isClientSide) {
+                    if (this.level().isClientSide()) {
                         for (int i = 0; i < 20; ++i) {
                             IceAndFire.PROXY.spawnParticle(EnumParticles.If_Pixie, this.getX() + this.random.nextDouble() * 1F * (this.random.nextBoolean() ? -1 : 1), this.getY() + this.random.nextDouble() * 1F * (this.random.nextBoolean() ? -1 : 1), this.getZ() + this.random.nextDouble() * 1F * (this.random.nextBoolean() ? -1 : 1), rgb[0], rgb[1], rgb[2]);
                         }

@@ -52,7 +52,7 @@ public class ItemPixieWand extends Item {
             EntityPixieCharge charge = new EntityPixieCharge(IafEntityRegistry.PIXIE_CHARGE.get(), worldIn, playerIn,
                 d2, d3, d4);
             charge.setPos(playerIn.getX(), playerIn.getY() + 1, playerIn.getZ());
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 worldIn.addFreshEntity(charge);
             }
             playerIn.playSound(IafSoundRegistry.PIXIE_WAND, 1F, 0.75F + 0.5F * playerIn.getRandom().nextFloat());

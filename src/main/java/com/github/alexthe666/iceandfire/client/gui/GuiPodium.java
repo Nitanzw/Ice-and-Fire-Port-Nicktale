@@ -6,12 +6,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class GuiPodium extends AbstractContainerScreen<ContainerPodium> {
 
-    public static final ResourceLocation PODUIM_TEXTURE = new ResourceLocation("iceandfire:textures/gui/podium.png");
+    public static final Identifier PODUIM_TEXTURE = Identifier.parse("iceandfire:textures/gui/podium.png");
 
     public GuiPodium(ContainerPodium container, Inventory inv, Component name) {
         super(container, inv, name);

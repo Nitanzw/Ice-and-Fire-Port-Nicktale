@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.entity;
 
-import com.github.alexthe666.citadel.animation.Animation;
-import com.github.alexthe666.citadel.animation.AnimationHandler;
-import com.github.alexthe666.citadel.animation.IAnimatedEntity;
+import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationHandler;
+import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.ai.DreadAITargetNonDread;
@@ -125,7 +125,7 @@ public class EntityDreadLich extends EntityDreadMob implements IAnimatedEntity, 
             this.setDeltaMovement(0, this.getDeltaMovement().y, this.getDeltaMovement().z);
 
         }
-        if (this.level().isClientSide && this.getAnimation() == ANIMATION_SUMMON) {
+        if (this.level().isClientSide() && this.getAnimation() == ANIMATION_SUMMON) {
             double d0 = 0;
             double d1 = 0;
             double d2 = 0;
@@ -236,13 +236,13 @@ public class EntityDreadLich extends EntityDreadMob implements IAnimatedEntity, 
     public void setItemSlot(@NotNull EquipmentSlot slotIn, @NotNull ItemStack stack) {
         super.setItemSlot(slotIn, stack);
 
-        if (!this.level().isClientSide && slotIn == EquipmentSlot.MAINHAND) {
+        if (!this.level().isClientSide() && slotIn == EquipmentSlot.MAINHAND) {
             this.setCombatTask();
         }
     }
 
     public void setCombatTask() {
-        if (this.level()!= null && !this.level().isClientSide) {
+        if (this.level()!= null && !this.level().isClientSide()) {
             this.goalSelector.removeGoal(this.aiAttackOnCollide);
             this.goalSelector.removeGoal(this.aiArrowAttack);
             ItemStack itemstack = this.getMainHandItem();
@@ -275,7 +275,7 @@ public class EntityDreadLich extends EntityDreadMob implements IAnimatedEntity, 
             if (minion instanceof EntityDreadMob) {
                 ((EntityDreadMob) minion).setCommanderId(this.getUUID());
             }
-            if (!currentLevel.isClientSide) {
+            if (!currentLevel.isClientSide()) {
                 currentLevel.addFreshEntity(minion);
             }
             minionCooldown = 100;

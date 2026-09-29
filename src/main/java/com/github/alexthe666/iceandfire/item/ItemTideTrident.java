@@ -29,8 +29,8 @@ import net.minecraft.world.item.enchantment.ArrowPiercingEnchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.util.NonNullLazy;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.common.util.NonNullLazy;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -64,7 +64,7 @@ public class ItemTideTrident extends TridentItem {
             if (lvt_6_1_ >= 10) {
                 int lvt_7_1_ = EnchantmentHelper.getRiptide(stack);
                 if (lvt_7_1_ <= 0 || lvt_5_1_.isInWaterOrRain()) {
-                    if (!worldIn.isClientSide) {
+                    if (!worldIn.isClientSide()) {
                         stack.hurtAndBreak(1, lvt_5_1_, (player) -> {
                             player.broadcastBreakEvent(entityLiving.getUsedItemHand());
                         });

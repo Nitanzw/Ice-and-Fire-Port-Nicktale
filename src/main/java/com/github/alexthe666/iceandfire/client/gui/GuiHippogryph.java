@@ -10,13 +10,13 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 
 //TODO: We do the same thing here as we do for the other GUI entity screens, that's dumb
 public class GuiHippogryph extends AbstractContainerScreen<ContainerHippogryph> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("iceandfire:textures/gui/hippogryph.png");
+    private static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/gui/hippogryph.png");
     private float mousePosx;
     private float mousePosY;
 

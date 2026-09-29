@@ -8,7 +8,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class IndexPageButton extends Button {
@@ -28,7 +28,7 @@ public class IndexPageButton extends Button {
             RenderSystem.enableDepthTest();
             Font font = IafConfig.useVanillaFont ? Minecraft.getInstance().font : (Font) IceAndFire.PROXY.getFontRenderer();
             boolean flag = isHoveredOrFocused();
-            pGuiGraphics.blit(new ResourceLocation("iceandfire:textures/gui/bestiary/widgets.png"), this.getX(), this.getY(), 0, flag ? 32 : 0, this.width, this.height);
+            pGuiGraphics.blit(Identifier.parse("iceandfire:textures/gui/bestiary/widgets.png"), this.getX(), this.getY(), 0, flag ? 32 : 0, this.width, this.height);
             pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
             int i = getFGColor();
             this.renderString(pGuiGraphics, font, i | Mth.ceil(this.alpha * 255.0F) << 24);

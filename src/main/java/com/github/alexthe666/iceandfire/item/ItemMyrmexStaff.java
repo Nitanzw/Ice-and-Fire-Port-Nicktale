@@ -46,7 +46,7 @@ public class ItemMyrmexStaff extends Item {
         }
         if (itemStackIn.getTag() != null && itemStackIn.getTag().hasUUID("HiveUUID")) {
             UUID id = itemStackIn.getTag().getUUID("HiveUUID");
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 MyrmexHive hive = MyrmexWorldData.get(worldIn).getHiveFromUUID(id);
                 MyrmexWorldData.addHive(worldIn, new MyrmexHive());
                 if (hive != null) {
@@ -70,7 +70,7 @@ public class ItemMyrmexStaff extends Item {
             CompoundTag tag = context.getPlayer().getItemInHand(context.getHand()).getTag();
             if (tag != null && tag.hasUUID("HiveUUID")) {
                 UUID id = tag.getUUID("HiveUUID");
-                if (!context.getLevel().isClientSide) {
+                if (!context.getLevel().isClientSide()) {
                     MyrmexHive hive = MyrmexWorldData.get(context.getLevel()).getHiveFromUUID(id);
                     if (hive != null) {
                         IceAndFire.sendMSGToAll(new MessageGetMyrmexHive(hive.toNBT()));

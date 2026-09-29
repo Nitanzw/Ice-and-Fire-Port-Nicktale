@@ -10,15 +10,15 @@ import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.item.ItemDragonArmor;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -1018,8 +1018,8 @@ public class IafRecipes extends RecipeProvider {
                 .save(consumer);
     }
     
-    private static ResourceLocation location(final String path) {
-        return new ResourceLocation(IceAndFire.MODID, path);
+    private static Identifier location(final String path) {
+        return Identifier.fromNamespaceAndPath(IceAndFire.MODID, path);
     }
 
     private static String locationString(final String path) {

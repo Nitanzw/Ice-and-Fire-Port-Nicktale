@@ -90,7 +90,7 @@ public class HippogryphAIMate extends Goal {
         this.hippo.resetLove();
         this.targetMate.resetLove();
         egg.moveTo(this.hippo.getX(), this.hippo.getY(), this.hippo.getZ(), 0.0F, 0.0F);
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             this.world.addFreshEntity(egg);
         }
         RandomSource random = this.hippo.getRandom();

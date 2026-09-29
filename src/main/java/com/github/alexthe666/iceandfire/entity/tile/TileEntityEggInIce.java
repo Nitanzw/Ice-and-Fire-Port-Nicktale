@@ -36,7 +36,7 @@ public class TileEntityEggInIce extends BlockEntity {
     public static void tickEgg(Level level, BlockPos pos, BlockState state, TileEntityEggInIce entityEggInIce) {
         entityEggInIce.age++;
         if (entityEggInIce.age >= IafConfig.dragonEggTime && entityEggInIce.type != null && !entityEggInIce.spawned) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 EntityIceDragon dragon = new EntityIceDragon(level);
                 dragon.setPos(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
                 dragon.setVariant(entityEggInIce.type.ordinal() - 4);
@@ -121,7 +121,7 @@ public class TileEntityEggInIce extends BlockEntity {
             egg.setEggType(type);
             egg.setPos(worldPosition.getX() + 0.5, worldPosition.getY() + 1, worldPosition.getZ() + 0.5);
             egg.setOwnerId(this.ownerUUID);
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 level.addFreshEntity(egg);
             }
         }

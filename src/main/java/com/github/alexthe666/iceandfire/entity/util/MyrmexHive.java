@@ -112,7 +112,7 @@ public class MyrmexHive {
     @Nullable
     public EntityMyrmexQueen getQueen() {
         List<EntityMyrmexQueen> ourQueens = new ArrayList<>();
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             ServerLevel serverWorld = world.getServer().getLevel(world.dimension());
             List<? extends EntityMyrmexQueen> allQueens = serverWorld.getEntities(IafEntityRegistry.MYRMEX_QUEEN.get(),
                 EntitySelector.NO_SPECTATORS);

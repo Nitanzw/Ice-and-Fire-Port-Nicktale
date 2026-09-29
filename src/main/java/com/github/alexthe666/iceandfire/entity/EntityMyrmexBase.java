@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.entity;
 
-import com.github.alexthe666.citadel.animation.Animation;
-import com.github.alexthe666.citadel.animation.AnimationHandler;
-import com.github.alexthe666.citadel.animation.IAnimatedEntity;
+import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationHandler;
+import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.block.BlockMyrmexConnectedResin;
 import com.github.alexthe666.iceandfire.block.BlockMyrmexResin;
@@ -27,7 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -66,10 +66,10 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     private static final EntityDataAccessor<Byte> CLIMBING = SynchedEntityData.defineId(EntityMyrmexBase.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Integer> GROWTH_STAGE = SynchedEntityData.defineId(EntityMyrmexBase.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> VARIANT = SynchedEntityData.defineId(EntityMyrmexBase.class, EntityDataSerializers.BOOLEAN);
-    private static final ResourceLocation TEXTURE_DESERT_LARVA = new ResourceLocation("iceandfire:textures/models/myrmex/myrmex_desert_larva.png");
-    private static final ResourceLocation TEXTURE_DESERT_PUPA = new ResourceLocation("iceandfire:textures/models/myrmex/myrmex_desert_pupa.png");
-    private static final ResourceLocation TEXTURE_JUNGLE_LARVA = new ResourceLocation("iceandfire:textures/models/myrmex/myrmex_jungle_larva.png");
-    private static final ResourceLocation TEXTURE_JUNGLE_PUPA = new ResourceLocation("iceandfire:textures/models/myrmex/myrmex_jungle_pupa.png");
+    private static final Identifier TEXTURE_DESERT_LARVA = Identifier.parse("iceandfire:textures/models/myrmex/myrmex_desert_larva.png");
+    private static final Identifier TEXTURE_DESERT_PUPA = Identifier.parse("iceandfire:textures/models/myrmex/myrmex_desert_pupa.png");
+    private static final Identifier TEXTURE_JUNGLE_LARVA = Identifier.parse("iceandfire:textures/models/myrmex/myrmex_jungle_larva.png");
+    private static final Identifier TEXTURE_JUNGLE_PUPA = Identifier.parse("iceandfire:textures/models/myrmex/myrmex_jungle_pupa.png");
     private final SimpleContainer villagerInventory = new SimpleContainer(8);
     public boolean isEnteringHive = false;
     public boolean isBeingGuarded = false;
@@ -172,7 +172,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
 
     @Override
     public int getExperienceReward() {
-        return (this.getCasteImportance() * 7) + this.level().random.nextInt(3);
+        return (this.getCasteImportance() * 7) + this.level().getRandom().nextInt(3);
     }
 
     @Override
@@ -235,7 +235,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
             this.yBodyRot = 0;
             this.yBodyRotO = 0;
         }
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.setBesideClimbableBlock(this.horizontalCollision && (this.onGround() || !this.verticalCollision));
         }
         if (this.getGrowthStage() < 2) {
@@ -245,7 +245,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
                 growthTicks = 0;
             }
         }
-        if (!this.level().isClientSide && this.getGrowthStage() < 2 && this.getRandom().nextInt(150) == 0 && this.getAnimation() == NO_ANIMATION) {
+        if (!this.level().isClientSide() && this.getGrowthStage() < 2 && this.getRandom().nextInt(150) == 0 && this.getAnimation() == NO_ANIMATION) {
             this.setAnimation(ANIMATION_PUPA_WIGGLE);
         }
 
@@ -468,7 +468,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
             if (this.getOffers().isEmpty()) {
                 return super.mobInteract(player, hand);
             } else {
-                if (!this.level().isClientSide && (this.getTarget() == null || !this.getTarget().equals(player)) && hand == InteractionHand.MAIN_HAND) {
+                if (!this.level().isClientSide() && (this.getTarget() == null || !this.getTarget().equals(player)) && hand == InteractionHand.MAIN_HAND) {
                     if (this.getHive() != null && !this.getHive().isPlayerReputationTooLowToTrade(player.getUUID())) {
                         this.setTradingPlayer(player);
                         this.openTradingScreen(player, this.getDisplayName(), 1);
@@ -488,7 +488,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
             return;
         }
         UUID staffUUID = itemstack.getTag().hasUUID("HiveUUID") ? itemstack.getTag().getUUID("HiveUUID") : null;
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             return;
         }
         if (!player.isCreative()) {
@@ -540,11 +540,11 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
         return this.getGrowthStage() == 0 ? 0.5F : this.getGrowthStage() == 1 ? 0.75F : 1F;
     }
 
-    public abstract ResourceLocation getAdultTexture();
+    public abstract Identifier getAdultTexture();
 
     public abstract float getModelScale();
 
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         if (this.getGrowthStage() == 0) {
             return isJungle() ? TEXTURE_JUNGLE_LARVA : TEXTURE_DESERT_LARVA;
         } else if (this.getGrowthStage() == 1) {
@@ -761,7 +761,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
 
     @Override
     public void notifyTradeUpdated(@NotNull ItemStack stack) {
-        if (!this.level().isClientSide && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
+        if (!this.level().isClientSide() && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
             this.ambientSoundTime = -this.getAmbientSoundInterval();
             this.playSound(this.getVillagerYesNoSound(!stack.isEmpty()), this.getSoundVolume(), this.getVoicePitch());
         }
@@ -786,7 +786,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
 
     @Override
     @Nullable
-    public Entity changeDimension(@NotNull ServerLevel server, net.minecraftforge.common.util.@NotNull ITeleporter teleporter) {
+    public Entity changeDimension(@NotNull ServerLevel server, net.neoforged.neoforge.common.util.@NotNull ITeleporter teleporter) {
         this.resetCustomer();
         return super.changeDimension(server, teleporter);
     }

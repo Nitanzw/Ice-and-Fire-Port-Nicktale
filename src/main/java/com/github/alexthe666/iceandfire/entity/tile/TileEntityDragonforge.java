@@ -30,9 +30,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -50,7 +50,7 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
     public int fireType;
     public int cookTime;
     public int lastDragonFlameTimer = 0;
-    net.minecraftforge.common.util.LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper
+    net.neoforged.neoforge.common.util.LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper
         .create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
     private NonNullList<ItemStack> forgeItemStacks = NonNullList.withSize(3, ItemStack.EMPTY);
     private boolean prevAssembled;
@@ -73,7 +73,7 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
             entityDragonforge.lastDragonFlameTimer--;
         }
         entityDragonforge.updateGrills(entityDragonforge.assembled());
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (entityDragonforge.prevAssembled != entityDragonforge.assembled()) {
                 BlockDragonforgeCore.setState(entityDragonforge.fireType, entityDragonforge.prevAssembled, level, pos);
             }
@@ -84,10 +84,10 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
         if (entityDragonforge.cookTime > 0 && entityDragonforge.canSmelt() && entityDragonforge.lastDragonFlameTimer == 0) {
             entityDragonforge.cookTime--;
         }
-        if (entityDragonforge.getItem(0).isEmpty() && !level.isClientSide) {
+        if (entityDragonforge.getItem(0).isEmpty() && !level.isClientSide()) {
             entityDragonforge.cookTime = 0;
         }
-        if (!entityDragonforge.level.isClientSide) {
+        if (!entityDragonforge.level.isClientSide()) {
             if (entityDragonforge.isBurning()) {
                 if (entityDragonforge.canSmelt()) {
                     ++entityDragonforge.cookTime;
@@ -355,8 +355,8 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
     }
 
     @Override
-    public <T> net.minecraftforge.common.util.@NotNull LazyOptional<T> getCapability(
-        net.minecraftforge.common.capabilities.@NotNull Capability<T> capability, @Nullable Direction facing) {
+    public <T> net.neoforged.neoforge.common.util.@NotNull LazyOptional<T> getCapability(
+        net.neoforged.neoforge.common.capabilities.@NotNull Capability<T> capability, @Nullable Direction facing) {
         if (!this.remove && facing != null
             && capability == ForgeCapabilities.ITEM_HANDLER) {
             if (facing == Direction.UP)
@@ -375,7 +375,7 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
     }
 
     public void transferPower(int i) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (this.canSmelt()) {
                 if (canAddFlameAgain) {
                     cookTime = Math.min(this.getMaxCookTime() + 1,

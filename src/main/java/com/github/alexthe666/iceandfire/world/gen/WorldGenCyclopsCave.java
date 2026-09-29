@@ -10,7 +10,7 @@ import com.github.alexthe666.iceandfire.world.IafWorldData;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Sheep;
@@ -29,7 +29,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class WorldGenCyclopsCave extends Feature<NoneFeatureConfiguration> implements TypedFeature {
-    public static final ResourceLocation CYCLOPS_CHEST = new ResourceLocation("iceandfire", "chest/cyclops_cave");
+    public static final Identifier CYCLOPS_CHEST = Identifier.fromNamespaceAndPath("iceandfire", "chest/cyclops_cave");
     private static final Direction[] HORIZONTALS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 
     public WorldGenCyclopsCave(final Codec<NoneFeatureConfiguration> configuration) {

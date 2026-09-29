@@ -11,7 +11,7 @@ import com.github.alexthe666.iceandfire.world.IafWorldRegistry;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -30,8 +30,8 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITagManager;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.tags.ITagManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +40,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class WorldGenDragonCave extends Feature<NoneFeatureConfiguration> implements TypedFeature {
-    public ResourceLocation DRAGON_CHEST;
-    public ResourceLocation DRAGON_MALE_CHEST;
+    public Identifier DRAGON_CHEST;
+    public Identifier DRAGON_MALE_CHEST;
     public WorldGenCaveStalactites CEILING_DECO;
     public BlockState PALETTE_BLOCK1;
     public BlockState PALETTE_BLOCK2;

@@ -70,8 +70,8 @@ public class BlockLaunchExplosion extends Explosion {
      */
     @Override
     public void finalizeExplosion(boolean spawnParticles) {
-        if (world.isClientSide) {
-            this.world.playLocalSound(this.x, this.y, this.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (this.world.random.nextFloat() - this.world.random.nextFloat()) * 0.2F) * 0.7F, false);
+        if (world.isClientSide()) {
+            this.world.playLocalSound(this.x, this.y, this.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (this.world.getRandom().nextFloat() - this.world.getRandom().nextFloat()) * 0.2F) * 0.7F, false);
         }
 
         boolean flag = this.mode != BlockInteraction.KEEP;

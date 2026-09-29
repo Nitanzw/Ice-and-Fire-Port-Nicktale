@@ -5,7 +5,7 @@ import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
@@ -13,11 +13,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 public class WorldGenIceDragonRoosts extends WorldGenDragonRoosts {
-    private static final ResourceLocation DRAGON_CHEST = new ResourceLocation("iceandfire", "chest/ice_dragon_roost");
+    private static final Identifier DRAGON_CHEST = Identifier.fromNamespaceAndPath("iceandfire", "chest/ice_dragon_roost");
 
     public WorldGenIceDragonRoosts(final Codec<NoneFeatureConfiguration> configuration) {
         super(configuration, IafBlockRegistry.SILVER_PILE.get());
@@ -29,7 +29,7 @@ public class WorldGenIceDragonRoosts extends WorldGenDragonRoosts {
     }
 
     @Override
-    protected ResourceLocation getRoostLootTable() {
+    protected Identifier getRoostLootTable() {
         return DRAGON_CHEST;
     }
 

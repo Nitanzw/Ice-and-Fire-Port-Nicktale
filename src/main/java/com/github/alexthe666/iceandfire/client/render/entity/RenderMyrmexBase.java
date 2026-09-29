@@ -1,6 +1,6 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
-import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
+import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.github.alexthe666.iceandfire.client.model.ModelMyrmexPupa;
 import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerMyrmexItem;
 import com.github.alexthe666.iceandfire.entity.EntityMyrmexBase;
@@ -9,7 +9,7 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -54,7 +54,7 @@ public class RenderMyrmexBase extends MobRenderer<EntityMyrmexBase, AdvancedEnti
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(EntityMyrmexBase myrmex) {
+    public @NotNull Identifier getTextureLocation(EntityMyrmexBase myrmex) {
         return myrmex.getTexture();
     }
 

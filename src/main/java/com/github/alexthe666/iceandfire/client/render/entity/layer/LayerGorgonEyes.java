@@ -9,11 +9,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class LayerGorgonEyes extends RenderLayer<EntityGorgon, ModelGorgon> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("iceandfire:textures/models/gorgon/gorgon_eyes.png");
+    private static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/models/gorgon/gorgon_eyes.png");
     private final RenderGorgon render;
 
     public LayerGorgonEyes(RenderGorgon renderIn) {

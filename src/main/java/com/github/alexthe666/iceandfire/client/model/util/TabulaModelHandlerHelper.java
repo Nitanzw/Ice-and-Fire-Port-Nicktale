@@ -1,7 +1,7 @@
 package com.github.alexthe666.iceandfire.client.model.util;
 
-import com.github.alexthe666.citadel.client.model.TabulaModelHandler;
-import com.github.alexthe666.citadel.client.model.container.TabulaModelContainer;
+import com.nicktale.api.client.model.TabulaModelHandler;
+import com.nicktale.api.client.model.container.TabulaModelContainer;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -7,7 +7,7 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class RenderChain {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("iceandfire:textures/models/misc/chain_link.png");
+    private static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/models/misc/chain_link.png");
 
     public static void render(LivingEntity entityLivingIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int lightIn, List<Entity> chainedTo) {
         for (Entity chainTarget : chainedTo) {
@@ -95,7 +95,7 @@ public class RenderChain {
         return new Vec3(d0, d1, d2);
     }
 
-    public static ResourceLocation getTexture() {
+    public static Identifier getTexture() {
         return TEXTURE;
     }
 }

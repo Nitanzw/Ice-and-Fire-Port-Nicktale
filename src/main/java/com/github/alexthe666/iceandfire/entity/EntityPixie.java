@@ -94,7 +94,7 @@ public class EntityPixie extends TamableAnimal {
     }
 
     public boolean isPixieSitting() {
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             boolean isSitting = (this.entityData.get(DATA_FLAGS_ID).byteValue() & 1) != 0;
             this.isSitting = isSitting;
             this.setOrderedToSit(isSitting);
@@ -104,7 +104,7 @@ public class EntityPixie extends TamableAnimal {
     }
 
     public void setPixieSitting(boolean sitting) {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             this.isSitting = sitting;
             this.setInSittingPose(sitting);
         }
@@ -136,7 +136,7 @@ public class EntityPixie extends TamableAnimal {
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (!this.level().isClientSide && this.getRandom().nextInt(3) == 0 && !this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
+        if (!this.level().isClientSide() && this.getRandom().nextInt(3) == 0 && !this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
             this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0);
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             this.stealCooldown = STEAL_COOLDOWN;
@@ -162,7 +162,7 @@ public class EntityPixie extends TamableAnimal {
 
     @Override
     public void die(@NotNull DamageSource cause) {
-        if (!this.level().isClientSide && !this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
+        if (!this.level().isClientSide() && !this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
             this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0);
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         }
@@ -232,7 +232,7 @@ public class EntityPixie extends TamableAnimal {
                     break;
             }
             ItemStack stack = new ItemStack(jar, 1);
-            if (!level().isClientSide) {
+            if (!level().isClientSide()) {
                 if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
                     this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
                     this.stealCooldown = STEAL_COOLDOWN;
@@ -302,7 +302,7 @@ public class EntityPixie extends TamableAnimal {
     public void aiStep() {
         super.aiStep();
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
 
             // NOTE: This code was taken from EntityHippogryph basically same idea
             if (this.isPixieSitting() && this.getCommand() != 1) {
@@ -329,13 +329,13 @@ public class EntityPixie extends TamableAnimal {
         if (!this.isPixieSitting() && !this.isBeyondHeight()) {
             this.setDeltaMovement(this.getDeltaMovement().add(0, 0.08, 0));
         }
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             IceAndFire.PROXY.spawnParticle(EnumParticles.If_Pixie, this.getX() + (double) (this.random.nextFloat() * this.getBbWidth() * 2F) - (double) this.getBbWidth(), this.getY() + (double) (this.random.nextFloat() * this.getBbHeight()), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth() * 2F) - (double) this.getBbWidth(), PARTICLE_RGB[this.getColor()][0], PARTICLE_RGB[this.getColor()][1], PARTICLE_RGB[this.getColor()][2]);
         }
         if (ticksUntilHouseAI > 0) {
             ticksUntilHouseAI--;
         }
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (housePos != null && this.distanceToSqr(Vec3.atCenterOf(housePos)) < 1.5F && level().getBlockEntity(housePos) != null && level().getBlockEntity(housePos) instanceof TileEntityPixieHouse house) {
                 if (house.hasPixie) {
                     this.housePos = null;

@@ -27,8 +27,8 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.util.NonNullLazy;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.common.util.NonNullLazy;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -121,7 +121,7 @@ public class ItemGorgonHead extends Item {
                 if (pointedEntity instanceof Player) {
                      wasSuccesful = pointedEntity.hurt(IafDamageRegistry.causeGorgonDamage(pointedEntity), Integer.MAX_VALUE);
                 } else {
-                    if (!worldIn.isClientSide)
+                    if (!worldIn.isClientSide())
                         pointedEntity.remove(Entity.RemovalReason.KILLED);
                 }
 
@@ -130,7 +130,7 @@ public class ItemGorgonHead extends Item {
                     EntityStoneStatue statue = EntityStoneStatue.buildStatueEntity(livingEntity);
                     statue.absMoveTo(pointedEntity.getX(), pointedEntity.getY(), pointedEntity.getZ(), pointedEntity.getYRot(), pointedEntity.getXRot());
                     statue.yBodyRot = pointedEntity.getYRot();
-                    if (!worldIn.isClientSide) {
+                    if (!worldIn.isClientSide()) {
                         worldIn.addFreshEntity(statue);
                     }
                 }

@@ -89,7 +89,7 @@ public class TileEntityPixieHouse extends BlockEntity {
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
         load(packet.getTag());
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             IceAndFire.sendMSGToAll(
                 new MessageUpdatePixieHouseModel(worldPosition.asLong(), packet.getTag().getInt("HouseType")));
         }
@@ -120,7 +120,7 @@ public class TileEntityPixieHouse extends BlockEntity {
             ThreadLocalRandom.current().nextInt(360), 0);
         pixie.setItemInHand(InteractionHand.MAIN_HAND, pixieItems.get(0));
         pixie.setColor(this.pixieType);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             level.addFreshEntity(pixie);
         }
         this.hasPixie = false;
@@ -128,7 +128,7 @@ public class TileEntityPixieHouse extends BlockEntity {
         pixie.ticksUntilHouseAI = 500;
         pixie.setTame(this.tamedPixie);
         pixie.setOwnerUUID(this.pixieOwnerUUID);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             IceAndFire.sendMSGToAll(new MessageUpdatePixieHouse(worldPosition.asLong(), false, 0));
         }
     }

@@ -1,12 +1,12 @@
 package com.github.alexthe666.iceandfire.misc;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.NewRegistryEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 
 import java.lang.reflect.Field;
 
@@ -269,7 +269,7 @@ public final class IafSoundRegistry {
     public static final SoundEvent GHOST_JUMPSCARE = createSoundEvent("ghost_jumpscare");
 
     private static SoundEvent createSoundEvent(final String soundName) {
-        final ResourceLocation soundID = new ResourceLocation(MODID, soundName);
+        final Identifier soundID = Identifier.fromNamespaceAndPath(MODID, soundName);
         return SoundEvent.createVariableRangeEvent(soundID);
     }
 

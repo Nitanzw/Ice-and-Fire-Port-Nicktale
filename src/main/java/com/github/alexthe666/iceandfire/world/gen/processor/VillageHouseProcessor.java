@@ -4,7 +4,7 @@ import com.github.alexthe666.iceandfire.world.IafProcessors;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 
 public class VillageHouseProcessor extends StructureProcessor {
 
-    public static final ResourceLocation LOOT = new ResourceLocation("iceandfire", "chest/village_scribe");
+    public static final Identifier LOOT = Identifier.fromNamespaceAndPath("iceandfire", "chest/village_scribe");
     public static final VillageHouseProcessor INSTANCE = new VillageHouseProcessor();
     public static final Codec<VillageHouseProcessor> CODEC = Codec.unit(() -> INSTANCE);
 

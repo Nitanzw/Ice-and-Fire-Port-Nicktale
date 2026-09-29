@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -102,7 +102,7 @@ public class BlockPixieHouse extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> entityType) {
-        return level.isClientSide ? createTickerHelper(entityType, PIXIE_HOUSE.get(), TileEntityPixieHouse::tickClient) : createTickerHelper(entityType, PIXIE_HOUSE.get(), TileEntityPixieHouse::tickServer);
+        return level.isClientSide() ? createTickerHelper(entityType, PIXIE_HOUSE.get(), TileEntityPixieHouse::tickClient) : createTickerHelper(entityType, PIXIE_HOUSE.get(), TileEntityPixieHouse::tickServer);
     }
 
     @Nullable

@@ -26,7 +26,7 @@ import com.github.alexthe666.iceandfire.world.gen.WorldGenLightningDragonCave;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
@@ -59,20 +59,20 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCon
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.event.LootTableLoadEvent;
+import net.neoforged.neoforge.event.entity.EntityStruckByLightningEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.neoforged.neoforge.event.entity.living.*;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -126,7 +126,7 @@ public class ServerEvents {
         }
     }
 
-    private static boolean isInEntityTag(ResourceLocation loc, EntityType<?> type) {
+    private static boolean isInEntityTag(Identifier loc, EntityType<?> type) {
         return type.is(Objects.requireNonNull(ForgeRegistries.ENTITY_TYPES.tags()).createTagKey(loc));
     }
 
@@ -199,7 +199,7 @@ public class ServerEvents {
             Registry<StructureTemplatePool> templatePoolRegistry = event.getServer().registryAccess().registry(Registries.TEMPLATE_POOL).orElseThrow();
             Registry<StructureProcessorList> processorListRegistry = event.getServer().registryAccess().registry(Registries.PROCESSOR_LIST).orElseThrow();
             for (String type : VILLAGE_TYPES) {
-                IafVillagerRegistry.addBuildingToPool(templatePoolRegistry, processorListRegistry, new ResourceLocation("village/" + type + "/houses"), "iceandfire:village/" + type + "_scriber_1", IafConfig.villagerHouseWeight);
+                IafVillagerRegistry.addBuildingToPool(templatePoolRegistry, processorListRegistry, Identifier.parse("village/" + type + "/houses"), "iceandfire:village/" + type + "_scriber_1", IafConfig.villagerHouseWeight);
             }
         }
 
@@ -222,7 +222,7 @@ public class ServerEvents {
                 extraData = ((EntityHydraHead) event.getTarget()).headIndex;
                 ((EntityHydra) parent).triggerHeadFlags(extraData);
             }
-            if (event.getTarget().level().isClientSide && parent != null) {
+            if (event.getTarget().level().isClientSide() && parent != null) {
                 IceAndFire.NETWORK_WRAPPER.sendToServer(new MessagePlayerHitMultipart(parent.getId(), extraData));
             }
         }
@@ -392,7 +392,7 @@ public class ServerEvents {
                                 statue.spawnAtLocation(statuette, 1);
                             }
                         } else {
-                            if (!statue.level().isClientSide) {
+                            if (!statue.level().isClientSide()) {
                                 statue.spawnAtLocation(Blocks.COBBLESTONE.asItem(), 2 + event.getEntity().getRandom().nextInt(4));
                             }
                         }
@@ -441,7 +441,7 @@ public class ServerEvents {
                     Level world = event.getEntity().level();
                     EntityGhost ghost = IafEntityRegistry.GHOST.get().create(world);
                     ghost.copyPosition(event.getEntity());
-                    if (!world.isClientSide) {
+                    if (!world.isClientSide()) {
                         ghost.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(event.getEntity().blockPosition()), MobSpawnType.SPAWNER, null, null);
                         world.addFreshEntity(ghost);
                     }
@@ -512,7 +512,7 @@ public class ServerEvents {
     @SubscribeEvent // TODO :: Can this be moved into the item itself?
     public static void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
         onLeftClick(event.getEntity(), event.getItemStack());
-        if (event.getLevel().isClientSide) {
+        if (event.getLevel().isClientSide()) {
             IceAndFire.sendMSGToServer(new MessageSwingArm());
         }
     }
@@ -566,7 +566,7 @@ public class ServerEvents {
 
     //@SubscribeEvent // FIXME :: Unused
     public static void onChestGenerated(LootTableLoadEvent event) {
-        final ResourceLocation eventName = event.getName();
+        final Identifier eventName = event.getName();
         final boolean condition1 = eventName.equals(BuiltInLootTables.SIMPLE_DUNGEON)
                 || eventName.equals(BuiltInLootTables.ABANDONED_MINESHAFT)
                 || eventName.equals(BuiltInLootTables.DESERT_PYRAMID)

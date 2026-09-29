@@ -21,7 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -42,7 +42,7 @@ public class TileEntityJar extends BlockEntity {
     public NonNullList<ItemStack> pixieItems = NonNullList.withSize(1, ItemStack.EMPTY);
     public float rotationYaw;
     public float prevRotationYaw;
-    net.minecraftforge.common.util.LazyOptional<? extends net.minecraftforge.items.IItemHandler> downHandler = PixieJarInvWrapper
+    net.neoforged.neoforge.common.util.LazyOptional<? extends net.neoforged.neoforge.items.IItemHandler> downHandler = PixieJarInvWrapper
         .create(this);
     private final Random rand;
 
@@ -79,7 +79,7 @@ public class TileEntityJar extends BlockEntity {
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
         load(packet.getTag());
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             IceAndFire.sendMSGToAll(new MessageUpdatePixieHouseModel(worldPosition.asLong(), packet.getTag().getInt("PixieType")));
         }
     }
@@ -101,7 +101,7 @@ public class TileEntityJar extends BlockEntity {
 
     public static void tick(Level level, BlockPos pos, BlockState state, TileEntityJar entityJar) {
         entityJar.ticksExisted++;
-        if (level.isClientSide && entityJar.hasPixie) {
+        if (level.isClientSide() && entityJar.hasPixie) {
             IceAndFire.PROXY.spawnParticle(EnumParticles.If_Pixie,
                 pos.getX() + 0.5F + (double) (entityJar.rand.nextFloat() * PARTICLE_WIDTH * 2F) - PARTICLE_WIDTH,
                 pos.getY() + (double) (entityJar.rand.nextFloat() * PARTICLE_HEIGHT),
@@ -109,12 +109,12 @@ public class TileEntityJar extends BlockEntity {
         }
         if (entityJar.ticksExisted % 24000 == 0 && !entityJar.hasProduced && entityJar.hasPixie) {
             entityJar.hasProduced = true;
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 IceAndFire.sendMSGToAll(new MessageUpdatePixieJar(pos.asLong(), entityJar.hasProduced));
             }
         }
         if (entityJar.hasPixie && entityJar.hasProduced != entityJar.prevHasProduced && entityJar.ticksExisted > 5) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 IceAndFire.sendMSGToAll(new MessageUpdatePixieJar(pos.asLong(), entityJar.hasProduced));
             } else {
                 level.playLocalSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5, IafSoundRegistry.PIXIE_HURT, SoundSource.BLOCKS, 1, 1, false);
@@ -124,7 +124,7 @@ public class TileEntityJar extends BlockEntity {
         if (entityJar.rand.nextInt(30) == 0) {
             entityJar.rotationYaw = (entityJar.rand.nextFloat() * 360F) - 180F;
         }
-        if (entityJar.hasPixie && entityJar.ticksExisted % 40 == 0 && entityJar.rand.nextInt(6) == 0 && level.isClientSide) {
+        if (entityJar.hasPixie && entityJar.ticksExisted % 40 == 0 && entityJar.rand.nextInt(6) == 0 && level.isClientSide()) {
             level.playLocalSound(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5, IafSoundRegistry.PIXIE_IDLE, SoundSource.BLOCKS, 1, 1, false);
         }
         entityJar.prevHasProduced = entityJar.hasProduced;
@@ -142,13 +142,13 @@ public class TileEntityJar extends BlockEntity {
         pixie.setTame(this.tamedPixie);
         pixie.setOwnerUUID(this.pixieOwnerUUID);
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             IceAndFire.sendMSGToAll(new MessageUpdatePixieHouse(worldPosition.asLong(), false, 0));
         }
     }
 
     @Override
-    public <T> net.minecraftforge.common.util.@NotNull LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.@NotNull Capability<T> capability, @Nullable Direction facing) {
+    public <T> net.neoforged.neoforge.common.util.@NotNull LazyOptional<T> getCapability(net.neoforged.neoforge.common.capabilities.@NotNull Capability<T> capability, @Nullable Direction facing) {
         if (facing == Direction.DOWN
             && capability == ForgeCapabilities.ITEM_HANDLER)
             return downHandler.cast();

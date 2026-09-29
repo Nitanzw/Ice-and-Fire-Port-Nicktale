@@ -132,7 +132,7 @@ public class EntityDreadMob extends Monster implements IDreadMob {
     @Override
     public void aiStep() {
         super.aiStep();
-        if (!level().isClientSide && this.getCommander() instanceof EntityDreadLich) {
+        if (!level().isClientSide() && this.getCommander() instanceof EntityDreadLich) {
             EntityDreadLich lich = (EntityDreadLich) this.getCommander();
             if (lich.getTarget() != null && lich.getTarget().isAlive()) {
                 this.setTarget(lich.getTarget());
@@ -148,7 +148,7 @@ public class EntityDreadMob extends Monster implements IDreadMob {
             if (player != null) {
                 return player;
             } else {
-                if (!level().isClientSide) {
+                if (!level().isClientSide()) {
                     Entity entity = level().getServer().getLevel(this.level().dimension()).getEntity(uuid);
                     if (entity instanceof LivingEntity) {
                         return entity;
@@ -167,7 +167,7 @@ public class EntityDreadMob extends Monster implements IDreadMob {
             Entity summoned = necromancyEntity(LivingEntityIn);
             if (summoned != null) {
                 summoned.copyPosition(LivingEntityIn);
-                if (!level().isClientSide) {
+                if (!level().isClientSide()) {
                     level().addFreshEntity(summoned);
                 }
                 if (commander instanceof EntityDreadLich) {

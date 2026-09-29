@@ -36,7 +36,7 @@ public class ItemStymphalianFeatherBundle extends Item {
                 worldIn, player);
             rotation += 45;
             feather.shootFromRotation(player, 0, rotation, 0.0F, 1.5F, 1.0F);
-            if (!worldIn.isClientSide) {
+            if (!worldIn.isClientSide()) {
                 worldIn.addFreshEntity(feather);
             }
         }

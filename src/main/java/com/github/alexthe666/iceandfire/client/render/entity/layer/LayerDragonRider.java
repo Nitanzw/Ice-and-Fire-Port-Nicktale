@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.client.render.entity.layer;
 
-import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
-import com.github.alexthe666.citadel.client.model.AdvancedModelBox;
-import com.github.alexthe666.citadel.client.model.TabulaModel;
+import com.nicktale.api.client.model.AdvancedEntityModel;
+import com.nicktale.api.client.model.AdvancedModelBox;
+import com.nicktale.api.client.model.TabulaModel;
 import com.github.alexthe666.iceandfire.client.ClientProxy;
 import com.github.alexthe666.iceandfire.entity.DragonType;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;

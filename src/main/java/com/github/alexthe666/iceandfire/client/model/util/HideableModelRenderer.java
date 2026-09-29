@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.client.model.util;
 
-import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
-import com.github.alexthe666.citadel.client.model.AdvancedModelBox;
-import com.github.alexthe666.citadel.client.model.basic.BasicModelPart;
+import com.nicktale.api.client.model.AdvancedEntityModel;
+import com.nicktale.api.client.model.AdvancedModelBox;
+import com.nicktale.api.client.model.AdvancedModelBox;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 

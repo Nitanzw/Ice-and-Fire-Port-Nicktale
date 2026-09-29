@@ -124,7 +124,7 @@ public class ItemChain extends Item {
         if (!(block instanceof WallBlock)) {
             return InteractionResult.PASS;
         } else {
-            if (!context.getLevel().isClientSide) {
+            if (!context.getLevel().isClientSide()) {
                 attachToFence(context.getPlayer(), context.getLevel(), context.getClickedPos());
             }
             return InteractionResult.SUCCESS;

@@ -29,7 +29,7 @@ public class ParticleGhostAppearance extends Particle {
         this.gravity = 0.0F;
         this.lifetime = 15;
         this.ghost = ghost;
-        fromLeft = worldIn.random.nextBoolean();
+        fromLeft = worldIn.getRandom().nextBoolean();
     }
 
     @Override

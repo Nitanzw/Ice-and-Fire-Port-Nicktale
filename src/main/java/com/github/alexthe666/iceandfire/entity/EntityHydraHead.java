@@ -6,7 +6,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.PlayMessages;
+import net.neoforged.neoforge.network.PlayMessages;
 
 public class EntityHydraHead extends EntityMutlipartPart {
     public int headIndex;
@@ -33,7 +33,7 @@ public class EntityHydraHead extends EntityMutlipartPart {
         super.tick();
         if (hydra != null && hydra.getSeveredHead() != -1 && this.neck && !EntityGorgon.isStoneMob(hydra)) {
             if (hydra.getSeveredHead() == headIndex) {
-                if (this.level().isClientSide) {
+                if (this.level().isClientSide()) {
                     for (int k = 0; k < 5; ++k) {
                         double d2 = 0.4;
                         double d0 = 0.1;

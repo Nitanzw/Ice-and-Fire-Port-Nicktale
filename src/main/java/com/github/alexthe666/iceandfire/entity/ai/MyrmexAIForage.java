@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -128,7 +128,7 @@ public class MyrmexAIForage extends Goal {
                                 this.targetBlock.getY() + this.myrmex.getRandom().nextDouble(),
                                 this.targetBlock.getZ() + this.myrmex.getRandom().nextDouble(), stack);
                             itemEntity.setDefaultPickUpDelay();
-                            if (!this.myrmex.level().isClientSide) {
+                            if (!this.myrmex.level().isClientSide()) {
                                 this.myrmex.level().addFreshEntity(itemEntity);
                             }
                         }

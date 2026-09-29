@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.client.model.animator;
 
-import com.github.alexthe666.citadel.client.model.AdvancedModelBox;
-import com.github.alexthe666.citadel.client.model.ModelAnimator;
-import com.github.alexthe666.citadel.client.model.TabulaModel;
+import com.nicktale.api.client.model.AdvancedModelBox;
+import com.nicktale.api.client.model.ModelAnimator;
+import com.nicktale.api.client.model.TabulaModel;
 import com.github.alexthe666.iceandfire.util.IAFMath;
 import net.minecraft.util.Mth;
 

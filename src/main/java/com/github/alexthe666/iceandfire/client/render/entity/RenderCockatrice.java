@@ -1,6 +1,6 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
-import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
+import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.github.alexthe666.iceandfire.client.model.ModelCockatrice;
 import com.github.alexthe666.iceandfire.client.model.ModelCockatriceChick;
 import com.github.alexthe666.iceandfire.client.particle.CockatriceBeamRender;
@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
@@ -20,10 +20,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class RenderCockatrice extends MobRenderer<EntityCockatrice, AdvancedEntityModel<EntityCockatrice>> {
 
-    public static final ResourceLocation TEXTURE_ROOSTER = new ResourceLocation("iceandfire:textures/models/cockatrice/cockatrice_0.png");
-    public static final ResourceLocation TEXTURE_HEN = new ResourceLocation("iceandfire:textures/models/cockatrice/cockatrice_1.png");
-    public static final ResourceLocation TEXTURE_ROOSTER_CHICK = new ResourceLocation("iceandfire:textures/models/cockatrice/cockatrice_0_chick.png");
-    public static final ResourceLocation TEXTURE_HEN_CHICK = new ResourceLocation("iceandfire:textures/models/cockatrice/cockatrice_1_chick.png");
+    public static final Identifier TEXTURE_ROOSTER = Identifier.parse("iceandfire:textures/models/cockatrice/cockatrice_0.png");
+    public static final Identifier TEXTURE_HEN = Identifier.parse("iceandfire:textures/models/cockatrice/cockatrice_1.png");
+    public static final Identifier TEXTURE_ROOSTER_CHICK = Identifier.parse("iceandfire:textures/models/cockatrice/cockatrice_0_chick.png");
+    public static final Identifier TEXTURE_HEN_CHICK = Identifier.parse("iceandfire:textures/models/cockatrice/cockatrice_1_chick.png");
     public static final ModelCockatrice ADULT_MODEL = new ModelCockatrice();
     public static final ModelCockatriceChick BABY_MODEL = new ModelCockatriceChick();
 
@@ -83,7 +83,7 @@ public class RenderCockatrice extends MobRenderer<EntityCockatrice, AdvancedEnti
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(EntityCockatrice cockatrice) {
+    public @NotNull Identifier getTextureLocation(EntityCockatrice cockatrice) {
         if (cockatrice.isBaby()) {
             return cockatrice.isHen() ? TEXTURE_HEN_CHICK : TEXTURE_ROOSTER_CHICK;
         } else {

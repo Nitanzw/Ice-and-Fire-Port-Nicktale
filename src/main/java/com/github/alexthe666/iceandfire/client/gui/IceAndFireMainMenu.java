@@ -9,9 +9,9 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraftforge.client.ForgeHooksClient;
+import net.neoforged.neoforge.client.ForgeHooksClient;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,12 +29,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class IceAndFireMainMenu extends TitleScreen {
     public static final int LAYER_COUNT = 2;
-    public static final ResourceLocation splash = new ResourceLocation(IceAndFire.MODID, "splashes.txt");
-    private static final ResourceLocation MINECRAFT_TITLE_TEXTURES = new ResourceLocation("textures/gui/title/minecraft.png");
-    private static final ResourceLocation BESTIARY_TEXTURE = new ResourceLocation("iceandfire:textures/gui/main_menu/bestiary_menu.png");
-    private static final ResourceLocation TABLE_TEXTURE = new ResourceLocation("iceandfire:textures/gui/main_menu/table.png");
-    public static ResourceLocation[] pageFlipTextures;
-    public static ResourceLocation[] drawingTextures = new ResourceLocation[22];
+    public static final Identifier splash = Identifier.fromNamespaceAndPath(IceAndFire.MODID, "splashes.txt");
+    private static final Identifier MINECRAFT_TITLE_TEXTURES = Identifier.parse("textures/gui/title/minecraft.png");
+    private static final Identifier BESTIARY_TEXTURE = Identifier.parse("iceandfire:textures/gui/main_menu/bestiary_menu.png");
+    private static final Identifier TABLE_TEXTURE = Identifier.parse("iceandfire:textures/gui/main_menu/table.png");
+    public static Identifier[] pageFlipTextures;
+    public static Identifier[] drawingTextures = new Identifier[22];
     private int layerTick;
     private String splashText;
     private boolean isFlippingPage = false;
@@ -44,14 +44,14 @@ public class IceAndFireMainMenu extends TitleScreen {
     private float globalAlpha = 1F;
 
     public IceAndFireMainMenu() {
-        pageFlipTextures = new ResourceLocation[]{new ResourceLocation(IceAndFire.MODID, "textures/gui/main_menu/page_1.png"),
-            new ResourceLocation(IceAndFire.MODID, "textures/gui/main_menu/page_2.png"),
-            new ResourceLocation(IceAndFire.MODID, "textures/gui/main_menu/page_3.png"),
-            new ResourceLocation(IceAndFire.MODID, "textures/gui/main_menu/page_4.png"),
-            new ResourceLocation(IceAndFire.MODID, "textures/gui/main_menu/page_5.png"),
-            new ResourceLocation(IceAndFire.MODID, "textures/gui/main_menu/page_6.png")};
+        pageFlipTextures = new Identifier[]{Identifier.fromNamespaceAndPath(IceAndFire.MODID, "textures/gui/main_menu/page_1.png"),
+            Identifier.fromNamespaceAndPath(IceAndFire.MODID, "textures/gui/main_menu/page_2.png"),
+            Identifier.fromNamespaceAndPath(IceAndFire.MODID, "textures/gui/main_menu/page_3.png"),
+            Identifier.fromNamespaceAndPath(IceAndFire.MODID, "textures/gui/main_menu/page_4.png"),
+            Identifier.fromNamespaceAndPath(IceAndFire.MODID, "textures/gui/main_menu/page_5.png"),
+            Identifier.fromNamespaceAndPath(IceAndFire.MODID, "textures/gui/main_menu/page_6.png")};
         for (int i = 0; i < drawingTextures.length; i++) {
-            drawingTextures[i] = new ResourceLocation(IceAndFire.MODID, "textures/gui/main_menu/drawing_" + (i + 1) + ".png");
+            drawingTextures[i] = Identifier.fromNamespaceAndPath(IceAndFire.MODID, "textures/gui/main_menu/drawing_" + (i + 1) + ".png");
         }
         resetDrawnImages();
         final String branch = "1.17";

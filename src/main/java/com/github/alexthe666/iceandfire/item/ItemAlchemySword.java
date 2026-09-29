@@ -52,12 +52,12 @@ public class ItemAlchemySword extends SwordItem {
                     flag = false;
                 }
             }
-            if (!attacker.level().isClientSide && flag) {
+            if (!attacker.level().isClientSide() && flag) {
                 LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(target.level());
                 lightningboltentity.getTags().add(ServerEvents.BOLT_DONT_DESTROY_LOOT);
                 lightningboltentity.getTags().add(attacker.getStringUUID());
                 lightningboltentity.moveTo(target.position());
-                if (!target.level().isClientSide) {
+                if (!target.level().isClientSide()) {
                     target.level().addFreshEntity(lightningboltentity);
                 }
             }

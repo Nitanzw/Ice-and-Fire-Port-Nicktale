@@ -1,6 +1,6 @@
 package com.github.alexthe666.iceandfire.client.render.entity.layer;
 
-import com.github.alexthe666.citadel.animation.IAnimatedEntity;
+import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.client.model.ModelBipedBase;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
@@ -29,10 +29,10 @@ public class LayerBipedArmor<T extends LivingEntity & IAnimatedEntity,
 
     private final A modelLeggings;
     private final A modelArmor;
-    private final ResourceLocation defaultLegArmor;
-    private final ResourceLocation defaultArmor;
+    private final Identifier defaultLegArmor;
+    private final Identifier defaultArmor;
 
-    public LayerBipedArmor(RenderLayerParent<T, M> mobRenderer, A modelLeggings, A modelArmor, ResourceLocation defaultArmor, ResourceLocation defaultLegArmor) {
+    public LayerBipedArmor(RenderLayerParent<T, M> mobRenderer, A modelLeggings, A modelArmor, Identifier defaultArmor, Identifier defaultLegArmor) {
         super(mobRenderer);
         this.modelLeggings = modelLeggings;
         this.modelArmor = modelArmor;
@@ -84,7 +84,7 @@ public class LayerBipedArmor<T extends LivingEntity & IAnimatedEntity,
         }
     }
 
-    private void renderArmorItem(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, boolean p_241738_5_, A modelIn, float red, float green, float blue, ResourceLocation armorResource) {
+    private void renderArmorItem(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, boolean p_241738_5_, A modelIn, float red, float green, float blue, Identifier armorResource) {
         VertexConsumer ivertexbuilder = ItemRenderer.getArmorFoilBuffer(bufferIn, RenderType.armorCutoutNoCull(armorResource), false, p_241738_5_);
         modelIn.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, red, green, blue, 1.0F);
     }
@@ -97,7 +97,7 @@ public class LayerBipedArmor<T extends LivingEntity & IAnimatedEntity,
         return slotIn == EquipmentSlot.LEGS;
     }
 
-    public ResourceLocation getArmorResource(T entity, ItemStack stack, EquipmentSlot slot, @Nullable String type) {
+    public Identifier getArmorResource(T entity, ItemStack stack, EquipmentSlot slot, @Nullable String type) {
         if (isLegSlot(slot))
             return defaultLegArmor;
         return defaultArmor;

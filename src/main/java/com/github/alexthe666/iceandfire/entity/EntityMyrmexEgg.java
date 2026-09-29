@@ -137,7 +137,7 @@ public class EntityMyrmexEgg extends LivingEntity implements IBlacklistedFromSta
                 if (player != null) {
                     hive.hasOwner = true;
                     hive.ownerUUID = player.getUUID();
-                    if (!level().isClientSide) {
+                    if (!level().isClientSide()) {
                         hive.modifyPlayerReputation(player.getUUID(), 100);
                     }
                 }
@@ -153,13 +153,13 @@ public class EntityMyrmexEgg extends LivingEntity implements IBlacklistedFromSta
                     } else {
                         hive = MyrmexWorldData.get(level()).getHiveFromUUID(hiveUUID);
                     }
-                    if (!level().isClientSide && hive != null && Math.sqrt(this.distanceToSqr(hive.getCenter().getX(), hive.getCenter().getY(), hive.getCenter().getZ())) < 2000) {
+                    if (!level().isClientSide() && hive != null && Math.sqrt(this.distanceToSqr(hive.getCenter().getX(), hive.getCenter().getY(), hive.getCenter().getZ())) < 2000) {
                         myrmex.setHive(hive);
                     }
                 }
             }
 
-            if (!level().isClientSide) {
+            if (!level().isClientSide()) {
                 level().addFreshEntity(myrmex);
             }
             this.level().playLocalSound(this.getX(), this.getY() + this.getEyeHeight(), this.getZ(), IafSoundRegistry.EGG_HATCH, this.getSoundSource(), 2.5F, 1.0F, false);
@@ -191,7 +191,7 @@ public class EntityMyrmexEgg extends LivingEntity implements IBlacklistedFromSta
         if (dmg.is(DamageTypes.IN_WALL) || dmg.is(DamageTypes.FALL)) {
             return false;
         }
-        if (!level().isClientSide && !dmg.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+        if (!level().isClientSide() && !dmg.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             this.spawnAtLocation(this.getItem(), 0);
         }
         this.remove(RemovalReason.KILLED);

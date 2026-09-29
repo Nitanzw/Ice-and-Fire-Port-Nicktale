@@ -68,7 +68,7 @@ public class ItemStoneStatue extends Item {
                 statue.yBodyRot = yaw;
                 statue.yBodyRotO = yaw;
                 statue.absMoveTo(context.getClickedPos().getX() + 0.5, context.getClickedPos().getY() + 1, context.getClickedPos().getZ() + 0.5, yaw, 0);
-                if (!context.getLevel().isClientSide) {
+                if (!context.getLevel().isClientSide()) {
                     context.getLevel().addFreshEntity(statue);
                     statue.readAdditionalSaveData(stack.getTag());
                 }

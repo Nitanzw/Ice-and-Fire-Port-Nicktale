@@ -10,13 +10,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 public class RenderLectern<T extends TileEntityLectern> implements BlockEntityRenderer<T> {
 
-    private static final RenderType ENCHANTMENT_TABLE_BOOK_TEXTURE = RenderType.entityCutoutNoCull(new ResourceLocation("iceandfire:textures/models/lectern_book.png"));
+    private static final RenderType ENCHANTMENT_TABLE_BOOK_TEXTURE = RenderType.entityCutoutNoCull(Identifier.parse("iceandfire:textures/models/lectern_book.png"));
     private final BookModel bookModel;
 
     public RenderLectern(BlockEntityRendererProvider.Context context) {

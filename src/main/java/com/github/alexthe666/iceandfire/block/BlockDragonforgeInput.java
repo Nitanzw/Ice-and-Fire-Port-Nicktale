@@ -65,7 +65,7 @@ public class BlockDragonforgeInput extends BaseEntityBlock implements IDragonPro
         if (this.getConnectedTileEntity(worldIn, resultIn.getBlockPos()) != null) {
             TileEntityDragonforge forge = this.getConnectedTileEntity(worldIn, resultIn.getBlockPos());
             if (forge != null && forge.fireType == dragonType) {
-                if (worldIn.isClientSide) {
+                if (worldIn.isClientSide()) {
                     IceAndFire.PROXY.setRefrencedTE(worldIn.getBlockEntity(forge.getBlockPos()));
                 } else {
                     MenuProvider inamedcontainerprovider = this.getMenuProvider(forge.getBlockState(), worldIn, forge.getBlockPos());
@@ -116,7 +116,7 @@ public class BlockDragonforgeInput extends BaseEntityBlock implements IDragonPro
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> entityType) {
-        return level.isClientSide ? null : createTickerHelper(entityType, DRAGONFORGE_INPUT.get(), TileEntityDragonforgeInput::tick);
+        return level.isClientSide() ? null : createTickerHelper(entityType, DRAGONFORGE_INPUT.get(), TileEntityDragonforgeInput::tick);
     }
 
 

@@ -62,7 +62,7 @@ public class BlockReturningState extends Block {
     // FIXME :: Unused because isRandomlyTicking is not used -> The chunk check might be a performance problem anyway (and potentially not needed)
     @Override
     public void tick(@NotNull BlockState state, ServerLevel worldIn, @NotNull BlockPos pos, @NotNull RandomSource rand) {
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             if (!worldIn.isAreaLoaded(pos, 3))
                 return;
             if (state.getValue(REVERTS) && rand.nextInt(3) == 0) {

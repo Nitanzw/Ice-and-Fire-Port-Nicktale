@@ -52,7 +52,7 @@ public class ItemDragonEgg extends Item {
         if (itemstack.hasCustomHoverName()) {
             egg.setCustomName(itemstack.getHoverName());
         }
-        if (!context.getLevel().isClientSide) {
+        if (!context.getLevel().isClientSide()) {
             context.getLevel().addFreshEntity(egg);
         }
         itemstack.shrink(1);

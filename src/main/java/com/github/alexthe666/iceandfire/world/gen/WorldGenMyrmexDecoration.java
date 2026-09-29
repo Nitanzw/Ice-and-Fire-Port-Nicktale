@@ -5,7 +5,7 @@ import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import com.github.alexthe666.iceandfire.entity.util.MyrmexHive;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 
 public class WorldGenMyrmexDecoration {
 
-    public static final ResourceLocation MYRMEX_GOLD_CHEST = new ResourceLocation("iceandfire", "chest/myrmex_loot_chest");
-    public static final ResourceLocation DESERT_MYRMEX_FOOD_CHEST = new ResourceLocation("iceandfire", "chest/myrmex_desert_food_chest");
-    public static final ResourceLocation JUNGLE_MYRMEX_FOOD_CHEST = new ResourceLocation("iceandfire", "chest/myrmex_jungle_food_chest");
-    public static final ResourceLocation MYRMEX_TRASH_CHEST = new ResourceLocation("iceandfire", "chest/myrmex_trash_chest");
+    public static final Identifier MYRMEX_GOLD_CHEST = Identifier.fromNamespaceAndPath("iceandfire", "chest/myrmex_loot_chest");
+    public static final Identifier DESERT_MYRMEX_FOOD_CHEST = Identifier.fromNamespaceAndPath("iceandfire", "chest/myrmex_desert_food_chest");
+    public static final Identifier JUNGLE_MYRMEX_FOOD_CHEST = Identifier.fromNamespaceAndPath("iceandfire", "chest/myrmex_jungle_food_chest");
+    public static final Identifier MYRMEX_TRASH_CHEST = Identifier.fromNamespaceAndPath("iceandfire", "chest/myrmex_trash_chest");
     private static final Direction[] HORIZONTALS = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 
     public static void generateSkeleton(LevelAccessor worldIn, BlockPos blockpos, BlockPos origin, int radius, RandomSource rand) {
@@ -90,7 +90,7 @@ public class WorldGenMyrmexDecoration {
         }
     }
 
-    public static void generateCocoon(LevelAccessor worldIn, BlockPos blockpos, RandomSource rand, boolean jungle, ResourceLocation lootTable) {
+    public static void generateCocoon(LevelAccessor worldIn, BlockPos blockpos, RandomSource rand, boolean jungle, Identifier lootTable) {
         if (worldIn.getBlockState(blockpos.below()).isFaceSturdy(worldIn, blockpos.below(), Direction.UP)) {
             worldIn.setBlock(blockpos, jungle ? IafBlockRegistry.JUNGLE_MYRMEX_COCOON.get().defaultBlockState() : IafBlockRegistry.DESERT_MYRMEX_COCOON.get().defaultBlockState(), 3);
 

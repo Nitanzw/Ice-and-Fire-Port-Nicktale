@@ -26,7 +26,7 @@ public class ItemLichStaff extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
         ItemStack itemStackIn = playerIn.getItemInHand(hand);
-        if (!worldIn.isClientSide) {
+        if (!worldIn.isClientSide()) {
             playerIn.startUsingItem(hand);
             playerIn.swing(hand);
             double d2 = playerIn.getLookAngle().x;

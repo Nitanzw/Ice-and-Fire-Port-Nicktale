@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -142,7 +142,7 @@ public class EntityChainTie extends HangingEntity {
 
     @Override
     public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return InteractionResult.SUCCESS;
         } else {
             AtomicBoolean flag = new AtomicBoolean(false);

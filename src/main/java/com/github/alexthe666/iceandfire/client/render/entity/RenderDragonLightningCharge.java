@@ -10,15 +10,15 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 public class RenderDragonLightningCharge extends EntityRenderer<EntityDragonLightningCharge> {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation("iceandfire:textures/models/lightningdragon/charge.png");
-    public static final ResourceLocation TEXTURE_CORE = new ResourceLocation("iceandfire:textures/models/lightningdragon/charge_core.png");
+    public static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/models/lightningdragon/charge.png");
+    public static final Identifier TEXTURE_CORE = Identifier.parse("iceandfire:textures/models/lightningdragon/charge_core.png");
     private static final ModelDreadLichSkull MODEL_SPIRIT = new ModelDreadLichSkull();
 
     public RenderDragonLightningCharge(EntityRendererProvider.Context context) {
@@ -71,7 +71,7 @@ public class RenderDragonLightningCharge extends EntityRenderer<EntityDragonLigh
 
     @Nullable
     @Override
-    public ResourceLocation getTextureLocation(@NotNull EntityDragonLightningCharge entity) {
+    public Identifier getTextureLocation(@NotNull EntityDragonLightningCharge entity) {
         return TEXTURE;
     }
 }

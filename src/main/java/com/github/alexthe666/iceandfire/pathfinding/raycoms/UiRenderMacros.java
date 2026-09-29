@@ -12,7 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.joml.Matrix4f;
@@ -370,13 +370,13 @@ public class UiRenderMacros
         RenderSystem.disableBlend();
     }
 
-    public static void blit(final PoseStack ps, final ResourceLocation rl, final int x, final int y, final int w, final int h)
+    public static void blit(final PoseStack ps, final Identifier rl, final int x, final int y, final int w, final int h)
     {
         blit(ps, rl, x, y, w, h, 0.0f, 0.0f, 1.0f, 1.0f);
     }
 
     public static void blit(final PoseStack ps,
-                            final ResourceLocation rl,
+                            final Identifier rl,
                             final int x,
                             final int y,
                             final int w,
@@ -390,7 +390,7 @@ public class UiRenderMacros
     }
 
     public static void blit(final PoseStack ps,
-                            final ResourceLocation rl,
+                            final Identifier rl,
                             final int x,
                             final int y,
                             final int w,
@@ -406,7 +406,7 @@ public class UiRenderMacros
     }
 
     public static void blit(final PoseStack ps,
-                            final ResourceLocation rl,
+                            final Identifier rl,
                             final int x,
                             final int y,
                             final int w,
@@ -452,7 +452,7 @@ public class UiRenderMacros
      * @param repeatHeight  size of repeatable box in texture [texels], smaller than or equal vHeight - vRepeat
      */
     protected static void blitRepeatable(final PoseStack ps,
-                                         final ResourceLocation rl,
+                                         final Identifier rl,
                                          final int x, final int y,
                                          final int width, final int height,
                                          final int u, final int v,

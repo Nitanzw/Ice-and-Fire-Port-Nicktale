@@ -34,7 +34,7 @@ public class ItemMobSkull extends Item {
         }
         skull.setYaw(yaw);
         skull.setSkullType(this.skull);
-        if (!context.getLevel().isClientSide) {
+        if (!context.getLevel().isClientSide()) {
             context.getLevel().addFreshEntity(skull);
         }
         if (stack.hasCustomHoverName()) {

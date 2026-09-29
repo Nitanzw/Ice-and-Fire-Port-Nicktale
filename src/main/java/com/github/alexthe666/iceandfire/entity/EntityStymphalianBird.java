@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.entity;
 
-import com.github.alexthe666.citadel.animation.Animation;
-import com.github.alexthe666.citadel.animation.AnimationHandler;
-import com.github.alexthe666.citadel.animation.IAnimatedEntity;
+import com.nicktale.api.animation.Animation;
+import com.nicktale.api.animation.AnimationHandler;
+import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.ai.StymphalianBirdAIAirTarget;
 import com.github.alexthe666.iceandfire.entity.ai.StymphalianBirdAIFlee;
@@ -120,7 +120,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
     @Override
     public void tick() {
         super.tick();
-        if (!this.level().isClientSide && this.level().getDifficulty() == Difficulty.PEACEFUL) {
+        if (!this.level().isClientSide() && this.level().getDifficulty() == Difficulty.PEACEFUL) {
             this.remove(RemovalReason.DISCARDED);
         }
     }
@@ -156,7 +156,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
     }
 
     public boolean isFlying() {
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             return this.isFlying = this.entityData.get(FLYING).booleanValue();
         }
         return isFlying;
@@ -164,14 +164,14 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
 
     public void setFlying(boolean flying) {
         this.entityData.set(FLYING, flying);
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             this.isFlying = flying;
         }
     }
 
     @Override
     public void die(DamageSource cause) {
-        if (cause.getEntity() != null && cause.getEntity() instanceof LivingEntity && !level().isClientSide) {
+        if (cause.getEntity() != null && cause.getEntity() instanceof LivingEntity && !level().isClientSide()) {
             this.setVictorId(cause.getEntity().getUUID());
             if (this.flock != null) {
                 this.flock.setFearTarget((LivingEntity) cause.getEntity());
@@ -261,7 +261,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
             }
             this.flock.update();
         }
-        if (!level().isClientSide && this.getTarget() != null && this.getTarget().isAlive()) {
+        if (!level().isClientSide() && this.getTarget() != null && this.getTarget().isAlive()) {
             double dist = this.distanceToSqr(this.getTarget());
             if (this.getAnimation() == ANIMATION_PECK && this.getAnimationTick() == 7) {
                 if (dist < 1.5F) {
@@ -309,7 +309,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
         } else if (!flying && flyProgress > 0.0F) {
             flyProgress -= 1F;
         }
-        if (!this.isFlying() && this.airTarget != null && this.onGround() && !level().isClientSide) {
+        if (!this.isFlying() && this.airTarget != null && this.onGround() && !level().isClientSide()) {
             this.airTarget = null;
         }
         if (this.isFlying() && getTarget() == null) {
@@ -317,27 +317,27 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
         } else if (getTarget() != null) {
             flyTowardsTarget();
         }
-        if (!level().isClientSide && this.doesWantToLand() && !aiFlightLaunch && this.getAnimation() != ANIMATION_SHOOT_ARROWS) {
+        if (!level().isClientSide() && this.doesWantToLand() && !aiFlightLaunch && this.getAnimation() != ANIMATION_SHOOT_ARROWS) {
             this.setFlying(false);
             this.airTarget = null;
         }
-        if (!level().isClientSide && this.isFree(0, 0, 0) && !this.isFlying()) {
+        if (!level().isClientSide() && this.isFree(0, 0, 0) && !this.isFlying()) {
             this.setFlying(true);
             this.launchTicks = 0;
             this.flyTicks = 0;
             this.aiFlightLaunch = true;
         }
-        if (!level().isClientSide && this.onGround() && this.isFlying() && !aiFlightLaunch && this.getAnimation() != ANIMATION_SHOOT_ARROWS) {
+        if (!level().isClientSide() && this.onGround() && this.isFlying() && !aiFlightLaunch && this.getAnimation() != ANIMATION_SHOOT_ARROWS) {
             this.setFlying(false);
             this.airTarget = null;
         }
-        if (!level().isClientSide && (this.flock == null || this.flock != null && this.flock.isLeader(this)) && this.getRandom().nextInt(FLIGHT_CHANCE_PER_TICK) == 0 && !this.isFlying() && this.getPassengers().isEmpty() && !this.isBaby() && this.onGround()) {
+        if (!level().isClientSide() && (this.flock == null || this.flock != null && this.flock.isLeader(this)) && this.getRandom().nextInt(FLIGHT_CHANCE_PER_TICK) == 0 && !this.isFlying() && this.getPassengers().isEmpty() && !this.isBaby() && this.onGround()) {
             this.setFlying(true);
             this.launchTicks = 0;
             this.flyTicks = 0;
             this.aiFlightLaunch = true;
         }
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (aiFlightLaunch && this.launchTicks < 40) {
                 this.launchTicks++;
             } else {
@@ -355,7 +355,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
         } else {
             airBorneCounter = 0;
         }
-        if (this.getAnimation() == ANIMATION_SHOOT_ARROWS && !this.isFlying() && !level().isClientSide) {
+        if (this.getAnimation() == ANIMATION_SHOOT_ARROWS && !this.isFlying() && !level().isClientSide()) {
             this.setFlying(true);
             aiFlightLaunch = true;
         }

@@ -1,7 +1,7 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
-import com.github.alexthe666.citadel.client.model.TabulaModel;
-import com.github.alexthe666.citadel.client.model.basic.BasicModelPart;
+import com.nicktale.api.client.model.TabulaModel;
+import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityDragonSkull;
 import com.github.alexthe666.iceandfire.enums.EnumDragonTextures;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class RenderDragonSkull extends EntityRenderer<EntityDragonSkull> {
@@ -67,7 +67,7 @@ public class RenderDragonSkull extends EntityRenderer<EntityDragonSkull> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(EntityDragonSkull entity) {
+    public @NotNull Identifier getTextureLocation(EntityDragonSkull entity) {
         if (entity.getDragonType() == 2) {
             return EnumDragonTextures.getLightningDragonSkullTextures(entity);
         }

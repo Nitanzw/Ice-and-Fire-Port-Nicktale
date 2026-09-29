@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
@@ -22,17 +22,17 @@ import org.joml.Matrix4f;
 
 public class RenderGhost extends MobRenderer<EntityGhost, ModelGhost> {
 
-    public static final ResourceLocation TEXTURE_0 = new ResourceLocation("iceandfire:textures/models/ghost/ghost_white.png");
-    public static final ResourceLocation TEXTURE_1 = new ResourceLocation("iceandfire:textures/models/ghost/ghost_blue.png");
-    public static final ResourceLocation TEXTURE_2 = new ResourceLocation("iceandfire:textures/models/ghost/ghost_green.png");
-    public static final ResourceLocation TEXTURE_SHOPPING_LIST = new ResourceLocation("iceandfire:textures/models/ghost/haunted_shopping_list.png");
+    public static final Identifier TEXTURE_0 = Identifier.parse("iceandfire:textures/models/ghost/ghost_white.png");
+    public static final Identifier TEXTURE_1 = Identifier.parse("iceandfire:textures/models/ghost/ghost_blue.png");
+    public static final Identifier TEXTURE_2 = Identifier.parse("iceandfire:textures/models/ghost/ghost_green.png");
+    public static final Identifier TEXTURE_SHOPPING_LIST = Identifier.parse("iceandfire:textures/models/ghost/haunted_shopping_list.png");
 
     public RenderGhost(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelGhost(0.0F), 0.55F);
 
     }
 
-    public static ResourceLocation getGhostOverlayForType(int ghost) {
+    public static Identifier getGhostOverlayForType(int ghost) {
         switch (ghost) {
             case 1:
                 return TEXTURE_1;
@@ -48,7 +48,7 @@ public class RenderGhost extends MobRenderer<EntityGhost, ModelGhost> {
     @Override
     public void render(@NotNull EntityGhost entityIn, float entityYaw, float partialTicks, @NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn) {
         shadowRadius = 0;
-        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<EntityGhost, ModelGhost>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn)))
+        if (net.neoforged.neoforge.common.MinecraftForge.EVENT_BUS.post(new net.neoforged.neoforge.client.event.RenderLivingEvent.Pre<EntityGhost, ModelGhost>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn)))
             return;
         matrixStackIn.pushPose();
         this.model.attackTime = this.getAttackAnim(entityIn, partialTicks);
@@ -157,12 +157,12 @@ public class RenderGhost extends MobRenderer<EntityGhost, ModelGhost> {
         }
 
         matrixStackIn.popPose();
-        net.minecraftforge.client.event.RenderNameTagEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameTagEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
-        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.shouldShowName(entityIn))) {
+        net.neoforged.neoforge.client.event.RenderNameTagEvent renderNameplateEvent = new net.neoforged.neoforge.client.event.RenderNameTagEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
+        net.neoforged.neoforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
+        if (renderNameplateEvent.getResult() != net.neoforged.bus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.neoforged.bus.api.Event.Result.ALLOW || this.shouldShowName(entityIn))) {
             this.renderNameTag(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
         }
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<EntityGhost, ModelGhost>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
+        net.neoforged.neoforge.common.MinecraftForge.EVENT_BUS.post(new net.neoforged.neoforge.client.event.RenderLivingEvent.Post<EntityGhost, ModelGhost>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
     }
 
     @Override
@@ -182,7 +182,7 @@ public class RenderGhost extends MobRenderer<EntityGhost, ModelGhost> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(EntityGhost ghost) {
+    public @NotNull Identifier getTextureLocation(EntityGhost ghost) {
         switch (ghost.getColor()) {
             case 1:
                 return TEXTURE_1;

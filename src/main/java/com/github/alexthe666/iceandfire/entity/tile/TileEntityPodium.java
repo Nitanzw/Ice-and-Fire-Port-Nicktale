@@ -22,9 +22,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -36,7 +36,7 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
     public int prevTicksExisted;
     IItemHandler handlerUp = new SidedInvWrapper(this, net.minecraft.core.Direction.UP);
     IItemHandler handlerDown = new SidedInvWrapper(this, Direction.DOWN);
-    net.minecraftforge.common.util.LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper
+    net.neoforged.neoforge.common.util.LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper
         .create(this, Direction.UP, Direction.DOWN);
     private NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
 
@@ -106,7 +106,7 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
             stack.setCount(this.getMaxStackSize());
         }
         this.saveAdditional(this.getUpdateTag());
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             IceAndFire.sendMSGToAll(new MessageUpdatePodium(this.getBlockPos().asLong(), stacks.get(0)));
         }
     }
@@ -216,8 +216,8 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
     }
 
     @Override
-    public <T> net.minecraftforge.common.util.@NotNull LazyOptional<T> getCapability(
-        net.minecraftforge.common.capabilities.@NotNull Capability<T> capability, @Nullable Direction facing) {
+    public <T> net.neoforged.neoforge.common.util.@NotNull LazyOptional<T> getCapability(
+        net.neoforged.neoforge.common.capabilities.@NotNull Capability<T> capability, @Nullable Direction facing) {
         if (!this.remove && facing != null
             && capability == ForgeCapabilities.ITEM_HANDLER) {
             if (facing == Direction.DOWN)

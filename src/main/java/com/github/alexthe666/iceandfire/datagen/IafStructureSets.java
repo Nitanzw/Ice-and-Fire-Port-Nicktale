@@ -5,7 +5,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
@@ -19,7 +19,7 @@ public class IafStructureSets {
 
 
     private static ResourceKey<StructureSet> registerKey(String name) {
-        return ResourceKey.create(Registries.STRUCTURE_SET, new ResourceLocation(IceAndFire.MODID, name));
+        return ResourceKey.create(Registries.STRUCTURE_SET, Identifier.fromNamespaceAndPath(IceAndFire.MODID, name));
     }
 
     public static void bootstrap(BootstapContext<StructureSet> context) {

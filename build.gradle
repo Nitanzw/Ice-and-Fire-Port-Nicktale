@@ -14,18 +14,6 @@ repositories {
     mavenCentral()
 }
 
-// Migration is done block by block; only listed packages/files compile until the port is complete.
-sourceSets {
-    main {
-        java {
-            include 'com/github/alexthe666/iceandfire/client/model/ModelDragonBase.java'
-            include 'com/github/alexthe666/iceandfire/client/model/ModelHippogryph.java'
-            include 'com/github/alexthe666/iceandfire/client/model/HippogryphRenderState.java'
-            include 'com/github/alexthe666/iceandfire/entity/HippogryphAnimations.java'
-        }
-    }
-}
-
 neoForge {
     version = neoforge_version
 
@@ -49,6 +37,11 @@ neoForge {
 
 dependencies {
     implementation files("../nicktale-api-neoforge/build/libs/nicktaleapi-${nicktale_api_version}.jar")
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << '-Xmaxerrs' << '3000'
+    options.encoding = 'UTF-8'
 }
 
 java {

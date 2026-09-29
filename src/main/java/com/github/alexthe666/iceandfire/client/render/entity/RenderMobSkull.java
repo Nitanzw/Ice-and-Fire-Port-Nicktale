@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
-import com.github.alexthe666.citadel.client.model.AdvancedEntityModel;
-import com.github.alexthe666.citadel.client.model.TabulaModel;
-import com.github.alexthe666.citadel.client.model.basic.BasicModelPart;
+import com.nicktale.api.client.model.AdvancedEntityModel;
+import com.nicktale.api.client.model.TabulaModel;
+import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.client.model.*;
 import com.github.alexthe666.iceandfire.entity.EntityMobSkull;
 import com.github.alexthe666.iceandfire.enums.EnumSkullType;
@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
 
-    private static final Map<String, ResourceLocation> SKULL_TEXTURE_CACHE = Maps.newHashMap();
+    private static final Map<String, Identifier> SKULL_TEXTURE_CACHE = Maps.newHashMap();
     private final ModelHippogryph hippogryphModel;
     private final ModelCyclops cyclopsModel;
     private final ModelCockatrice cockatriceModel;
@@ -139,15 +139,15 @@ public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(EntityMobSkull entity) {
+    public @NotNull Identifier getTextureLocation(EntityMobSkull entity) {
         return getSkullTexture(entity.getSkullType());
     }
 
-    public ResourceLocation getSkullTexture(EnumSkullType skull) {
+    public Identifier getSkullTexture(EnumSkullType skull) {
         String s = "iceandfire:textures/models/skulls/skull_" + skull.name().toLowerCase(Locale.ROOT) + ".png";
-        ResourceLocation resourcelocation = SKULL_TEXTURE_CACHE.get(s);
+        Identifier resourcelocation = SKULL_TEXTURE_CACHE.get(s);
         if (resourcelocation == null) {
-            resourcelocation = new ResourceLocation(s);
+            resourcelocation = Identifier.parse(s);
             SKULL_TEXTURE_CACHE.put(s, resourcelocation);
         }
         return resourcelocation;
