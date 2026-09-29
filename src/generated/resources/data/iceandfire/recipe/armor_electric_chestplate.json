@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": {
-      "item": "iceandfire:dragonscales_electric"
-    }
+    "#": "iceandfire:dragonscales_electric"
   },
   "pattern": [
     "# #",
@@ -12,7 +10,6 @@
     "###"
   ],
   "result": {
-    "item": "iceandfire:armor_electric_chestplate"
-  },
-  "show_notification": true
+    "id": "iceandfire:armor_electric_chestplate"
+  }
 }

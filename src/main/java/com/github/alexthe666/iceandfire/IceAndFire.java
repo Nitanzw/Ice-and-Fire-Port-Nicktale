@@ -65,10 +65,9 @@ public class IceAndFire {
         modBus.addListener(CommonProxy::onModConfigEvent);
         modBus.addListener(CommonProxy::onModConfigReloading);
         modBus.addListener(IafSoundRegistry::registerSoundEvents);
-        modBus.addListener(IafDamageRegistry::gatherData);
         modBus.addListener(IafTileEntityRegistry::registerCapabilities);
         modBus.addListener(IafRecipeRegistry::preInit);
-        modBus.addListener(DataGenerators::gatherData);
+        modBus.addListener(GatherDataEvent.Server.class, DataGenerators::gatherData);
         NeoForge.EVENT_BUS.addListener(IafRecipeRegistry::registerBrewingRecipes);
         IafNetwork.init(modBus);
 

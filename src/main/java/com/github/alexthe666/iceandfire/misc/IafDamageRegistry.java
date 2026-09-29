@@ -96,16 +96,11 @@ public class IafDamageRegistry {
         return new CustomIndirectEntityDamageSource(holder, source, indirectEntityIn);
     }
 
-    public static void gatherData(GatherDataEvent event) {
-        event.getGenerator().addProvider(
-                // Tell generator to run only when server data are generating
-                event instanceof GatherDataEvent.Server,
-                (DataProvider.Factory<IafDamageTypeTagsProvider>) output -> new IafDamageTypeTagsProvider(
-                        event.getGenerator().getPackOutput(),
-                        event.getLookupProvider(),
-                        MODID
-                )
-        );
+    public static void gatherData(GatherDataEvent.Server event) {
+        event.addProvider(new IafDamageTypeTagsProvider(
+            event.getGenerator().getPackOutput(),
+            event.getLookupProvider(),
+            MODID));
     }
 
     public static class IafDamageTypeTagsProvider extends DamageTypeTagsProvider {
@@ -116,8 +111,8 @@ public class IafDamageRegistry {
 
         @Override
         public void addTags(HolderLookup.Provider pProvider) {
-            this.tag(DamageTypeTags.BYPASSES_ARMOR).add(GORGON_DMG_TYPE);
-            this.tag(DamageTypeTags.BYPASSES_EFFECTS).add(GORGON_DMG_TYPE);
+            this.tag(DamageTypeTags.BYPASSES_ARMOR).addOptional(GORGON_DMG_TYPE);
+            this.tag(DamageTypeTags.BYPASSES_EFFECTS).addOptional(GORGON_DMG_TYPE);
         }
     }
 }

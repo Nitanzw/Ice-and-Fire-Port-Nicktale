@@ -17,20 +17,21 @@ public final class DataGenerators {
     private DataGenerators() {
     }
 
-    public static void gatherData(GatherDataEvent event) {
-        if (event instanceof GatherDataEvent.Server serverEvent) {
+    public static void gatherData(GatherDataEvent.Server serverEvent) {
+        {
             PackOutput output = serverEvent.getGenerator().getPackOutput();
             CompletableFuture<HolderLookup.Provider> provider = serverEvent.getLookupProvider();
             RegistryDataGenerator datapackProvider = new RegistryDataGenerator(output, provider);
             CompletableFuture<HolderLookup.Provider> lookupProvider = datapackProvider.getRegistryProvider();
 
             serverEvent.addProvider(datapackProvider);
-            serverEvent.addProvider(new BannerPatternTagGenerator(output, provider));
+            serverEvent.addProvider(new BannerPatternTagGenerator(output, lookupProvider));
             serverEvent.addProvider(new POITagGenerator(output, provider));
             serverEvent.addProvider(PackMetadataGenerator.forFeaturePack(
                     output,
                     net.minecraft.network.chat.Component.literal("Resources for Ice and Fire")));
             serverEvent.addProvider(new IafBiomeTagGenerator(output, lookupProvider));
+            serverEvent.addProvider(new com.github.alexthe666.iceandfire.misc.IafDamageRegistry.IafDamageTypeTagsProvider(output, lookupProvider, com.github.alexthe666.iceandfire.IceAndFire.MODID));
             BlockTagsProvider blockTags = new IafBlockTags(output, provider);
             serverEvent.addProvider(blockTags);
             serverEvent.addProvider(new IafItemTags(output, provider, blockTags.contentsGetter()));

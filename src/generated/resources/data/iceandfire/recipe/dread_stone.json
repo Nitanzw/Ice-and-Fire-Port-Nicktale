@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "D": {
-      "item": "iceandfire:dread_shard"
-    },
-    "S": {
-      "tag": "forge:stone"
-    }
+    "D": "iceandfire:dread_shard",
+    "S": "#c:stones"
   },
   "pattern": [
     "DDD",
@@ -16,7 +12,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "iceandfire:dread_stone"
-  },
-  "show_notification": true
+    "id": "iceandfire:dread_stone"
+  }
 }

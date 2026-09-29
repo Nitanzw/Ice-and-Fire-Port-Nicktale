@@ -20,13 +20,12 @@ import javax.annotation.Nullable;
 import com.mojang.serialization.MapCodec;
 
 public class BlockMyrmexCocoon extends BaseEntityBlock {
-    private static final MapCodec<BlockMyrmexCocoon> CODEC = MapCodec.unit(new BlockMyrmexCocoon());
+    private static final MapCodec<BlockMyrmexCocoon> CODEC = MapCodec.unit(BlockMyrmexCocoon::new);
 
 
     public BlockMyrmexCocoon() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.DIRT)
                 .strength(2.5F)
                 .noOcclusion()

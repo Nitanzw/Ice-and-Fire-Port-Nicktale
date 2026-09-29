@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:barrier"
-            ]
+            "items": "#c:storage_blocks/gold"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_item",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_item"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:dragonarmor_gold_tail"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

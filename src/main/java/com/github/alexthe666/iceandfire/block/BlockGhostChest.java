@@ -26,8 +26,7 @@ public class BlockGhostChest extends ChestBlock {
             IafTileEntityRegistry.GHOST_CHEST::get,
             SoundEvents.CHEST_OPEN,
             SoundEvents.CHEST_CLOSE,
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.WOOD)
                 .instrument(NoteBlockInstrument.BASS)
                 .ignitedByLava()

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "iceandfire:dragonsteel_ice_ingot"
-            ]
+            "items": "iceandfire:dragonsteel_ice_ingot"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_item",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_item"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:dragonsteel_ice_helmet"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

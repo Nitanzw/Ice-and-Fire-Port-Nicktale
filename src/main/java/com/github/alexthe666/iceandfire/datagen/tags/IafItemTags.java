@@ -340,7 +340,7 @@ public class IafItemTags extends BlockTagCopyingItemTagProvider {
     }
 
     private static TagKey<Item> createForgeKey(final String name) {
-        return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("forge", name));
+        return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", name));
     }
 
     @Override

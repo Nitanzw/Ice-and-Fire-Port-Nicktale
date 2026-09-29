@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "iceandfire:dragonbone"
-    }
+    "#": "iceandfire:dragonbone"
   },
   "pattern": [
     "###",
@@ -12,7 +10,6 @@
     "###"
   ],
   "result": {
-    "item": "iceandfire:dragon_bone_block"
-  },
-  "show_notification": true
+    "id": "iceandfire:dragon_bone_block"
+  }
 }

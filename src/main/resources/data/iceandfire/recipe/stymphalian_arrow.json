@@ -1,23 +1,10 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "X",
-    "#",
-    "Y"
-  ],
+  "pattern": ["X", "#", "Y"],
   "key": {
-    "#": {
-      "tag": "forge:rods/wooden"
-    },
-    "X": {
-      "item": "minecraft:flint"
-    },
-    "Y": {
-      "item": "iceandfire:stymphalian_bird_feather"
-    }
+    "#": "#c:rods/wooden",
+    "X": "minecraft:flint",
+    "Y": "iceandfire:stymphalian_bird_feather"
   },
-  "result": {
-    "item": "iceandfire:stymphalian_arrow",
-    "count": 4
-  }
+  "result": {"id": "iceandfire:stymphalian_arrow", "count": 4}
 }

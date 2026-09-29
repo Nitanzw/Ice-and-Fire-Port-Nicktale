@@ -28,8 +28,7 @@ public class BlockIceSpikes extends Block {
 
     public BlockIceSpikes() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.ICE)
                 .noOcclusion()
                 .dynamicShape()

@@ -14,8 +14,7 @@ import net.minecraft.world.level.material.PushReaction;
 public class BlockGeneric extends Block {
 /*    public BlockGeneric(float hardness, float resistance, SoundType sound) {
         super(
-            BlockBehaviour.Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .sound(sound)
                 .strength(hardness, resistance)
                 .requiresCorrectToolForDrops()
@@ -24,8 +23,7 @@ public class BlockGeneric extends Block {
 
     public BlockGeneric(float hardness, float resistance, SoundType sound, boolean slippery) {
         super(
-            BlockBehaviour.Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .sound(sound)
                 .strength(hardness, resistance)
                 .friction(0.98F)
@@ -33,7 +31,7 @@ public class BlockGeneric extends Block {
     }*/
 
     public static BlockGeneric builder(float hardness, float resistance, SoundType sound, MapColor color, NoteBlockInstrument instrument, PushReaction reaction, boolean ignited) {
-        BlockBehaviour.Properties props = BlockBehaviour.Properties.of()
+        BlockBehaviour.Properties props = com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(color)
                 .sound(sound)
                 .strength(hardness, resistance)
@@ -51,7 +49,7 @@ public class BlockGeneric extends Block {
     }
 
     public static BlockGeneric builder(float hardness, float resistance, SoundType sound, boolean slippery, MapColor color, NoteBlockInstrument instrument, PushReaction reaction, boolean ignited) {
-        BlockBehaviour.Properties props = BlockBehaviour.Properties.of()
+        BlockBehaviour.Properties props = com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(color)
                 .sound(sound)
                 .strength(hardness, resistance)

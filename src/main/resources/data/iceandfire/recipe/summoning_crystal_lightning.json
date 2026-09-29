@@ -1,21 +1,10 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "iceandfire:lightning_dragon_blood"
-    },
-    {
-      "item": "minecraft:ender_pearl"
-    },
-    {
-      "tag": "forge:gems/diamond"
-    },
-    {
-      "tag": "forge:gems/amethyst"
-    }
+    "iceandfire:lightning_dragon_blood",
+    "minecraft:ender_pearl",
+    "#c:gems/diamond",
+    "#c:gems/amethyst"
   ],
-  "result": {
-    "item": "iceandfire:summoning_crystal_lightning",
-    "count": 1
-  }
+  "result": {"id": "iceandfire:summoning_crystal_lightning", "count": 1}
 }

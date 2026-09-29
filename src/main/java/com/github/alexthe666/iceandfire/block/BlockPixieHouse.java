@@ -24,14 +24,13 @@ import javax.annotation.Nullable;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.PIXIE_HOUSE;
 
 public class BlockPixieHouse extends BaseEntityBlock {
-    private static final MapCodec<BlockPixieHouse> CODEC = MapCodec.unit(new BlockPixieHouse());
+    private static final MapCodec<BlockPixieHouse> CODEC = MapCodec.unit(BlockPixieHouse::new);
     public static final net.minecraft.world.level.block.state.properties.EnumProperty<Direction> FACING =
         net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
     public BlockPixieHouse() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.WOOD)
                 .instrument(NoteBlockInstrument.BASS)
                 .ignitedByLava()

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemDragonArrow extends ArrowItem {
     public ItemDragonArrow() {
-        super(new Properties());
+        super(IafItemRegistry.itemProperties());
     }
 
     @Override

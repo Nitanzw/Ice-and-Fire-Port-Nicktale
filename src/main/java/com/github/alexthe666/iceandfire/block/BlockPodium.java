@@ -26,14 +26,13 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.MapCodec;
 
 public class BlockPodium extends BaseEntityBlock {
-    private static final MapCodec<BlockPodium> CODEC = MapCodec.unit(new BlockPodium());
+    private static final MapCodec<BlockPodium> CODEC = MapCodec.unit(BlockPodium::new);
 
     protected static final VoxelShape AABB = Block.box(2, 0, 2, 14, 23, 14);
 
     public BlockPodium() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.WOOD)
                 .instrument(NoteBlockInstrument.BASS)
                 .ignitedByLava()

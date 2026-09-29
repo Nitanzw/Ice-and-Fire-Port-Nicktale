@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "iceandfire:dragonscales_electric"
-    }
+    "#": "iceandfire:dragonscales_electric"
   },
   "pattern": [
     "###",
@@ -12,7 +10,6 @@
     "###"
   ],
   "result": {
-    "item": "iceandfire:dragonscale_electric"
-  },
-  "show_notification": true
+    "id": "iceandfire:dragonscale_electric"
+  }
 }

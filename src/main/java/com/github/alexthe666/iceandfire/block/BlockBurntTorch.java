@@ -16,7 +16,7 @@ public class BlockBurntTorch extends TorchBlock implements IDreadBlock, IWallBlo
     public BlockBurntTorch() {
         super(
             ParticleTypes.FLAME,
-            Properties.of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                     .mapColor(MapColor.WOOD)
                     .ignitedByLava()
                     .lightLevel((state) -> 0)

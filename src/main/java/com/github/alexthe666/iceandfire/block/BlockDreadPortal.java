@@ -27,12 +27,11 @@ import javax.annotation.Nullable;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.DREAD_PORTAL;
 
 public class BlockDreadPortal extends BaseEntityBlock implements IDreadBlock {
-    private static final MapCodec<BlockDreadPortal> CODEC = MapCodec.unit(new BlockDreadPortal());
+    private static final MapCodec<BlockDreadPortal> CODEC = MapCodec.unit(BlockDreadPortal::new);
 
     public BlockDreadPortal() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.NONE)
                 .pushReaction(PushReaction.BLOCK)
                 .dynamicShape()

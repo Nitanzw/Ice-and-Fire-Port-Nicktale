@@ -1,10 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "S": {
-      "item": "minecraft:chain"
-    }
+    "S": "minecraft:iron_chain"
   },
   "pattern": [
     "S",
@@ -12,7 +9,6 @@
     "S"
   ],
   "result": {
-    "item": "iceandfire:chain"
-  },
-  "show_notification": true
+    "id": "iceandfire:chain"
+  }
 }

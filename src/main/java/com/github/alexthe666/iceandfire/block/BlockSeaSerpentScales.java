@@ -20,8 +20,7 @@ public class BlockSeaSerpentScales extends Block {
 
     public BlockSeaSerpentScales(String name, ChatFormatting color) {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.STONE)
                 .strength(30F, 500F)
                 .sound(SoundType.STONE)

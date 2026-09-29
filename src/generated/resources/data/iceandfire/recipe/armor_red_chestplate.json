@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": {
-      "item": "iceandfire:dragonscales_red"
-    }
+    "#": "iceandfire:dragonscales_red"
   },
   "pattern": [
     "# #",
@@ -12,7 +10,6 @@
     "###"
   ],
   "result": {
-    "item": "iceandfire:armor_red_chestplate"
-  },
-  "show_notification": true
+    "id": "iceandfire:armor_red_chestplate"
+  }
 }

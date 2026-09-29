@@ -30,15 +30,14 @@ import com.mojang.serialization.MapCodec;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.IAF_LECTERN;
 
 public class BlockLectern extends BaseEntityBlock {
-    private static final MapCodec<BlockLectern> CODEC = MapCodec.unit(new BlockLectern());
+    private static final MapCodec<BlockLectern> CODEC = MapCodec.unit(BlockLectern::new);
     public static final net.minecraft.world.level.block.state.properties.EnumProperty<Direction> FACING =
         net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
     protected static final VoxelShape AABB = Block.box(4, 0, 4, 12, 19, 12);
 
     public BlockLectern() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.WOOD)
                 .instrument(NoteBlockInstrument.BASS)
                 .ignitedByLava()

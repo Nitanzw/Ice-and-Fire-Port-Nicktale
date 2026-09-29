@@ -1,18 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "iceandfire:manuscript"
-    },
-    {
-      "item": "iceandfire:manuscript"
-    },
-    {
-      "item": "iceandfire:manuscript"
-    }
+    "iceandfire:manuscript",
+    "iceandfire:manuscript",
+    "iceandfire:manuscript"
   ],
   "result": {
-    "item": "iceandfire:bestiary"
+    "id": "iceandfire:bestiary"
   }
 }

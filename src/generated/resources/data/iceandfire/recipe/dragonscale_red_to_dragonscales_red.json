@@ -1,13 +1,10 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
-    {
-      "item": "iceandfire:dragonscale_red"
-    }
+    "iceandfire:dragonscale_red"
   ],
   "result": {
     "count": 9,
-    "item": "iceandfire:dragonscales_red"
+    "id": "iceandfire:dragonscales_red"
   }
 }

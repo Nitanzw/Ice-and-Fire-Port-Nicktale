@@ -23,14 +23,13 @@ import com.mojang.serialization.MapCodec;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.EGG_IN_ICE;
 
 public class BlockEggInIce extends BaseEntityBlock {
-    private static final MapCodec<BlockEggInIce> CODEC = MapCodec.unit(new BlockEggInIce());
+    private static final MapCodec<BlockEggInIce> CODEC = MapCodec.unit(BlockEggInIce::new);
     public Item itemBlock;
 
     @SuppressWarnings("deprecation")
     public BlockEggInIce() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.ICE)
                 .noOcclusion()
                 .dynamicShape()

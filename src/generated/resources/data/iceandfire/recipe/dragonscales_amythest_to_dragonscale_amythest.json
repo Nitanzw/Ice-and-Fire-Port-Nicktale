@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "iceandfire:dragonscales_amythest"
-    }
+    "#": "iceandfire:dragonscales_amythest"
   },
   "pattern": [
     "###",
@@ -12,7 +10,6 @@
     "###"
   ],
   "result": {
-    "item": "iceandfire:dragonscale_amythest"
-  },
-  "show_notification": true
+    "id": "iceandfire:dragonscale_amythest"
+  }
 }

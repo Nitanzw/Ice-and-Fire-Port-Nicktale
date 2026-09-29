@@ -56,7 +56,14 @@ public final class IafEntityUtil {
         return drop(entity, new ItemStack(item));
     }
 
+    /** Lookup provided by the data component initializer while tags are being bound. */
+    public static final ThreadLocal<net.minecraft.core.HolderLookup.Provider> LOOKUP = new ThreadLocal<>();
+
     public static Ingredient ingredient(TagKey<Item> tag) {
+        net.minecraft.core.HolderLookup.Provider lookup = LOOKUP.get();
+        if (lookup != null) {
+            return Ingredient.of(lookup.lookupOrThrow(net.minecraft.core.registries.Registries.ITEM).getOrThrow(tag));
+        }
         return Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(tag));
     }
 

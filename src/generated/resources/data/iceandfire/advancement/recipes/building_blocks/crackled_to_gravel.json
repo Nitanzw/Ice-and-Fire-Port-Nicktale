@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "iceandfire:crackled_blocks"
+            "items": "#iceandfire:crackled_blocks"
           }
         ]
       },
@@ -20,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_item",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_item"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:crackled_to_gravel"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "iceandfire:sea_serpent_scales_blue"
-            ]
+            "items": "iceandfire:sea_serpent_scales_blue"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_item",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_item"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:tide_blue_chestplate"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "iceandfire:myrmex_jungle_chitin"
-            ]
+            "items": "iceandfire:myrmex_jungle_chitin"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_item",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_item"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:myrmex_jungle_hoe"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

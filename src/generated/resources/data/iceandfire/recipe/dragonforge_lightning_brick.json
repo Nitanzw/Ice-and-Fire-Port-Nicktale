@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "B": {
-      "item": "minecraft:stone_bricks"
-    },
-    "S": {
-      "tag": "forge:storage_blocks/scales/dragon/lightning"
-    }
+    "B": "minecraft:stone_bricks",
+    "S": "#c:storage_blocks/scales/dragon/lightning"
   },
   "pattern": [
     "SBS",
@@ -16,7 +12,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "iceandfire:dragonforge_lightning_brick"
-  },
-  "show_notification": true
+    "id": "iceandfire:dragonforge_lightning_brick"
+  }
 }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "E": {
-      "item": "iceandfire:cockatrice_eye"
-    },
-    "S": {
-      "item": "iceandfire:wither_shard"
-    },
-    "W": {
-      "tag": "forge:bones/wither"
-    }
+    "E": "iceandfire:cockatrice_eye",
+    "S": "iceandfire:wither_shard",
+    "W": "#c:bones/wither"
   },
   "pattern": [
     "S",
@@ -18,7 +12,6 @@
     "W"
   ],
   "result": {
-    "item": "iceandfire:cockatrice_scepter"
-  },
-  "show_notification": true
+    "id": "iceandfire:cockatrice_scepter"
+  }
 }

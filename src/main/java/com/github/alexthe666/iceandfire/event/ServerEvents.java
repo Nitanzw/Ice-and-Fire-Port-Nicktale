@@ -4,7 +4,6 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.minecraft.world.entity.EntitySpawnReason;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
@@ -82,7 +81,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@EventBusSubscriber(modid = IceAndFire.MODID)
 public class ServerEvents {
 
     public static final UUID ALEX_UUID = UUID.fromString("71363abe-fd03-49c9-940d-aae8b8209b7c");
@@ -198,7 +196,7 @@ public class ServerEvents {
     private static final String[] VILLAGE_TYPES = new String[]{"plains", "desert", "snowy", "savanna", "taiga"};
 
     @SubscribeEvent
-    public static void addNewVillageBuilding(final ServerAboutToStartEvent event) {
+    public void addNewVillageBuilding(final ServerAboutToStartEvent event) {
         if (IafConfig.villagerHouseWeight > 0) {
             net.minecraft.core.HolderLookup.RegistryLookup<StructureTemplatePool> templatePoolRegistry = event.getServer().registryAccess().lookupOrThrow(Registries.TEMPLATE_POOL);
             net.minecraft.core.HolderLookup.RegistryLookup<StructureProcessorList> processorListRegistry = event.getServer().registryAccess().lookupOrThrow(Registries.PROCESSOR_LIST);
@@ -517,7 +515,7 @@ public class ServerEvents {
     }
 
     @SubscribeEvent // TODO :: Can this be moved into the item itself?
-    public static void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
+    public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
         onLeftClick(event.getEntity(), event.getItemStack());
         if (event.getLevel().isClientSide()) {
             IceAndFire.sendMSGToServer(new MessageSwingArm());
@@ -572,7 +570,7 @@ public class ServerEvents {
     }
 
     //@SubscribeEvent // FIXME :: Unused
-    public static void onChestGenerated(LootTableLoadEvent event) {
+    public void onChestGenerated(LootTableLoadEvent event) {
         final Identifier eventName = event.getName();
         final boolean condition1 = eventName.equals(BuiltInLootTables.SIMPLE_DUNGEON)
                 || eventName.equals(BuiltInLootTables.ABANDONED_MINESHAFT)

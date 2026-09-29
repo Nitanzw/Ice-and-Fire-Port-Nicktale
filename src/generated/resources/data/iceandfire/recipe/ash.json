@@ -2,35 +2,17 @@
   "type": "minecraft:crafting_shapeless",
   "category": "building",
   "ingredients": [
-    {
-      "tag": "iceandfire:charred_blocks"
-    },
-    {
-      "tag": "iceandfire:charred_blocks"
-    },
-    {
-      "tag": "iceandfire:charred_blocks"
-    },
-    {
-      "tag": "iceandfire:charred_blocks"
-    },
-    {
-      "tag": "iceandfire:charred_blocks"
-    },
-    {
-      "tag": "iceandfire:charred_blocks"
-    },
-    {
-      "tag": "iceandfire:charred_blocks"
-    },
-    {
-      "tag": "iceandfire:charred_blocks"
-    },
-    {
-      "tag": "iceandfire:charred_blocks"
-    }
+    "#iceandfire:charred_blocks",
+    "#iceandfire:charred_blocks",
+    "#iceandfire:charred_blocks",
+    "#iceandfire:charred_blocks",
+    "#iceandfire:charred_blocks",
+    "#iceandfire:charred_blocks",
+    "#iceandfire:charred_blocks",
+    "#iceandfire:charred_blocks",
+    "#iceandfire:charred_blocks"
   ],
   "result": {
-    "item": "iceandfire:ash"
+    "id": "iceandfire:ash"
   }
 }

@@ -24,8 +24,7 @@ public class BlockCharedPath extends DirtPathBlock {
 
     public BlockCharedPath(int dragonType) {
         super(
-            BlockBehaviour.Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.PLANT)
                 .pushReaction(PushReaction.DESTROY)
                 .sound(dragonType != 1 ? SoundType.GRAVEL : SoundType.GLASS)

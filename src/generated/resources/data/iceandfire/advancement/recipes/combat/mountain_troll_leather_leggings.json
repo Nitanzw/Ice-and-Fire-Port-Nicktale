@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "iceandfire:troll_leather_mountain"
-            ]
+            "items": "iceandfire:troll_leather_mountain"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_item",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_item"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:mountain_troll_leather_leggings"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -1,15 +1,5 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "tag": "forge:nuggets/silver"
-    },
-    {
-      "tag": "forge:nuggets/silver"
-    }
-  ],
-  "result": {
-    "item": "iceandfire:silver_pile",
-    "count": 1
-  }
+  "ingredients": ["#c:nuggets/silver", "#c:nuggets/silver"],
+  "result": {"id": "iceandfire:silver_pile", "count": 1}
 }

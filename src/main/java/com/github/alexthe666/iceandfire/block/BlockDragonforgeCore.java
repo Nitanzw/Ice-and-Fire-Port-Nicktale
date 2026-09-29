@@ -44,8 +44,7 @@ public class BlockDragonforgeCore extends BaseEntityBlock implements IDragonProo
 
     public BlockDragonforgeCore(int isFire, boolean activated) {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.METAL)
                 .dynamicShape()
                 .strength(40, 500)

@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "iceandfire:dragon_food_meat"
+            "items": "#iceandfire:dragon_food_meat"
           }
         ]
       },
@@ -20,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_item",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_item"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:dragon_meal"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

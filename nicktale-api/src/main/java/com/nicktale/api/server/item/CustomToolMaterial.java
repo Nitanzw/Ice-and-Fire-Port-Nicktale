@@ -10,7 +10,8 @@ public class CustomToolMaterial {
     private final float speed;
     private final float attackDamageBonus;
     private final int enchantmentValue;
-    private Ingredient repairIngredient = Ingredient.of();
+    private Ingredient repairIngredient;
+    private java.util.function.Supplier<Ingredient> repairSupplier;
 
     public CustomToolMaterial(String name, int level, int uses, float speed, float attackDamageBonus, int enchantmentValue) {
         this.name = name;
@@ -28,6 +29,18 @@ public class CustomToolMaterial {
     public float getAttackDamageBonus() { return attackDamageBonus; }
     public int getEnchantmentValue() { return enchantmentValue; }
 
-    public Ingredient getRepairIngredient() { return repairIngredient; }
+    /** The repair ingredient, or {@code null} until one is set (vanilla ingredients may not be empty). */
+    public Ingredient getRepairIngredient() {
+        if (repairIngredient == null && repairSupplier != null) {
+            repairIngredient = repairSupplier.get();
+        }
+        return repairIngredient;
+    }
     public void setRepairMaterial(Ingredient ingredient) { this.repairIngredient = ingredient; }
+
+    /** Lazy variant for ingredients that depend on tags or registries which are not bound yet. */
+    public void setRepairMaterial(java.util.function.Supplier<Ingredient> ingredient) {
+        this.repairSupplier = ingredient;
+        this.repairIngredient = null;
+    }
 }

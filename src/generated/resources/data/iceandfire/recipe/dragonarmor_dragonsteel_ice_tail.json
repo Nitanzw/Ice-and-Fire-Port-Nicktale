@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": {
-      "item": "iceandfire:dragonsteel_ice_block"
-    }
+    "#": "iceandfire:dragonsteel_ice_block"
   },
   "pattern": [
     "   ",
@@ -12,7 +10,6 @@
     "## "
   ],
   "result": {
-    "item": "iceandfire:dragonarmor_dragonsteel_ice_tail"
-  },
-  "show_notification": true
+    "id": "iceandfire:dragonarmor_dragonsteel_ice_tail"
+  }
 }

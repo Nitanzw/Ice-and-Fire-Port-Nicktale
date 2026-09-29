@@ -2,15 +2,11 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "item": "iceandfire:dragonbone"
-    },
-    {
-      "item": "iceandfire:wither_shard"
-    }
+    "iceandfire:dragonbone",
+    "iceandfire:wither_shard"
   ],
   "result": {
     "count": 5,
-    "item": "iceandfire:dragonbone_arrow"
+    "id": "iceandfire:dragonbone_arrow"
   }
 }

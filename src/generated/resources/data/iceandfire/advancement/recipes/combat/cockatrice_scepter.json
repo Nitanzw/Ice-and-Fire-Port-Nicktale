@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "iceandfire:cockatrice_eye"
-            ]
+            "items": "iceandfire:cockatrice_eye"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_item",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_item"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:cockatrice_scepter"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -11,6 +11,8 @@ import net.minecraft.world.level.block.entity.BannerPattern;
  * {@code data/iceandfire/banner_pattern/*.json}. These keys reference them.
  */
 public final class IafBannerPatterns {
+    public static final java.util.List<ResourceKey<BannerPattern>> ALL = new java.util.ArrayList<>();
+
     public static final ResourceKey<BannerPattern> PATTERN_FIRE = key("fire");
     public static final ResourceKey<BannerPattern> PATTERN_ICE = key("ice");
     public static final ResourceKey<BannerPattern> PATTERN_LIGHTNING = key("lightning");
@@ -34,6 +36,8 @@ public final class IafBannerPatterns {
     private IafBannerPatterns() {}
 
     private static ResourceKey<BannerPattern> key(String name) {
-        return ResourceKey.create(Registries.BANNER_PATTERN, Identifier.fromNamespaceAndPath(IceAndFire.MODID, name));
+        ResourceKey<BannerPattern> key = ResourceKey.create(Registries.BANNER_PATTERN, Identifier.fromNamespaceAndPath(IceAndFire.MODID, name));
+        ALL.add(key);
+        return key;
     }
 }

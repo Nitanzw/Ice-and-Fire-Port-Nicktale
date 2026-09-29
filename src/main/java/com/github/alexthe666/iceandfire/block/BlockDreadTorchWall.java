@@ -19,8 +19,7 @@ public class BlockDreadTorchWall extends WallTorchBlock implements IDreadBlock {
     public BlockDreadTorchWall() {
         super(
             ParticleTypes.FLAME,
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.WOOD)
                 .instrument(NoteBlockInstrument.BASS)
                 .ignitedByLava()

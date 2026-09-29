@@ -1,7 +1,6 @@
 package com.github.alexthe666.iceandfire.event;
 
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.client.ClientProxy;
@@ -37,7 +36,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
-@EventBusSubscriber(modid = IceAndFire.MODID, value = Dist.CLIENT)
 public class ClientEvents {
 
     private static final Identifier SIREN_SHADER = Identifier.parse("iceandfire:siren");

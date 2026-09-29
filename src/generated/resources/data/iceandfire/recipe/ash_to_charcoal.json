@@ -1,10 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "B": {
-      "item": "iceandfire:ash"
-    }
+    "B": "iceandfire:ash"
   },
   "pattern": [
     "BBB",
@@ -12,7 +9,6 @@
     "BBB"
   ],
   "result": {
-    "item": "minecraft:charcoal"
-  },
-  "show_notification": true
+    "id": "minecraft:charcoal"
+  }
 }

@@ -9,8 +9,7 @@ public class BlockGenericStairs extends StairBlock {
     public BlockGenericStairs(BlockState modelState) {
         super(
             modelState,
-            BlockBehaviour.Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .strength(20F)
         );
     }

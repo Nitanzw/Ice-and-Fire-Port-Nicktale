@@ -743,25 +743,25 @@ public class IafRecipes extends RecipeProvider {
                 .requires(IafItemRegistry.DRAGONBONE_SWORD.get())
                 .requires(IafItemRegistry.FIRE_DRAGON_BLOOD.get())
                 .unlockedBy("has_item", has(IafItemRegistry.FIRE_DRAGON_BLOOD.get()))
-                .save(consumer, location("dragonbone_sword_fire"));
+                .save(consumer);
 
         this.shapeless(RecipeCategory.COMBAT, IafItemRegistry.DRAGONBONE_SWORD_ICE.get())
                 .requires(IafItemRegistry.DRAGONBONE_SWORD.get())
                 .requires(IafItemRegistry.ICE_DRAGON_BLOOD.get())
                 .unlockedBy("has_item", has(IafItemRegistry.ICE_DRAGON_BLOOD.get()))
-                .save(consumer, location("dragonbone_sword_ice"));
+                .save(consumer);
 
         this.shapeless(RecipeCategory.COMBAT, IafItemRegistry.DRAGONBONE_SWORD_LIGHTNING.get())
                 .requires(IafItemRegistry.DRAGONBONE_SWORD.get())
                 .requires(IafItemRegistry.LIGHTNING_DRAGON_BLOOD.get())
                 .unlockedBy("has_item", has(IafItemRegistry.LIGHTNING_DRAGON_BLOOD.get()))
-                .save(consumer, location("dragonbone_sword_lightning"));
+                .save(consumer);
 
         this.shapeless(RecipeCategory.COMBAT, IafItemRegistry.GHOST_SWORD.get())
                 .requires(IafItemRegistry.DRAGONBONE_SWORD.get())
                 .requires(IafItemRegistry.GHOST_INGOT.get())
                 .unlockedBy("has_item", has(IafItemRegistry.GHOST_INGOT.get()))
-                .save(consumer, location("ghost_sword"));
+                .save(consumer);
     }
 
     private void compact(@NotNull final RecipeOutput consumer, final ItemLike unpacked, final ItemLike packed) {

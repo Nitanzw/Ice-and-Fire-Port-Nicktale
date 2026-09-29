@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "iceandfire:dragonscales_black"
-            ]
+            "items": "iceandfire:dragonscales_black"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_dragonscales_black",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_dragonscales_black"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:dragonscales_black_to_dragonscale_black"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

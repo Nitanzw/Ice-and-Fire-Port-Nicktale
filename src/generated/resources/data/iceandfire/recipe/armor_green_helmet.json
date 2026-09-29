@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": {
-      "item": "iceandfire:dragonscales_green"
-    }
+    "#": "iceandfire:dragonscales_green"
   },
   "pattern": [
     "###",
     "# #"
   ],
   "result": {
-    "item": "iceandfire:armor_green_helmet"
-  },
-  "show_notification": true
+    "id": "iceandfire:armor_green_helmet"
+  }
 }

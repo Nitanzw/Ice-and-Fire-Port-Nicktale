@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": {
-      "item": "iceandfire:troll_leather_forest"
-    }
+    "#": "iceandfire:troll_leather_forest"
   },
   "pattern": [
     "# #",
@@ -12,7 +10,6 @@
     "###"
   ],
   "result": {
-    "item": "iceandfire:forest_troll_leather_chestplate"
-  },
-  "show_notification": true
+    "id": "iceandfire:forest_troll_leather_chestplate"
+  }
 }

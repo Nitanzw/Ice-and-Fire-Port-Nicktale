@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": {
-      "tag": "forge:storage_blocks/diamond"
-    }
+    "#": "#c:storage_blocks/diamond"
   },
   "pattern": [
     "   ",
@@ -12,7 +10,6 @@
     "## "
   ],
   "result": {
-    "item": "iceandfire:dragonarmor_diamond_tail"
-  },
-  "show_notification": true
+    "id": "iceandfire:dragonarmor_diamond_tail"
+  }
 }

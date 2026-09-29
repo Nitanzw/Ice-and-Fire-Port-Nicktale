@@ -30,8 +30,7 @@ public class BlockMyrmexConnectedResin extends HalfTransparentBlock {
 
     public BlockMyrmexConnectedResin(boolean jungle, boolean glass) {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .strength(glass ? 1.5F : 3.5F)

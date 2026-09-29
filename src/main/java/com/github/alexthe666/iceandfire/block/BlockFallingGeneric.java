@@ -18,8 +18,7 @@ public class BlockFallingGeneric extends FallingBlock {
 
 /*    public BlockFallingGeneric(float hardness, float resistance, SoundType sound) {
         super(
-            BlockBehaviour.Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .sound(sound)
                 .strength(hardness, resistance)
         );
@@ -28,8 +27,7 @@ public class BlockFallingGeneric extends FallingBlock {
     @SuppressWarnings("deprecation")
     public BlockFallingGeneric(float hardness, float resistance, SoundType sound, boolean slippery) {
         super(
-            BlockBehaviour.Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .sound(sound)
                 .strength(hardness, resistance)
                 .friction(0.98F)
@@ -37,7 +35,7 @@ public class BlockFallingGeneric extends FallingBlock {
     }*/
 
     public static BlockFallingGeneric builder(float hardness, float resistance, SoundType sound, MapColor color, NoteBlockInstrument instrument) {
-        BlockBehaviour.Properties props = BlockBehaviour.Properties.of()
+        BlockBehaviour.Properties props = com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(color)
                 .instrument(instrument)
                 .sound(sound)

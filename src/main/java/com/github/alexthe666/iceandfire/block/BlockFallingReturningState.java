@@ -32,8 +32,7 @@ public class BlockFallingReturningState extends FallingBlock {
 
     public BlockFallingReturningState(float hardness, float resistance, SoundType sound, MapColor color, BlockState revertState) {
         super(
-            BlockBehaviour.Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(color)
                 .sound(sound)
                 .strength(hardness, resistance)
@@ -47,8 +46,7 @@ public class BlockFallingReturningState extends FallingBlock {
     @SuppressWarnings("deprecation")
     public BlockFallingReturningState(float hardness, float resistance, SoundType sound, boolean slippery, MapColor color, BlockState revertState) {
         super(
-            BlockBehaviour.Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(color)
                 .sound(sound)
                 .strength(hardness, resistance)

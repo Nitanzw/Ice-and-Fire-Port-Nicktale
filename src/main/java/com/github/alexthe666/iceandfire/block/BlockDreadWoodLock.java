@@ -27,8 +27,7 @@ public class BlockDreadWoodLock extends Block implements IDragonProof, IDreadBlo
 
     public BlockDreadWoodLock() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.WOOD)
                 .instrument(NoteBlockInstrument.BASS)
                 .ignitedByLava()

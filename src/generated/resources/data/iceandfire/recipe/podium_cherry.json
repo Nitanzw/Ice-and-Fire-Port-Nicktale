@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": "minecraft:cherry_planks",
+    "S": "minecraft:cherry_slab"
+  },
+  "pattern": [
+    "SPS",
+    " P ",
+    "SPS"
+  ],
+  "result": {
+    "id": "iceandfire:podium_cherry"
+  }
+}

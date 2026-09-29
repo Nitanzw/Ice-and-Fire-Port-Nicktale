@@ -459,42 +459,42 @@ public class IafItemRegistry {
             return;
         }
 
-        IafItemRegistry.BLINDFOLD_ARMOR_MATERIAL.setRepairMaterial(IafEntityUtil.ingredient(Tags.Items.STRINGS));
-        IafItemRegistry.SILVER_ARMOR_MATERIAL.setRepairMaterial(IafEntityUtil.ingredient(IafItemTags.INGOTS_SILVER));
-        IafItemRegistry.SILVER_TOOL_MATERIAL.setRepairMaterial(IafEntityUtil.ingredient(IafItemTags.INGOTS_SILVER));
-        IafItemRegistry.DRAGONBONE_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGON_BONE.get()));
-        IafItemRegistry.FIRE_DRAGONBONE_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGON_BONE.get()));
-        IafItemRegistry.ICE_DRAGONBONE_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGON_BONE.get()));
-        IafItemRegistry.LIGHTNING_DRAGONBONE_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGON_BONE.get()));
+        IafItemRegistry.BLINDFOLD_ARMOR_MATERIAL.setRepairMaterial(() -> IafEntityUtil.ingredient(Tags.Items.STRINGS));
+        IafItemRegistry.SILVER_ARMOR_MATERIAL.setRepairMaterial(() -> IafEntityUtil.ingredient(IafItemTags.INGOTS_SILVER));
+        IafItemRegistry.SILVER_TOOL_MATERIAL.setRepairMaterial(() -> IafEntityUtil.ingredient(IafItemTags.INGOTS_SILVER));
+        IafItemRegistry.DRAGONBONE_TOOL_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DRAGON_BONE.get()));
+        IafItemRegistry.FIRE_DRAGONBONE_TOOL_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DRAGON_BONE.get()));
+        IafItemRegistry.ICE_DRAGONBONE_TOOL_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DRAGON_BONE.get()));
+        IafItemRegistry.LIGHTNING_DRAGONBONE_TOOL_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DRAGON_BONE.get()));
         for (EnumDragonArmor armor : EnumDragonArmor.values()) {
-            armor.armorMaterial.setRepairMaterial(Ingredient.of(EnumDragonArmor.getScaleItem(armor)));
+            armor.armorMaterial.setRepairMaterial(() -> Ingredient.of(EnumDragonArmor.getScaleItem(armor)));
         }
-        IafItemRegistry.DRAGONSTEEL_FIRE_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGONSTEEL_FIRE_INGOT.get()));
-        IafItemRegistry.DRAGONSTEEL_ICE_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGONSTEEL_ICE_INGOT.get()));
-        IafItemRegistry.DRAGONSTEEL_LIGHTNING_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGONSTEEL_LIGHTNING_INGOT.get()));
-        DRAGONSTEEL_TIER_FIRE.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGONSTEEL_FIRE_INGOT.get()));
-        DRAGONSTEEL_TIER_ICE.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGONSTEEL_ICE_INGOT.get()));
-        DRAGONSTEEL_TIER_LIGHTNING.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGONSTEEL_LIGHTNING_INGOT.get()));
-        IafItemRegistry.SHEEP_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(Items.WOOL.white()));
-        IafItemRegistry.EARPLUGS_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(Blocks.OAK_BUTTON));
-        IafItemRegistry.DEATHWORM_0_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DEATH_WORM_CHITIN_YELLOW.get()));
-        IafItemRegistry.DEATHWORM_1_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DEATH_WORM_CHITIN_RED.get()));
-        IafItemRegistry.DEATHWORM_2_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DEATH_WORM_CHITIN_WHITE.get()));
-        IafItemRegistry.TROLL_WEAPON_TOOL_MATERIAL.setRepairMaterial(IafEntityUtil.ingredient(Tags.Items.STONES));
-        IafItemRegistry.TROLL_MOUNTAIN_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(EnumTroll.MOUNTAIN.leather.get()));
-        IafItemRegistry.TROLL_FOREST_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(EnumTroll.FOREST.leather.get()));
-        IafItemRegistry.TROLL_FROST_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(EnumTroll.FROST.leather.get()));
-        IafItemRegistry.HIPPOGRYPH_SWORD_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.HIPPOGRYPH_TALON.get()));
-        IafItemRegistry.HIPPOCAMPUS_SWORD_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.SHINY_SCALES.get()));
-        IafItemRegistry.AMPHITHERE_SWORD_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.AMPHITHERE_FEATHER.get()));
-        IafItemRegistry.STYMHALIAN_SWORD_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.STYMPHALIAN_BIRD_FEATHER.get()));
-        IafItemRegistry.MYRMEX_CHITIN_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.MYRMEX_DESERT_CHITIN.get()));
-        IafItemRegistry.MYRMEX_DESERT_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.MYRMEX_DESERT_CHITIN.get()));
-        IafItemRegistry.MYRMEX_JUNGLE_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.MYRMEX_JUNGLE_CHITIN.get()));
-        IafItemRegistry.DREAD_SWORD_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DREAD_SHARD.get()));
-        IafItemRegistry.DREAD_KNIGHT_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DREAD_SHARD.get()));
+        IafItemRegistry.DRAGONSTEEL_FIRE_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DRAGONSTEEL_FIRE_INGOT.get()));
+        IafItemRegistry.DRAGONSTEEL_ICE_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DRAGONSTEEL_ICE_INGOT.get()));
+        IafItemRegistry.DRAGONSTEEL_LIGHTNING_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DRAGONSTEEL_LIGHTNING_INGOT.get()));
+        DRAGONSTEEL_TIER_FIRE.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DRAGONSTEEL_FIRE_INGOT.get()));
+        DRAGONSTEEL_TIER_ICE.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DRAGONSTEEL_ICE_INGOT.get()));
+        DRAGONSTEEL_TIER_LIGHTNING.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DRAGONSTEEL_LIGHTNING_INGOT.get()));
+        IafItemRegistry.SHEEP_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(Items.WOOL.white()));
+        IafItemRegistry.EARPLUGS_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(Blocks.OAK_BUTTON));
+        IafItemRegistry.DEATHWORM_0_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DEATH_WORM_CHITIN_YELLOW.get()));
+        IafItemRegistry.DEATHWORM_1_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DEATH_WORM_CHITIN_RED.get()));
+        IafItemRegistry.DEATHWORM_2_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DEATH_WORM_CHITIN_WHITE.get()));
+        IafItemRegistry.TROLL_WEAPON_TOOL_MATERIAL.setRepairMaterial(() -> IafEntityUtil.ingredient(Tags.Items.STONES));
+        IafItemRegistry.TROLL_MOUNTAIN_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(EnumTroll.MOUNTAIN.leather.get()));
+        IafItemRegistry.TROLL_FOREST_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(EnumTroll.FOREST.leather.get()));
+        IafItemRegistry.TROLL_FROST_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(EnumTroll.FROST.leather.get()));
+        IafItemRegistry.HIPPOGRYPH_SWORD_TOOL_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.HIPPOGRYPH_TALON.get()));
+        IafItemRegistry.HIPPOCAMPUS_SWORD_TOOL_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.SHINY_SCALES.get()));
+        IafItemRegistry.AMPHITHERE_SWORD_TOOL_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.AMPHITHERE_FEATHER.get()));
+        IafItemRegistry.STYMHALIAN_SWORD_TOOL_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.STYMPHALIAN_BIRD_FEATHER.get()));
+        IafItemRegistry.MYRMEX_CHITIN_TOOL_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.MYRMEX_DESERT_CHITIN.get()));
+        IafItemRegistry.MYRMEX_DESERT_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.MYRMEX_DESERT_CHITIN.get()));
+        IafItemRegistry.MYRMEX_JUNGLE_ARMOR_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.MYRMEX_JUNGLE_CHITIN.get()));
+        IafItemRegistry.DREAD_SWORD_TOOL_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DREAD_SHARD.get()));
+        IafItemRegistry.DREAD_KNIGHT_TOOL_MATERIAL.setRepairMaterial(() -> Ingredient.of(IafItemRegistry.DREAD_SHARD.get()));
         for (EnumSeaSerpent serpent : EnumSeaSerpent.values()) {
-            serpent.armorMaterial.setRepairMaterial(Ingredient.of(serpent.scale.get()));
+            serpent.armorMaterial.setRepairMaterial(() -> Ingredient.of(serpent.scale.get()));
         }
     }
 }

@@ -19,6 +19,12 @@ public class RegistryDataGenerator extends DatapackBuiltinEntriesProvider {
             .add(Registries.STRUCTURE_SET, IafStructureSets::bootstrap)
             .add(Registries.PROCESSOR_LIST, IafProcessorLists::bootstrap)
             .add(Registries.TEMPLATE_POOL, IafStructurePieces::bootstrap)
+            .add(Registries.BANNER_PATTERN, context -> {
+                for (net.minecraft.resources.ResourceKey<net.minecraft.world.level.block.entity.BannerPattern> key : com.github.alexthe666.iceandfire.recipe.IafBannerPatterns.ALL) {
+                    context.register(key, new net.minecraft.world.level.block.entity.BannerPattern(key.identifier(),
+                        "pattern." + key.identifier().getNamespace() + "." + key.identifier().getPath()));
+                }
+            })
             .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, IafBiomeModifierSerializers::bootstrap);
 
     public RegistryDataGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {

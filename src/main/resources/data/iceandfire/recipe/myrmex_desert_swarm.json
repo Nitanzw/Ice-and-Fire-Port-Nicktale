@@ -1,22 +1,10 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "EEE",
-    "ERE",
-    "RSR"
-  ],
+  "pattern": ["EEE", "ERE", "RSR"],
   "key": {
-    "R": {
-      "item": "iceandfire:myrmex_desert_resin_block"
-    },
-    "S": {
-      "tag": "forge:rods/wooden"
-    },
-    "E": {
-      "item": "iceandfire:myrmex_desert_egg"
-    }
+    "R": "iceandfire:myrmex_desert_resin_block",
+    "S": "#c:rods/wooden",
+    "E": "iceandfire:myrmex_desert_egg"
   },
-  "result": {
-    "item": "iceandfire:myrmex_desert_swarm"
-  }
+  "result": {"id": "iceandfire:myrmex_desert_swarm"}
 }

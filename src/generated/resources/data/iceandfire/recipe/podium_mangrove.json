@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": "minecraft:mangrove_planks",
+    "S": "minecraft:mangrove_slab"
+  },
+  "pattern": [
+    "SPS",
+    " P ",
+    "SPS"
+  ],
+  "result": {
+    "id": "iceandfire:podium_mangrove"
+  }
+}

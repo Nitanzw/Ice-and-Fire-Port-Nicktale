@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "iceandfire:deathworm_tounge"
-            ]
+            "items": "iceandfire:deathworm_tounge"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_item",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_item"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:deathworm_gauntlet_white"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

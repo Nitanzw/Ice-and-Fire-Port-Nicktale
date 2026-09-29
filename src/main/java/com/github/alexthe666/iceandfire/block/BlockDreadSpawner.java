@@ -21,8 +21,7 @@ public class BlockDreadSpawner extends SpawnerBlock implements IDreadBlock {
 
     public BlockDreadSpawner() {
         super(
-            BlockBehaviour.Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .strength(10.0F, 10000F)

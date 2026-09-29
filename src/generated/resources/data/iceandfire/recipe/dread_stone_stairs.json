@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "D": {
-      "item": "iceandfire:dread_stone_bricks"
-    }
+    "D": "iceandfire:dread_stone_bricks"
   },
   "pattern": [
     "D  ",
@@ -13,7 +11,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "iceandfire:dread_stone_stairs"
-  },
-  "show_notification": true
+    "id": "iceandfire:dread_stone_stairs"
+  }
 }

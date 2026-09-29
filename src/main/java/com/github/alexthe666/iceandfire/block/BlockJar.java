@@ -45,8 +45,7 @@ public class BlockJar extends BaseEntityBlock {
     public BlockJar(int pixieType) {
         super(
             pixieType != -1 ?
-                Properties
-                    .of()
+                com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                     .mapColor(MapColor.NONE)
                     .instrument(NoteBlockInstrument.HAT)
                     .noOcclusion()
@@ -54,8 +53,7 @@ public class BlockJar extends BaseEntityBlock {
                     .strength(1, 2)
                     .sound(SoundType.GLASS)
                     .lightLevel((state) -> pixieType == -1 ? 0 : 10)
-				: Properties
-                .of()
+				: com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.NONE)
                 .instrument(NoteBlockInstrument.HAT)
                 .noOcclusion()

@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": {
-      "item": "iceandfire:dragonsteel_lightning_ingot"
-    }
+    "#": "iceandfire:dragonsteel_lightning_ingot"
   },
   "pattern": [
     "###",
     "# #"
   ],
   "result": {
-    "item": "iceandfire:dragonsteel_lightning_helmet"
-  },
-  "show_notification": true
+    "id": "iceandfire:dragonsteel_lightning_helmet"
+  }
 }

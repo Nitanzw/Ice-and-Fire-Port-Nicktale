@@ -1,19 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "GPG",
-    "G G",
-    "GGG"
-  ],
+  "pattern": ["GPG", "G G", "GGG"],
   "key": {
-    "G": {
-      "tag": "forge:glass/colorless"
-    },
-    "P": {
-      "tag": "minecraft:planks"
-    }
+    "G": "#c:glass_blocks/colorless",
+    "P": "#minecraft:planks"
   },
-  "result": {
-    "item": "iceandfire:pixie_jar_empty"
-  }
+  "result": {"id": "iceandfire:pixie_jar_empty"}
 }

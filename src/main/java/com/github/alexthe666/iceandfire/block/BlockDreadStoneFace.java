@@ -18,13 +18,12 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.MapCodec;
 
 public class BlockDreadStoneFace extends HorizontalDirectionalBlock implements IDreadBlock, IDragonProof {
-    private static final MapCodec<BlockDreadStoneFace> CODEC = MapCodec.unit(new BlockDreadStoneFace());
+    private static final MapCodec<BlockDreadStoneFace> CODEC = MapCodec.unit(BlockDreadStoneFace::new);
     public static final BooleanProperty PLAYER_PLACED = BooleanProperty.create("player_placed");
 
     public BlockDreadStoneFace() {
         super(
-            BlockBehaviour.Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .sound(SoundType.STONE)

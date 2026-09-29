@@ -21,8 +21,7 @@ public class BlockGraveyardSoil extends Block {
 
     public BlockGraveyardSoil() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.DIRT)
                 .sound(SoundType.GRAVEL)
                 .strength(5, 1F)

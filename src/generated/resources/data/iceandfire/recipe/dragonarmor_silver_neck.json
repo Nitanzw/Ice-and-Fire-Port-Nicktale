@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": {
-      "tag": "forge:storage_blocks/silver"
-    }
+    "#": "#c:storage_blocks/silver"
   },
   "pattern": [
     "   ",
@@ -12,7 +10,6 @@
     " ##"
   ],
   "result": {
-    "item": "iceandfire:dragonarmor_silver_neck"
-  },
-  "show_notification": true
+    "id": "iceandfire:dragonarmor_silver_neck"
+  }
 }

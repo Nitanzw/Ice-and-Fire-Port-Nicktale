@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "iceandfire:dragonscales_blue"
-            ]
+            "items": "iceandfire:dragonscales_blue"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_item",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_item"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:armor_blue_helmet"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

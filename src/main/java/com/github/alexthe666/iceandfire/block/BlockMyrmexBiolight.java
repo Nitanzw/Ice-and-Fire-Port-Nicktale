@@ -23,8 +23,7 @@ public class BlockMyrmexBiolight extends BushBlock {
 
     public BlockMyrmexBiolight() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.PLANT)
                 .pushReaction(PushReaction.DESTROY)
                 .noOcclusion()

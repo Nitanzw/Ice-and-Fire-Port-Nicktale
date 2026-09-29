@@ -15,6 +15,10 @@ repositories {
 }
 
 sourceSets {
+    main {
+        resources.srcDir 'src/generated/resources'
+        resources.srcDir 'src/generated-client/resources'
+    }
     client {
         java.setSrcDirs(['src/client/java'])
         resources.setSrcDirs(['src/client/resources'])
@@ -34,6 +38,18 @@ neoForge {
         server {
             server()
             gameDirectory = project.file('runs/server')
+        }
+        serverData {
+            serverData()
+            gameDirectory = project.file('runs/data')
+            programArguments.addAll '--mod', mod_id, '--server', '--output', file('src/generated/resources').absolutePath,
+                '--existing', file('src/main/resources').absolutePath
+        }
+        clientData {
+            clientData()
+            gameDirectory = project.file('runs/data')
+            programArguments.addAll '--mod', mod_id, '--client', '--output', file('src/generated-client/resources').absolutePath,
+                '--existing', file('src/main/resources').absolutePath
         }
     }
 
@@ -60,4 +76,8 @@ java {
 
 tasks.named('jar', Jar).configure {
     from sourceSets.client.output
+}
+
+tasks.named('processResources') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

@@ -12,6 +12,7 @@ import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.enchantment.Repairable;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Supplier;
@@ -26,8 +27,17 @@ public final class ItemProperties {
      * registry has constructed its entries, so eagerly copying the Ingredient would lose the custom repair set.
      */
     public static Item.Properties withRepairIngredient(Item.Properties properties, Supplier<Ingredient> ingredient) {
-        return properties.delayedComponent(net.minecraft.core.component.DataComponents.REPAIRABLE,
-            lookup -> new Repairable(ingredient.get().getValues()));
+        return properties.delayedComponent(net.minecraft.core.component.DataComponents.REPAIRABLE, lookup -> {
+            Ingredient repair;
+            net.minecraft.core.HolderLookup.Provider previous = IafEntityUtil.LOOKUP.get();
+            IafEntityUtil.LOOKUP.set(lookup);
+            try {
+                repair = ingredient.get();
+            } finally {
+                IafEntityUtil.LOOKUP.set(previous);
+            }
+            return new Repairable(repair == null ? net.minecraft.core.HolderSet.empty() : repair.getValues());
+        });
     }
 
     public static Item.Properties withRepairIngredient(Item.Properties properties, Ingredient ingredient) {
@@ -96,7 +106,7 @@ public final class ItemProperties {
      */
     public static ToolMaterial toVanillaToolMaterial(CustomToolMaterial material) {
         return new ToolMaterial(incorrectBlocksFor(material), material.getUses(), material.getSpeed(),
-            material.getAttackDamageBonus(), material.getEnchantmentValue(), ItemTags.REPAIRS_IRON_ARMOR);
+            material.getAttackDamageBonus(), Math.max(1, material.getEnchantmentValue()), ItemTags.REPAIRS_IRON_ARMOR);
     }
 
     private static TagKey<Block> incorrectBlocksForLevel(int level) {

@@ -1,19 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "F",
-    "F",
-    "S"
-  ],
+  "pattern": ["F", "F", "S"],
   "key": {
-    "S": {
-      "tag": "forge:rods/wooden"
-    },
-    "F": {
-      "item": "iceandfire:stymphalian_bird_feather"
-    }
+    "S": "#c:rods/wooden",
+    "F": "iceandfire:stymphalian_bird_feather"
   },
-  "result": {
-    "item": "iceandfire:stymphalian_bird_dagger"
-  }
+  "result": {"id": "iceandfire:stymphalian_bird_dagger"}
 }

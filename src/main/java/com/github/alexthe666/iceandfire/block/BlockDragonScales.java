@@ -19,8 +19,7 @@ public class BlockDragonScales extends Block implements IDragonProof {
 
     public BlockDragonScales(EnumDragonEgg type) {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .dynamicShape()

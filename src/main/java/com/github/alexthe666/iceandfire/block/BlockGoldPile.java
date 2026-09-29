@@ -35,8 +35,7 @@ public class BlockGoldPile extends Block {
 
     public BlockGoldPile() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.DIRT)
                 .strength(0.3F, 1)
                 .randomTicks()

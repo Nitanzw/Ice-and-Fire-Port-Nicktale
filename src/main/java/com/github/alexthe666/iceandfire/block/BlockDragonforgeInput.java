@@ -44,8 +44,7 @@ public class BlockDragonforgeInput extends BaseEntityBlock implements IDragonPro
 
     public BlockDragonforgeInput(int dragonType) {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .dynamicShape()

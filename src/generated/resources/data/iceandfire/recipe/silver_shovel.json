@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "H": {
-      "tag": "forge:rods/wooden"
-    },
-    "M": {
-      "tag": "forge:ingots/silver"
-    }
+    "H": "#c:rods/wooden",
+    "M": "#c:ingots/silver"
   },
   "pattern": [
     "M",
@@ -15,7 +11,6 @@
     "H"
   ],
   "result": {
-    "item": "iceandfire:silver_shovel"
-  },
-  "show_notification": true
+    "id": "iceandfire:silver_shovel"
+  }
 }

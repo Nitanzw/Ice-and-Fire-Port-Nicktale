@@ -1,13 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "B": {
-      "item": "iceandfire:dragonbone"
-    },
-    "I": {
-      "tag": "forge:ingots/iron"
-    }
+    "B": "iceandfire:dragonbone",
+    "I": "#c:ingots/iron"
   },
   "pattern": [
     "B  ",
@@ -15,7 +10,6 @@
     "  I"
   ],
   "result": {
-    "item": "iceandfire:dragon_flute"
-  },
-  "show_notification": true
+    "id": "iceandfire:dragon_flute"
+  }
 }

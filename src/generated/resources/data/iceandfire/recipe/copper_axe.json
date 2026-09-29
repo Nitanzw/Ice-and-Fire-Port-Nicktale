@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "H": {
-      "tag": "forge:rods/wooden"
-    },
-    "M": {
-      "tag": "forge:ingots/copper"
-    }
+    "H": "#c:rods/wooden",
+    "M": "#c:ingots/copper"
   },
   "pattern": [
     "MM",
@@ -15,7 +11,6 @@
     " H"
   ],
   "result": {
-    "item": "iceandfire:copper_axe"
-  },
-  "show_notification": true
+    "id": "iceandfire:copper_axe"
+  }
 }

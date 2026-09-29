@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "iceandfire:dragonscale_bronze"
-            ]
+            "items": "iceandfire:dragonscale_bronze"
           }
         ]
       },
@@ -22,14 +20,13 @@
   },
   "requirements": [
     [
-      "has_dragonscale_bronze",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_dragonscale_bronze"
     ]
   ],
   "rewards": {
     "recipes": [
       "iceandfire:dragonscale_bronze_to_dragonscales_bronze"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -25,8 +25,7 @@ public class BlockElementalFlower extends BushBlock {
 
     public BlockElementalFlower() {
         super(
-            Properties
-                .of()
+            com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.PLANT)
                 .replaceable()
                 .ignitedByLava()
