@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
+import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.entity.util.DragonUtils;
 import com.github.alexthe666.iceandfire.entity.util.IDragonProjectile;
 import net.minecraft.core.BlockPos;
@@ -9,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
-import net.minecraft.world.entity.projectile.Fireball;
+import net.minecraft.world.entity.projectile.hurtingprojectile.Fireball;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -24,57 +26,19 @@ public abstract class EntityDragonCharge extends Fireball implements IDragonProj
 
     public EntityDragonCharge(EntityType<? extends Fireball> type, Level worldIn) {
         super(type, worldIn);
+        this.accelerationPower = 0.07D;
     }
 
     public EntityDragonCharge(EntityType<? extends Fireball> type, Level worldIn, double posX,
                               double posY, double posZ, double accelX, double accelY, double accelZ) {
-        super(type, posX, posY, posZ, accelX, accelY, accelZ, worldIn);
-        double d0 = Math.sqrt(accelX * accelX + accelY * accelY + accelZ * accelZ);
-        this.xPower = accelX / d0 * 0.07D;
-        this.yPower = accelY / d0 * 0.07D;
-        this.zPower = accelZ / d0 * 0.07D;
+        super(type, posX, posY, posZ, new Vec3(accelX, accelY, accelZ), worldIn);
+        this.accelerationPower = 0.07D;
     }
 
     public EntityDragonCharge(EntityType<? extends Fireball> type, Level worldIn,
                               EntityDragonBase shooter, double accelX, double accelY, double accelZ) {
-        super(type, shooter, accelX, accelY, accelZ, worldIn);
-        double d0 = Math.sqrt(accelX * accelX + accelY * accelY + accelZ * accelZ);
-        this.xPower = accelX / d0 * 0.07D;
-        this.yPower = accelY / d0 * 0.07D;
-        this.zPower = accelZ / d0 * 0.07D;
-    }
-
-    @Override
-    public void tick() {
-        Entity shootingEntity = this.getOwner();
-        if (this.level().isClientSide() || (shootingEntity == null || shootingEntity.isAlive()) && this.level().hasChunkAt(this.blockPosition())) {
-            super.baseTick();
-
-            HitResult raytraceresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitMob);
-
-            if (raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.EventHooks.onProjectileImpact(this, raytraceresult)) {
-                this.onHit(raytraceresult);
-            }
-
-            this.checkInsideBlocks();
-            Vec3 vector3d = this.getDeltaMovement();
-            double d0 = this.getX() + vector3d.x;
-            double d1 = this.getY() + vector3d.y;
-            double d2 = this.getZ() + vector3d.z;
-            ProjectileUtil.rotateTowardsMovement(this, 0.2F);
-            float f = this.getInertia();
-            if (this.isInWater()) {
-                for (int i = 0; i < 4; ++i) {
-                    this.level().addParticle(ParticleTypes.BUBBLE, this.getX() - this.getDeltaMovement().x * 0.25D, this.getY() - this.getDeltaMovement().y * 0.25D, this.getZ() - this.getDeltaMovement().z * 0.25D, this.getDeltaMovement().x, this.getDeltaMovement().y, this.getDeltaMovement().z);
-                }
-                f = 0.8F;
-            }
-            this.setDeltaMovement(vector3d.add(this.xPower, this.yPower, this.zPower).scale(f));
-            this.level().addParticle(this.getTrailParticle(), this.getX(), this.getY() + 0.5D, this.getZ(), 0.0D, 0.0D, 0.0D);
-            this.setPos(d0, d1, d2);
-        } else {
-            this.remove(RemovalReason.DISCARDED);
-        }
+        super(type, shooter, new Vec3(accelX, accelY, accelZ), worldIn);
+        this.accelerationPower = 0.07D;
     }
 
     @Override
@@ -114,13 +78,14 @@ public abstract class EntityDragonCharge extends Fireball implements IDragonProj
                         Entity cause = shootingDragon.getRidingPlayer() != null ? shootingDragon.getRidingPlayer() : shootingDragon;
                         DamageSource source = causeDamage(cause);
 
-                        entity.hurt(source, damageAmount);
+                        IafDamage.hurt(entity, source, damageAmount);
                         if (entity instanceof LivingEntity && ((LivingEntity) entity).getHealth() == 0) {
                             ((EntityDragonBase) shootingEntity).randomizeAttacks();
                         }
                     }
                     if (shootingEntity instanceof LivingEntity) {
-                        this.doEnchantDamageEffects((LivingEntity) shootingEntity, entity);
+                        net.minecraft.world.item.enchantment.EnchantmentHelper.doPostAttackEffects(
+                            (ServerLevel) this.level(), entity, this.causeDamage(shootingEntity));
                     }
                     this.remove(RemovalReason.DISCARDED);
                 }
@@ -152,7 +117,7 @@ public abstract class EntityDragonCharge extends Fireball implements IDragonProj
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         return false;
     }
 

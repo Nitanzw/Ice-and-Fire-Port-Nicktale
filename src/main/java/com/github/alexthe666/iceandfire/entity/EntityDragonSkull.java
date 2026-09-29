@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.util.IBlacklistedFromStatues;
 import com.github.alexthe666.iceandfire.entity.util.IDeadMob;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
@@ -43,7 +44,7 @@ public class EntityDragonSkull extends Animal implements IBlacklistedFromStatues
 
     public EntityDragonSkull(EntityType type, Level worldIn) {
         super(type, worldIn);
-        this.noCulling = true;
+        // noCulling was removed from Entity in 1.21
         // setScale(this.getDragonAge());
     }
 
@@ -66,8 +67,8 @@ public class EntityDragonSkull extends Animal implements IBlacklistedFromStatues
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource i) {
-        return i.getEntity() != null && super.isInvulnerableTo(i);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource i) {
+        return i.getEntity() != null && super.isInvulnerableTo(level, i);
     }
 
     @Override
@@ -133,9 +134,9 @@ public class EntityDragonSkull extends Animal implements IBlacklistedFromStatues
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource var1, float var2) {
+    public boolean hurtServer(ServerLevel level, DamageSource var1, float var2) {
         this.turnIntoItem();
-        return super.hurt(var1, var2);
+        return super.hurtServer(level, var1, var2);
     }
 
     public void turnIntoItem() {
@@ -148,7 +149,7 @@ public class EntityDragonSkull extends Animal implements IBlacklistedFromStatues
         skullData.putInt("DragonAge", this.getDragonAge());
         CustomData.set(DataComponents.CUSTOM_DATA, stack, skullData);
         if (!this.level().isClientSide())
-            this.spawnAtLocation(stack, 0.0F);
+            IafEntityUtil.drop(this, stack, 0.0F);
 
     }
 

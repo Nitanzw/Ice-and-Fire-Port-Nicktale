@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import net.minecraft.server.level.ServerLevel;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.IafConfig;
@@ -49,7 +51,8 @@ public class EntityFireDragon extends EntityDragonBase {
 
     public EntityFireDragon(EntityType<?> t, Level worldIn) {
         super(t, worldIn, DragonType.FIRE, 1, 1 + IafConfig.dragonAttackDamage, IafConfig.dragonHealth * 0.04, IafConfig.dragonHealth, 0.15F, 0.4F);
-        this.setPathfindingMalus(PathType.DAMAGE_FIRE, 0.0F);
+        this.setPathfindingMalus(PathType.FIRE, 0.0F);
+        this.setPathfindingMalus(PathType.FIRE_IN_NEIGHBOR, 0.0F);
         this.setPathfindingMalus(PathType.LAVA, 8.0F);
         ANIMATION_SPEAK = Animation.create(20);
         ANIMATION_BITE = Animation.create(35);
@@ -128,7 +131,7 @@ public class EntityFireDragon extends EntityDragonBase {
     }*/
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         this.getLookControl().setLookAt(entityIn, 30.0F, 30.0F);
         if (!this.isPlayingAttackAnimation()) {
             switch (groundAttack) {
@@ -165,7 +168,7 @@ public class EntityFireDragon extends EntityDragonBase {
         LivingEntity attackTarget = this.getTarget();
         if (!level().isClientSide() && attackTarget != null) {
             if (this.getBoundingBox().inflate(2.5F + this.getRenderSize() * 0.33F, 2.5F + this.getRenderSize() * 0.33F, 2.5F + this.getRenderSize() * 0.33F).intersects(attackTarget.getBoundingBox())) {
-                doHurtTarget(attackTarget);
+                IafEntityUtil.attack(this, attackTarget);
             }
             if (this.groundAttack == IafDragonAttacks.Ground.FIRE && (usingGroundAttack || this.onGround())) {
                 shootFireAtMob(attackTarget);
@@ -176,7 +179,7 @@ public class EntityFireDragon extends EntityDragonBase {
                 double difZ = attackTarget.getZ() - this.getZ();
                 this.setDeltaMovement(this.getDeltaMovement().add(difX * 0.1D, difY * 0.1D, difZ * 0.1D));
                 if (this.getBoundingBox().inflate(1 + this.getRenderSize() * 0.5F, 1 + this.getRenderSize() * 0.5F, 1 + this.getRenderSize() * 0.5F).intersects(attackTarget.getBoundingBox())) {
-                    doHurtTarget(attackTarget);
+                    IafEntityUtil.attack(this, attackTarget);
                     usingGroundAttack = true;
                     randomizeAttacks();
                     setFlying(false);
@@ -204,7 +207,7 @@ public class EntityFireDragon extends EntityDragonBase {
 
     @Override
     public void riderShootFire(Entity controller) {
-        if (this.getRandom().nextInt(5) == 0 && !this.isBaby()) {
+        if (this.getRandom().nextInt(5) == 0 && !this.isDragonBaby()) {
             if (this.getAnimation() != ANIMATION_FIRECHARGE) {
                 this.setAnimation(ANIMATION_FIRECHARGE);
             } else if (this.getAnimationTick() == 20) {
@@ -247,7 +250,7 @@ public class EntityFireDragon extends EntityDragonBase {
     @Override
     protected float getBlockSpeedFactor() {
         // Disable soul sand slow down
-        if (this.onSoulSpeedBlock()) {
+        if (this.getBlockStateOn().is(net.minecraft.tags.BlockTags.SOUL_SPEED_BLOCKS)) {
             return this.getDragonStage() >= 2 ? 1.0f : 0.8f;
         }
         return super.getBlockSpeedFactor();
@@ -280,7 +283,7 @@ public class EntityFireDragon extends EntityDragonBase {
                     vertical = 0.8f;
                 } else if (isGoingDown() && !isGoingUp()) {
                     vertical = -0.8f;
-                } else if (isGoingUp() && isGoingDown() && isControlledByLocalInstance()) {
+                } else if (isGoingUp() && isGoingDown() && isLocalInstanceAuthoritative()) {
                     // Try floating
                     this.setDeltaMovement(this.getDeltaMovement().multiply(1.0f, 0.3f, 1.0f));
                 }
@@ -290,7 +293,7 @@ public class EntityFireDragon extends EntityDragonBase {
                         vertical,
                         rider.zza
                 );
-                if (this.isControlledByLocalInstance()) {
+                if (this.isLocalInstanceAuthoritative()) {
                     this.setSpeed(speed);
 
                     this.moveRelative(this.getSpeed(), travelVector);
@@ -306,7 +309,7 @@ public class EntityFireDragon extends EntityDragonBase {
                 } else {
                     this.setDeltaMovement(Vec3.ZERO);
                 }
-                this.tryCheckInsideBlocks();
+                this.applyEffectsFromBlocks();
             } else {
                 super.travel(pTravelVector);
             }
@@ -333,7 +336,7 @@ public class EntityFireDragon extends EntityDragonBase {
             // Slower going sideway
             strafing *= 0.05f;
 
-            if (this.isControlledByLocalInstance()) {
+            if (this.isLocalInstanceAuthoritative()) {
                 flyingSpeed = speed * 0.1F;
                 this.setSpeed(speed);
 
@@ -348,7 +351,7 @@ public class EntityFireDragon extends EntityDragonBase {
             } else {
                 this.setDeltaMovement(Vec3.ZERO);
             }
-            this.tryCheckInsideBlocks();
+            this.applyEffectsFromBlocks();
 //            this.updatePitch(this.yOld - this.getY());
             return;
         } else {

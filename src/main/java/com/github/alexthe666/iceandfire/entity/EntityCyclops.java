@@ -1,5 +1,8 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.server.level.ServerLevel;
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
@@ -13,7 +16,7 @@ import com.github.alexthe666.iceandfire.event.ServerEvents;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.github.alexthe666.iceandfire.misc.IafTagRegistry;
 import com.github.alexthe666.iceandfire.pathfinding.PathNavigateCyclops;
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -38,9 +41,9 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.PolarBear;
-import net.minecraft.world.entity.animal.WaterAnimal;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.polarbear.PolarBear;
+import net.minecraft.world.entity.animal.fish.WaterAnimal;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -72,7 +75,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
 
     public EntityCyclops(EntityType<EntityCyclops> type, Level worldIn) {
         super(type, worldIn);
-        this.setMaxUpStep(2.5F);
+        IafEntityUtil.setStepHeight(this, 2.5F);
         this.setPathfindingMalus(PathType.WATER, -1.0F);
         this.setPathfindingMalus(PathType.FENCE, 0.0F);
         ANIMATION_STOMP = Animation.create(27);
@@ -107,7 +110,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 40;
     }
 
@@ -121,9 +124,9 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F, 1.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, new Predicate<LivingEntity>() {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
-            public boolean apply(@Nullable LivingEntity entity) {
+            public boolean test(@Nullable LivingEntity entity) {
                 if (EntityGorgon.isStoneMob(entity))
                     return false;
                 if (!DragonUtils.isAlive(entity))
@@ -144,14 +147,14 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
                 }
                 return !ServerEvents.isSheep(entity);
             }
-        }));
+        })));
 
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, 10, true, true, new Predicate<Player>() {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, true, IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
-            public boolean apply(@Nullable Player entity) {
-                return entity != null && !(entity.isCreative() || entity.isSpectator());
+            public boolean test(@Nullable LivingEntity entity) {
+                return entity instanceof Player player && !(player.isCreative() || player.isSpectator());
             }
-        }));
+        })));
         this.targetSelector.addGoal(3, new CyclopsAITargetSheepPlayers(this, Player.class, true));
     }
 
@@ -163,7 +166,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         int attackDescision = this.getRandom().nextInt(3);
         if (attackDescision == 0) {
             this.setAnimation(ANIMATION_STOMP);
@@ -172,10 +175,10 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
             if (!entityIn.hasPassenger(this)
                 && entityIn.getBbWidth() < 1.95F
                 && !(entityIn instanceof EntityDragonBase)
-                && !entityIn.getType().is(CYCLOPS_UNLIFTABLES)) {
+                && !entityIn.getType().builtInRegistryHolder().is(CYCLOPS_UNLIFTABLES)) {
                 this.setAnimation(ANIMATION_EATPLAYER);
                 entityIn.stopRiding();
-                entityIn.startRiding(this, true);
+                entityIn.startRiding(this);
             } else {
                 this.setAnimation(ANIMATION_STOMP);
             }
@@ -241,7 +244,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
             double extraY = raiseUp;
             passenger.setPos(this.getX() + extraX, this.getY() + extraY, this.getZ() + extraZ);
             if (this.getAnimationTick() == 32) {
-                passenger.hurt(this.level().damageSources().mobAttack(this), (float) IafConfig.cyclopsBiteStrength);
+                IafDamage.hurt(passenger, this.level().damageSources().mobAttack(this), (float) IafConfig.cyclopsBiteStrength);
                 passenger.stopRiding();
             }
         }
@@ -286,12 +289,12 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
             this.playSound(IafSoundRegistry.CYCLOPS_BITE, 1, 1);
         }
         if (this.getAnimation() == ANIMATION_STOMP && this.getTarget() != null && this.distanceToSqr(this.getTarget()) < 12D && this.getAnimationTick() == 14) {
-            this.getTarget().hurt(this.level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+            IafDamage.hurt(this.getTarget(), this.level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
         }
         if (this.getAnimation() == ANIMATION_KICK && this.getTarget() != null && this.distanceToSqr(this.getTarget()) < 14D && this.getAnimationTick() == 12) {
-            this.getTarget().hurt(this.level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+            IafDamage.hurt(this.getTarget(), this.level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
             if (this.getTarget() != null)
-                this.getTarget().knockback(2, this.getX() - this.getTarget().getX(), this.getZ() - this.getTarget().getZ());
+                IafEntityUtil.knockback(this.getTarget(), 2.0F, this.getX() - this.getTarget().getX(), this.getZ() - this.getTarget().getZ());
 
         }
         if (this.getAnimation() != ANIMATION_EATPLAYER && this.getTarget() != null && !this.getPassengers().isEmpty() && this.getPassengers().contains(this.getTarget())) {
@@ -408,7 +411,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
             this.getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(6F);
             this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.35D);
             this.setAnimation(ANIMATION_ROAR);
-            this.hurt(source, damage * 3);
+            IafDamage.hurt(this, source, damage * 3);
         }
     }
 

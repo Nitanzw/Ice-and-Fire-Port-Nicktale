@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafDamage;
+import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
 import net.minecraft.world.damagesource.DamageSource;
@@ -43,13 +45,13 @@ public class EntityHydraHead extends EntityMutlipartPart {
 
 
     @Override
-    public boolean hurt(DamageSource source, float damage) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
         Entity parent = this.getParent();
         if (parent instanceof EntityHydra) {
             ((EntityHydra) parent).onHitHead(damage, headIndex);
-            return parent.hurt(source, damage);
+            return IafDamage.hurt(parent, source, damage);
         } else {
-            return parent != null && parent.hurt(source, damage);
+            return parent != null && IafDamage.hurt(parent, source, damage);
         }
     }
 
