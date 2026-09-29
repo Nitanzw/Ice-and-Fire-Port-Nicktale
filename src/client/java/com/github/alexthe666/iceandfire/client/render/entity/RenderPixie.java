@@ -34,6 +34,10 @@ public class RenderPixie extends IafMobRenderer<EntityPixie, PixieRenderState, M
     protected void extract(EntityPixie entity, PixieRenderState state, float partialTick) {
         state.isPixieSitting = entity.isPixieSitting();
         state.heldItem = entity.getItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND);
+        state.heldItemState.clear();
+        if (!state.heldItem.isEmpty()) {
+            this.itemModelResolver.updateForLiving(state.heldItemState, state.heldItem, net.minecraft.world.item.ItemDisplayContext.GROUND, entity);
+        }
     }
 
     @Override
