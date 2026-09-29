@@ -32,7 +32,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -89,7 +88,6 @@ public class ChunkCache implements LevelReader {
      *
      * @return if so.
      */
-    @OnlyIn(Dist.CLIENT)
     public boolean isEmpty() {
         return this.empty;
     }

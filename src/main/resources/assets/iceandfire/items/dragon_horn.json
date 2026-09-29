@@ -1,6 +1,33 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "iceandfire:item/dragon_horn"
+    "type": "minecraft:select",
+    "property": "iceandfire:horn_type",
+    "cases": [
+      {
+        "when": 1,
+        "model": {
+          "type": "minecraft:model",
+          "model": "iceandfire:item/dragon_horn_fire"
+        }
+      },
+      {
+        "when": 2,
+        "model": {
+          "type": "minecraft:model",
+          "model": "iceandfire:item/dragon_horn_ice"
+        }
+      },
+      {
+        "when": 3,
+        "model": {
+          "type": "minecraft:model",
+          "model": "iceandfire:item/dragon_horn_lightning"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "iceandfire:item/dragon_horn"
+    }
   }
 }

@@ -23,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.HashSet;
@@ -67,7 +66,6 @@ public class ClientProxy extends CommonProxy {
         IafClientSetup.clientInit();
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void spawnDragonParticle(final EnumParticles name, double x, double y, double z, double motX, double motY, double motZ, EntityDragonBase entityDragonBase) {
         ClientLevel world = Minecraft.getInstance().level;
@@ -85,7 +83,6 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void spawnParticle(final EnumParticles name, double x, double y, double z, double motX, double motY, double motZ, float size) {
         ClientLevel world = Minecraft.getInstance().level;
@@ -135,25 +132,21 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void openBestiaryGui(ItemStack book) {
         Minecraft.getInstance().setScreenAndShow(new GuiBestiary(book));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void openMyrmexStaffGui(ItemStack staff) {
         Minecraft.getInstance().setScreenAndShow(new GuiMyrmexStaff(staff));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void openMyrmexAddRoomGui(ItemStack staff, BlockPos pos, Direction facing) {
         Minecraft.getInstance().setScreenAndShow(new GuiMyrmexAddRoom(staff, pos, facing));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public Object getFontRenderer() {
         return Minecraft.getInstance().font;
@@ -184,7 +177,6 @@ public class ClientProxy extends CommonProxy {
         LayerDragonArmor.clearCache(clear);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public boolean shouldSeeBestiaryContents() {
         return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), 340) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), 344);
@@ -210,7 +202,6 @@ public class ClientProxy extends CommonProxy {
         referencedTE = tileEntity;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public Player getClientSidePlayer() {
         return Minecraft.getInstance().player;

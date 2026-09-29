@@ -24,7 +24,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
@@ -35,7 +34,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 
 import java.util.Random;
 
-@OnlyIn(Dist.CLIENT)
 public class ClientEvents {
 
     private static final Identifier SIREN_SHADER = Identifier.parse("iceandfire:siren");

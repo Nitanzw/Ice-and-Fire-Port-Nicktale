@@ -35,6 +35,12 @@ neoForge {
             client()
             gameDirectory = project.file('runs/client')
         }
+        clientTest {
+            client()
+            gameDirectory = project.file('runs/client')
+            programArguments.addAll '--quickPlaySingleplayer', 'iaftest'
+            jvmArguments.add '-Diaf.smoketest=true'
+        }
         server {
             server()
             gameDirectory = project.file('runs/server')
