@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.ai.AquaticAIGetInWater;
@@ -21,6 +22,8 @@ import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.google.common.base.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -40,14 +43,14 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.AmphibiousPathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -155,8 +158,8 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
     @Override
-    public float getPathfindingMalus(@NotNull BlockPathTypes nodeType) {
-        return nodeType == BlockPathTypes.WATER ? 0F : super.getPathfindingMalus(nodeType);
+    public float getPathfindingMalus(@NotNull PathType nodeType) {
+        return nodeType == PathType.WATER ? 0F : super.getPathfindingMalus(nodeType);
     }
 
     private void switchNavigator(boolean onLand) {
@@ -342,8 +345,10 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag tag = new CompoundTag();
+
         tag.putInt("HairColor", this.getHairColor());
         tag.putBoolean("Aggressive", this.isAgressive());
         tag.putInt("SingingPose", this.getSingingPose());
@@ -351,11 +356,15 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
         tag.putBoolean("Swimming", this.isSwimming());
         tag.putBoolean("Passive", this.isCharmed());
 
+
+        output.store(tag);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag tag = EntityDataIO.readLegacyFields(input);
+
         this.setHairColor(tag.getInt("HairColor"));
         this.setAggressive(tag.getBoolean("Aggressive"));
         this.setSingingPose(tag.getInt("SingingPose"));
@@ -363,6 +372,7 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
         this.setSwimming(tag.getBoolean("Swimming"));
         this.setCharmed(tag.getBoolean("Passive"));
         this.setConfigurableAttributes();
+
     }
 
     public boolean isSinging() {
@@ -470,8 +480,8 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.setHairColor(this.getRandom().nextInt(3));
         this.setSingingPose(this.getRandom().nextInt(3));
         return spawnDataIn;

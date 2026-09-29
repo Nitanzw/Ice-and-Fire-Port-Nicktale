@@ -1,9 +1,12 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.entity.ai.*;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.AdvancedPathNavigate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -129,8 +132,10 @@ public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag compound = new CompoundTag();
+
         if (this.getSummonerUUID() == null) {
             compound.putString("SummonerUUID", "");
         } else {
@@ -138,11 +143,15 @@ public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
         }
         compound.putInt("SummonTicks", this.getTicksAlive());
 
+
+        output.store(compound);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag compound = EntityDataIO.readLegacyFields(input);
+
         String s = "";
         if (compound.hasUUID("SummonerUUID")) {
             s = compound.getString("SummonerUUID");
@@ -154,6 +163,7 @@ public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
             }
         }
         this.setTicksAlive(compound.getInt("SummonTicks"));
+
     }
 
     public void setSummonedBy(Player player) {

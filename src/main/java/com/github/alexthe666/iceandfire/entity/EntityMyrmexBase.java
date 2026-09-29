@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.block.BlockMyrmexConnectedResin;
 import com.github.alexthe666.iceandfire.block.BlockMyrmexResin;
@@ -22,6 +23,8 @@ import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -40,7 +43,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.trading.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -176,14 +179,14 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource dmg, float i) {
+    public boolean hurtServer(ServerLevel level, DamageSource dmg, float i) {
         if (dmg == this.level().damageSources().inWall() && this.getGrowthStage() < 2) {
             return false;
         }
         if (this.getGrowthStage() < 2) {
             this.setAnimation(ANIMATION_PUPA_WIGGLE);
         }
-        return super.hurt(dmg, i);
+        return super.hurtServer(level, dmg, i);
     }
 
     @Override
@@ -268,8 +271,10 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag tag = new CompoundTag();
+
         tag.putInt("GrowthStage", this.getGrowthStage());
         tag.putInt("GrowthTicks", growthTicks);
         tag.putBoolean("Variant", this.isJungle());
@@ -290,11 +295,15 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
             }
         }
         tag.put("Inventory", listnbt);
+
+        output.store(tag);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag tag = EntityDataIO.readLegacyFields(input);
+
         this.setGrowthStage(tag.getInt("GrowthStage"));
         this.growthTicks = tag.getInt("GrowthTicks");
         this.setJungleVariant(tag.getBoolean("Variant"));
@@ -314,6 +323,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
             }
         }
         this.setConfigurableAttributes();
+
 
     }
 
@@ -351,11 +361,6 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
 
     public void setJungleVariant(boolean isJungle) {
         this.entityData.set(VARIANT, isJungle);
-    }
-
-    @Override
-    public @NotNull MobType getMobType() {
-        return MobType.ARTHROPOD;
     }
 
     public boolean isBesideClimbableBlock() {
@@ -520,8 +525,8 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.setHive(MyrmexWorldData.get(level()).getNearestHive(this.blockPosition(), 400));
         if (this.getHive() != null) {
             this.setJungleVariant(isJungleBiome(level(), this.getHive().getCenter()));

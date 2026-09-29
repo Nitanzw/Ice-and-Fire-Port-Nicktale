@@ -1,6 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.api.event.GenericGriefEvent;
 import com.github.alexthe666.iceandfire.entity.ai.*;
@@ -13,6 +14,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -36,7 +39,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.trading.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -102,18 +105,25 @@ public class EntityMyrmexQueen extends EntityMyrmexBase {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag tag = new CompoundTag();
+
         tag.putInt("EggTicks", eggTicks);
         tag.putBoolean("MadeHome", this.hasMadeHome());
 
+
+        output.store(tag);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag tag = EntityDataIO.readLegacyFields(input);
+
         this.eggTicks = tag.getInt("EggTicks");
         this.setMadeHome(tag.getBoolean("MadeHome"));
+
     }
 
     public boolean hasMadeHome() {

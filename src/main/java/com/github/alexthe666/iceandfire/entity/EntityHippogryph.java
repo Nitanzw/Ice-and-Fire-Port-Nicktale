@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.datagen.tags.IafItemTags;
@@ -23,6 +24,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -45,7 +48,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.OwnerHurtTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -60,7 +63,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -351,7 +353,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
 
     public void openGUI(Player playerEntity) {
         if (!this.level().isClientSide() && (!this.isVehicle() || this.hasPassenger(playerEntity))) {
-            NetworkHooks.openScreen((ServerPlayer) playerEntity, new MenuProvider() {
+            ((ServerPlayer) playerEntity).openMenu(new MenuProvider() {
                 @Override
                 public AbstractContainerMenu createMenu(int p_createMenu_1_, @NotNull Inventory p_createMenu_2_, @NotNull Player p_createMenu_3_) {
                     return new ContainerHippogryph(p_createMenu_1_, hippogryphInventory, p_createMenu_2_, EntityHippogryph.this);
@@ -438,8 +440,10 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag compound = new CompoundTag();
+
         compound.putInt("Variant", this.getVariant());
         compound.putBoolean("Chested", this.isChested());
         compound.putBoolean("Saddled", this.isSaddled());
@@ -467,11 +471,15 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
             compound.putInt("HomeAreaZ", homePos.getZ());
         }
         compound.putInt("Command", this.getCommand());
+
+        output.store(compound);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag compound = EntityDataIO.readLegacyFields(input);
+
         this.setVariant(compound.getInt("Variant"));
         this.setChested(compound.getBoolean("Chested"));
         this.setSaddled(compound.getBoolean("Saddled"));
@@ -516,6 +524,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
         }
 
         this.setConfigurableAttributes();
+
 
     }
 
@@ -640,18 +649,18 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        SpawnGroupData data = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        SpawnGroupData data = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.setEnumVariant(EnumHippogryphTypes.getBiomeType(worldIn.getBiome(this.blockPosition())));
         return data;
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource dmg, float i) {
+    public boolean hurtServer(ServerLevel level, DamageSource dmg, float i) {
         if (this.isVehicle() && dmg.getEntity() != null && this.getControllingPassenger() != null && dmg.getEntity() == this.getControllingPassenger()) {
             return false;
         }
-        return super.hurt(dmg, i);
+        return super.hurtServer(level, dmg, i);
     }
 
     @Nullable

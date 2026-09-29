@@ -5,20 +5,16 @@ import com.github.alexthe666.iceandfire.entity.util.IDragonProjectile;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.projectile.Fireball;
+import net.minecraft.world.entity.projectile.hurtingprojectile.Fireball;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.NetworkHooks;
-import net.neoforged.neoforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 
 public class EntitySeaSerpentBubbles extends Fireball implements IDragonProjectile {
@@ -32,12 +28,7 @@ public class EntitySeaSerpentBubbles extends Fireball implements IDragonProjecti
         super(t, posX, posY, posZ, accelX, accelY, accelZ, worldIn);
     }
 
-    public EntitySeaSerpentBubbles(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(IafEntityRegistry.SEA_SERPENT_BUBBLES.get(), world);
-    }
-
-
-    public EntitySeaSerpentBubbles(EntityType<? extends Fireball> t, Level worldIn,
+public EntitySeaSerpentBubbles(EntityType<? extends Fireball> t, Level worldIn,
                                    EntitySeaSerpent shooter, double accelX, double accelY, double accelZ) {
         super(t, shooter, accelX, accelY, accelZ, worldIn);
         double d0 = Math.sqrt(accelX * accelX + accelY * accelY + accelZ * accelZ);
@@ -51,12 +42,7 @@ public class EntitySeaSerpentBubbles extends Fireball implements IDragonProjecti
         return false;
     }
 
-    @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
+@Override
     protected boolean shouldBurn() {
         return false;
     }

@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.ai.StymphalianBirdAIAirTarget;
 import com.github.alexthe666.iceandfire.entity.ai.StymphalianBirdAIFlee;
@@ -14,6 +15,8 @@ import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.google.common.base.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -126,17 +129,23 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag tag = new CompoundTag();
+
         if (this.getVictorId() != null) {
             tag.putUUID("VictorUUID", this.getVictorId());
         }
         tag.putBoolean("Flying", this.isFlying());
+
+        output.store(tag);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag tag = EntityDataIO.readLegacyFields(input);
+
         UUID s;
 
         if (tag.hasUUID("VictorUUID")) {
@@ -153,6 +162,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
             }
         }
         this.setFlying(tag.getBoolean("Flying"));
+
     }
 
     public boolean isFlying() {
@@ -450,8 +460,8 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(IafConfig.stymphalianBirdTargetSearchLength);
         return spawnDataIn;
     }

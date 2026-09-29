@@ -2,8 +2,6 @@ package com.github.alexthe666.iceandfire.entity;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -11,15 +9,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.ToolActions;
-import net.neoforged.neoforge.network.NetworkHooks;
-import net.neoforged.neoforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -51,11 +47,7 @@ public class EntityDreadLichSkull extends AbstractArrow {
         this.setBaseDamage(dmg);
     }
 
-    public EntityDreadLichSkull(PlayMessages.SpawnEntity spawnEntity, Level worldIn) {
-        this(IafEntityRegistry.DREAD_LICH_SKULL.get(), worldIn);
-    }
-
-    @Override
+@Override
     public boolean isInWater() {
         return false;
     }
@@ -201,11 +193,6 @@ public class EntityDreadLichSkull extends AbstractArrow {
     @Override
     protected @NotNull ItemStack getPickupItem() {
         return ItemStack.EMPTY;
-    }
-
-    @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
 }

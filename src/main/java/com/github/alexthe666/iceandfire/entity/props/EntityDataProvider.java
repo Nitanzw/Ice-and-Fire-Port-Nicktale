@@ -1,76 +1,35 @@
+/*
+ * Ice and Fire NeoForge port
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ */
 package com.github.alexthe666.iceandfire.entity.props;
 
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import com.github.alexthe666.iceandfire.IceAndFire;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilitySerializable;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
-public class EntityDataProvider implements ICapabilitySerializable<CompoundTag> {
-    public static final Map<Integer, LazyOptional<EntityData>> SERVER_CACHE = new HashMap<>();
-    public static final Map<Integer, LazyOptional<EntityData>> CLIENT_CACHE = new HashMap<>();
+/** Persistent living-entity state, backed by NeoForge data attachments. */
+public final class EntityDataProvider {
+    public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS =
+        DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, IceAndFire.MODID);
 
-    private final EntityData data = new EntityData();
-    private final LazyOptional<EntityData> instance = LazyOptional.of(() -> data);
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<EntityData>> ENTITY_DATA =
+        ATTACHMENTS.register("entity_data", () -> AttachmentType.serializable(EntityData::new).build());
 
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull final Capability<T> capability, @Nullable final Direction side) {
-        return capability == CapabilityHandler.ENTITY_DATA_CAPABILITY ? instance.cast() : LazyOptional.empty();
+    private EntityDataProvider() {
     }
 
-    @Override
-    public void deserializeNBT(final CompoundTag tag) {
-        instance.orElseThrow(() -> new IllegalArgumentException("Capability instance was not present")).deserialize(tag);
-    }
-
-    @Override
-    public CompoundTag serializeNBT() {
-        return instance.orElseThrow(() -> new IllegalArgumentException("Capability instance was not present")).serialize();
-    }
-
-    public static LazyOptional<EntityData> getCapability(final Entity entity) {
-        if (entity instanceof LivingEntity) {
-            int key = entity.getId();
-
-            Map<Integer, LazyOptional<EntityData>> sidedCache = entity.level().isClientSide() ? CLIENT_CACHE : SERVER_CACHE;
-            LazyOptional<EntityData> capability = sidedCache.get(key);
-
-            if (capability == null) {
-                capability = entity.getCapability(CapabilityHandler.ENTITY_DATA_CAPABILITY);
-                capability.addListener(ignored -> sidedCache.remove(key));
-
-                if (capability.isPresent()) {
-                    sidedCache.put(key, capability);
-                }
-            }
-
-            return capability;
+    /** Retains the Optional-based call site API while creating the attachment lazily for living entities. */
+    public static Optional<EntityData> getCapability(Entity entity) {
+        if (entity instanceof LivingEntity livingEntity) {
+            return Optional.of(livingEntity.getData(ENTITY_DATA));
         }
-
-        return LazyOptional.empty();
-    }
-
-    public static void removeCachedEntry(final Entity entity) {
-        if (entity instanceof LivingEntity) {
-            int key = entity.getId();
-
-            if (entity.level().isClientSide()) {
-                if (entity == CapabilityHandler.getLocalPlayer()) {
-                    // Can trigger on death or when player leaves the game (this is when we want to actually clear)
-                    CLIENT_CACHE.clear();
-                } else {
-                    CLIENT_CACHE.remove(key);
-                }
-            } else {
-                SERVER_CACHE.remove(key);
-            }
-        }
+        return Optional.empty();
     }
 }

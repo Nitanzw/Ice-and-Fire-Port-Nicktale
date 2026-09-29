@@ -1,9 +1,12 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.entity.util.IBlacklistedFromStatues;
 import com.github.alexthe666.iceandfire.entity.util.IDeadMob;
 import com.github.alexthe666.iceandfire.enums.EnumSkullType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -130,17 +133,24 @@ public class EntityMobSkull extends Animal implements IBlacklistedFromStatues, I
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag compound = EntityDataIO.readLegacyFields(input);
+
         this.setYaw(compound.getFloat("SkullYaw"));
         this.setEnumOrdinal(compound.getInt("SkullType"));
-        super.readAdditionalSaveData(compound);
+
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag compound = new CompoundTag();
+
         compound.putFloat("SkullYaw", this.getYaw());
         compound.putInt("SkullType", this.getEnumOrdinal());
-        super.addAdditionalSaveData(compound);
+
+        output.store(compound);
     }
 
     @Override

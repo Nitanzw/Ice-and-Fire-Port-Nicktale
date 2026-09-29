@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.ai.GorgonAIStareAttack;
@@ -15,6 +16,8 @@ import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.google.common.base.Predicate;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -28,7 +31,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -289,9 +292,12 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag pCompound = EntityDataIO.readLegacyFields(input);
+
         this.setConfigurableAttributes();
+
     }
 
     @Override

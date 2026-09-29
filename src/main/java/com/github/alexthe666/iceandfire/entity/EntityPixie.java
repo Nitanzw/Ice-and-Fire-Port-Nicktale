@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import com.github.alexthe666.iceandfire.datagen.tags.IafItemTags;
@@ -11,6 +12,8 @@ import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.google.common.base.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -267,14 +270,10 @@ public class EntityPixie extends TamableAnimal {
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.setColor(this.random.nextInt(5));
         this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-
-        if (dataTag != null) {
-            System.out.println("EntityPixie spawned with dataTag: " + dataTag);
-        }
 
         return spawnDataIn;
     }
@@ -369,7 +368,10 @@ public class EntityPixie extends TamableAnimal {
 
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag compound = EntityDataIO.readLegacyFields(input);
+
         this.setColor(compound.getInt("Color"));
 
         this.stealCooldown = compound.getInt("StealCooldown");
@@ -378,17 +380,20 @@ public class EntityPixie extends TamableAnimal {
         this.setPixieSitting(compound.getBoolean("PixieSitting"));
         this.setCommand(compound.getInt("Command"));
 
-        super.readAdditionalSaveData(compound);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag compound = new CompoundTag();
+
         compound.putInt("Color", this.getColor());
         compound.putInt("Command", this.getCommand());
         compound.putInt("StealCooldown", this.stealCooldown);
         compound.putInt("HoldingTicks", this.ticksHeldItemFor);
         compound.putBoolean("PixieSitting", this.isPixieSitting());
-        super.addAdditionalSaveData(compound);
+
+        output.store(compound);
     }
 
     @Nullable

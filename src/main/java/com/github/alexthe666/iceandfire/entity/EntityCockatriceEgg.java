@@ -3,18 +3,15 @@ package com.github.alexthe666.iceandfire.entity;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityCockatriceEgg extends ThrowableItemProjectile {
@@ -32,12 +29,7 @@ public class EntityCockatriceEgg extends ThrowableItemProjectile {
         super(type, x, y, z, worldIn);
     }
 
-    @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
+@Override
     public void handleEntityEvent(byte id) {
         if (id == 3) {
             for (int i = 0; i < 8; ++i) {

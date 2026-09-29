@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.util.IBlacklistedFromStatues;
 import com.github.alexthe666.iceandfire.entity.util.IDeadMob;
@@ -11,6 +12,8 @@ import com.github.alexthe666.iceandfire.world.gen.WorldGenMyrmexHive;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -48,21 +51,28 @@ public class EntityMyrmexEgg extends LivingEntity implements IBlacklistedFromSta
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag tag = new CompoundTag();
+
         tag.putBoolean("Jungle", this.isJungle());
         tag.putInt("MyrmexAge", this.getMyrmexAge());
         tag.putInt("MyrmexCaste", this.getMyrmexCaste());
         tag.putUUID("HiveUUID", hiveUUID == null ? hiveUUID = UUID.randomUUID() : hiveUUID);
+
+        output.store(tag);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag tag = EntityDataIO.readLegacyFields(input);
+
         this.setJungle(tag.getBoolean("Jungle"));
         this.setMyrmexAge(tag.getInt("MyrmexAge"));
         this.setMyrmexCaste(tag.getInt("MyrmexCaste"));
         hiveUUID = tag.getUUID("HiveUUID");
+
     }
 
     @Override

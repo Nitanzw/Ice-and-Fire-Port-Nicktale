@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.ai.*;
 import com.github.alexthe666.iceandfire.entity.util.*;
@@ -13,6 +14,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -37,22 +40,22 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.IPlantable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -108,7 +111,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
         switchNavigator(false);
         this.noCulling = true;
         resetParts(1.0F);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
     }
 
     private static BlockPos clampBlockPosToWater(Entity entity, Level world, BlockPos pos) {
@@ -180,11 +183,6 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
         Vec3 bector3d1 = new Vec3(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
         return this.level().clip(new ClipContext(vector3d, bector3d1, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() == HitResult.Type.MISS;
 
-    }
-
-    @Override
-    public @NotNull MobType getMobType() {
-        return MobType.WATER;
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -364,8 +362,10 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag compound = new CompoundTag();
+
         compound.putInt("Variant", this.getVariant());
         compound.putInt("TicksSinceRoar", ticksSinceRoar);
         compound.putInt("JumpCooldown", jumpCooldown);
@@ -374,11 +374,15 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
         compound.putBoolean("AttackDecision", attackDecision);
         compound.putBoolean("Breathing", this.isBreathing());
         compound.putBoolean("Ancient", this.isAncient());
+
+        output.store(compound);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag compound = EntityDataIO.readLegacyFields(input);
+
         this.setVariant(compound.getInt("Variant"));
         ticksSinceRoar = compound.getInt("TicksSinceRoar");
         jumpCooldown = compound.getInt("JumpCooldown");
@@ -388,6 +392,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
         this.setBreathing(compound.getBoolean("Breathing"));
         this.setAncient(compound.getBoolean("Ancient"));
         this.setConfigurableAttributes();
+
     }
 
     private void updateAttributes() {
@@ -646,7 +651,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
                         BlockState state = level().getBlockState(pos);
                         FluidState fluidState = level().getFluidState(pos);
                         Block block = state.getBlock();
-                        if (!state.isAir() && !state.getShape(level(), pos).isEmpty() && (state.getBlock() instanceof IPlantable || state.getBlock() instanceof LeavesBlock) && fluidState.isEmpty()) {
+                        if (!state.isAir() && !state.getShape(level(), pos).isEmpty() && (state.getBlock() instanceof BushBlock || state.getBlock() instanceof LeavesBlock) && fluidState.isEmpty()) {
                             if (block != Blocks.AIR) {
                                 if (!level().isClientSide()) {
                                     level().destroyBlock(pos, true);
@@ -661,8 +666,8 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.setVariant(this.getRandom().nextInt(7));
         boolean ancient = this.getRandom().nextInt(16) == 1;
         if (ancient) {
