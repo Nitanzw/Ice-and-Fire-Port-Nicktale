@@ -92,13 +92,13 @@ public class TileEntityMyrmexCocoon extends RandomizableContainerBlockEntity {
     }
 
     @Override
-    public void startOpen(net.minecraft.world.ContainerUser user) {
+    public void startOpen(net.minecraft.world.entity.ContainerUser user) {
         this.unpackLootTable(null);
         user.getLivingEntity().level().playLocalSound(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), SoundEvents.SLIME_JUMP, SoundSource.BLOCKS, 1, 1, false);
     }
 
     @Override
-    public void stopOpen(net.minecraft.world.ContainerUser user) {
+    public void stopOpen(net.minecraft.world.entity.ContainerUser user) {
         this.unpackLootTable(null);
         user.getLivingEntity().level().playLocalSound(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), SoundEvents.SLIME_SQUISH, SoundSource.BLOCKS, 1, 1, false);
     }
