@@ -51,6 +51,11 @@ import javax.annotation.Nullable;
 
 public class EntityPixie extends TamableAnimal {
 
+    @Override
+    public boolean isFood(ItemStack stack) {
+        return false;
+    }
+
     public static final float[][] PARTICLE_RGB = new float[][]{new float[]{1F, 0.752F, 0.792F}, new float[]{0.831F, 0.662F, 1F}, new float[]{0.513F, 0.843F, 1F}, new float[]{0.654F, 0.909F, 0.615F}, new float[]{0.996F, 0.788F, 0.407F}};
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.defineId(EntityPixie.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> COMMAND = SynchedEntityData.defineId(EntityPixie.class, EntityDataSerializers.INT);

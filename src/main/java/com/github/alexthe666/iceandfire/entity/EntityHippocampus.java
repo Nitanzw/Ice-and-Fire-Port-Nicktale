@@ -65,7 +65,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAnimatedEntity, ICustomMoveController, ContainerListener, Saddleable {
+public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAnimatedEntity, ICustomMoveController {
 
     public static final int INV_SLOT_SADDLE = 0;
     public static final int INV_SLOT_CHEST = 1;
@@ -209,7 +209,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     }
 
     @Override
-    public @NotNull ItemStack equipItemIfPossible(@Nullable ItemStack itemStackIn) {
+    public @NotNull ItemStack equipItemIfPossible(ServerLevel serverLevel, @Nullable ItemStack itemStackIn) {
         if (itemStackIn == null)
             return ItemStack.EMPTY;
         EquipmentSlot equipmentSlot = getEquipmentSlotForItem(itemStackIn);
@@ -291,6 +291,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     public void aiStep() {
         super.aiStep();
         if (!this.level().isClientSide()) {
+            this.updateContainerEquipment();
             if (this.random.nextInt(900) == 0 && this.deathTime == 0) {
                 this.heal(1.0F);
             }
@@ -429,7 +430,6 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         SimpleContainer simplecontainer = this.inventory;
         this.inventory = new SimpleContainer(this.getInventorySize());
         if (simplecontainer != null) {
-            simplecontainer.removeListener(this);
             int i = Math.min(simplecontainer.getContainerSize(), this.inventory.getContainerSize());
 
             for (int j = 0; j < i; ++j) {
@@ -440,7 +440,6 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
             }
         }
 
-        this.inventory.addListener(this);
         this.updateContainerEquipment();
         this.itemHandler = new ItemStacksResourceHandler(this.inventory.getItems()) {
             @Override
@@ -452,9 +451,21 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
 
     protected void updateContainerEquipment() {
         if (!this.level().isClientSide()) {
-            this.setSaddled(!this.inventory.getItem(INV_SLOT_SADDLE).isEmpty());
-            this.setChested(!this.inventory.getItem(INV_SLOT_CHEST).isEmpty());
-            this.setArmor(getIntFromArmor(this.inventory.getItem(INV_SLOT_ARMOR)));
+            boolean hasSaddle = !this.inventory.getItem(INV_SLOT_SADDLE).isEmpty();
+            if (hasSaddle != this.isSaddled()) {
+                this.setSaddled(hasSaddle);
+                if (this.tickCount > 20 && hasSaddle) {
+                    this.playSound(SoundEvents.HORSE_SADDLE.value(), 0.5F, 1.0F);
+                }
+            }
+            boolean hasChest = !this.inventory.getItem(INV_SLOT_CHEST).isEmpty();
+            if (hasChest != this.isChested()) {
+                this.setChested(hasChest);
+            }
+            int armor = getIntFromArmor(this.inventory.getItem(INV_SLOT_ARMOR));
+            if (armor != this.getArmor()) {
+                this.setArmor(armor);
+            }
         }
     }
 
@@ -467,17 +478,14 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         return this.inventory != pInventory;
     }
 
-    @Override
     public boolean isSaddleable() {
         return this.isAlive() && !this.isBaby() && this.isTame();
     }
 
-    @Override
     public void equipSaddle(@Nullable SoundSource pSource) {
         this.inventory.setItem(0, new ItemStack(Items.SADDLE));
     }
 
-    @Override
     public boolean isSaddled() {
         return this.entityData.get(SADDLE);
     }

@@ -66,6 +66,11 @@ import java.util.List;
 
 public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultipartEntity, IVillagerFear, IAnimalFear, IHasCustomizableAttributes {
 
+    @Override
+    public boolean isFood(ItemStack stack) {
+        return false;
+    }
+
     public static final Animation ANIMATION_BITE = Animation.create(15);
     public static final Animation ANIMATION_SPEAK = Animation.create(15);
     public static final Animation ANIMATION_ROAR = Animation.create(40);
@@ -246,13 +251,12 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
     }
 
     @Override
-    public @NotNull EntityDimensions getDimensions(@NotNull Pose poseIn) {
-        return this.getType().getDimensions().scale(this.getScale());
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        return this.getType().getDimensions().scale(this.getSeaSerpentScale());
     }
 
-    @Override
-    public float getScale() {
-        return this.getSeaSerpentScale();
+    public float getSeaSerpentScale() {
+        return this.entityData.get(SCALE).floatValue();
     }
 
     @Override

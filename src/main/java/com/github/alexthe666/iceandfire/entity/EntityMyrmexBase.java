@@ -158,12 +158,12 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     }
 
     @Override
-    public boolean isBaby() {
+    public boolean isMyrmexBaby() {
         return this.getGrowthStage() < 2;
     }
 
     @Override
-    protected void customServerAiStep(ServerLevel level) {
+    protected void customServerAiStep(ServerLevel serverLevel) {
         if (!this.hasCustomer() && this.timeUntilReset > 0) {
             --this.timeUntilReset;
             if (this.timeUntilReset <= 0) {
@@ -178,7 +178,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
             this.level().broadcastEntityEvent(this, (byte) 14);
             this.getHive().setWorld(this.level());
         }
-        super.customServerAiStep(level);
+        super.customServerAiStep(serverLevel);
     }
 
     @Override
@@ -235,7 +235,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     @Override
     public void tick() {
         super.tick();
-        IafEntityUtil.setStepHeight(this, 1);
+        this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.0D);
         if (level().getDifficulty() == Difficulty.PEACEFUL && this.getTarget() instanceof Player) {
             this.setTarget(null);
         }
@@ -335,7 +335,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
 
     public boolean canAttackTamable(TamableAnimal tameable) {
         if (tameable.getOwner() != null && this.getHive() != null) {
-            return this.getHive().isPlayerReputationLowEnoughToFight(IafEntityUtil.ownerUUID(tameable));
+            return tameable.getOwner() != null && this.getHive().isPlayerReputationLowEnoughToFight(tameable.getOwner().getUUID());
         }
         return true;
     }
@@ -475,7 +475,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
         boolean flag = itemstack.getItem() == Items.NAME_TAG || itemstack.getItem() == Items.LEAD;
         if (flag) {
             return super.mobInteract(player, hand);
-        } else if (this.getGrowthStage() >= 2 && this.isAlive() && !this.isBaby() && !player.isShiftKeyDown()) {
+        } else if (this.getGrowthStage() >= 2 && this.isAlive() && !this.isMyrmexBaby() && !player.isShiftKeyDown()) {
             if (this.getOffers().isEmpty()) {
                 return super.mobInteract(player, hand);
             } else {
@@ -510,19 +510,19 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
             }
         }
         if (this.getHive() == null) {
-            player.sendOverlayMessage(Component.translatable("myrmex.message.null_hive"));
+            MyrmexHive.sendPlayerMessage(player, Component.translatable("myrmex.message.null_hive"), true);
 
         } else {
             if (staffUUID != null && staffUUID.equals(this.getHive().hiveUUID)) {
-                player.sendOverlayMessage(Component.translatable("myrmex.message.staff_already_set"));
+                MyrmexHive.sendPlayerMessage(player, Component.translatable("myrmex.message.staff_already_set"), true);
             } else {
                 this.getHive().setWorld(this.level());
                 EntityMyrmexQueen queen = this.getHive().getQueen();
                 BlockPos center = this.getHive().getCenterGround();
                 if (queen != null && queen.hasCustomName()) {
-                    player.sendOverlayMessage(Component.translatable("myrmex.message.staff_set_named", queen.getName(), center.getX(), center.getY(), center.getZ()));
+                    MyrmexHive.sendPlayerMessage(player, Component.translatable("myrmex.message.staff_set_named", queen.getName(), center.getX(), center.getY(), center.getZ()), true);
                 } else {
-                    player.sendOverlayMessage(Component.translatable("myrmex.message.staff_set_unnamed", center.getX(), center.getY(), center.getZ()));
+                    MyrmexHive.sendPlayerMessage(player, Component.translatable("myrmex.message.staff_set_unnamed", center.getX(), center.getY(), center.getZ()), true);
                 }
                 tag.store("HiveUUID", UUIDUtil.CODEC, this.getHive().hiveUUID);
                 CustomData.set(DataComponents.CUSTOM_DATA, itemstack, tag);
@@ -550,8 +550,13 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     public abstract boolean shouldEnterHive();
 
     @Override
-    public float getScale() {
+    public float getMyrmexScale() {
         return this.getGrowthStage() == 0 ? 0.5F : this.getGrowthStage() == 1 ? 0.75F : 1F;
+    }
+
+    @Override
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        return this.getType().getDimensions().scale(this.getMyrmexScale());
     }
 
     public abstract Identifier getAdultTexture();
@@ -718,7 +723,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     }
 
     public AABB getAttackBounds() {
-        float size = this.getScale() * 0.65F;
+        float size = this.getMyrmexScale() * 0.65F;
         return this.getBoundingBox().inflate(1.0F + size, 1.0F + size, 1.0F + size);
     }
 
@@ -800,7 +805,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
 
     @Override
     @Nullable
-    public @Nullable Entity teleport(TeleportTransition transition) {
+    public Entity teleport(TeleportTransition transition) {
         this.resetCustomer();
         return super.teleport(transition);
     }
@@ -811,8 +816,8 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
 
 
     @Override
-    public @NotNull ItemStack equipItemIfPossible(@NotNull ItemStack stack) {
-        ItemStack superStack = super.equipItemIfPossible(stack);
+    public @NotNull ItemStack equipItemIfPossible(ServerLevel serverLevel, @NotNull ItemStack stack) {
+        ItemStack superStack = super.equipItemIfPossible(serverLevel, stack);
         if (ItemStack.isSameItem(superStack, stack) && ItemStack.matches(superStack, stack)) {
             return stack;
         } else {
@@ -825,6 +830,11 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
                 return ItemStack.EMPTY;
             }
         }
+    }
+
+    @Override
+    public boolean isFood(ItemStack stack) {
+        return false;
     }
 
     protected void addTrades(MerchantOffers givenMerchantOffers, MyrmexTrades.TradeFactory[] newTrades, int maxNumbers) {

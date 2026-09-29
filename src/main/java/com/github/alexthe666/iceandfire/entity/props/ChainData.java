@@ -2,7 +2,7 @@ package com.github.alexthe666.iceandfire.entity.props;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -99,7 +99,7 @@ public class ChainData {
                 Entity entity = chainedTo.get(i);
 
                 ids[i] = entity.getId();
-                uuids.add(NbtUtils.createUUID(entity.getUUID()));
+                uuids.add(net.minecraft.core.UUIDUtil.CODEC.encodeStart(NbtOps.INSTANCE, entity.getUUID()).getOrThrow());
             }
 
             chainedData.putIntArray("chainedToIds", ids);
@@ -130,7 +130,7 @@ public class ChainData {
             chainedToUUIDs = new ArrayList<>();
 
             for (Tag uuid : uuids) {
-                chainedToUUIDs.add(NbtUtils.loadUUID(uuid));
+                net.minecraft.core.UUIDUtil.CODEC.parse(NbtOps.INSTANCE, uuid).result().ifPresent(chainedToUUIDs::add);
             }
         } else {
             chainedToUUIDs = null;

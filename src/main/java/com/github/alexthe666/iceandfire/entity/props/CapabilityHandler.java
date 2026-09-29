@@ -18,12 +18,12 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 /** Registration and synchronization for Ice and Fire entity data and entity inventories. */
@@ -69,8 +69,10 @@ public final class CapabilityHandler {
         }
     }
 
-    public static void tickData(LivingEvent.LivingTickEvent event) {
-        EntityDataProvider.getCapability(event.getEntity()).ifPresent(data -> data.tick(event.getEntity()));
+    public static void tickData(EntityTickEvent.Post event) {
+        if (event.getEntity() instanceof LivingEntity living) {
+            EntityDataProvider.getCapability(living).ifPresent(data -> data.tick(living));
+        }
     }
 
     public static void syncEntityData(Entity entity) {

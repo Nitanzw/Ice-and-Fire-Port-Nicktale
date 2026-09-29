@@ -9,7 +9,6 @@ import com.github.alexthe666.iceandfire.world.gen.WorldGenMyrmexHive;
 import com.mojang.serialization.Codec;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
@@ -18,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -233,8 +233,17 @@ public class MyrmexHive {
     private UUID findUUID(String name) {
         if (this.world == null || this.world.getServer() == null)
             return UUIDUtil.createOfflinePlayerUUID(name);
-        Optional<GameProfile> profile = this.world.getServer().getProfileCache().get(name);
-        return profile.isPresent() ? UUIDUtil.getOrCreatePlayerUUID(profile.get()) : UUIDUtil.createOfflinePlayerUUID(name);
+        return this.world.getServer().services().nameToIdCache().get(name)
+            .map(NameAndId::id)
+            .orElseGet(() -> UUIDUtil.createOfflinePlayerUUID(name));
+    }
+
+    public static void sendPlayerMessage(Player player, Component message, boolean overlay) {
+        if (overlay) {
+            player.sendOverlayMessage(message);
+        } else {
+            player.sendSystemMessage(message);
+        }
     }
 
     public int modifyPlayerReputation(UUID playerName, int reputation) {
@@ -251,25 +260,25 @@ public class MyrmexHive {
         }
         if (player != null) {
             if (j - i != 0) {
-                player.sendOverlayMessage(Component.translatable(j - i >= 0 ? "myrmex.message.raised_reputation" : "myrmex.message.lowered_reputation", Math.abs(j - i), j));
+                sendPlayerMessage(player, Component.translatable(j - i >= 0 ? "myrmex.message.raised_reputation" : "myrmex.message.lowered_reputation", Math.abs(j - i), j), true);
             }
             if (i < 25 && j >= 25) {
-                player.sendSystemMessage(Component.translatable("myrmex.message.peaceful"));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.peaceful"), false);
             }
             if (i >= 25 && j < 25) {
-                player.sendSystemMessage(Component.translatable("myrmex.message.hostile"));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.hostile"), false);
             }
             if (i < 50 && j >= 50) {
-                player.sendSystemMessage(Component.translatable("myrmex.message.trade"));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.trade"), false);
             }
             if (i >= 50 && j < 50) {
-                player.sendSystemMessage(Component.translatable("myrmex.message.no_trade"));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.no_trade"), false);
             }
             if (i < 75 && j >= 75) {
-                player.sendSystemMessage(Component.translatable("myrmex.message.can_use_staff"));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.can_use_staff"), false);
             }
             if (i >= 75 && j < 75) {
-                player.sendSystemMessage(Component.translatable("myrmex.message.cant_use_staff"));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.cant_use_staff"), false);
             }
         }
 
@@ -475,23 +484,23 @@ public class MyrmexHive {
         if (roomType == WorldGenMyrmexHive.RoomType.FOOD) {
             if (!this.foodRooms.contains(center) && !allCurrentRooms.contains(center)) {
                 this.foodRooms.add(center);
-                player.sendSystemMessage(Component.translatable("myrmex.message.added_food_room", center.getX(), center.getY(), center.getZ()));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.added_food_room", center.getX(), center.getY(), center.getZ()), false);
             } else {
-                player.sendSystemMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()), false);
 
             }
         } else if (roomType == WorldGenMyrmexHive.RoomType.NURSERY) {
             if (!this.babyRooms.contains(center) && !allCurrentRooms.contains(center)) {
                 this.babyRooms.add(center);
-                player.sendSystemMessage(Component.translatable("myrmex.message.added_nursery_room", center.getX(), center.getY(), center.getZ()));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.added_nursery_room", center.getX(), center.getY(), center.getZ()), false);
             } else {
-                player.sendSystemMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()), false);
             }
         } else if (!this.miscRooms.contains(center) && !allCurrentRooms.contains(center)) {
             this.miscRooms.add(center);
-            player.sendSystemMessage(Component.translatable("myrmex.message.added_misc_room", center.getX(), center.getY(), center.getZ()));
+            sendPlayerMessage(player, Component.translatable("myrmex.message.added_misc_room", center.getX(), center.getY(), center.getZ()), false);
         } else {
-            player.sendSystemMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()));
+            sendPlayerMessage(player, Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()), false);
         }
     }
 
@@ -501,17 +510,17 @@ public class MyrmexHive {
         allCurrentRooms.addAll(this.getEntranceBottoms().keySet());
         if (bottom) {
             if (allCurrentRooms.contains(center)) {
-                player.sendSystemMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()), false);
             } else {
                 this.getEntranceBottoms().put(center, facing);
-                player.sendSystemMessage(Component.translatable("myrmex.message.added_enterance_bottom", center.getX(), center.getY(), center.getZ()));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.added_enterance_bottom", center.getX(), center.getY(), center.getZ()), false);
             }
         } else {
             if (allCurrentRooms.contains(center)) {
-                player.sendSystemMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()), false);
             } else {
                 this.getEntrances().put(center, facing);
-                player.sendSystemMessage(Component.translatable("myrmex.message.added_enterance_surface", center.getX(), center.getY(), center.getZ()));
+                sendPlayerMessage(player, Component.translatable("myrmex.message.added_enterance_surface", center.getX(), center.getY(), center.getZ()), false);
             }
         }
     }

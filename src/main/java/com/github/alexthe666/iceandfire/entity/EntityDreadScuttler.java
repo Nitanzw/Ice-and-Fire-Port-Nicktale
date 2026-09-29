@@ -289,8 +289,13 @@ public class EntityDreadScuttler extends EntityDreadMob implements IAnimatedEnti
     }
 
     @Override
-    public float getScale() {
+    public float getDreadScale() {
         return getSize();
+    }
+
+    @Override
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        return this.getType().getDimensions().scale(this.getDreadScale());
     }
 
 }

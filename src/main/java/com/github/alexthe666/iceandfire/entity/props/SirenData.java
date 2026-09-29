@@ -5,7 +5,7 @@ import com.github.alexthe666.iceandfire.entity.EntitySiren;
 import com.github.alexthe666.iceandfire.entity.util.IHearsSiren;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -128,7 +128,7 @@ public class SirenData {
         CompoundTag sirenData = new CompoundTag();
 
         if (charmedBy != null) {
-            sirenData.put("charmedByUUID", NbtUtils.createUUID(charmedBy.getUUID()));
+            sirenData.put("charmedByUUID", net.minecraft.core.UUIDUtil.CODEC.encodeStart(NbtOps.INSTANCE, charmedBy.getUUID()).getOrThrow());
             sirenData.putInt("charmedById", charmedBy.getId());
         } else {
             sirenData.putInt("charmedById", -1);
@@ -145,7 +145,7 @@ public class SirenData {
         Tag uuidTag = sirenData.get("charmedByUUID");
 
         if (uuidTag != null) {
-            charmedByUUID = NbtUtils.loadUUID(uuidTag);
+            charmedByUUID = net.minecraft.core.UUIDUtil.CODEC.parse(NbtOps.INSTANCE, uuidTag).result().orElse(null);
         }
 
         charmedById = sirenData.getIntOr("charmedById", 0);
