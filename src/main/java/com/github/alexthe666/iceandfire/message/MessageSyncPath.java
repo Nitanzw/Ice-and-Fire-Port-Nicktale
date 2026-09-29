@@ -7,7 +7,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import com.github.alexthe666.iceandfire.client.render.pathfinding.PathfindingDebugRenderer;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.MNode;
 
 import java.util.HashSet;
@@ -91,11 +90,8 @@ public class MessageSyncPath implements CustomPacketPayload {
     }
 
     public void handle(IPayloadContext context) {
-        context.enqueueWork(() -> {
-            PathfindingDebugRenderer.lastDebugNodesVisited = lastDebugNodesVisited;
-            PathfindingDebugRenderer.lastDebugNodesNotVisited = lastDebugNodesNotVisited;
-            PathfindingDebugRenderer.lastDebugNodesPath = lastDebugNodesPath;
-        });
+        context.enqueueWork(() -> PathfindingDebugSync.syncPath(
+                lastDebugNodesVisited, lastDebugNodesNotVisited, lastDebugNodesPath));
     }
 
 }

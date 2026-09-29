@@ -7,8 +7,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import com.github.alexthe666.iceandfire.client.render.pathfinding.PathfindingDebugRenderer;
-import com.github.alexthe666.iceandfire.pathfinding.raycoms.MNode;
 import net.minecraft.core.BlockPos;
 
 import java.util.HashSet;
@@ -57,13 +55,7 @@ public class MessageSyncPathReached implements CustomPacketPayload {
     }
 
     public void handle(IPayloadContext context) {
-        context.enqueueWork(() -> {
-            for (final MNode node : PathfindingDebugRenderer.lastDebugNodesPath) {
-                if (reached.contains(node.pos)) {
-                    node.setReachedByWorker(true);
-                }
-            }
-        });
+        context.enqueueWork(() -> PathfindingDebugSync.syncReached(reached));
     }
 
 }
