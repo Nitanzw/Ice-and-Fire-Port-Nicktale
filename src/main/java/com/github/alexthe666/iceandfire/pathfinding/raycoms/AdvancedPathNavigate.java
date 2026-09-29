@@ -15,7 +15,6 @@ import com.github.alexthe666.iceandfire.util.WorldUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -191,7 +190,7 @@ public class AdvancedPathNavigate extends AbstractAdvancedPathNavigate {
     }
 
     @Override
-    public PathResult moveToRandomPos(final int range, final double speedFactor, final net.minecraft.util.Tuple<BlockPos, BlockPos> corners, final AbstractAdvancedPathNavigate.RestrictionType restrictionType)
+    public PathResult moveToRandomPos(final int range, final double speedFactor, final BlockPos startRestriction, final BlockPos endRestriction, final AbstractAdvancedPathNavigate.RestrictionType restrictionType)
     {
         if (pathResult != null && pathResult.getJob() instanceof PathJobRandomPos)
         {
@@ -207,8 +206,8 @@ public class AdvancedPathNavigate extends AbstractAdvancedPathNavigate {
             theRange,
             (int) ourEntity.getAttribute(Attributes.FOLLOW_RANGE).getValue(),
             ourEntity,
-            corners.getA(),
-            corners.getB(),
+            startRestriction,
+            endRestriction,
             restrictionType), null, speedFactor, true);
     }
 
@@ -309,7 +308,6 @@ public class AdvancedPathNavigate extends AbstractAdvancedPathNavigate {
                 }
             }
 
-            DebugPackets.sendPathFindingPacket(this.level, this.mob, this.path, this.maxDistanceToWaypoint);
             if (!this.isDone()) {
                 Vec3 vector3d2 = this.path.getNextEntityPos(this.mob);
                 BlockPos blockpos = BlockPos.containing(vector3d2);

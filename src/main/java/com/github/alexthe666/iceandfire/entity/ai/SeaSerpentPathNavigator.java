@@ -1,9 +1,8 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.protocol.game.DebugPackets;
+import net.minecraft.util.Util;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -55,7 +54,6 @@ public class SeaSerpentPathNavigator extends PathNavigation {
                 }
             }
 
-            DebugPackets.sendPathFindingPacket(this.level, this.mob, this.path, this.maxDistanceToWaypoint);
             if (!this.isDone()) {
                 lvt_1_2_ = this.path.getNextEntityPos(this.mob);
                 this.mob.getMoveControl().setWantedPosition(lvt_1_2_.x, lvt_1_2_.y, lvt_1_2_.z, this.speedModifier);

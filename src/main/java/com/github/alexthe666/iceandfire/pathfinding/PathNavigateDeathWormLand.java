@@ -218,19 +218,20 @@ public class PathNavigateDeathWormLand extends PathNavigation {
                     double d1 = (double) l + 0.5D - vec31.z;
 
                     if (d0 * p_179683_8_ + d1 * p_179683_10_ >= 0.0D) {
-                        BlockPathTypes pathnodetype = this.nodeEvaluator.getBlockPathType(this.level, k, y - 1, l, this.mob);
-                        if (pathnodetype == BlockPathTypes.LAVA) {
+                        PathType pathType = this.nodeEvaluator.getPathType(this.mob, new BlockPos(k, y - 1, l));
+                        if (pathType == PathType.LAVA) {
                             return false;
                         }
 
-                        pathnodetype = this.nodeEvaluator.getBlockPathType(this.level, k, y, l, this.mob);
-                        float f = this.mob.getPathfindingMalus(pathnodetype);
+                        pathType = this.nodeEvaluator.getPathType(this.mob, new BlockPos(k, y, l));
+                        float f = this.mob.getPathfindingMalus(pathType);
 
                         if (f < 0.0F || f >= 8.0F) {
                             return false;
                         }
 
-                        if (pathnodetype == BlockPathTypes.DAMAGE_FIRE || pathnodetype == BlockPathTypes.DANGER_FIRE || pathnodetype == BlockPathTypes.DAMAGE_OTHER) {
+                        if (pathType == PathType.FIRE || pathType == PathType.FIRE_IN_NEIGHBOR
+                            || pathType == PathType.DAMAGING || pathType == PathType.DAMAGING_IN_NEIGHBOR) {
                             return false;
                         }
                     }

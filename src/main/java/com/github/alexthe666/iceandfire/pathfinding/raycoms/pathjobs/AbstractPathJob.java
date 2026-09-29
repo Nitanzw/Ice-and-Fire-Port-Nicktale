@@ -25,7 +25,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.AABB;
@@ -1308,8 +1309,12 @@ public abstract class AbstractPathJob implements Callable<Path> {
 
                 // TODO: I'd be cool if dragons could squash multiple snow layers when walking over them
                 if (shape.isEmpty() || shape.max(Direction.Axis.Y) <= 0.125 && !isLiquid((block)) && (block.getBlock() != Blocks.SNOW || block.getValue(SnowLayerBlock.LAYERS) == 1)) {
-                    final BlockPathTypes pathType = block.getBlockPathType(world, pos, null);
-                    return pathType == null || pathType.getDanger() == null;
+                    PathType pathType = PathTypeLookup.get(world, pos);
+                    return pathType != PathType.FIRE
+                        && pathType != PathType.FIRE_IN_NEIGHBOR
+                        && pathType != PathType.DAMAGING
+                        && pathType != PathType.DAMAGING_IN_NEIGHBOR
+                        && pathType != PathType.DAMAGE_CAUTIOUS;
                 }
                 return false;
             }
@@ -1502,6 +1507,13 @@ public abstract class AbstractPathJob implements Callable<Path> {
             return true;
         }
         return pos.getY() <= maxY && pos.getY() >= minY;
+    }
+
+    /** Exposes the vanilla block-to-path-type mapping without any mod hooks. */
+    private static final class PathTypeLookup extends WalkNodeEvaluator {
+        private static PathType get(LevelReader level, BlockPos pos) {
+            return getPathTypeFromState(level, pos);
+        }
     }
 
 }

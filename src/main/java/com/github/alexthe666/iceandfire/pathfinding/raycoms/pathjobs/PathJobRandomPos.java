@@ -8,7 +8,6 @@ import com.github.alexthe666.iceandfire.pathfinding.raycoms.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.Path;
@@ -63,8 +62,8 @@ public class PathJobRandomPos extends AbstractPathJob
         this.minDistFromStart = minDistFromStart;
         this.maxDistToDest = range;
 
-        final Tuple<Direction, Direction> dir = getRandomDirectionTuple(random);
-        this.destination = start.relative(dir.getA(), minDistFromStart).relative(dir.getB(), minDistFromStart);
+        final Direction[] directions = getRandomDirections(random);
+        this.destination = start.relative(directions[0], minDistFromStart).relative(directions[1], minDistFromStart);
     }
 
     /**
@@ -114,8 +113,8 @@ public class PathJobRandomPos extends AbstractPathJob
         this.minDistFromStart = minDistFromStart;
         this.maxDistToDest = range;
 
-        final Tuple<Direction, Direction> dir = getRandomDirectionTuple(random);
-        this.destination = start.relative(dir.getA(), minDistFromStart).relative(dir.getB(), minDistFromStart);
+        final Direction[] directions = getRandomDirections(random);
+        this.destination = start.relative(directions[0], minDistFromStart).relative(directions[1], minDistFromStart);
     }
 
     /**
@@ -124,9 +123,9 @@ public class PathJobRandomPos extends AbstractPathJob
      * @param random a random object.
      * @return a tuple of two directions.
      */
-    public static Tuple<Direction, Direction> getRandomDirectionTuple(final RandomSource random)
+    private static Direction[] getRandomDirections(final RandomSource random)
     {
-        return new Tuple<>(Direction.getRandom(random), Direction.getRandom(random));
+        return new Direction[]{Direction.getRandom(random), Direction.getRandom(random)};
     }
 
     @Nullable
