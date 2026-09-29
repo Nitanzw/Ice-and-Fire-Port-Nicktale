@@ -32,7 +32,7 @@ public class PlayerRenderEvents {
     };
 
     @SubscribeEvent
-    public void playerRender(RenderPlayerEvent.Pre event) {
+    public void playerRender(RenderPlayerEvent.Pre<?> event) {
         //TODO
         /*
         if (event.getEntityLiving() instanceof AbstractClientPlayerEntity) {
@@ -55,15 +55,17 @@ public class PlayerRenderEvents {
                 }
             }
         }*/
-        if (event.getEntity().getUUID().equals(ServerEvents.ALEX_UUID)) {
+        net.minecraft.world.entity.LivingEntity entity = event.getRenderState().getRenderData(ClientEvents.LIVING_KEY);
+        if (entity != null && entity.getUUID().equals(ServerEvents.ALEX_UUID)) {
             event.getPoseStack().pushPose();
-            float f2 = ((float) event.getEntity().tickCount - 1 + event.getPartialTick());
-            float f3 = Mth.sin(f2 / 10.0F) * 0.1F + 0.1F;
-            event.getPoseStack().translate((float) 0, event.getEntity().getBbHeight() * 1.25F, (float) 0);
+            float f2 = ((float) entity.tickCount - 1 + event.getPartialTick());
+            event.getPoseStack().translate((float) 0, entity.getBbHeight() * 1.25F, (float) 0);
             float f4 = (f2 / 20.0F) * (180F / (float) Math.PI);
             event.getPoseStack().mulPose(Axis.YP.rotationDegrees(f4));
             event.getPoseStack().pushPose();
-            Minecraft.getInstance().getItemRenderer().renderStatic(Minecraft.getInstance().player, new ItemStack(IafItemRegistry.WEEZER_BLUE_ALBUM.get()), ItemDisplayContext.GROUND, false, event.getPoseStack(), event.getMultiBufferSource(), event.getEntity().level(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 0);
+            net.minecraft.client.renderer.item.ItemStackRenderState album = new net.minecraft.client.renderer.item.ItemStackRenderState();
+            Minecraft.getInstance().getItemModelResolver().updateForNonLiving(album, new ItemStack(IafItemRegistry.WEEZER_BLUE_ALBUM.get()), ItemDisplayContext.GROUND, entity);
+            album.submit(event.getPoseStack(), event.getSubmitNodeCollector(), event.getRenderState().lightCoords, OverlayTexture.NO_OVERLAY, event.getRenderState().outlineColor);
             event.getPoseStack().popPose();
             event.getPoseStack().popPose();
 

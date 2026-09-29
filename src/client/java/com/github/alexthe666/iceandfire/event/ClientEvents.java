@@ -40,7 +40,9 @@ import java.util.Random;
 @EventBusSubscriber(modid = IceAndFire.MODID, value = Dist.CLIENT)
 public class ClientEvents {
 
-    private static final Identifier SIREN_SHADER = Identifier.parse("iceandfire:shaders/post/siren.json");
+    private static final Identifier SIREN_SHADER = Identifier.parse("iceandfire:siren");
+    /** Source entity of a living render state, attached by the render state modifier registered in {@link IafClientSetup}. */
+    public static final net.minecraft.util.context.ContextKey<LivingEntity> LIVING_KEY = new net.minecraft.util.context.ContextKey<>(Identifier.parse("iceandfire:living_entity"));
 
     private final Random rand = new Random();
 
@@ -52,7 +54,7 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void submitPathfindingGeometry(final SubmitCustomGeometryEvent event) {
+    public void submitPathfindingGeometry(final SubmitCustomGeometryEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.level == null || minecraft.player == null) {
             return;
@@ -61,26 +63,21 @@ public class ClientEvents {
         PathfindingDebugRenderer.render(
                 event.getSubmitNodeCollector(),
                 event.getPoseStack(),
-                minecraft.gameRenderer.getMainCamera().getPosition());
+                minecraft.gameRenderer.mainCamera().position());
     }
 
     @SubscribeEvent
-    public void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
+    public void onCameraDistance(net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent event) {
         Player player = Minecraft.getInstance().player;
-        if (player.getVehicle() != null) {
-            if (player.getVehicle() instanceof EntityDragonBase) {
-                int currentView = IceAndFire.PROXY.getDragon3rdPersonView();
-                float scale = ((EntityDragonBase) player.getVehicle()).getRenderSize() / 3;
-                if (Minecraft.getInstance().options.getCameraType() == CameraType.THIRD_PERSON_BACK ||
-                        Minecraft.getInstance().options.getCameraType() == CameraType.THIRD_PERSON_FRONT) {
-                    if (currentView == 1) {
-                        event.getCamera().move(-event.getCamera().getMaxZoom(scale * 1.2F), 0F, 0);
-                    } else if (currentView == 2) {
-                        event.getCamera().move(-event.getCamera().getMaxZoom(scale * 3F), 0F, 0);
-                    } else if (currentView == 3) {
-                        event.getCamera().move(-event.getCamera().getMaxZoom(scale * 5F), 0F, 0);
-                    }
-                }
+        if (player != null && player.getVehicle() instanceof EntityDragonBase dragon) {
+            int currentView = IceAndFire.PROXY.getDragon3rdPersonView();
+            float scale = dragon.getRenderSize() / 3;
+            if (currentView == 1) {
+                event.setDistance(event.getDistance() + scale * 1.2F);
+            } else if (currentView == 2) {
+                event.setDistance(event.getDistance() + scale * 3F);
+            } else if (currentView == 3) {
+                event.setDistance(event.getDistance() + scale * 5F);
             }
         }
     }
@@ -135,17 +132,17 @@ public class ClientEvents {
                 GameRenderer renderer = Minecraft.getInstance().gameRenderer;
 
                 EntityDataProvider.getCapability(player).ifPresent(data -> {
-                    if (IafConfig.sirenShader && data.sirenData.charmedBy == null && renderer.currentEffect() != null) {
-                        if (SIREN_SHADER.toString().equals(renderer.currentEffect().getName()))
-                            renderer.shutdownEffect();
+                    if (IafConfig.sirenShader && data.sirenData.charmedBy == null && renderer.currentPostEffect() != null) {
+                        if (SIREN_SHADER.equals(renderer.currentPostEffect()))
+                            renderer.clearPostEffect();
                     }
 
                     if (data.sirenData.charmedBy == null) {
                         return;
                     }
 
-                    if (IafConfig.sirenShader && !data.sirenData.isCharmed && renderer.currentEffect() != null && SIREN_SHADER.toString().equals(renderer.currentEffect().getName())) {
-                        renderer.shutdownEffect();
+                    if (IafConfig.sirenShader && !data.sirenData.isCharmed && renderer.currentPostEffect() != null && SIREN_SHADER.equals(renderer.currentPostEffect())) {
+                        renderer.clearPostEffect();
                     }
 
                 if (data.sirenData.isCharmed) {
@@ -153,8 +150,8 @@ public class ClientEvents {
                         IceAndFire.PROXY.spawnParticle(EnumParticles.Siren_Appearance, player.getX(), player.getY(), player.getZ(), data.sirenData.charmedBy.getHairColor(), 0, 0);
                     }
 
-                        if (IafConfig.sirenShader && renderer.currentEffect() == null) {
-                            renderer.loadEffect(SIREN_SHADER);
+                        if (IafConfig.sirenShader && renderer.currentPostEffect() == null) {
+                            renderer.setPostEffect(SIREN_SHADER);
                         }
 
                     }
@@ -164,30 +161,33 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public void onPreRenderLiving(RenderLivingEvent.Pre event) {
-        if (shouldCancelRender(event.getEntity())) {
+    public void onPreRenderLiving(RenderLivingEvent.Pre<?, ?, ?> event) {
+        LivingEntity entity = event.getRenderState().getRenderData(LIVING_KEY);
+        if (entity != null && shouldCancelRender(entity)) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
-    public void onPostRenderLiving(RenderLivingEvent.Post event) {
-        if (shouldCancelRender(event.getEntity())) {
-            event.setCanceled(true);
+    public void onPostRenderLiving(RenderLivingEvent.Post<?, ?, ?> event) {
+        LivingEntity entity = event.getRenderState().getRenderData(LIVING_KEY);
+        if (entity == null) {
+            return;
         }
-
-        LivingEntity entity = event.getEntity();
+        if (shouldCancelRender(entity)) {
+            return;
+        }
 
         EntityDataProvider.getCapability(entity).ifPresent(data -> {
             for (LivingEntity target : data.miscData.getTargetedByScepter()) {
-                CockatriceBeamRender.render(entity, target, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
+                CockatriceBeamRender.render(entity, target, event.getPoseStack(), event.getSubmitNodeCollector(), event.getPartialTick());
             }
 
             if (data.frozenData.isFrozen) {
-                RenderFrozenState.render(event.getEntity(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), data.frozenData.frozenTicks);
+                RenderFrozenState.render(entity, event.getPoseStack(), event.getSubmitNodeCollector(), event.getRenderState().lightCoords, data.frozenData.frozenTicks);
             }
 
-            RenderChain.render(entity, event.getPartialTick(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), data.chainData.getChainedTo());
+            RenderChain.render(entity, event.getPartialTick(), event.getPoseStack(), event.getSubmitNodeCollector(), event.getRenderState().lightCoords, data.chainData.getChainedTo());
         });
     }
 

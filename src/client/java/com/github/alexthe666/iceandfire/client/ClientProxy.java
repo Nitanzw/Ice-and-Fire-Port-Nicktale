@@ -187,7 +187,7 @@ public class ClientProxy extends CommonProxy {
     @OnlyIn(Dist.CLIENT)
     @Override
     public boolean shouldSeeBestiaryContents() {
-        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().handle(), 340) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow().handle(), 344);
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), 340) || InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), 344);
     }
 
     @Override

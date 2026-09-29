@@ -117,6 +117,14 @@ public class IafClientSetup {
     }
 
     @SubscribeEvent
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static void registerRenderStateModifiers(net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent event) {
+        event.registerEntityModifier((Class) net.minecraft.client.renderer.entity.LivingEntityRenderer.class,
+            (java.util.function.BiConsumer) (java.util.function.BiConsumer<net.minecraft.world.entity.LivingEntity, net.minecraft.client.renderer.entity.state.LivingEntityRenderState>)
+                (entity, state) -> state.setRenderData(com.github.alexthe666.iceandfire.event.ClientEvents.LIVING_KEY, entity));
+    }
+
+    @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
         IafGuiRegistry.register(event);
     }

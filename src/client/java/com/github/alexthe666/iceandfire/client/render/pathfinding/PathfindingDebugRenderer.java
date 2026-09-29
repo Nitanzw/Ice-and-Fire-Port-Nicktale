@@ -98,7 +98,7 @@ public class PathfindingDebugRenderer {
 
         poseStack.pushPose();
         poseStack.translate(0.125F, 0.75F, 0.125F);
-        poseStack.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
+        poseStack.mulPose(Minecraft.getInstance().gameRenderer.mainCamera().rotation());
         poseStack.scale(-0.014F, -0.014F, 0.014F);
         poseStack.translate(0.0F, 18.0F, 0.0F);
         poseStack.translate(0.0F, -5.0F, 0.0F);
