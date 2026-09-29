@@ -1,5 +1,11 @@
 package com.github.alexthe666.iceandfire.message;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityJar;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityPixieHouse;
@@ -7,12 +13,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
 
-public class MessageUpdatePixieHouseModel {
+public class MessageUpdatePixieHouseModel implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MessageUpdatePixieHouseModel> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "update_pixie_house_model"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageUpdatePixieHouseModel> STREAM_CODEC = StreamCodec.of((buffer, message) -> MessageUpdatePixieHouseModel.write(message, buffer), MessageUpdatePixieHouseModel::read);
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
 
     public long blockPos;
     public int houseType;
@@ -40,15 +51,11 @@ public class MessageUpdatePixieHouseModel {
         public Handler() {
         }
 
-        public static void handle(final MessageUpdatePixieHouseModel message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            NetworkEvent.Context context = contextSupplier.get();
+        public static void handle(final MessageUpdatePixieHouseModel message, final IPayloadContext context) {
+
 
             context.enqueueWork(() -> {
-                Player player = context.getSender();
-
-                if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-                    player = IceAndFire.PROXY.getClientSidePlayer();
-                }
+                Player player = context.player();
 
                 if (player != null) {
                     BlockPos pos = BlockPos.of(message.blockPos);
@@ -62,7 +69,7 @@ public class MessageUpdatePixieHouseModel {
                 }
             });
 
-            context.setPacketHandled(true);
+
         }
     }
 }

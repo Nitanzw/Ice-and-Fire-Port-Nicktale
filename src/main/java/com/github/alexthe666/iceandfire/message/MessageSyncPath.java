@@ -1,21 +1,31 @@
 package com.github.alexthe666.iceandfire.message;
 
+import com.github.alexthe666.iceandfire.IceAndFire;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.github.alexthe666.iceandfire.client.render.pathfinding.PathfindingDebugRenderer;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.MNode;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkDirection;
-import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * Message to sync some path over to the client.
  */
-public class MessageSyncPath
-{
+public class MessageSyncPath implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MessageSyncPath> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "sync_path"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageSyncPath> STREAM_CODEC = StreamCodec.ofMember(MessageSyncPath::write, MessageSyncPath::read);
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
     /**
      * Set of visited nodes.
      */
@@ -81,22 +91,12 @@ public class MessageSyncPath
         return new MessageSyncPath(lastDebugNodesVisited, lastDebugNodesNotVisited, lastDebugNodesPath);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> contextSupplier) {
-        contextSupplier.get().enqueueWork(() -> {
-            contextSupplier.get().setPacketHandled(true);
-
-            if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-                PathfindingDebugRenderer.lastDebugNodesVisited = lastDebugNodesVisited;
-                PathfindingDebugRenderer.lastDebugNodesNotVisited = lastDebugNodesNotVisited;
-                PathfindingDebugRenderer.lastDebugNodesPath = lastDebugNodesPath;
-            }
+    public void handle(IPayloadContext context) {
+        context.enqueueWork(() -> {
+            PathfindingDebugRenderer.lastDebugNodesVisited = lastDebugNodesVisited;
+            PathfindingDebugRenderer.lastDebugNodesNotVisited = lastDebugNodesNotVisited;
+            PathfindingDebugRenderer.lastDebugNodesPath = lastDebugNodesPath;
         });
-        return true;
-    }
-
-    public LogicalSide getExecutionSide()
-    {
-        return LogicalSide.CLIENT;
     }
 
 }

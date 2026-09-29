@@ -1,16 +1,27 @@
 package com.github.alexthe666.iceandfire.message;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
 
-public class MessageDaytime {
+public class MessageDaytime implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MessageDaytime> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "daytime"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageDaytime> STREAM_CODEC = StreamCodec.of((buffer, message) -> MessageDaytime.write(message, buffer), MessageDaytime::read);
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
 
     public int dragonId;
     public boolean isDay;
@@ -36,15 +47,11 @@ public class MessageDaytime {
         public Handler() {
         }
 
-        public static void handle(final MessageDaytime message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            NetworkEvent.Context context = contextSupplier.get();
+        public static void handle(final MessageDaytime message, final IPayloadContext context) {
+
 
             context.enqueueWork(() -> {
-                Player player = context.getSender();
-
-                if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-                    player = IceAndFire.PROXY.getClientSidePlayer();
-                }
+                Player player = context.player();
 
                 if (player != null) {
                     Entity entity = player.level().getEntity(message.dragonId);
@@ -55,7 +62,7 @@ public class MessageDaytime {
                 }
             });
 
-            context.setPacketHandled(true);
+
         }
     }
 }

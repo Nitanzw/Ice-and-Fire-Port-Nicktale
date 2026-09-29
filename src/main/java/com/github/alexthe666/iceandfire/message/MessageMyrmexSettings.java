@@ -1,5 +1,11 @@
 package com.github.alexthe666.iceandfire.message;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntityMyrmexBase;
 import com.github.alexthe666.iceandfire.entity.util.MyrmexHive;
@@ -7,12 +13,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
 
-public class MessageMyrmexSettings {
+public class MessageMyrmexSettings implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MessageMyrmexSettings> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "myrmex_settings"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageMyrmexSettings> STREAM_CODEC = StreamCodec.of((buffer, message) -> MessageMyrmexSettings.write(message, buffer), MessageMyrmexSettings::read);
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
 
     public int queenID;
     public boolean reproduces;
@@ -42,15 +53,11 @@ public class MessageMyrmexSettings {
         public Handler() {
         }
 
-        public static void handle(final MessageMyrmexSettings message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            NetworkEvent.Context context = contextSupplier.get();
+        public static void handle(final MessageMyrmexSettings message, final IPayloadContext context) {
+
 
             context.enqueueWork(() -> {
-                Player player = context.getSender();
-
-                if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-                    player = IceAndFire.PROXY.getClientSidePlayer();
-                }
+                Player player = context.player();
 
                 if (player != null) {
                     Entity entity = player.level().getEntity(message.queenID);
@@ -69,7 +76,7 @@ public class MessageMyrmexSettings {
                 }
             });
 
-            context.setPacketHandled(true);
+
         }
     }
 }

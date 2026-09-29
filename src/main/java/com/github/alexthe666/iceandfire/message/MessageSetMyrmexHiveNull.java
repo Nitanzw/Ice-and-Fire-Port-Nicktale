@@ -1,13 +1,25 @@
 package com.github.alexthe666.iceandfire.message;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.github.alexthe666.iceandfire.IceAndFire;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
 
-public class MessageSetMyrmexHiveNull {
+public class MessageSetMyrmexHiveNull implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MessageSetMyrmexHiveNull> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "set_myrmex_hive_null"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageSetMyrmexHiveNull> STREAM_CODEC = StreamCodec.of((buffer, message) -> MessageSetMyrmexHiveNull.write(message, buffer), MessageSetMyrmexHiveNull::read);
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
 
     public MessageSetMyrmexHiveNull() {
     }
@@ -23,12 +35,8 @@ public class MessageSetMyrmexHiveNull {
         public Handler() {
         }
 
-        public static void handle(MessageSetMyrmexHiveNull message, Supplier<NetworkEvent.Context> context) {
-            context.get().setPacketHandled(true);
-            Player player = context.get().getSender();
-            if (player != null) {
-                IceAndFire.PROXY.setReferencedHive(null);
-            }
+        public static void handle(MessageSetMyrmexHiveNull message, IPayloadContext context) {
+            context.enqueueWork(() -> IceAndFire.PROXY.setReferencedHive(null));
         }
     }
 }

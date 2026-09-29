@@ -1,5 +1,11 @@
 package com.github.alexthe666.iceandfire.message;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityLectern;
 import com.github.alexthe666.iceandfire.enums.EnumBestiaryPages;
@@ -8,14 +14,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.DistExecutor;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
 
-public class MessageUpdateLectern {
+public class MessageUpdateLectern implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MessageUpdateLectern> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "update_lectern"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageUpdateLectern> STREAM_CODEC = StreamCodec.of((buffer, message) -> MessageUpdateLectern.write(message, buffer), MessageUpdateLectern::read);
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
 
     public long blockPos;
     public int selectedPages1;
@@ -54,25 +63,15 @@ public class MessageUpdateLectern {
         public Handler() {
         }
 
-        public static void handle(MessageUpdateLectern message, Supplier<NetworkEvent.Context> ctx) {
-            ctx.get().enqueueWork(() ->
-                    DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> MessageUpdateLectern.Handler.handlePacket(message, ctx))
-            );
-            ctx.get().enqueueWork(() ->
-                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MessageUpdateLectern.Handler.handlePacket(message, ctx))
-            );
-            ctx.get().setPacketHandled(true);
+        public static void handle(MessageUpdateLectern message, IPayloadContext context) {
+            handlePacket(message, context);
         }
 
-        public static void handlePacket(final MessageUpdateLectern message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            NetworkEvent.Context context = contextSupplier.get();
+        public static void handlePacket(final MessageUpdateLectern message, final IPayloadContext context) {
+
 
             context.enqueueWork(() -> {
-                Player player = context.getSender();
-
-                if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-                    player = IceAndFire.PROXY.getClientSidePlayer();
-                }
+                Player player = context.player();
 
                 if (player != null) {
                     BlockPos pos = BlockPos.of(message.blockPos);
@@ -94,7 +93,7 @@ public class MessageUpdateLectern {
                 }
             });
 
-            context.setPacketHandled(true);
+
         }
     }
 

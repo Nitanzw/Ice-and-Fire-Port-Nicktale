@@ -1,17 +1,28 @@
 package com.github.alexthe666.iceandfire.message;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.util.MyrmexHive;
 import com.github.alexthe666.iceandfire.world.MyrmexWorldData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
 
-public class MessageGetMyrmexHive {
+public class MessageGetMyrmexHive implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MessageGetMyrmexHive> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "get_myrmex_hive"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageGetMyrmexHive> STREAM_CODEC = StreamCodec.of((buffer, message) -> MessageGetMyrmexHive.write(message, buffer), MessageGetMyrmexHive::read);
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
 
     public CompoundTag hive;
 
@@ -34,15 +45,11 @@ public class MessageGetMyrmexHive {
         public Handler() {
         }
 
-        public static void handle(final MessageGetMyrmexHive message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            NetworkEvent.Context context = contextSupplier.get();
+        public static void handle(final MessageGetMyrmexHive message, final IPayloadContext context) {
+
 
             context.enqueueWork(() -> {
-                Player player = context.getSender();
-
-                if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-                    player = IceAndFire.PROXY.getClientSidePlayer();
-                }
+                Player player = context.player();
 
                 MyrmexHive serverHive = MyrmexHive.fromNBT(message.hive);
                 CompoundTag tag = new CompoundTag();
@@ -56,7 +63,7 @@ public class MessageGetMyrmexHive {
                 }
             });
 
-            context.setPacketHandled(true);
+
         }
     }
 }
