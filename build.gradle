@@ -40,7 +40,7 @@ dependencies {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs << '-Xmaxerrs' << '3000'
+    options.compilerArgs << '-Xmaxerrs' << '500'
     options.encoding = 'UTF-8'
 }
 
