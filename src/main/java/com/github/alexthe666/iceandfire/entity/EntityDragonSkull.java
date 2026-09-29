@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import com.github.alexthe666.iceandfire.entity.util.IBlacklistedFromStatues;
 import com.github.alexthe666.iceandfire.entity.util.IDeadMob;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -24,6 +25,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -141,9 +143,10 @@ public class EntityDragonSkull extends Animal implements IBlacklistedFromStatues
             return;
         this.remove(RemovalReason.DISCARDED);
         ItemStack stack = new ItemStack(getDragonSkullItem());
-        stack.setTag(new CompoundTag());
-        stack.getTag().putInt("Stage", this.getStage());
-        stack.getTag().putInt("DragonAge", this.getDragonAge());
+        CompoundTag skullData = new CompoundTag();
+        skullData.putInt("Stage", this.getStage());
+        skullData.putInt("DragonAge", this.getDragonAge());
+        CustomData.set(DataComponents.CUSTOM_DATA, stack, skullData);
         if (!this.level().isClientSide())
             this.spawnAtLocation(stack, 0.0F);
 
