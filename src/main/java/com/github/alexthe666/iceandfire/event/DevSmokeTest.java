@@ -46,14 +46,14 @@ public class DevSmokeTest {
             return;
         }
         if ("retry".equals(System.getenv("IAF_WORLDGEN"))) {
-            String[] names = {"cyclops_cave", "fire_dragon_cave", "fire_lily", "frost_lily", "lightning_lily", "ice_dragon_roost", "sapphire_ore", "silver_ore"};
+            String[] names = {"minecraft:ore_iron", "silver_ore", "sapphire_ore"};
             int n = 0;
             for (String f : names) {
-                for (int k = 0; k < 4; k++) {
+                for (int k = 0; k < 2; k++) {
                     int x = 12000 + 400 * n++;
-                    loads.add("execute in minecraft:overworld run forceload add " + (x - 48) + " -48 " + (x + 48) + " 48");
-                    String y = f.endsWith("_ore") ? "20" : "@Y@";
-                    commands.add("execute in minecraft:overworld run place feature iceandfire:" + f + " " + x + " " + y + " 0");
+                    loads.add("execute in minecraft:overworld run forceload add " + (x - 32) + " -32 " + (x + 32) + " 32");
+                    String y = f.endsWith("_ore") || f.endsWith("ore_iron") ? "20" : "@Y@";
+                    commands.add("execute in minecraft:overworld run place feature " + (f.contains(":") ? f : "iceandfire:" + f) + " " + x + " " + y + " 0");
                 }
             }
             commands = withLoads(loads, commands);
