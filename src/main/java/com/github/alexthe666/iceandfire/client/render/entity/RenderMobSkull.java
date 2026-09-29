@@ -2,7 +2,6 @@ package com.github.alexthe666.iceandfire.client.render.entity;
 
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.TabulaModel;
-import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.client.model.*;
 import com.github.alexthe666.iceandfire.entity.EntityMobSkull;
 import com.github.alexthe666.iceandfire.enums.EnumSkullType;

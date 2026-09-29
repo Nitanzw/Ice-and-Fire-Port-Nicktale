@@ -3,8 +3,6 @@ package com.github.alexthe666.iceandfire.client.model;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.nicktale.api.client.model.AdvancedModelBox;
-import net.minecraft.world.entity.Entity;
 
 public class ModelGorgonHeadActive extends AdvancedEntityModel<EntityRenderState> {
     public AdvancedModelBox Head;

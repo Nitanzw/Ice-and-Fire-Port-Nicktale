@@ -1,16 +1,15 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
+import com.github.alexthe666.iceandfire.client.model.PixieRenderState;
 import com.github.alexthe666.iceandfire.client.model.ModelPixie;
 import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerPixieGlow;
 import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerPixieItem;
 import com.github.alexthe666.iceandfire.entity.EntityPixie;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
-public class RenderPixie extends MobRenderer<EntityPixie, ModelPixie> {
+public class RenderPixie extends IafMobRenderer<EntityPixie, PixieRenderState, ModelPixie> {
 
     public static final Identifier TEXTURE_0 = Identifier.parse("iceandfire:textures/models/pixie/pixie_0.png");
     public static final Identifier TEXTURE_1 = Identifier.parse("iceandfire:textures/models/pixie/pixie_1.png");
@@ -21,13 +20,24 @@ public class RenderPixie extends MobRenderer<EntityPixie, ModelPixie> {
 
     public RenderPixie(EntityRendererProvider.Context context) {
         super(context, new ModelPixie(), 0.2F);
-        this.layers.add(new LayerPixieItem(this));
-        this.layers.add(new LayerPixieGlow(this));
+        this.addLayer(new LayerPixieItem(this));
+        this.addLayer(new LayerPixieGlow(this));
 
     }
 
     @Override
-    public void scale(EntityPixie LivingEntityIn, PoseStack stack, float partialTickTime) {
+    public PixieRenderState createRenderState() {
+        return new PixieRenderState();
+    }
+
+    @Override
+    protected void extract(EntityPixie entity, PixieRenderState state, float partialTick) {
+        state.isPixieSitting = entity.isPixieSitting();
+        state.heldItem = entity.getItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND);
+    }
+
+    @Override
+    protected void scaleFor(EntityPixie LivingEntityIn, PoseStack stack, float partialTickTime) {
         stack.scale(0.55F, 0.55F, 0.55F);
         if (LivingEntityIn.isOrderedToSit()) {
             stack.translate(0F, 0.5F, 0F);
@@ -36,7 +46,7 @@ public class RenderPixie extends MobRenderer<EntityPixie, ModelPixie> {
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(EntityPixie pixie) {
+    protected Identifier textureFor(EntityPixie pixie) {
         switch (pixie.getColor()) {
             default:
                 return TEXTURE_0;

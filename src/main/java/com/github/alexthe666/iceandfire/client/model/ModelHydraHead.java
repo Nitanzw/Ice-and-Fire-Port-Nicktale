@@ -2,14 +2,8 @@ package com.github.alexthe666.iceandfire.client.model;
 
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
-import com.nicktale.api.client.model.AdvancedModelBox;
-import com.github.alexthe666.iceandfire.entity.EntityGorgon;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 
 public class ModelHydraHead extends ModelDragonBase<HydraRenderState> {
     public AdvancedModelBox Neck1;

@@ -30,7 +30,7 @@ public class RenderHippogryph extends MobRenderer<EntityHippogryph, HippogryphRe
     }
 
     @Override
-    protected HippogryphRenderState createRenderState() {
+    public HippogryphRenderState createRenderState() {
         return new HippogryphRenderState();
     }
 

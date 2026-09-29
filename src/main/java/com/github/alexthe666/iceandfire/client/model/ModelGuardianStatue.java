@@ -2,9 +2,7 @@ package com.github.alexthe666.iceandfire.client.model;
 
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.nicktale.api.client.model.AdvancedModelBox;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 
 public class ModelGuardianStatue extends AdvancedEntityModel<GuardianStatueRenderState> {
     private final AdvancedModelBox guardianBody;

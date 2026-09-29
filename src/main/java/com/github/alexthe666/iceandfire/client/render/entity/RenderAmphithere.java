@@ -1,15 +1,14 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
+import com.github.alexthe666.iceandfire.client.model.AmphithereRenderState;
 import com.github.alexthe666.iceandfire.client.model.ModelAmphithere;
 import com.github.alexthe666.iceandfire.entity.EntityAmphithere;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 
-public class RenderAmphithere extends MobRenderer<EntityAmphithere, ModelAmphithere> {
+public class RenderAmphithere extends IafMobRenderer<EntityAmphithere, AmphithereRenderState, ModelAmphithere> {
 
     public static final Identifier TEXTURE_BLUE = Identifier.parse("iceandfire:textures/models/amphithere/amphithere_blue.png");
     public static final Identifier TEXTURE_BLUE_BLINK = Identifier.parse("iceandfire:textures/models/amphithere/amphithere_blue_blink.png");
@@ -27,13 +26,30 @@ public class RenderAmphithere extends MobRenderer<EntityAmphithere, ModelAmphith
     }
 
     @Override
-    protected void scale(@NotNull EntityAmphithere entity, PoseStack matrixStackIn, float partialTickTime) {
+    public AmphithereRenderState createRenderState() {
+        return new AmphithereRenderState();
+    }
+
+    @Override
+    protected void extract(EntityAmphithere entity, AmphithereRenderState state, float partialTick) {
+        state.diveProgress = entity.diveProgress;
+        state.flapProgress = entity.flapProgress;
+        state.groundProgress = entity.groundProgress;
+        state.onGround = entity.onGround();
+        state.pitch_buffer = entity.pitch_buffer;
+        state.roll_buffer = entity.roll_buffer;
+        state.sitProgress = entity.sitProgress;
+        state.tail_buffer = entity.tail_buffer;
+    }
+
+    @Override
+    protected void scaleFor(EntityAmphithere entity, PoseStack matrixStackIn, float partialTickTime) {
         matrixStackIn.scale(2.0F, 2.0F, 2.0F);
 
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(EntityAmphithere amphithere) {
+    protected Identifier textureFor(EntityAmphithere amphithere) {
         switch (amphithere.getVariant()) {
             case 0:
                 if (amphithere.isBlinking()) {

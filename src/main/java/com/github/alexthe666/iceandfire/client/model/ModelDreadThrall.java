@@ -4,7 +4,6 @@ import com.nicktale.api.animation.Animation;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.github.alexthe666.iceandfire.client.model.util.HideableModelRenderer;
 import com.github.alexthe666.iceandfire.entity.EntityDreadThrall;
-import net.minecraft.client.model.HumanoidModel;
 
 public class ModelDreadThrall extends ModelDreadBase<BipedRenderState> {
 

@@ -1,20 +1,17 @@
 package com.github.alexthe666.iceandfire.client.render.entity.layer;
 
-import com.nicktale.api.client.model.AdvancedModelBox;
+import com.github.alexthe666.iceandfire.client.model.HydraRenderState;
 import com.github.alexthe666.iceandfire.client.model.ModelHydraBody;
 import com.github.alexthe666.iceandfire.client.model.ModelHydraHead;
 import com.github.alexthe666.iceandfire.client.render.entity.RenderHydra;
 import com.github.alexthe666.iceandfire.entity.EntityHydra;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
-public class LayerHydraHead extends RenderLayer<EntityHydra, ModelHydraBody> {
+public class LayerHydraHead extends IafRenderLayer<HydraRenderState, ModelHydraBody> {
     public static final Identifier TEXTURE_STONE = Identifier.parse("iceandfire:textures/models/hydra/stone.png");
     private static final float[][] TRANSLATE = new float[][]{
         {0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F},// 1 total heads
@@ -28,20 +25,19 @@ public class LayerHydraHead extends RenderLayer<EntityHydra, ModelHydraBody> {
         {-0.6F, -0.4F, -0.2F, -0.1F, 0.0F, 0.1F, 0.2F, 0.4F, 0.6F},
     };
     private static final float[][] ROTATE = new float[][]{
-            {0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F},// 1 total heads
-            {10F, -10F, 0F, 0F, 0F, 0F, 0F, 0F, 0F},// 2 total heads
-            {10F, 0F, -10F, 0F, 0F, 0F, 0F, 0F, 0F},// 3 total heads
-            {25F, 10F, -10F, -25F, 0F, 0F, 0F, 0F, 0F},//etc...
-            {30F, 15F, 0F, -15F, -30F, 0F, 0F, 0F, 0F},
-            {40F, 25F, 5F, -5F, -25F, -40F, 0F, 0F, 0F},
-            {40F, 30F, 15F, 0F, -15F, -30F, -40F, 0F, 0F},
-            {45F, 30F, 20F, 5F, -5F, -20F, -30F, -45F, 0F},
-            {50F, 37F, 25F, 15F, 0, -15F, -25F, -37F, -50F},
+        {0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F},// 1 total heads
+        {10F, -10F, 0F, 0F, 0F, 0F, 0F, 0F, 0F},// 2 total heads
+        {10F, 0F, -10F, 0F, 0F, 0F, 0F, 0F, 0F},// 3 total heads
+        {25F, 10F, -10F, -25F, 0F, 0F, 0F, 0F, 0F},//etc...
+        {30F, 15F, 0F, -15F, -30F, 0F, 0F, 0F, 0F},
+        {40F, 25F, 5F, -5F, -25F, -40F, 0F, 0F, 0F},
+        {40F, 30F, 15F, 0F, -15F, -30F, -40F, 0F, 0F},
+        {45F, 30F, 20F, 5F, -5F, -20F, -30F, -45F, 0F},
+        {50F, 37F, 25F, 15F, 0, -15F, -25F, -37F, -50F},
     };
-    private final RenderHydra renderer;
     private static final ModelHydraHead[] modelArr = new ModelHydraHead[EntityHydra.HEADS];
 
-    static{
+    static {
         for (int i = 0; i < modelArr.length; i++) {
             modelArr[i] = new ModelHydraHead(i);
         }
@@ -49,35 +45,33 @@ public class LayerHydraHead extends RenderLayer<EntityHydra, ModelHydraBody> {
 
     public LayerHydraHead(RenderHydra renderer) {
         super(renderer);
-        this.renderer = renderer;
-
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn, EntityHydra entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entity.isInvisible()) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector collector, int lightCoords, HydraRenderState state, float yRot, float xRot) {
+        if (state.isInvisible) {
             return;
         }
-        renderHydraHeads(renderer.getModel(), false, matrixStackIn, bufferIn, packedLightIn, entity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+        submitHydraHeads(getParentModel(), false, poseStack, collector, lightCoords, state);
     }
 
-    public static void renderHydraHeads(ModelHydraBody model, boolean stone, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, EntityHydra hydra, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        matrixStackIn.pushPose();
+    public static void submitHydraHeads(ModelHydraBody model, boolean stone, PoseStack poseStack, SubmitNodeCollector collector, int lightCoords, HydraRenderState state) {
+        EntityHydra hydra = entityOf(state);
+        poseStack.pushPose();
         int heads = hydra.getHeadCount();
-        translateToBody(model, matrixStackIn);
-        RenderType type = RenderType.entityCutout(stone ? TEXTURE_STONE : getHeadTexture(hydra));
+        model.BodyUpper.translateRotate(poseStack);
+        var type = RenderTypes.entityCutout(stone ? TEXTURE_STONE : getHeadTexture(hydra));
         for (int head = 1; head <= heads; head++) {
-            matrixStackIn.pushPose();
+            poseStack.pushPose();
             float bodyWidth = 0.5F;
-            matrixStackIn.translate(TRANSLATE[heads - 1][head - 1] * bodyWidth, 0, 0);
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees(ROTATE[heads - 1][head - 1]));
-            modelArr[head - 1].setupAnim(hydra, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-            modelArr[head - 1].renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, LivingEntityRenderer.getOverlayCoords(hydra, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
-            matrixStackIn.popPose();
+            poseStack.translate(TRANSLATE[heads - 1][head - 1] * bodyWidth, 0, 0);
+            poseStack.mulPose(Axis.YP.rotationDegrees(ROTATE[heads - 1][head - 1]));
+            collector.submitModel(modelArr[head - 1], state, poseStack, type, lightCoords,
+                    net.minecraft.client.renderer.entity.LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, null, state.outlineColor, null);
+            poseStack.popPose();
         }
-        matrixStackIn.popPose();
+        poseStack.popPose();
     }
-
 
     public static Identifier getHeadTexture(EntityHydra gorgon) {
         switch (gorgon.getVariant()) {
@@ -87,43 +81,6 @@ public class LayerHydraHead extends RenderLayer<EntityHydra, ModelHydraBody> {
                 return RenderHydra.TEXUTURE_1;
             case 2:
                 return RenderHydra.TEXUTURE_2;
-        }
-    }
-
-    @Override
-    public @NotNull Identifier getTextureLocation(EntityHydra gorgon) {
-        switch (gorgon.getVariant()) {
-            default:
-                return RenderHydra.TEXUTURE_0;
-            case 1:
-                return RenderHydra.TEXUTURE_1;
-            case 2:
-                return RenderHydra.TEXUTURE_2;
-        }
-    }
-
-    protected static void translateToBody(ModelHydraBody model, PoseStack stack) {
-        postRender(model.BodyUpper, stack, 0.0625F);
-    }
-
-    protected static void postRender(AdvancedModelBox renderer, PoseStack matrixStackIn, float scale) {
-        if (renderer.rotateAngleX == 0.0F && renderer.rotateAngleY == 0.0F && renderer.rotateAngleZ == 0.0F) {
-            if (renderer.rotationPointX != 0.0F || renderer.rotationPointY != 0.0F || renderer.rotateAngleZ != 0.0F) {
-                matrixStackIn.translate(renderer.rotationPointX * scale, renderer.rotationPointY * scale, renderer.rotateAngleZ * scale);
-            }
-        } else {
-            matrixStackIn.translate(renderer.rotationPointX * scale, renderer.rotationPointY * scale, renderer.rotateAngleZ * scale);
-            if (renderer.rotateAngleZ != 0.0F) {
-                matrixStackIn.mulPose(Axis.ZP.rotation(renderer.rotateAngleZ));
-            }
-
-            if (renderer.rotateAngleY != 0.0F) {
-                matrixStackIn.mulPose(Axis.YP.rotation(renderer.rotateAngleY));
-            }
-
-            if (renderer.rotateAngleX != 0.0F) {
-                matrixStackIn.mulPose(Axis.XP.rotation(renderer.rotateAngleX));
-            }
         }
     }
 }

@@ -1,14 +1,13 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
+import com.github.alexthe666.iceandfire.client.model.SirenRenderState;
 import com.github.alexthe666.iceandfire.client.model.ModelSiren;
 import com.github.alexthe666.iceandfire.entity.EntitySiren;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
-public class RenderSiren extends MobRenderer<EntitySiren, ModelSiren> {
+public class RenderSiren extends IafMobRenderer<EntitySiren, SirenRenderState, ModelSiren> {
 
     public static final Identifier TEXTURE_0 = Identifier.parse("iceandfire:textures/models/siren/siren_0.png");
     public static final Identifier TEXTURE_0_AGGRESSIVE = Identifier.parse("iceandfire:textures/models/siren/siren_0_aggressive.png");
@@ -22,13 +21,29 @@ public class RenderSiren extends MobRenderer<EntitySiren, ModelSiren> {
     }
 
     @Override
-    public void scale(@NotNull EntitySiren LivingEntityIn, PoseStack stack, float partialTickTime) {
+    public SirenRenderState createRenderState() {
+        return new SirenRenderState();
+    }
+
+    @Override
+    protected void extract(EntitySiren entity, SirenRenderState state, float partialTick) {
+        state.getSingingPose = entity.getSingingPose();
+        state.isSinging = entity.isSinging();
+        state.isSwimming = entity.isSwimming();
+        state.onGround = entity.onGround();
+        state.singProgress = entity.singProgress;
+        state.swimProgress = entity.swimProgress;
+        state.tail_buffer = entity.tail_buffer;
+    }
+
+    @Override
+    protected void scaleFor(EntitySiren LivingEntityIn, PoseStack stack, float partialTickTime) {
         stack.translate(0, 0, -0.5F);
 
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(EntitySiren siren) {
+    protected Identifier textureFor(EntitySiren siren) {
         switch (siren.getHairColor()) {
             default:
                 return siren.isAgressive() ? TEXTURE_0_AGGRESSIVE : TEXTURE_0;

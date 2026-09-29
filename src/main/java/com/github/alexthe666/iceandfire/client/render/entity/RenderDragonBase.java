@@ -50,7 +50,7 @@ public class RenderDragonBase extends MobRenderer<EntityDragonBase, DragonRender
     }
 
     @Override
-    protected DragonRenderState createRenderState() {
+    public DragonRenderState createRenderState() {
         return new DragonRenderState();
     }
 

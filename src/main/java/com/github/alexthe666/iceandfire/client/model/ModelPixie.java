@@ -1,16 +1,10 @@
 package com.github.alexthe666.iceandfire.client.model;
 
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityJar;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityPixieHouse;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 
 public class ModelPixie extends ModelDragonBase<PixieRenderState> {

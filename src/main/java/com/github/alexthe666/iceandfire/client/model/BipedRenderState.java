@@ -9,6 +9,8 @@ public class BipedRenderState extends HumanoidRenderState {
     public Animation animation = IAnimatedEntity.NO_ANIMATION;
     /** Animation tick including the partial tick. */
     public float animationTick;
+    public net.minecraft.world.entity.Entity entity;
+    public float partialTick;
     /** Entity tick count, used for spawn flailing. */
     public int tickCount;
 }

@@ -1,7 +1,6 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
 import com.nicktale.api.client.model.TabulaModel;
-import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityDragonSkull;
 import com.github.alexthe666.iceandfire.enums.EnumDragonTextures;
 import com.mojang.blaze3d.vertex.PoseStack;

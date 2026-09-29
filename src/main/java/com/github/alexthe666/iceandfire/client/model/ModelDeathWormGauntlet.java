@@ -2,7 +2,6 @@ package com.github.alexthe666.iceandfire.client.model;
 
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.nicktale.api.client.model.AdvancedModelBox;
 
 public class ModelDeathWormGauntlet extends ModelDragonBase<EntityRenderState> {
     public AdvancedModelBox Head;

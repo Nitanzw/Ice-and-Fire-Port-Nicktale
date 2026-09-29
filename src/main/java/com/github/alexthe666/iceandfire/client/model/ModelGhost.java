@@ -4,7 +4,6 @@ import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.github.alexthe666.iceandfire.client.model.util.HideableModelRenderer;
 import com.github.alexthe666.iceandfire.entity.EntityGhost;
-import com.google.common.collect.ImmutableList;
 
 public class ModelGhost extends ModelBipedBase<BipedRenderState> {
     public AdvancedModelBox robe;
