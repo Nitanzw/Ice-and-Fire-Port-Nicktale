@@ -63,29 +63,34 @@ public abstract class ModelDragonBase<S extends EntityRenderState> extends Advan
     }
 
     protected static void applyChainYawToY(ChainBuffer buffer, AdvancedModelBox... boxes) {
-        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getFrameTime()), boxes, 1);
+        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getFrameTime()), boxes, RotationAxis.Y);
     }
 
     protected static void applyChainYawToZ(ChainBuffer buffer, AdvancedModelBox... boxes) {
-        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getFrameTime()), boxes, 3);
+        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getFrameTime()), boxes, RotationAxis.Z);
     }
 
     protected static void applyChainPitchToX(ChainBuffer buffer, AdvancedModelBox... boxes) {
-        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedPitchVariation(Minecraft.getInstance().getFrameTime()), boxes, 0);
+        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedPitchVariation(Minecraft.getInstance().getFrameTime()), boxes, RotationAxis.X);
     }
 
-    private static void applyChainRotation(float degrees, AdvancedModelBox[] boxes, int axis) {
+    private static void applyChainRotation(float degrees, AdvancedModelBox[] boxes, RotationAxis axis) {
         if (degrees == 0.0F || boxes.length == 0) {
             return;
         }
         float radiansPerPart = (float) Math.toRadians(degrees) / boxes.length;
         for (AdvancedModelBox box : boxes) {
             switch (axis) {
-                case 0 -> box.rotateAngleX += radiansPerPart;
-                case 1 -> box.rotateAngleY += radiansPerPart;
-                case 3 -> box.rotateAngleZ += radiansPerPart;
-                default -> throw new IllegalArgumentException("Unsupported model rotation axis: " + axis);
+                case X -> box.rotateAngleX += radiansPerPart;
+                case Y -> box.rotateAngleY += radiansPerPart;
+                case Z -> box.rotateAngleZ += radiansPerPart;
             }
         }
+    }
+
+    private enum RotationAxis {
+        X,
+        Y,
+        Z
     }
 }
