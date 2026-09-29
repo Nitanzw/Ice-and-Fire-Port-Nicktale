@@ -69,6 +69,11 @@ public class RenderDragonBase extends MobRenderer<EntityDragonBase, DragonRender
         state.renderSize = entity.getRenderSize();
         state.previousDragonPitch = entity.prevDragonPitch;
         state.dragonPitch = entity.getDragonPitch();
+        state.turnBufferYawDegrees = entity.turn_buffer == null ? 0.0F : entity.turn_buffer.getInterpolatedYawVariation(partialTicks);
+        state.tailBufferYawDegrees = entity.tail_buffer == null ? 0.0F : entity.tail_buffer.getInterpolatedYawVariation(partialTicks);
+        state.rollBufferYawDegrees = entity.roll_buffer == null ? 0.0F : entity.roll_buffer.getInterpolatedYawVariation(partialTicks);
+        state.pitchBufferBodyPitchDegrees = entity.pitch_buffer_body == null ? 0.0F : entity.pitch_buffer_body.getInterpolatedPitchVariation(partialTicks);
+        state.pitchBufferPitchDegrees = entity.pitch_buffer == null ? 0.0F : entity.pitch_buffer.getInterpolatedPitchVariation(partialTicks);
         state.male = entity.isMale();
         state.skeletal = entity.isSkeletal();
         state.sleeping = entity.isSleeping();

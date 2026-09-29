@@ -3,6 +3,8 @@ package com.github.alexthe666.iceandfire.client.model;
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
+import com.github.alexthe666.iceandfire.entity.util.ChainBuffer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
@@ -58,5 +60,32 @@ public abstract class ModelDragonBase<S extends EntityRenderState> extends Advan
         model.rotationPointX += progress * x / 20.0F;
         model.rotationPointY += progress * y / 20.0F;
         model.rotationPointZ += progress * z / 20.0F;
+    }
+
+    protected static void applyChainYawToY(ChainBuffer buffer, AdvancedModelBox... boxes) {
+        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getFrameTime()), boxes, 1);
+    }
+
+    protected static void applyChainYawToZ(ChainBuffer buffer, AdvancedModelBox... boxes) {
+        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getFrameTime()), boxes, 3);
+    }
+
+    protected static void applyChainPitchToX(ChainBuffer buffer, AdvancedModelBox... boxes) {
+        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedPitchVariation(Minecraft.getInstance().getFrameTime()), boxes, 0);
+    }
+
+    private static void applyChainRotation(float degrees, AdvancedModelBox[] boxes, int axis) {
+        if (degrees == 0.0F || boxes.length == 0) {
+            return;
+        }
+        float radiansPerPart = (float) Math.toRadians(degrees) / boxes.length;
+        for (AdvancedModelBox box : boxes) {
+            switch (axis) {
+                case 0 -> box.rotateAngleX += radiansPerPart;
+                case 1 -> box.rotateAngleY += radiansPerPart;
+                case 3 -> box.rotateAngleZ += radiansPerPart;
+                default -> throw new IllegalArgumentException("Unsupported model rotation axis: " + axis);
+            }
+        }
     }
 }

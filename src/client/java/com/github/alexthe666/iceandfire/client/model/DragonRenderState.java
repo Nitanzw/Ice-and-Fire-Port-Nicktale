@@ -27,6 +27,11 @@ public class DragonRenderState extends LivingEntityRenderState implements IAnima
     public float renderSize;
     public float dragonPitch;
     public float previousDragonPitch;
+    public float turnBufferYawDegrees;
+    public float tailBufferYawDegrees;
+    public float rollBufferYawDegrees;
+    public float pitchBufferBodyPitchDegrees;
+    public float pitchBufferPitchDegrees;
 
     public boolean male;
     public boolean skeletal;
