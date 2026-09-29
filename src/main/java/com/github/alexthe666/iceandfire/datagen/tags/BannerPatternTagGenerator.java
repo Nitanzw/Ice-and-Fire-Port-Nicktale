@@ -9,9 +9,7 @@ import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class BannerPatternTagGenerator extends TagsProvider<BannerPattern> {
@@ -35,8 +33,8 @@ public class BannerPatternTagGenerator extends TagsProvider<BannerPattern> {
     public static final TagKey<BannerPattern> WEEZER_BANNER_PATTERN = create("pattern_item/weezer");
     public static final TagKey<BannerPattern> DREAD_BANNER_PATTERN = create("pattern_item/dread");
 
-    public BannerPatternTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, Registries.BANNER_PATTERN, provider, IceAndFire.MODID, existingFileHelper);
+    public BannerPatternTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, Registries.BANNER_PATTERN, provider, IceAndFire.MODID);
     }
 
     @Override

@@ -10,15 +10,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.PoiTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class POITagGenerator extends PoiTypeTagsProvider {
 
-    public POITagGenerator(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(pOutput, pLookupProvider, IceAndFire.MODID, existingFileHelper);
+    public POITagGenerator(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider) {
+        super(pOutput, pLookupProvider, IceAndFire.MODID);
     }
 
     @Override

@@ -5,23 +5,19 @@ import com.github.alexthe666.iceandfire.world.IafWorldRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
-import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.SimpleBlockConfiguration;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 import java.util.List;
-import java.util.function.Function;
 
 public final class IafConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> FIRE_DRAGON_ROOST = registerKey("fire_dragon_roost");
@@ -52,9 +48,6 @@ public final class IafConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> FIRE_LILY = registerKey("fire_lily");
     public static final ResourceKey<ConfiguredFeature<?, ?>> FROST_LILY = registerKey("frost_lily");
     public static final ResourceKey<ConfiguredFeature<?, ?>> LIGHTNING_LILY = registerKey("lightning_lily");
-
-
-    private static Function<Block, RandomPatchConfiguration> flowerConf = (block) -> FeatureUtils.simpleRandomPatchConfiguration(8, PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(block.defaultBlockState().getBlock()))));
 
 
     public static ResourceKey<ConfiguredFeature<?, ?>> registerKey(String name) {
@@ -92,9 +85,9 @@ public final class IafConfiguredFeatures {
         //TODO: Sapphires should only generate for ice dragon stuff
         context.register(SAPPHIRE_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), IafBlockRegistry.SAPPHIRE_ORE.get().defaultBlockState(), 4, 0.5f)));
         //TODO: Look at VegetationFeatures.java
-        context.register(FIRE_LILY, new ConfiguredFeature(Feature.FLOWER, flowerConf.apply(IafBlockRegistry.FIRE_LILY.get())));
-        context.register(FROST_LILY, new ConfiguredFeature(Feature.FLOWER, flowerConf.apply(IafBlockRegistry.FROST_LILY.get())));
-        context.register(LIGHTNING_LILY, new ConfiguredFeature(Feature.FLOWER, flowerConf.apply(IafBlockRegistry.LIGHTNING_LILY.get())));
+        context.register(FIRE_LILY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(IafBlockRegistry.FIRE_LILY.get()))));
+        context.register(FROST_LILY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(IafBlockRegistry.FROST_LILY.get()))));
+        context.register(LIGHTNING_LILY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(BlockStateProvider.simple(IafBlockRegistry.LIGHTNING_LILY.get()))));
 
     }
 
