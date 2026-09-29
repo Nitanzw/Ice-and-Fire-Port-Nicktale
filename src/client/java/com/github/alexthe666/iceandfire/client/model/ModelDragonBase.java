@@ -66,6 +66,10 @@ public abstract class ModelDragonBase<S extends EntityRenderState> extends Advan
         applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false)), boxes, RotationAxis.Y);
     }
 
+    protected static void applyChainYawToX(ChainBuffer buffer, AdvancedModelBox... boxes) {
+        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false)), boxes, RotationAxis.X);
+    }
+
     protected static void applyChainYawToZ(ChainBuffer buffer, AdvancedModelBox... boxes) {
         applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false)), boxes, RotationAxis.Z);
     }

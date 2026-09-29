@@ -14,7 +14,7 @@ import net.minecraft.world.entity.Mob;
  * clip and a reference to the source entity into the state, so the per-mob code can keep its
  * entity based texture and scale logic while models read plain state fields.
  */
-public abstract class IafMobRenderer<E extends Mob, S extends IafRenderState, M extends EntityModel<S>> extends MobRenderer<E, S, M> {
+public abstract class IafMobRenderer<E extends Mob, S extends IafRenderState, M extends EntityModel<? super S>> extends MobRenderer<E, S, M> {
 
     protected IafMobRenderer(EntityRendererProvider.Context context, M model, float shadow) {
         super(context, model, shadow);

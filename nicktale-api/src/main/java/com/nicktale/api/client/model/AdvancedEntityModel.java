@@ -60,7 +60,11 @@ public abstract class AdvancedEntityModel<S extends EntityRenderState> extends E
 
     @Override
     public void setupAnim(S state) {
-        animate(state);
+        if (state instanceof PoseOverride override && override.poseOverride() != null) {
+            override.poseOverride().run();
+        } else {
+            animate(state);
+        }
         sync();
     }
 

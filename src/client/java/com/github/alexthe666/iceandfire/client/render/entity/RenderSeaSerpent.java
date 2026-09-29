@@ -1,15 +1,16 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
-import com.nicktale.api.client.model.AdvancedEntityModel;
+import com.github.alexthe666.iceandfire.client.model.SeaSerpentRenderState;
 import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerSeaSerpentAncient;
 import com.github.alexthe666.iceandfire.entity.EntitySeaSerpent;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.nicktale.api.client.model.TabulaModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
-public class RenderSeaSerpent extends MobRenderer<EntitySeaSerpent, AdvancedEntityModel<EntitySeaSerpent>> {
+public class RenderSeaSerpent extends IafMobRenderer<EntitySeaSerpent, SeaSerpentRenderState, TabulaModel> {
 
     public static final Identifier TEXTURE_BLUE = Identifier.parse("iceandfire:textures/models/seaserpent/seaserpent_blue.png");
     public static final Identifier TEXTURE_BLUE_BLINK = Identifier.parse("iceandfire:textures/models/seaserpent/seaserpent_blue_blink.png");
@@ -26,20 +27,48 @@ public class RenderSeaSerpent extends MobRenderer<EntitySeaSerpent, AdvancedEnti
     public static final Identifier TEXTURE_TEAL = Identifier.parse("iceandfire:textures/models/seaserpent/seaserpent_teal.png");
     public static final Identifier TEXTURE_TEAL_BLINK = Identifier.parse("iceandfire:textures/models/seaserpent/seaserpent_teal_blink.png");
 
-    public RenderSeaSerpent(EntityRendererProvider.Context context, AdvancedEntityModel<EntitySeaSerpent> model) {
+    public RenderSeaSerpent(EntityRendererProvider.Context context, TabulaModel model) {
         super(context, model, 1.6F);
-        this.layers.add(new LayerSeaSerpentAncient(this));
-
+        this.addLayer(new LayerSeaSerpentAncient(this));
     }
 
     @Override
-    protected void scale(EntitySeaSerpent entity, PoseStack matrixStackIn, float partialTickTime) {
-        this.shadowRadius = entity.getSeaSerpentScale();
-        matrixStackIn.scale(shadowRadius, shadowRadius, shadowRadius);
+    public @NotNull SeaSerpentRenderState createRenderState() {
+        return new SeaSerpentRenderState();
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(EntitySeaSerpent serpent) {
+    protected void extract(EntitySeaSerpent entity, SeaSerpentRenderState state, float partialTick) {
+        state.breathProgress = entity.breathProgress;
+        state.jumpProgress = entity.jumpProgress;
+        state.wantJumpProgress = entity.wantJumpProgress;
+        state.jumpRot = entity.jumpRot;
+        state.prevJumpRot = entity.prevJumpRot;
+        state.swimCycle = entity.swimCycle;
+        state.deltaMovementY = entity.getDeltaMovement().y;
+        state.jumpingOutOfWater = entity.isJumpingOutOfWater();
+        for (int i = 1; i <= 4; i++) {
+            state.pieceYaw[i] = entity.getPieceYaw(i, partialTick);
+            state.piecePitch[i] = entity.getPiecePitch(i, partialTick);
+        }
+        state.ancient = entity.isAncient();
+        state.blinking = entity.isBlinking();
+        state.scale = entity.getSeaSerpentScale();
+    }
+
+    @Override
+    protected void scaleFor(EntitySeaSerpent entity, PoseStack poseStack, float partialTick) {
+        float scale = entity.getSeaSerpentScale();
+        poseStack.scale(scale, scale, scale);
+    }
+
+    @Override
+    protected float getShadowRadius(@NotNull SeaSerpentRenderState state) {
+        return state.scale;
+    }
+
+    @Override
+    protected @NotNull Identifier textureFor(EntitySeaSerpent serpent) {
         switch (serpent.getVariant()) {
             case 0:
                 if (serpent.isBlinking()) {

@@ -1,45 +1,62 @@
 package com.github.alexthe666.iceandfire.client.render.tile;
 
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityDreadSpawner;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.SpawnerRenderer;
+import net.minecraft.client.renderer.blockentity.state.SpawnerRenderState;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BaseSpawner;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class RenderDreadSpawner<T extends TileEntityDreadSpawner> implements BlockEntityRenderer<T> {
+public class RenderDreadSpawner<T extends TileEntityDreadSpawner> implements BlockEntityRenderer<T, SpawnerRenderState> {
+
+    private final EntityRenderDispatcher entityRenderer;
 
     public RenderDreadSpawner(BlockEntityRendererProvider.Context context) {
-
+        this.entityRenderer = context.entityRenderer();
     }
 
     @Override
-    public void render(TileEntityDreadSpawner tileEntityIn, float partialTicks, PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        matrixStackIn.pushPose();
-        matrixStackIn.translate(0.5D, 0.0D, 0.5D);
-        BaseSpawner abstractspawner = tileEntityIn.getSpawner();
-        Entity entity = abstractspawner.getOrCreateDisplayEntity(tileEntityIn.getLevel(), RandomSource.create(), tileEntityIn.getBlockPos());
-        if (entity != null) {
-            float f = 0.53125F;
-            float f1 = Math.max(entity.getBbWidth(), entity.getBbHeight());
-            if ((double) f1 > 1.0D) {
-                f /= f1;
-            }
+    public @NotNull SpawnerRenderState createRenderState() {
+        return new SpawnerRenderState();
+    }
 
-            matrixStackIn.translate(0.0D, 0.4F, 0.0D);
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees((float) Mth.lerp(partialTicks, abstractspawner.getoSpin(), abstractspawner.getSpin()) * 10.0F));
-            matrixStackIn.translate(0.0D, -0.2F, 0.0D);
-            matrixStackIn.mulPose(Axis.XP.rotationDegrees(-30.0F));
-            matrixStackIn.scale(f, f, f);
-            Minecraft.getInstance().getEntityRenderDispatcher().render(entity, 0.0D, 0.0D, 0.0D, 0.0F, partialTicks, matrixStackIn, bufferIn, combinedLightIn);
+    @Override
+    public void extractRenderState(@NotNull T tile, @NotNull SpawnerRenderState state, float partialTick, @NotNull Vec3 cameraPos, ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(tile, state, partialTick, cameraPos, breakProgress);
+        if (tile.getLevel() == null) {
+            return;
         }
+        BaseSpawner spawner = tile.getSpawner();
+        Entity entity = spawner.getOrCreateDisplayEntity(tile.getLevel(), tile.getBlockPos());
+        if (entity != null) {
+            state.displayEntity = this.entityRenderer.extractEntity(entity, partialTick);
+            state.spin = (float) Mth.lerp(partialTick, spawner.getOSpin(), spawner.getSpin()) * 10.0F;
+            float scale = 0.53125F;
+            float largest = Math.max(entity.getBbWidth(), entity.getBbHeight());
+            if ((double) largest > 1.0D) {
+                scale /= largest;
+            }
+            state.scale = scale;
+        }
+    }
 
-        matrixStackIn.popPose();
+    @Override
+    public void submit(@NotNull SpawnerRenderState state, @NotNull PoseStack matrixStackIn, @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState camera) {
+        if (state.displayEntity != null) {
+            matrixStackIn.pushPose();
+            matrixStackIn.translate(0.5D, 0.0D, 0.5D);
+            SpawnerRenderer.submitEntityInSpawner(matrixStackIn, collector, state.displayEntity, this.entityRenderer, state.spin, state.scale, camera);
+            matrixStackIn.popPose();
+        }
     }
 }

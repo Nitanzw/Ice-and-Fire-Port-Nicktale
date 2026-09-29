@@ -548,9 +548,9 @@ public class ModelAmphithere extends ModelDragonBase<AmphithereRenderState> {
         }
 
         if (amphithere.groundProgress <= 0 && amphithere.animation != EntityAmphithere.ANIMATION_WING_BLAST && !amphithere.onGround) {
-            amphithere.roll_buffer.applyChainFlapBuffer(BodyUpper);
-            amphithere.pitch_buffer.applyChainWaveBuffer(BodyUpper);
-            amphithere.tail_buffer.applyChainSwingBuffer(TAIL);
+            applyChainYawToZ(amphithere.roll_buffer, BodyUpper);
+            applyChainYawToX(amphithere.pitch_buffer, BodyUpper);
+            applyChainYawToY(amphithere.tail_buffer, TAIL);
 
         }
     }

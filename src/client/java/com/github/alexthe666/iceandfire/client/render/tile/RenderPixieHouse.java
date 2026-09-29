@@ -4,76 +4,105 @@ import com.github.alexthe666.iceandfire.block.BlockPixieHouse;
 import com.github.alexthe666.iceandfire.client.model.ModelPixie;
 import com.github.alexthe666.iceandfire.client.model.ModelPixieHouse;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityPixieHouse;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class RenderPixieHouse<T extends TileEntityPixieHouse> implements BlockEntityRenderer<T> {
+public class RenderPixieHouse<T extends TileEntityPixieHouse> implements BlockEntityRenderer<T, RenderPixieHouse.HouseRenderState> {
 
     private static final ModelPixieHouse MODEL = new ModelPixieHouse();
-    private static ModelPixie MODEL_PIXIE;
-    private static final RenderType TEXTURE_0 = RenderType.entityCutoutNoCull(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_0.png"), false);
-    private static final RenderType TEXTURE_1 = RenderType.entityCutoutNoCull(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_1.png"), false);
-    private static final RenderType TEXTURE_2 = RenderType.entityCutoutNoCull(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_2.png"), false);
-    private static final RenderType TEXTURE_3 = RenderType.entityCutoutNoCull(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_3.png"), false);
-    private static final RenderType TEXTURE_4 = RenderType.entityCutoutNoCull(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_4.png"), false);
-    private static final RenderType TEXTURE_5 = RenderType.entityCutoutNoCull(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_5.png"), false);
-    public BlockItem metaOverride;
+    private final ModelPixie modelPixie = new ModelPixie();
+    private static final RenderType TEXTURE_0 = RenderTypes.entityCutout(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_0.png"), false);
+    private static final RenderType TEXTURE_1 = RenderTypes.entityCutout(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_1.png"), false);
+    private static final RenderType TEXTURE_2 = RenderTypes.entityCutout(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_2.png"), false);
+    private static final RenderType TEXTURE_3 = RenderTypes.entityCutout(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_3.png"), false);
+    private static final RenderType TEXTURE_4 = RenderTypes.entityCutout(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_4.png"), false);
+    private static final RenderType TEXTURE_5 = RenderTypes.entityCutout(Identifier.parse("iceandfire:textures/models/pixie/house/pixie_house_5.png"), false);
 
     public RenderPixieHouse(BlockEntityRendererProvider.Context context) {
 
     }
 
     @Override
-    public void render(@NotNull T entity, float partialTicks, @NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        int rotation = 0;
-        int meta = 0;
-        if (MODEL_PIXIE == null) {
-            MODEL_PIXIE = new ModelPixie();
-        }
-        if (entity != null && entity.getLevel() != null && entity.getLevel().getBlockState(entity.getBlockPos()).getBlock() instanceof BlockPixieHouse) {
-            meta = TileEntityPixieHouse.getHouseTypeFromBlock(entity.getLevel().getBlockState(entity.getBlockPos()).getBlock());
-            // Apparently with Optifine/other optimizations mods, this code path can get run before the block
-            // has been destroyed/possibly created, causing the BlockState to be an air block,
-            // which is missing the below property, causing a crash. If this property is missing,
-            // let's just silently fail.
-            if (!entity.getLevel().getBlockState(entity.getBlockPos()).hasProperty(BlockPixieHouse.FACING)) {
+    public @NotNull HouseRenderState createRenderState() {
+        return new HouseRenderState();
+    }
+
+    @Override
+    public void extractRenderState(@NotNull T house, @NotNull HouseRenderState state, float partialTick, @NotNull Vec3 cameraPos, ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(house, state, partialTick, cameraPos, breakProgress);
+        state.tile = house;
+        state.partialTick = partialTick;
+        state.valid = false;
+        if (house.getLevel() != null && house.getLevel().getBlockState(house.getBlockPos()).getBlock() instanceof BlockPixieHouse) {
+            var blockState = house.getLevel().getBlockState(house.getBlockPos());
+            // With render-optimizing mods this can run before the block exists; bail out quietly.
+            if (!blockState.hasProperty(BlockPixieHouse.FACING)) {
                 return;
             }
-            Direction facing = entity.getLevel().getBlockState(entity.getBlockPos()).getValue(BlockPixieHouse.FACING);
-            if (facing == Direction.NORTH) {
-                rotation = 180;
-            }
-            else if (facing == Direction.EAST) {
-                rotation = -90;
-            } else if (facing == Direction.WEST) {
-                rotation = 90;
-            }
+            state.meta = TileEntityPixieHouse.getHouseTypeFromBlock(blockState.getBlock());
+            Direction facing = blockState.getValue(BlockPixieHouse.FACING);
+            state.rotation = facing == Direction.NORTH ? 180 : facing == Direction.EAST ? -90 : facing == Direction.WEST ? 90 : 0;
+            state.valid = true;
+        }
+    }
 
-        }
-        if (entity == null) {
-            meta = TileEntityPixieHouse.getHouseTypeFromBlock(metaOverride.getBlock());
-        }
+    /** Renders the house model for an item (no tile entity) with the meta of the given block item. */
+    public static void submitItemHouse(BlockItem item, PoseStack matrixStackIn, SubmitNodeCollector collector, int light, int overlay) {
+        int meta = TileEntityPixieHouse.getHouseTypeFromBlock(item.getBlock());
         matrixStackIn.pushPose();
         matrixStackIn.translate(0.5F, 1.501F, 0.5F);
-        matrixStackIn.pushPose();
         matrixStackIn.mulPose(Axis.XP.rotationDegrees(180.0F));
-        matrixStackIn.mulPose(Axis.YP.rotationDegrees(rotation));
-        if (entity != null && entity.getLevel() != null && entity.hasPixie) {
+        collector.submitModel(MODEL, new PoseStates.Generic(MODEL::resetToDefaultPose), matrixStackIn, typeForMeta(meta), light, overlay, -1, null, 0, null);
+        matrixStackIn.popPose();
+    }
+
+    private static RenderType typeForMeta(int meta) {
+        switch (meta) {
+            case 1:
+                return TEXTURE_1;
+            case 2:
+                return TEXTURE_2;
+            case 3:
+                return TEXTURE_3;
+            case 4:
+                return TEXTURE_4;
+            case 5:
+                return TEXTURE_5;
+            default:
+                return TEXTURE_0;
+        }
+    }
+
+    @Override
+    public void submit(@NotNull HouseRenderState state, @NotNull PoseStack matrixStackIn, @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState camera) {
+        if (!state.valid) {
+            return;
+        }
+        TileEntityPixieHouse entity = (TileEntityPixieHouse) state.tile;
+        int light = state.lightCoords;
+        matrixStackIn.pushPose();
+        matrixStackIn.translate(0.5F, 1.501F, 0.5F);
+        matrixStackIn.mulPose(Axis.XP.rotationDegrees(180.0F));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(state.rotation));
+        if (entity.hasPixie) {
             matrixStackIn.pushPose();
             matrixStackIn.translate(0F, 0.95F, 0F);
             matrixStackIn.scale(0.55F, 0.55F, 0.55F);
-            matrixStackIn.pushPose();
-            //GL11.glRotatef(MathHelper.clampAngle(entity.ticksExisted * 3), 0, 1, 0);
-            RenderType type = RenderJar.TEXTURE_0;
-            RenderType type2 = RenderJar.TEXTURE_0_GLO;
+            RenderType type;
+            RenderType type2;
             switch (entity.pixieType) {
                 default:
                     type = RenderJar.TEXTURE_0;
@@ -100,39 +129,19 @@ public class RenderPixieHouse<T extends TileEntityPixieHouse> implements BlockEn
                     type2 = RenderJar.TEXTURE_5_GLO;
                     break;
             }
-            matrixStackIn.pushPose();
-            MODEL_PIXIE.animateInHouse(entity);
-            MODEL_PIXIE.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
-            MODEL_PIXIE.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type2), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
-            matrixStackIn.popPose();
-            matrixStackIn.popPose();
+            PoseStates.Pixie pixieState = new PoseStates.Pixie();
+            pixieState.pose = () -> modelPixie.animateInHouse(entity);
+            collector.submitModel(modelPixie, pixieState, matrixStackIn, type, light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
+            collector.submitModel(modelPixie, pixieState, matrixStackIn, type2, light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
             matrixStackIn.popPose();
         }
-        RenderType pixieType = TEXTURE_0;
-        switch (meta) {
-            case 0:
-                pixieType = TEXTURE_0;
-                break;
-            case 1:
-                pixieType = TEXTURE_1;
-                break;
-            case 2:
-                pixieType = TEXTURE_2;
-                break;
-            case 3:
-                pixieType = TEXTURE_3;
-                break;
-            case 4:
-                pixieType = TEXTURE_4;
-                break;
-            case 5:
-                pixieType = TEXTURE_5;
-                break;
-        }
-        matrixStackIn.pushPose();
-        MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(pixieType), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
+        collector.submitModel(MODEL, new PoseStates.Generic(MODEL::resetToDefaultPose), matrixStackIn, typeForMeta(state.meta), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
         matrixStackIn.popPose();
-        matrixStackIn.popPose();
-        matrixStackIn.popPose();
+    }
+
+    public static class HouseRenderState extends TileRenderState {
+        public boolean valid;
+        public int meta;
+        public int rotation;
     }
 }

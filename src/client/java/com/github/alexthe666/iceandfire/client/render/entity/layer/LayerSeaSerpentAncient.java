@@ -1,33 +1,29 @@
 package com.github.alexthe666.iceandfire.client.render.entity.layer;
 
-import com.nicktale.api.client.model.AdvancedEntityModel;
-import com.github.alexthe666.iceandfire.entity.EntitySeaSerpent;
+import com.github.alexthe666.iceandfire.client.model.SeaSerpentRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import com.nicktale.api.client.model.TabulaModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class LayerSeaSerpentAncient extends RenderLayer<EntitySeaSerpent, AdvancedEntityModel<EntitySeaSerpent>> {
+public class LayerSeaSerpentAncient extends IafRenderLayer<SeaSerpentRenderState, TabulaModel> {
 
     private static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/models/seaserpent/ancient_overlay.png");
     private static final Identifier TEXTURE_BLINK = Identifier.parse("iceandfire:textures/models/seaserpent/ancient_overlay_blink.png");
 
-    public LayerSeaSerpentAncient(MobRenderer<EntitySeaSerpent, AdvancedEntityModel<EntitySeaSerpent>> renderer) {
+    public LayerSeaSerpentAncient(RenderLayerParent<SeaSerpentRenderState, TabulaModel> renderer) {
         super(renderer);
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn, EntitySeaSerpent serpent, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (serpent.isAncient()) {
-            RenderType tex = RenderType.entityNoOutline(serpent.isBlinking() ? TEXTURE_BLINK : TEXTURE);
-            VertexConsumer ivertexbuilder = bufferIn.getBuffer(tex);
-            this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-
+    public void submit(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, @NotNull SeaSerpentRenderState state, float yRot, float xRot) {
+        if (state.ancient) {
+            collector.submitModel(getParentModel(), state, poseStack, RenderTypes.entityCutout(state.blinking ? TEXTURE_BLINK : TEXTURE), light,
+                LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, null, state.outlineColor, null);
         }
     }
 }

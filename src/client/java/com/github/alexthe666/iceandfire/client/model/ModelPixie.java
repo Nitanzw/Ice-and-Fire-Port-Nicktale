@@ -206,7 +206,7 @@ public class ModelPixie extends ModelDragonBase<PixieRenderState> {
         */
     }
 
-    public void animateInJar(boolean sitting, TileEntityJar jar, float headRot) {
+    public void animateInJar(boolean sitting, TileEntityJar jar, float headRot, float partialTicks) {
         this.resetToDefaultPose();
         float speed_fly = 1.1F;
         float speed_idle = 0.05F;
@@ -241,7 +241,6 @@ public class ModelPixie extends ModelDragonBase<PixieRenderState> {
             this.Left_Wing2.rotateAngleZ = (float) Math.toRadians(-8);
             this.Right_Wing2.rotateAngleZ = (float) Math.toRadians(8);
         } else if (jar != null) {
-            float partialTicks = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
             this.chainWave(LEFT_WINGS, speed_fly, degree_fly * 0.75F, 1, jar.ticksExisted + partialTicks, 1);
             this.chainWave(RIGHT_WINGS, speed_fly, degree_fly * 0.75F, 1, jar.ticksExisted + partialTicks, 1);
         }

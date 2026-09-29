@@ -4,7 +4,8 @@ import com.github.alexthe666.iceandfire.entity.EntityCockatrice;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -16,13 +17,13 @@ import org.joml.Matrix4f;
 
 public class CockatriceBeamRender {
 
-    public static final RenderType TEXTURE_BEAM = RenderType.entityCutoutNoCull(Identifier.parse("iceandfire:textures/models/cockatrice/beam.png"));
+    public static final RenderType TEXTURE_BEAM = RenderTypes.entityCutout(Identifier.parse("iceandfire:textures/models/cockatrice/beam.png"));
 
-    private static void vertex(VertexConsumer p_229108_0_, Matrix4f p_229108_1_, Matrix3f p_229108_2_, float p_229108_3_, float p_229108_4_, float p_229108_5_, int p_229108_6_, int p_229108_7_, int p_229108_8_, float p_229108_9_, float p_229108_10_) {
-        p_229108_0_.vertex(p_229108_1_, p_229108_3_, p_229108_4_, p_229108_5_).color(p_229108_6_, p_229108_7_, p_229108_8_, 255).uv(p_229108_9_, p_229108_10_).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(15728880).normal(p_229108_2_, 0.0F, 1.0F, 0.0F).endVertex();
+    private static void vertex(VertexConsumer consumer, PoseStack.Pose pose, float p_229108_3_, float p_229108_4_, float p_229108_5_, int p_229108_6_, int p_229108_7_, int p_229108_8_, float p_229108_9_, float p_229108_10_) {
+        consumer.addVertex(pose, p_229108_3_, p_229108_4_, p_229108_5_).setColor(p_229108_6_, p_229108_7_, p_229108_8_, 255).setUv(p_229108_9_, p_229108_10_).setOverlay(OverlayTexture.NO_OVERLAY).setLight(15728880).setNormal(pose, 0.0F, 1.0F, 0.0F);
     }
 
-    public static void render(Entity entityIn, Entity targetEntity, PoseStack matrixStackIn, MultiBufferSource bufferIn, float partialTicks) {
+    public static void render(Entity entityIn, Entity targetEntity, PoseStack matrixStackIn, SubmitNodeCollector collector, float partialTicks) {
         float f = 1;
         if (entityIn instanceof EntityCockatrice)
             f = (((EntityCockatrice) entityIn).getAttackAnimationScale(partialTicks));
@@ -69,27 +70,29 @@ public class CockatriceBeamRender {
         float f28 = 0.4999F;
         float f29 = -1.0F + f2;
         float f30 = f4 * 2.5F + f29;
-        VertexConsumer ivertexbuilder = bufferIn.getBuffer(TEXTURE_BEAM);
-        PoseStack.Pose matrixstack$entry = matrixStackIn.last();
-        Matrix4f matrix4f = matrixstack$entry.pose();
-        Matrix3f matrix3f = matrixstack$entry.normal();
-        vertex(ivertexbuilder, matrix4f, matrix3f, f19, f4, f20, j, k, l, 0.4999F, f30);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f19, 0.0F, f20, j, k, l, 0.4999F, f29);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f21, 0.0F, f22, j, k, l, 0.0F, f29);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f21, f4, f22, j, k, l, 0.0F, f30);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f23, f4, f24, j, k, l, 0.4999F, f30);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f23, 0.0F, f24, j, k, l, 0.4999F, f29);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f25, 0.0F, f26, j, k, l, 0.0F, f29);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f25, f4, f26, j, k, l, 0.0F, f30);
-        float f31 = 0.0F;
-        if (entityIn.tickCount % 2 == 0) {
-            f31 = 0.5F;
-        }
+        final int fj = j;
+        final int fk = k;
+        final int fl = l;
+        final float ff4 = f4;
+        final float ff29 = f29;
+        final float ff30 = f30;
+        boolean oddTick = entityIn.tickCount % 2 == 0;
+        collector.submitCustomGeometry(matrixStackIn, TEXTURE_BEAM, (pose, ivertexbuilder) -> {
+        vertex(ivertexbuilder, pose, f19, f4, f20, j, k, l, 0.4999F, f30);
+        vertex(ivertexbuilder, pose, f19, 0.0F, f20, j, k, l, 0.4999F, f29);
+        vertex(ivertexbuilder, pose, f21, 0.0F, f22, j, k, l, 0.0F, f29);
+        vertex(ivertexbuilder, pose, f21, f4, f22, j, k, l, 0.0F, f30);
+        vertex(ivertexbuilder, pose, f23, f4, f24, j, k, l, 0.4999F, f30);
+        vertex(ivertexbuilder, pose, f23, 0.0F, f24, j, k, l, 0.4999F, f29);
+        vertex(ivertexbuilder, pose, f25, 0.0F, f26, j, k, l, 0.0F, f29);
+        vertex(ivertexbuilder, pose, f25, f4, f26, j, k, l, 0.0F, f30);
+        float f31 = oddTick ? 0.5F : 0.0F;
 
-        vertex(ivertexbuilder, matrix4f, matrix3f, f11, f4, f12, j, k, l, 0.5F, f31 + 0.5F);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f13, f4, f14, j, k, l, 1.0F, f31 + 0.5F);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f17, f4, f18, j, k, l, 1.0F, f31);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f15, f4, f16, j, k, l, 0.5F, f31);
+        vertex(ivertexbuilder, pose, f11, f4, f12, j, k, l, 0.5F, f31 + 0.5F);
+        vertex(ivertexbuilder, pose, f13, f4, f14, j, k, l, 1.0F, f31 + 0.5F);
+        vertex(ivertexbuilder, pose, f17, f4, f18, j, k, l, 1.0F, f31);
+        vertex(ivertexbuilder, pose, f15, f4, f16, j, k, l, 0.5F, f31);
+        });
         matrixStackIn.popPose();
     }
 

@@ -13,7 +13,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
 /** Base for Ice and Fire layers: draws the parent model again with another texture or tint. */
-public abstract class IafRenderLayer<S extends IafRenderState, M extends EntityModel<S>> extends RenderLayer<S, M> {
+public abstract class IafRenderLayer<S extends IafRenderState, M extends EntityModel<? super S>> extends RenderLayer<S, M> {
 
     protected IafRenderLayer(RenderLayerParent<S, M> renderer) {
         super(renderer);

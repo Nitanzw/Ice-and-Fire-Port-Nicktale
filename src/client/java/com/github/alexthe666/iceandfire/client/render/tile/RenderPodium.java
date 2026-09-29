@@ -11,69 +11,89 @@ import com.github.alexthe666.iceandfire.item.ItemMyrmexEgg;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class RenderPodium<T extends TileEntityPodium> implements BlockEntityRenderer<T> {
+public class RenderPodium<T extends TileEntityPodium> implements BlockEntityRenderer<T, RenderPodium.PodiumRenderState> {
+
+    private final ModelDragonEgg model = new ModelDragonEgg();
+    private final ItemModelResolver itemModelResolver;
 
     public RenderPodium(BlockEntityRendererProvider.Context context) {
-
+        this.itemModelResolver = context.itemModelResolver();
     }
 
     protected static RenderType getEggTexture(EnumDragonEgg type) {
         return switch (type) {
-            default -> RenderType.entityCutout(RenderDragonEgg.EGG_RED);
-            case GREEN -> RenderType.entityCutout(RenderDragonEgg.EGG_GREEN);
-            case BRONZE -> RenderType.entityCutout(RenderDragonEgg.EGG_BRONZE);
-            case GRAY -> RenderType.entityCutout(RenderDragonEgg.EGG_GREY);
-            case BLUE -> RenderType.entityCutout(RenderDragonEgg.EGG_BLUE);
-            case WHITE -> RenderType.entityCutout(RenderDragonEgg.EGG_WHITE);
-            case SAPPHIRE -> RenderType.entityCutout(RenderDragonEgg.EGG_SAPPHIRE);
-            case SILVER -> RenderType.entityCutout(RenderDragonEgg.EGG_SILVER);
-            case ELECTRIC -> RenderType.entityCutout(RenderDragonEgg.EGG_ELECTRIC);
-            case AMYTHEST -> RenderType.entityCutout(RenderDragonEgg.EGG_AMYTHEST);
-            case COPPER -> RenderType.entityCutout(RenderDragonEgg.EGG_COPPER);
-            case BLACK -> RenderType.entityCutout(RenderDragonEgg.EGG_BLACK);
+            default -> RenderTypes.entityCutout(RenderDragonEgg.EGG_RED);
+            case GREEN -> RenderTypes.entityCutout(RenderDragonEgg.EGG_GREEN);
+            case BRONZE -> RenderTypes.entityCutout(RenderDragonEgg.EGG_BRONZE);
+            case GRAY -> RenderTypes.entityCutout(RenderDragonEgg.EGG_GREY);
+            case BLUE -> RenderTypes.entityCutout(RenderDragonEgg.EGG_BLUE);
+            case WHITE -> RenderTypes.entityCutout(RenderDragonEgg.EGG_WHITE);
+            case SAPPHIRE -> RenderTypes.entityCutout(RenderDragonEgg.EGG_SAPPHIRE);
+            case SILVER -> RenderTypes.entityCutout(RenderDragonEgg.EGG_SILVER);
+            case ELECTRIC -> RenderTypes.entityCutout(RenderDragonEgg.EGG_ELECTRIC);
+            case AMYTHEST -> RenderTypes.entityCutout(RenderDragonEgg.EGG_AMYTHEST);
+            case COPPER -> RenderTypes.entityCutout(RenderDragonEgg.EGG_COPPER);
+            case BLACK -> RenderTypes.entityCutout(RenderDragonEgg.EGG_BLACK);
         };
     }
 
     @Override
-    public void render(@NotNull T entity, float partialTicks, @NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        ModelDragonEgg model = new ModelDragonEgg();
-        TileEntityPodium podium = entity;
+    public @NotNull PodiumRenderState createRenderState() {
+        return new PodiumRenderState();
+    }
 
+    @Override
+    public void extractRenderState(@NotNull T podium, @NotNull PodiumRenderState state, float partialTick, @NotNull Vec3 cameraPos, ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(podium, state, partialTick, cameraPos, breakProgress);
+        state.tile = podium;
+        state.partialTick = partialTick;
+        state.item.clear();
+        ItemStack stack = podium.getItem(0);
+        if (!stack.isEmpty() && !(stack.getItem() instanceof ItemDragonEgg) && !(stack.getItem() instanceof ItemMyrmexEgg)) {
+            this.itemModelResolver.updateForTopItem(state.item, stack, ItemDisplayContext.FIXED, podium.getLevel(), null, 0);
+        }
+    }
+
+    @Override
+    public void submit(@NotNull PodiumRenderState state, @NotNull PoseStack matrixStackIn, @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState camera) {
+        TileEntityPodium podium = (TileEntityPodium) state.tile;
+        int light = state.lightCoords;
         if (!podium.getItem(0).isEmpty()) {
+            PoseStates.Egg eggState = new PoseStates.Egg();
+            eggState.pose = () -> {
+                model.resetToDefaultPose();
+                model.renderPodium();
+            };
             if (podium.getItem(0).getItem() instanceof ItemDragonEgg) {
                 ItemDragonEgg item = (ItemDragonEgg) podium.getItem(0).getItem();
                 matrixStackIn.pushPose();
                 matrixStackIn.translate(0.5F, 0.475F, 0.5F);
-                matrixStackIn.pushPose();
-                matrixStackIn.pushPose();
-                model.renderPodium();
-                model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderPodium.getEggTexture(item.type)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
-                matrixStackIn.popPose();
-                matrixStackIn.popPose();
+                collector.submitModel(model, eggState, matrixStackIn, RenderPodium.getEggTexture(item.type), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
                 matrixStackIn.popPose();
             } else if (podium.getItem(0).getItem() instanceof ItemMyrmexEgg) {
                 boolean jungle = podium.getItem(0).getItem() == IafItemRegistry.MYRMEX_JUNGLE_EGG.get();
                 matrixStackIn.pushPose();
                 matrixStackIn.translate(0.5F, 0.475F, 0.5F);
-                matrixStackIn.pushPose();
-                matrixStackIn.pushPose();
-                model.renderPodium();
-                model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(RenderType.entityCutout(jungle ? RenderMyrmexEgg.EGG_JUNGLE : RenderMyrmexEgg.EGG_DESERT)), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
+                collector.submitModel(model, eggState, matrixStackIn, RenderTypes.entityCutout(jungle ? RenderMyrmexEgg.EGG_JUNGLE : RenderMyrmexEgg.EGG_DESERT), light, OverlayTexture.NO_OVERLAY, -1, null, 0, null);
                 matrixStackIn.popPose();
-                matrixStackIn.popPose();
-                matrixStackIn.popPose();
-            } else if (!podium.getItem(0).isEmpty()) {
-                //if (net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new RenderPodiumItemEvent(this, podium, f, x, y, z))) {
+            } else if (!state.item.isEmpty()) {
                 matrixStackIn.pushPose();
-                float f2 = ((float) podium.prevTicksExisted + (podium.ticksExisted - podium.prevTicksExisted) * partialTicks);
+                float f2 = ((float) podium.prevTicksExisted + (podium.ticksExisted - podium.prevTicksExisted) * state.partialTick);
                 float f3 = Mth.sin(f2 / 10.0F) * 0.1F + 0.1F;
                 matrixStackIn.translate(0.5F, 1.55F + f3, 0.5F);
                 float f4 = (f2 / 20.0F);
@@ -81,12 +101,13 @@ public class RenderPodium<T extends TileEntityPodium> implements BlockEntityRend
                 matrixStackIn.pushPose();
                 matrixStackIn.translate(0, 0.2F, 0);
                 matrixStackIn.scale(0.65F, 0.65F, 0.65F);
-                Minecraft.getInstance().getItemRenderer().renderStatic(podium.getItem(0), ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, matrixStackIn, bufferIn, podium.getLevel(), 0);
+                state.item.submit(matrixStackIn, collector, light, OverlayTexture.NO_OVERLAY, 0);
                 matrixStackIn.popPose();
                 matrixStackIn.popPose();
-                //}
             }
         }
+    }
 
+    public static class PodiumRenderState extends TileRenderState {
     }
 }

@@ -4,7 +4,8 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -21,21 +22,21 @@ public class RenderChain {
 
     private static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/models/misc/chain_link.png");
 
-    public static void render(LivingEntity entityLivingIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int lightIn, List<Entity> chainedTo) {
+    public static void render(LivingEntity entityLivingIn, float partialTicks, PoseStack matrixStackIn, SubmitNodeCollector collector, int lightIn, List<Entity> chainedTo) {
         for (Entity chainTarget : chainedTo) {
             if (chainTarget == null) {
                 IceAndFire.LOGGER.warn("Found null value in list of target entities");
                 continue;
             }
             try {
-                renderLink(entityLivingIn, partialTicks, matrixStackIn, bufferIn, lightIn, chainTarget);
+                renderLink(entityLivingIn, partialTicks, matrixStackIn, collector, lightIn, chainTarget);
             } catch (Exception e) {
                 IceAndFire.LOGGER.warn("Could not render chain link for {} connected to {}", entityLivingIn.toString(), chainTarget.toString());
             }
         }
     }
 
-    public static <E extends Entity> void renderLink(LivingEntity entityLivingIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int lightIn, E chainTarget) {
+    public static <E extends Entity> void renderLink(LivingEntity entityLivingIn, float partialTicks, PoseStack matrixStackIn, SubmitNodeCollector collector, int lightIn, E chainTarget) {
         // Most of this code stems from the guardian lasers
         float f3 = entityLivingIn.getBbHeight() * 0.4f;
         matrixStackIn.pushPose();
@@ -66,26 +67,22 @@ public class RenderChain {
         float f32 = 0.75F;
         float f31 = f4 + f32;
 
-        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutoutNoCull(getTexture()));
-        PoseStack.Pose matrixstack$entry = matrixStackIn.last();
-        Matrix4f matrix4f = matrixstack$entry.pose();
-        Matrix3f matrix3f = matrixstack$entry.normal();
-        matrixStackIn.pushPose();
-        vertex(ivertexbuilder, matrix4f, matrix3f, f19, f4, f20, j, k, l, 0.4999F, f30, lightIn);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f19, 0.0F, f20, j, k, l, 0.4999F, f29, lightIn);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f21, 0.0F, f22, j, k, l, 0.0F, f29, lightIn);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f21, f4, f22, j, k, l, 0.0F, f30, lightIn);
+        collector.submitCustomGeometry(matrixStackIn, RenderTypes.entityCutout(getTexture()), (pose, ivertexbuilder) -> {
+        vertex(ivertexbuilder, pose, f19, f4, f20, j, k, l, 0.4999F, f30, lightIn);
+        vertex(ivertexbuilder, pose, f19, 0.0F, f20, j, k, l, 0.4999F, f29, lightIn);
+        vertex(ivertexbuilder, pose, f21, 0.0F, f22, j, k, l, 0.0F, f29, lightIn);
+        vertex(ivertexbuilder, pose, f21, f4, f22, j, k, l, 0.0F, f30, lightIn);
 
-        vertex(ivertexbuilder, matrix4f, matrix3f, f23, f4, f24, j, k, l, 0.4999F, f31, lightIn);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f23, 0.0F, f24, j, k, l, 0.4999F, f32, lightIn);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f25, 0.0F, f26, j, k, l, 0.0F, f32, lightIn);
-        vertex(ivertexbuilder, matrix4f, matrix3f, f25, f4, f26, j, k, l, 0.0F, f31, lightIn);
-        matrixStackIn.popPose();
+        vertex(ivertexbuilder, pose, f23, f4, f24, j, k, l, 0.4999F, f31, lightIn);
+        vertex(ivertexbuilder, pose, f23, 0.0F, f24, j, k, l, 0.4999F, f32, lightIn);
+        vertex(ivertexbuilder, pose, f25, 0.0F, f26, j, k, l, 0.0F, f32, lightIn);
+        vertex(ivertexbuilder, pose, f25, f4, f26, j, k, l, 0.0F, f31, lightIn);
+        });
         matrixStackIn.popPose();
     }
 
-    private static void vertex(VertexConsumer p_229108_0_, Matrix4f p_229108_1_, Matrix3f p_229108_2_, float p_229108_3_, float p_229108_4_, float p_229108_5_, int p_229108_6_, int p_229108_7_, int p_229108_8_, float p_229108_9_, float p_229108_10_, int packedLight) {
-        p_229108_0_.vertex(p_229108_1_, p_229108_3_, p_229108_4_, p_229108_5_).color(p_229108_6_, p_229108_7_, p_229108_8_, 255).uv(p_229108_9_, p_229108_10_).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(p_229108_2_, 0.0F, 1.0F, 0.0F).endVertex();
+    private static void vertex(VertexConsumer consumer, PoseStack.Pose pose, float p_229108_3_, float p_229108_4_, float p_229108_5_, int p_229108_6_, int p_229108_7_, int p_229108_8_, float p_229108_9_, float p_229108_10_, int packedLight) {
+        consumer.addVertex(pose, p_229108_3_, p_229108_4_, p_229108_5_).setColor(p_229108_6_, p_229108_7_, p_229108_8_, 255).setUv(p_229108_9_, p_229108_10_).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(pose, 0.0F, 1.0F, 0.0F);
     }
 
     private static Vec3 getPosition(Entity LivingEntityIn, double p_177110_2_, float p_177110_4_) {

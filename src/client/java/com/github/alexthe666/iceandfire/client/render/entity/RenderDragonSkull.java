@@ -4,9 +4,13 @@ import com.nicktale.api.client.model.TabulaModel;
 import com.github.alexthe666.iceandfire.entity.EntityDragonSkull;
 import com.github.alexthe666.iceandfire.enums.EnumDragonTextures;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.model.geom.ModelPart;
+import com.github.alexthe666.iceandfire.client.model.SimpleEntityRenderState;
+import com.nicktale.api.client.model.AdvancedModelBox;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -14,7 +18,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class RenderDragonSkull extends EntityRenderer<EntityDragonSkull> {
+public class RenderDragonSkull extends EntityRenderer<EntityDragonSkull, RenderDragonSkull.DragonSkullRenderState> {
 
     public static final float[] growth_stage_1 = new float[]{1F, 3F};
     public static final float[] growth_stage_2 = new float[]{3F, 7F};
@@ -41,31 +45,54 @@ public class RenderDragonSkull extends EntityRenderer<EntityDragonSkull> {
     }
 
     @Override
-    public void render(EntityDragonSkull entity, float entityYaw, float partialTicks, @NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn) {
+    public @NotNull DragonSkullRenderState createRenderState() {
+        return new DragonSkullRenderState();
+    }
+
+    @Override
+    public void extractRenderState(@NotNull EntityDragonSkull entity, @NotNull DragonSkullRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.dragonType = entity.getDragonType();
+        state.skullYaw = entity.getYaw();
+        state.renderSize = getRenderSize(entity);
+        state.onWall = entity.isOnWall();
+        state.texture = getTextureLocation(entity);
+    }
+
+    @Override
+    public void submit(@NotNull DragonSkullRenderState state, @NotNull PoseStack matrixStackIn, @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState camera) {
+        super.submit(state, matrixStackIn, collector, camera);
         TabulaModel model;
-        if (entity.getDragonType() == 2) {
+        if (state.dragonType == 2) {
             model = lightningDragonModel;
-        } else if (entity.getDragonType() == 1) {
+        } else if (state.dragonType == 1) {
             model = iceDragonModel;
         } else {
             model = fireDragonModel;
         }
-        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(getTextureLocation(entity)));
         matrixStackIn.pushPose();
         matrixStackIn.mulPose(Axis.XP.rotationDegrees(-180.0F));
-        matrixStackIn.mulPose(Axis.YN.rotationDegrees(-180.0F - entity.getYaw()));
-        float f = 0.0625F;
-        matrixStackIn.scale(1.0F, 1.0F, 1.0F);
-        float size = getRenderSize(entity) / 3;
+        matrixStackIn.mulPose(Axis.YN.rotationDegrees(-180.0F - state.skullYaw));
+        float size = state.renderSize / 3;
         matrixStackIn.scale(size, size, size);
-        matrixStackIn.translate(0, entity.isOnWall() ? -0.24F : -0.12F, entity.isOnWall() ? 0.4F : 0.5F);
+        matrixStackIn.translate(0, state.onWall ? -0.24F : -0.12F, state.onWall ? 0.4F : 0.5F);
         model.resetToDefaultPose();
-        setRotationAngles(model.getCube("Head"), entity.isOnWall() ? (float) Math.toRadians(50F) : 0F, 0, 0);
-        model.getCube("Head").render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        setRotationAngles(model.getCube("Head"), state.onWall ? (float) Math.toRadians(50F) : 0F, 0, 0);
+        ModelPart head = model.getPart(model.getCube("Head"));
+        if (head != null) {
+            collector.submitModelPart(head, matrixStackIn, RenderTypes.entityTranslucent(state.texture), state.lightCoords, OverlayTexture.NO_OVERLAY, null);
+        }
         matrixStackIn.popPose();
     }
 
-    @Override
+    public static class DragonSkullRenderState extends SimpleEntityRenderState {
+        public int dragonType;
+        public float skullYaw;
+        public float renderSize;
+        public boolean onWall;
+        public Identifier texture;
+    }
+
     public @NotNull Identifier getTextureLocation(EntityDragonSkull entity) {
         if (entity.getDragonType() == 2) {
             return EnumDragonTextures.getLightningDragonSkullTextures(entity);
