@@ -62,44 +62,44 @@ public class IafDamageRegistry {
     }
 
     public static CustomEntityDamageSource causeGorgonDamage(@Nullable Entity entity) {
-        Holder<DamageType> holder = entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(GORGON_DMG_TYPE).get();
+        Holder<DamageType> holder = entity.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(GORGON_DMG_TYPE);
         return new CustomEntityDamageSource(holder, entity);
     }
 
     public static CustomEntityDamageSource causeDragonFireDamage(@Nullable Entity entity) {
-        Holder<DamageType> holder = entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(DRAGON_FIRE_TYPE).get();
+        Holder<DamageType> holder = entity.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DRAGON_FIRE_TYPE);
         return new CustomEntityDamageSource(holder, entity);
     }
 
     public static CustomIndirectEntityDamageSource causeIndirectDragonFireDamage(Entity source, @Nullable Entity indirectEntityIn) {
-        Holder<DamageType> holder = indirectEntityIn.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(DRAGON_FIRE_TYPE).get();
+        Holder<DamageType> holder = indirectEntityIn.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DRAGON_FIRE_TYPE);
         return new CustomIndirectEntityDamageSource(holder, source, indirectEntityIn);
     }
 
     public static CustomEntityDamageSource causeDragonIceDamage(@Nullable Entity entity) {
-        Holder<DamageType> holder = entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(DRAGON_ICE_TYPE).get();
+        Holder<DamageType> holder = entity.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DRAGON_ICE_TYPE);
         return new CustomEntityDamageSource(holder, entity);
     }
 
     public static CustomIndirectEntityDamageSource causeIndirectDragonIceDamage(Entity source, @Nullable Entity indirectEntityIn) {
-        Holder<DamageType> holder = indirectEntityIn.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(DRAGON_ICE_TYPE).get();
+        Holder<DamageType> holder = indirectEntityIn.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DRAGON_ICE_TYPE);
         return new CustomIndirectEntityDamageSource(holder, source, indirectEntityIn);
     }
 
     public static CustomEntityDamageSource causeDragonLightningDamage(@Nullable Entity entity) {
-        Holder<DamageType> holder = entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(DRAGON_LIGHTNING_TYPE).get();
+        Holder<DamageType> holder = entity.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DRAGON_LIGHTNING_TYPE);
         return new CustomEntityDamageSource(holder, entity);
     }
 
     public static CustomIndirectEntityDamageSource causeIndirectDragonLightningDamage(Entity source, @Nullable Entity indirectEntityIn) {
-        Holder<DamageType> holder = indirectEntityIn.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(DRAGON_LIGHTNING_TYPE).get();
+        Holder<DamageType> holder = indirectEntityIn.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DRAGON_LIGHTNING_TYPE);
         return new CustomIndirectEntityDamageSource(holder, source, indirectEntityIn);
     }
 
     public static void gatherData(GatherDataEvent event) {
         event.getGenerator().addProvider(
                 // Tell generator to run only when server data are generating
-                event.includeServer(),
+                event instanceof GatherDataEvent.Server,
                 (DataProvider.Factory<IafDamageTypeTagsProvider>) output -> new IafDamageTypeTagsProvider(
                         event.getGenerator().getPackOutput(),
                         event.getLookupProvider(),
