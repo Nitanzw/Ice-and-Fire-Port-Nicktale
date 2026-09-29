@@ -6,7 +6,8 @@ import com.github.alexthe666.iceandfire.entity.EntityIceDragon;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import com.github.alexthe666.iceandfire.enums.EnumDragonEgg;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.players.OldUsersConverter;
@@ -14,6 +15,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -55,64 +59,57 @@ public class TileEntityEggInIce extends BlockEntity {
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag tag) {
-        if (type != null) {
-            tag.putByte("Color", (byte) type.ordinal());
-        } else {
-            tag.putByte("Color", (byte) 0);
-        }
-        tag.putInt("Age", age);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("Color", type == null ? 0 : type.ordinal());
+        output.putInt("Age", age);
+        output.putBoolean("Spawned", spawned);
         if (ownerUUID == null) {
-            tag.putString("OwnerUUID", "");
+            output.putString("OwnerUUID", "");
         } else {
-            tag.putUUID("OwnerUUID", ownerUUID);
+            output.store("OwnerUUID", UUIDUtil.CODEC, ownerUUID);
         }
     }
 
     @Override
-    public void load(@NotNull CompoundTag tag) {
-        super.load(tag);
-        type = EnumDragonEgg.values()[tag.getByte("Color")];
-        age = tag.getInt("Age");
-        UUID s = null;
-
-        if (tag.hasUUID("OwnerUUID")) {
-            s = tag.getUUID("OwnerUUID");
-        } else {
-            try {
-                String s1 = tag.getString("OwnerUUID");
-                s = OldUsersConverter.convertMobOwnerIfNecessary(this.level.getServer(), s1);
-            } catch (Exception ignored) {
-            }
-        }
-        if (s != null) {
-            ownerUUID = s;
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        int color = Mth.clamp(input.getIntOr("Color", 0), 0, EnumDragonEgg.values().length - 1);
+        type = EnumDragonEgg.values()[color];
+        age = input.getIntOr("Age", 0);
+        spawned = input.getBooleanOr("Spawned", false);
+        ownerUUID = input.read("OwnerUUID", UUIDUtil.LENIENT_CODEC).orElse(null);
+        if (ownerUUID == null) {
+            input.getString("OwnerUUID").ifPresent(ownerName -> {
+                try {
+                    if (this.level != null && this.level.getServer() != null) {
+                        this.ownerUUID = OldUsersConverter.convertMobOwnerIfNecessary(this.level.getServer(), ownerName);
+                    }
+                } catch (Exception ignored) {
+                }
+            });
         }
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag parentNBTTagCompound) {
-        this.load(parentNBTTagCompound);
+    public void handleUpdateTag(ValueInput input) {
+        super.handleUpdateTag(input);
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag nbtTagCompound = new CompoundTag();
-        saveAdditional(nbtTagCompound);
-        return nbtTagCompound;
+    public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveCustomOnly(registries);
     }
 
     @Override
     @Nullable
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        CompoundTag nbtTagCompound = new CompoundTag();
-        saveAdditional(nbtTagCompound);
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        load(pkt.getTag());   // read from the nbt in the packet
+    public void onDataPacket(Connection net, ValueInput input) {
+        super.onDataPacket(net, input);
     }
 
     public void spawnEgg() {

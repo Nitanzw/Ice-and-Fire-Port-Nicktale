@@ -12,7 +12,7 @@ import com.github.alexthe666.iceandfire.recipe.IafRecipeRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -30,9 +30,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -50,8 +49,6 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
     public int fireType;
     public int cookTime;
     public int lastDragonFlameTimer = 0;
-    net.neoforged.neoforge.common.util.LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper
-        .create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
     private NonNullList<ItemStack> forgeItemStacks = NonNullList.withSize(3, ItemStack.EMPTY);
     private boolean prevAssembled;
     private boolean canAddFlameAgain = true;
@@ -198,17 +195,18 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
     }
 
     @Override
-    public void load(@NotNull CompoundTag compound) {
-        super.load(compound);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         this.forgeItemStacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(compound, this.forgeItemStacks);
-        this.cookTime = compound.getInt("CookTime");
+        ContainerHelper.loadAllItems(input, this.forgeItemStacks);
+        this.cookTime = input.getIntOr("CookTime", 0);
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
-        compound.putInt("CookTime", (short) this.cookTime);
-        ContainerHelper.saveAllItems(compound, this.forgeItemStacks);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("CookTime", this.cookTime);
+        ContainerHelper.saveAllItems(output, this.forgeItemStacks);
     }
 
     @Override
@@ -259,7 +257,8 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
     }
 
     public Optional<DragonForgeRecipe> getCurrentRecipe() {
-        return level.getRecipeManager().getRecipeFor(IafRecipeRegistry.DRAGON_FORGE_TYPE.get(), this, level);
+        DragonForgeRecipe.Input input = new DragonForgeRecipe.Input(this.getItem(0), this.getItem(1), this.getTypeID());
+        return level.getRecipeManager().getRecipeFor(IafRecipeRegistry.DRAGON_FORGE_TYPE.get(), input, level);
     }
 
     public List<DragonForgeRecipe> getRecipes() {
@@ -355,21 +354,6 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
     }
 
     @Override
-    public <T> net.neoforged.neoforge.common.util.@NotNull LazyOptional<T> getCapability(
-        net.neoforged.neoforge.common.capabilities.@NotNull Capability<T> capability, @Nullable Direction facing) {
-        if (!this.remove && facing != null
-            && capability == ForgeCapabilities.ITEM_HANDLER) {
-            if (facing == Direction.UP)
-                return handlers[0].cast();
-            if (facing == Direction.DOWN)
-                return handlers[1].cast();
-            else
-                return handlers[2].cast();
-        }
-        return super.getCapability(capability, facing);
-    }
-
-    @Override
     protected @NotNull Component getDefaultName() {
         return Component.translatable("container.dragonforge_fire" + DragonType.getNameFromInt(fireType));
     }
@@ -417,13 +401,13 @@ public class TileEntityDragonforge extends BaseContainerBlockEntity implements W
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-        load(packet.getTag());
+    public void onDataPacket(Connection net, ValueInput input) {
+        super.onDataPacket(net, input);
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+    public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithFullMetadata(registries);
     }
 
     public boolean assembled() {
