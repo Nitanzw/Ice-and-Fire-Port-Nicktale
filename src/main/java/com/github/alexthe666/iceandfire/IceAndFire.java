@@ -4,6 +4,8 @@ import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import com.github.alexthe666.iceandfire.config.ConfigHolder;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import com.github.alexthe666.iceandfire.entity.IafVillagerRegistry;
+import com.github.alexthe666.iceandfire.entity.props.CapabilityHandler;
+import com.github.alexthe666.iceandfire.entity.props.EntityDataProvider;
 import com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry;
 import com.github.alexthe666.iceandfire.inventory.IafContainerRegistry;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
@@ -64,6 +66,7 @@ public class IceAndFire {
         modBus.addListener(CommonProxy::onModConfigEvent);
         modBus.addListener(IafSoundRegistry::registerSoundEvents);
         modBus.addListener(IafDamageRegistry::gatherData);
+        modBus.addListener(IafItemRegistry::setRepairMaterials);
         modBus.addListener(IafTileEntityRegistry::registerCapabilities);
         modBus.addListener(IafRecipeRegistry::preInit);
         NeoForge.EVENT_BUS.addListener(IafRecipeRegistry::registerBrewingRecipes);
@@ -73,6 +76,9 @@ public class IceAndFire {
         IafBlockRegistry.BLOCKS.register(modBus);
         IafTabRegistry.TAB_REGISTER.register(modBus);
         IafEntityRegistry.ENTITIES.register(modBus);
+        IafEntityRegistry.init(modBus);
+        EntityDataProvider.ATTACHMENTS.register(modBus);
+        CapabilityHandler.init(modBus);
         IafTileEntityRegistry.TYPES.register(modBus);
         IafPlacementFilterRegistry.PLACEMENT_MODIFIER_TYPES.register(modBus);
         IafWorldRegistry.FEATURES.register(modBus);
