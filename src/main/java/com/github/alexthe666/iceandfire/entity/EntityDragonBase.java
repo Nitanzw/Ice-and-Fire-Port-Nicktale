@@ -36,8 +36,6 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -74,6 +72,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -81,13 +81,11 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.MinecraftForge;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.event.ForgeEventFactory;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
-import net.neoforged.neoforge.network.NetworkHooks;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -96,11 +94,11 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class EntityDragonBase extends TamableAnimal implements IPassabilityNavigator, ISyncMount, IFlyingMount, IMultipartEntity, IAnimatedEntity, IDragonFlute, IDeadMob, IVillagerFear, IAnimalFear, IDropArmor, IHasCustomizableAttributes, ICustomSizeNavigator, ICustomMoveController, ContainerListener {
+public abstract class EntityDragonBase extends TamableAnimal implements IPassabilityNavigator, ISyncMount, IFlyingMount, IMultipartEntity, IAnimatedEntity, IDragonFlute, IDeadMob, IVillagerFear, IAnimalFear, IDropArmor, IHasCustomizableAttributes, ICustomSizeNavigator, ICustomMoveController {
 
     public static final int FLIGHT_CHANCE_PER_TICK = 1500;
     protected static final EntityDataAccessor<Boolean> SWIMMING = SynchedEntityData.defineId(EntityDragonBase.class, EntityDataSerializers.BOOLEAN);
-    private static final UUID ARMOR_MODIFIER_UUID = UUID.fromString("556E1665-8B10-40C8-8F9D-CF9B1667F295");
+    private static final Identifier ARMOR_MODIFIER_ID = Identifier.parse("iceandfire:dragon_armor_bonus");
     private static final EntityDataAccessor<Integer> HUNGER = SynchedEntityData.defineId(EntityDragonBase.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> AGE_TICKS = SynchedEntityData.defineId(EntityDragonBase.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> GENDER = SynchedEntityData.defineId(EntityDragonBase.class, EntityDataSerializers.BOOLEAN);
@@ -232,7 +230,9 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     private EntityDragonPart tail4Part;
     private boolean isOverAir;
 
-    private LazyOptional<?> itemHandler = null;
+    private ItemStacksResourceHandler itemHandler;
+    private boolean syncingResourceInventory;
+    private boolean initializingInventory;
 
     public EntityDragonBase(EntityType t, Level world, DragonType type, double minimumDamage, double maximumDamage, double minimumHealth, double maximumHealth, double minimumSpeed, double maximumSpeed) {
         super(t, world);
@@ -521,8 +521,9 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     }
 
     public void openInventory(Player player) {
-        if (!this.level().isClientSide())
-            NetworkHooks.openScreen((ServerPlayer) player, getMenuProvider());
+        if (!this.level().isClientSide() && player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.openMenu(getMenuProvider());
+        }
         IceAndFire.PROXY.setReferencedMob(this);
     }
 
@@ -707,98 +708,76 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt("Hunger", this.getHunger());
-        compound.putInt("AgeTicks", this.getAgeInTicks());
-        compound.putBoolean("Gender", this.isMale());
-        compound.putInt("Variant", this.getVariant());
-        compound.putBoolean("Sleeping", this.isSleeping());
-        compound.putBoolean("TamedDragon", this.isTame());
-        compound.putBoolean("FireBreathing", this.isBreathingFire());
-        compound.putBoolean("AttackDecision", usingGroundAttack);
-        compound.putBoolean("Hovering", this.isHovering());
-        compound.putBoolean("Flying", this.isFlying());
-        compound.putInt("DeathStage", this.getDeathStage());
-        compound.putBoolean("ModelDead", this.isModelDead());
-        compound.putFloat("DeadProg", this.modelDeadProgress);
-        compound.putBoolean("Tackle", this.isTackling());
-        compound.putBoolean("HasHomePosition", this.hasHomePosition);
-        compound.putString("CustomPose", this.getCustomPose());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("Hunger", this.getHunger());
+        output.putInt("AgeTicks", this.getAgeInTicks());
+        output.putBoolean("Gender", this.isMale());
+        output.putInt("Variant", this.getVariant());
+        output.putBoolean("Sleeping", this.isSleeping());
+        output.putBoolean("TamedDragon", this.isTame());
+        output.putBoolean("FireBreathing", this.isBreathingFire());
+        output.putBoolean("AttackDecision", usingGroundAttack);
+        output.putBoolean("Hovering", this.isHovering());
+        output.putBoolean("Flying", this.isFlying());
+        output.putInt("DeathStage", this.getDeathStage());
+        output.putBoolean("ModelDead", this.isModelDead());
+        output.putFloat("DeadProg", this.modelDeadProgress);
+        output.putBoolean("Tackle", this.isTackling());
+        output.putBoolean("HasHomePosition", this.hasHomePosition);
+        output.putString("CustomPose", this.getCustomPose());
         if (homePos != null && this.hasHomePosition) {
-            homePos.write(compound);
+            homePos.write(output);
         }
-        compound.putBoolean("AgingDisabled", this.isAgingDisabled());
-        compound.putInt("Command", this.getCommand());
+        output.putBoolean("AgingDisabled", this.isAgingDisabled());
+        output.putInt("Command", this.getCommand());
         if (dragonInventory != null) {
-            ListTag nbttaglist = new ListTag();
-            for (int i = 0; i < dragonInventory.getContainerSize(); ++i) {
-                ItemStack itemstack = dragonInventory.getItem(i);
-                if (!itemstack.isEmpty()) {
-                    CompoundTag CompoundNBT = new CompoundTag();
-                    CompoundNBT.putByte("Slot", (byte) i);
-                    itemstack.save(CompoundNBT);
-                    nbttaglist.add(CompoundNBT);
+            ValueOutput.ValueOutputList items = output.childrenList("Items");
+            for (int slot = 0; slot < dragonInventory.getContainerSize(); slot++) {
+                ItemStack stack = dragonInventory.getItem(slot);
+                if (!stack.isEmpty()) {
+                    ValueOutput itemOutput = items.addChild();
+                    itemOutput.putByte("Slot", (byte) slot);
+                    itemOutput.store(ItemStack.MAP_CODEC, stack);
                 }
             }
-            compound.put("Items", nbttaglist);
         }
-        compound.putBoolean("CrystalBound", this.isBoundToCrystal());
-        if (this.hasCustomName()) {
-            compound.putString("CustomName", Component.Serializer.toJson(this.getCustomName()));
-        }
+        output.putBoolean("CrystalBound", this.isBoundToCrystal());
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.setHunger(compound.getInt("Hunger"));
-        this.setAgeInTicks(compound.getInt("AgeTicks"));
-        this.setGender(compound.getBoolean("Gender"));
-        this.setVariant(compound.getInt("Variant"));
-        this.setInSittingPose(compound.getBoolean("Sleeping"));
-        this.setTame(compound.getBoolean("TamedDragon"));
-        this.setBreathingFire(compound.getBoolean("FireBreathing"));
-        this.usingGroundAttack = compound.getBoolean("AttackDecision");
-        this.setHovering(compound.getBoolean("Hovering"));
-        this.setFlying(compound.getBoolean("Flying"));
-        this.setDeathStage(compound.getInt("DeathStage"));
-        this.setModelDead(compound.getBoolean("ModelDead"));
-        this.modelDeadProgress = compound.getFloat("DeadProg");
-        this.setCustomPose(compound.getString("CustomPose"));
-        this.hasHomePosition = compound.getBoolean("HasHomePosition");
-        if (hasHomePosition && compound.getInt("HomeAreaX") != 0 && compound.getInt("HomeAreaY") != 0 && compound.getInt("HomeAreaZ") != 0) {
-            homePos = new HomePosition(compound, this.level());
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setHunger(input.getIntOr("Hunger", 0));
+        this.setAgeInTicks(input.getIntOr("AgeTicks", 0));
+        this.setGender(input.getBooleanOr("Gender", false));
+        this.setVariant(input.getIntOr("Variant", 0));
+        this.setInSittingPose(input.getBooleanOr("Sleeping", false));
+        this.setTame(input.getBooleanOr("TamedDragon", false));
+        this.setBreathingFire(input.getBooleanOr("FireBreathing", false));
+        this.usingGroundAttack = input.getBooleanOr("AttackDecision", false);
+        this.setHovering(input.getBooleanOr("Hovering", false));
+        this.setFlying(input.getBooleanOr("Flying", false));
+        this.setDeathStage(input.getIntOr("DeathStage", 0));
+        this.setModelDead(input.getBooleanOr("ModelDead", false));
+        this.modelDeadProgress = input.getFloatOr("DeadProg", 0.0F);
+        this.setCustomPose(input.getStringOr("CustomPose", ""));
+        this.hasHomePosition = input.getBooleanOr("HasHomePosition", false);
+        if (this.hasHomePosition && input.getIntOr("HomeAreaX", 0) != 0 && input.getIntOr("HomeAreaY", 0) != 0 && input.getIntOr("HomeAreaZ", 0) != 0) {
+            this.homePos = new HomePosition(BlockPos.ZERO, this.level()).read(input, this.level());
         }
-        this.setTackling(compound.getBoolean("Tackle"));
-        this.setAgingDisabled(compound.getBoolean("AgingDisabled"));
-        this.setCommand(compound.getInt("Command"));
-        if (dragonInventory != null) {
-            ListTag nbttaglist = compound.getList("Items", 10);
-            this.createInventory();
-            for (Tag inbt : nbttaglist) {
-                CompoundTag CompoundNBT = (net.minecraft.nbt.CompoundTag) inbt;
-                int j = CompoundNBT.getByte("Slot") & 255;
-                if (j <= 4) {
-                    dragonInventory.setItem(j, ItemStack.of(CompoundNBT));
-                }
-            }
-        } else {
-            ListTag nbttaglist = compound.getList("Items", 10);
-            this.createInventory();
-            for (Tag inbt : nbttaglist) {
-                CompoundTag CompoundNBT = (net.minecraft.nbt.CompoundTag) inbt;
-                int j = CompoundNBT.getByte("Slot") & 255;
-                dragonInventory.setItem(j, ItemStack.of(CompoundNBT));
+        this.setTackling(input.getBooleanOr("Tackle", false));
+        this.setAgingDisabled(input.getBooleanOr("AgingDisabled", false));
+        this.setCommand(input.getIntOr("Command", 0));
+        this.createInventory();
+        for (ValueInput itemInput : input.childrenListOrEmpty("Items")) {
+            int slot = itemInput.getByteOr("Slot", (byte) 0) & 255;
+            if (slot < this.dragonInventory.getContainerSize()) {
+                itemInput.read(ItemStack.MAP_CODEC).ifPresent(stack -> this.dragonInventory.setItem(slot, stack));
             }
         }
-        this.setCrystalBound(compound.getBoolean("CrystalBound"));
-        if (compound.contains("CustomName", 8) && !compound.getString("CustomName").startsWith("TextComponent")) {
-            this.setCustomName(Component.Serializer.fromJson(compound.getString("CustomName")));
-        }
-
+        this.setCrystalBound(input.getBooleanOr("CrystalBound", false));
         this.setConfigurableAttributes();
-
         this.updateAttributes();
     }
 
@@ -807,46 +786,79 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     }
 
     protected void createInventory() {
-        SimpleContainer tempInventory = this.dragonInventory;
-        this.dragonInventory = new SimpleContainer(this.getContainerSize());
-        if (tempInventory != null) {
-            tempInventory.removeListener(this);
-            int i = Math.min(tempInventory.getContainerSize(), this.dragonInventory.getContainerSize());
-
-            for (int j = 0; j < i; ++j) {
-                ItemStack itemstack = tempInventory.getItem(j);
-                if (!itemstack.isEmpty()) {
-                    this.dragonInventory.setItem(j, itemstack.copy());
+        this.initializingInventory = true;
+        try {
+            SimpleContainer tempInventory = this.dragonInventory;
+            this.dragonInventory = new DragonInventory(this, this.getContainerSize());
+            if (tempInventory != null) {
+                int size = Math.min(tempInventory.getContainerSize(), this.dragonInventory.getContainerSize());
+                for (int slot = 0; slot < size; slot++) {
+                    ItemStack stack = tempInventory.getItem(slot);
+                    if (!stack.isEmpty()) {
+                        this.dragonInventory.setItem(slot, stack.copy());
+                    }
                 }
             }
+        } finally {
+            this.initializingInventory = false;
         }
 
-        this.dragonInventory.addListener(this);
+        this.itemHandler = new ItemStacksResourceHandler(this.dragonInventory.getItems()) {
+            @Override
+            protected void onContentsChanged(int slot, ItemStack previousStack) {
+                syncingResourceInventory = true;
+                try {
+                    dragonInventory.setItem(slot, getResource(slot).toStack(getAmountAsInt(slot)));
+                } finally {
+                    syncingResourceInventory = false;
+                }
+            }
+        };
         this.updateContainerEquipment();
-        this.itemHandler = LazyOptional.of(() -> new InvWrapper(this.dragonInventory));
+    }
+
+    private static final class DragonInventory extends SimpleContainer {
+        private final EntityDragonBase dragon;
+
+        private DragonInventory(EntityDragonBase dragon, int size) {
+            super(size);
+            this.dragon = dragon;
+        }
+
+        @Override
+        public void setChanged() {
+            super.setChanged();
+            if (!this.dragon.initializingInventory) {
+                this.dragon.updateContainerEquipment();
+            }
+        }
     }
 
     protected void updateContainerEquipment() {
+        if (this.initializingInventory) {
+            return;
+        }
+        if (!this.syncingResourceInventory && this.itemHandler != null && this.dragonInventory != null) {
+            this.syncingResourceInventory = true;
+            try {
+                for (int slot = 0; slot < this.dragonInventory.getContainerSize(); slot++) {
+                    ItemStack stack = this.dragonInventory.getItem(slot);
+                    ItemResource resource = ItemResource.of(stack);
+                    if (!this.itemHandler.getResource(slot).equals(resource) || this.itemHandler.getAmountAsInt(slot) != stack.getCount()) {
+                        this.itemHandler.set(slot, resource, stack.getCount());
+                    }
+                }
+            } finally {
+                this.syncingResourceInventory = false;
+            }
+        }
         if (!this.level().isClientSide()) {
             updateAttributes();
         }
     }
 
-    @Override
-    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
-        if (this.isAlive() && capability == ForgeCapabilities.ITEM_HANDLER && itemHandler != null)
-            return itemHandler.cast();
-        return super.getCapability(capability, facing);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        if (itemHandler != null) {
-            LazyOptional<?> oldHandler = itemHandler;
-            itemHandler = null;
-            oldHandler.invalidate();
-        }
+    public ResourceHandler<ItemResource> getDragonItemHandler() {
+        return this.isAlive() ? this.itemHandler : null;
     }
 
     public boolean hasInventoryChanged(Container pInventory) {
@@ -902,8 +914,8 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
         final double baseValue = minimumArmor + (armorStep * this.getAgeInDays());
         this.getAttribute(Attributes.ARMOR).setBaseValue(baseValue);
         if (!this.level().isClientSide()) {
-            this.getAttribute(Attributes.ARMOR).removeModifier(ARMOR_MODIFIER_UUID);
-            this.getAttribute(Attributes.ARMOR).addPermanentModifier(new AttributeModifier(ARMOR_MODIFIER_UUID, "Dragon armor bonus", calculateArmorModifier(), AttributeModifier.Operation.ADDITION));
+            this.getAttribute(Attributes.ARMOR).removeModifier(ARMOR_MODIFIER_ID);
+            this.getAttribute(Attributes.ARMOR).addPermanentModifier(new AttributeModifier(ARMOR_MODIFIER_ID, calculateArmorModifier(), AttributeModifier.Operation.ADD_VALUE));
         }
         this.getAttribute(Attributes.FOLLOW_RANGE).setBaseValue(Math.min(2048, IafConfig.dragonTargetSearchLength));
     }
@@ -1434,7 +1446,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     }
 
     public void breakBlock(final BlockPos position) {
-        if (MinecraftForge.EVENT_BUS.post(new GenericGriefEvent(this, position.getX(), position.getY(), position.getZ()))) {
+        if (NeoForge.EVENT_BUS.post(new GenericGriefEvent(this, position.getX(), position.getY(), position.getZ())).isCanceled()) {
             return;
         }
 
@@ -1460,7 +1472,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
         }
 
         if (doBreak) {
-            if (ForgeEventFactory.getMobGriefingEvent(this.level(), this)) {
+            if ((this.level() instanceof ServerLevel serverLevel && EventHooks.canEntityGrief(serverLevel, this))) {
                 if (DragonUtils.canGrief(this)) {
                     // TODO :: make `force` ignore the dragon stage?
                     if (!isModelDead() && this.getDragonStage() >= 3 && (this.canMove() || this.getControllingPassenger() != null)) {
@@ -1643,8 +1655,8 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.setGender(this.getRandom().nextBoolean());
         final int age = this.getRandom().nextInt(80) + 1;
         this.growDragon(age);
@@ -2809,8 +2821,8 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     }
 
     @Override
-    public boolean save(@NotNull CompoundTag compound) {
-        return this.saveAsPassenger(compound);
+    public boolean save(ValueOutput output) {
+        return this.saveAsPassenger(output);
     }
 
     @Override
@@ -2921,13 +2933,6 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     @Override
     public int getYNavSize() {
         return Mth.ceil(this.getBbHeight());
-    }
-
-    @Override
-    public void containerChanged(@NotNull Container invBasic) {
-        if (!this.level().isClientSide()) {
-            updateAttributes();
-        }
     }
 
     @Override // TODO :: Block collision performance impact (due to the multi-part entity)?

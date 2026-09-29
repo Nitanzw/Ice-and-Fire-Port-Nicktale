@@ -6,7 +6,8 @@ import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.util.*;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.google.common.base.Predicate;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -318,24 +319,24 @@ public class EntityHydra extends Monster implements IAnimatedEntity, IMultipartE
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt("Variant", this.getVariant());
-        compound.putInt("HeadCount", this.getHeadCount());
-        compound.putInt("SeveredHead", this.getSeveredHead());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("Variant", this.getVariant());
+        output.putInt("HeadCount", this.getHeadCount());
+        output.putInt("SeveredHead", this.getSeveredHead());
         for (int i = 0; i < HEADS; i++) {
-            compound.putFloat("HeadDamage" + i, headDamageTracker[i]);
+            output.putFloat("HeadDamage" + i, headDamageTracker[i]);
         }
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.setVariant(compound.getInt("Variant"));
-        this.setHeadCount(compound.getInt("HeadCount"));
-        this.setSeveredHead(compound.getInt("SeveredHead"));
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setVariant(input.getIntOr("Variant", 0));
+        this.setHeadCount(input.getIntOr("HeadCount", 3));
+        this.setSeveredHead(input.getIntOr("SeveredHead", -1));
         for (int i = 0; i < HEADS; i++) {
-            headDamageTracker[i] = compound.getFloat("HeadDamage" + i);
+            headDamageTracker[i] = input.getFloatOr("HeadDamage" + i, 0.0F);
         }
         this.setConfigurableAttributes();
     }
@@ -370,8 +371,8 @@ public class EntityHydra extends Monster implements IAnimatedEntity, IMultipartE
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        SpawnGroupData data = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        SpawnGroupData data = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.setVariant(random.nextInt(3));
         return data;
     }

@@ -10,7 +10,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PlayMessages;
 
 import javax.annotation.Nullable;
 
@@ -21,9 +20,6 @@ public class EntityDragonIceCharge extends EntityDragonCharge {
 
     }
 
-    public EntityDragonIceCharge(PlayMessages.SpawnEntity spawnEntity, Level worldIn) {
-        this(IafEntityRegistry.ICE_DRAGON_CHARGE.get(), worldIn);
-    }
 
     public EntityDragonIceCharge(EntityType<? extends Fireball> type, Level worldIn, double posX,
                                  double posY, double posZ, double accelX, double accelY, double accelZ) {
