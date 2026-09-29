@@ -4,8 +4,17 @@ import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
 public abstract class ModelDragonBase<S extends EntityRenderState> extends AdvancedEntityModel<S> {
+    /** Baby flag copied from the render state before every animate() call. */
+    protected boolean young;
+
+    @Override
+    public void setupAnim(S state) {
+        this.young = state instanceof LivingEntityRenderState living && living.isBaby;
+        super.setupAnim(state);
+    }
 
     public void rotate(ModelAnimator animator, AdvancedModelBox model, float x, float y, float z) {
         animator.rotate(model, (float) Math.toRadians(x), (float) Math.toRadians(y), (float) Math.toRadians(z));

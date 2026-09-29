@@ -13,7 +13,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class ModelDreadLich extends ModelDreadBase<EntityDreadLich> implements ArmedModel {
+public class ModelDreadLich extends ModelDreadBase<BipedRenderState> {
     public HideableModelRenderer robe;
     public HideableModelRenderer mask;
     public HideableModelRenderer hood;
@@ -25,8 +25,6 @@ public class ModelDreadLich extends ModelDreadBase<EntityDreadLich> implements A
     public ModelDreadLich(float modelScale) {
         this.texWidth = 128;
         this.texHeight = 64;
-        this.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-        this.rightArmPose = HumanoidModel.ArmPose.EMPTY;
         this.sleeveLeft = new HideableModelRenderer(this, 33, 35);
         this.sleeveLeft.mirror = true;
         this.sleeveLeft.setPos(0.0F, -0.1F, 0.0F);
@@ -88,19 +86,6 @@ public class ModelDreadLich extends ModelDreadBase<EntityDreadLich> implements A
         animator = ModelAnimator.create();
     }
 
-    public void setLivingAnimations(EntityDreadThrall LivingEntityIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
-        this.rightArmPose = HumanoidModel.ArmPose.EMPTY;
-        this.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-        ItemStack itemstack = LivingEntityIn.getItemInHand(InteractionHand.MAIN_HAND);
-
-        if (itemstack.getItem() == Items.BOW) {
-            if (LivingEntityIn.getMainArm() == HumanoidArm.RIGHT) {
-                this.rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-            } else {
-                this.leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-            }
-        }
-    }
 
     @Override
     public Animation getSpawnAnimation() {
@@ -108,9 +93,10 @@ public class ModelDreadLich extends ModelDreadBase<EntityDreadLich> implements A
     }
 
     @Override
-    public void setupAnim(EntityDreadLich entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setupAnim(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        if (entityIn.getAnimation() == EntityDreadLich.ANIMATION_SUMMON) {
+    protected void animate(BipedRenderState entityIn) {
+        super.animate(entityIn);
+        float ageInTicks = entityIn.ageInTicks;
+        if (entityIn.animation == EntityDreadLich.ANIMATION_SUMMON) {
             this.armRight.rotationPointZ = 0.0F;
             this.armRight.rotationPointX = -5.0F;
             this.armLeft.rotationPointZ = 0.0F;

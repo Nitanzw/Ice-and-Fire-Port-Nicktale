@@ -1,17 +1,15 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityMyrmexBase;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 
-public class ModelMyrmexLarva extends ModelDragonBase {
+public class ModelMyrmexLarva extends ModelDragonBase<MyrmexRenderState> {
     public AdvancedModelBox Body2;
     public AdvancedModelBox Body3;
     public AdvancedModelBox Body1;
@@ -79,19 +77,11 @@ public class ModelMyrmexLarva extends ModelDragonBase {
         this.updateDefaultPose();
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Body2);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Body2, Body3, Body1, Body4, Body5, Body4_1, Body5_1, Body4_2, Neck1, HeadBase);
-    }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animate(MyrmexRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityMyrmexBase.ANIMATION_PUPA_WIGGLE)) {
             animator.startKeyframe(5);
             ModelUtils.rotate(animator, Body1, 0, -15, 0);
@@ -122,8 +112,14 @@ public class ModelMyrmexLarva extends ModelDragonBase {
     }
 
     @Override
-    public void setupAnim(Entity entity, float f, float f1, float f2, float f3, float f4) {
-        animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, 1);
+    protected void animate(MyrmexRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
+
+        animate(entity, f, f1, f2, f3, f4, 1);
         this.resetToDefaultPose();
         float speed_idle = 0.025F;
         float degree_idle = 0.25F;
@@ -134,8 +130,4 @@ public class ModelMyrmexLarva extends ModelDragonBase {
 
     }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
 }

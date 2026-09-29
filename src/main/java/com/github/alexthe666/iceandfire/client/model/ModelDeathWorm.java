@@ -1,17 +1,15 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityDeathWorm;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 
-public class ModelDeathWorm extends ModelDragonBase<EntityDeathWorm> {
+public class ModelDeathWorm extends ModelDragonBase<DeathWormRenderState> {
     public AdvancedModelBox Body;
     public AdvancedModelBox Head;
     public AdvancedModelBox Spine1;
@@ -231,9 +229,9 @@ public class ModelDeathWorm extends ModelDragonBase<EntityDeathWorm> {
         this.updateDefaultPose();
     }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4) {
+    public void animate(DeathWormRenderState entity, float f, float f1, float f2, float f3, float f4) {
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityDeathWorm.ANIMATION_BITE)) {
             animator.startKeyframe(3);
             this.rotate(animator, TopJaw, -20, 0, 0);
@@ -258,12 +256,17 @@ public class ModelDeathWorm extends ModelDragonBase<EntityDeathWorm> {
     }
 
     @Override
-    public void setupAnim(EntityDeathWorm entity, float f, float f1, float f2, float f3, float f4) {
+    protected void animate(DeathWormRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
+
         float speed_idle = 0.1F;
         float degree_idle = 0.5F;
         float speed_walk = 0.2F;
         float degree_walk = 0.15F;
-        EntityDeathWorm worm = entity;
         animate(entity, f, f1, f2, f3, f4);
         AdvancedModelBox[] WORM = {Body, Body2, Body3, Body4, Body5, Body6, Body7, Body8, Body9, Tail1, Tail2, Tail3, Tail4};
         this.walk(ToothT, speed_idle, degree_idle * 0.15F, true, 0.1F, 0F, f2, 1);
@@ -275,7 +278,7 @@ public class ModelDeathWorm extends ModelDragonBase<EntityDeathWorm> {
         this.chainSwing(WORM, speed_walk, degree_walk * 0.1F, -3, f2, 1);
         this.chainSwing(WORM, speed_walk, degree_walk, -3, f, f1);
         this.chainFlap(WORM, speed_walk, degree_walk * 0.75F, -3, f, f1);
-        float jumpProgress = worm.prevJumpProgress + (worm.jumpProgress - worm.prevJumpProgress) * (f2 - worm.tickCount);
+        float jumpProgress = entity.prevJumpProgress + (entity.jumpProgress - entity.prevJumpProgress) * (f2 - entity.tickCount);
         this.progressRotation(Head, jumpProgress, (float) Math.toRadians(25), 0.0F, 0.0F);
         this.progressRotation(Body, jumpProgress, (float) Math.toRadians(65), 0.0F, 0.0F);
         this.progressRotation(Body2, jumpProgress, (float) Math.toRadians(-21), 0.0F, 0.0F);
@@ -289,26 +292,14 @@ public class ModelDeathWorm extends ModelDragonBase<EntityDeathWorm> {
         this.progressRotation(Tail2, jumpProgress, (float) Math.toRadians(-21), 0.0F, 0.0F);
         this.progressRotation(Tail3, jumpProgress, (float) Math.toRadians(-21), 0.0F, 0.0F);
         this.progressRotation(Tail4, jumpProgress, (float) Math.toRadians(-21), 0.0F, 0.0F);
-        if(worm.tail_buffer != null)
-            worm.tail_buffer.applyChainSwingBuffer(WORM);
+        if(entity.tail_buffer != null)
+            entity.tail_buffer.applyChainSwingBuffer(WORM);
 
-        if(worm.getWormJumping() > 0){
+        if(entity.getWormJumping > 0){
             this.Body.rotateAngleX += f4 * ((float) Math.PI / 180F);
         }
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Body);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Body, Head, Spine1, Body2, JawExtender, HeadInner, ToothB, ToothT, ToothL, ToothL_1, Spine2, Body3, Spine3, Body4, Spine4, Body5, Spine5, Body6, Spine6, Body7, Spine7, Body8, Spine8, Body9, Spine9, Tail1, TailSpine1, Tail2, TailSpine2, Tail3, TailSpine3, Tail4, TailSpine4, TailSpine5, JawExtender2, TopJaw, BottomJaw, JawHook);
-    }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
 }

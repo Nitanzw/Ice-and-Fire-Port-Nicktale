@@ -3,13 +3,10 @@ package com.github.alexthe666.iceandfire.client.model;
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.google.common.collect.ImmutableList;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.monster.Guardian;
 
-public class ModelGuardianStatue extends AdvancedEntityModel<Entity> {
+public class ModelGuardianStatue extends AdvancedEntityModel<GuardianStatueRenderState> {
     private final AdvancedModelBox guardianBody;
     private final AdvancedModelBox guardianEye;
     private final AdvancedModelBox[] guardianSpines;
@@ -48,20 +45,13 @@ public class ModelGuardianStatue extends AdvancedEntityModel<Entity> {
         this.guardianTail[1].addChild(this.guardianTail[2]);
     }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return null;
-    }
+
 
     @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(guardianBody);
-    }
-
-    @Override
-    public void setupAnim(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        Guardian entityguardian = (Guardian) entityIn;
-        float f = ageInTicks - (float) entityguardian.tickCount;
+    protected void animate(GuardianStatueRenderState state) {
+        float ageInTicks = state.ageInTicks;
+        float netHeadYaw = state.yRot;
+        float headPitch = state.xRot;
         this.guardianBody.rotateAngleY = netHeadYaw * 0.017453292F;
         this.guardianBody.rotateAngleX = headPitch * 0.017453292F;
         float[] afloat = new float[]{1.75F, 0.25F, 0.0F, 0.0F, 0.5F, 0.5F, 0.5F, 0.5F, 1.25F, 0.75F, 0.0F, 0.0F};
@@ -82,14 +72,8 @@ public class ModelGuardianStatue extends AdvancedEntityModel<Entity> {
         }
 
         this.guardianEye.rotationPointZ = -8.25F;
-        Entity entity = Minecraft.getInstance().getCameraEntity();
-
-        if (entityguardian.hasActiveAttackTarget()) {
-            entity = entityguardian.getActiveAttackTarget();
-        }
-
         this.guardianEye.showModel = true;
-        float f2 = entityguardian.getTailAnimation(f);
+        float f2 = state.tailAnimation;
         this.guardianTail[0].rotateAngleY = Mth.sin(f2) * (float) Math.PI * 0.05F;
         this.guardianTail[1].rotateAngleY = Mth.sin(f2) * (float) Math.PI * 0.1F;
         this.guardianTail[1].rotationPointX = -1.5F;

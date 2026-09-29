@@ -1,18 +1,16 @@
 package com.github.alexthe666.iceandfire.client.model;
 
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityCyclops;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 
-public class ModelCyclops extends ModelDragonBase<EntityCyclops> {
+public class ModelCyclops extends ModelDragonBase<CyclopsRenderState> {
     public AdvancedModelBox body;
     public AdvancedModelBox UpperBody;
     public AdvancedModelBox Loin;
@@ -175,20 +173,11 @@ public class ModelCyclops extends ModelDragonBase<EntityCyclops> {
         this.updateDefaultPose();
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(body);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(body, UpperBody, Loin, rightleg, leftleg, Head, rightarm, leftarm, Belly, Chest, Eye, Horn, rightear,
-                Leftear, Jaw, topTeethL, topTeethR, Eye_1, Horn2, bottomTeethR, bottomTeethL, rightarm2, leftarm2, LoinBack, rightleg2, leftleg2);
-    }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4) {
+    public void animate(CyclopsRenderState entity, float f, float f1, float f2, float f3, float f4) {
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityCyclops.ANIMATION_STOMP)) {
             animator.startKeyframe(7);
             this.rotate(animator, rightleg, -62, 0, 0);
@@ -376,7 +365,13 @@ public class ModelCyclops extends ModelDragonBase<EntityCyclops> {
     }
 
     @Override
-    public void setupAnim(EntityCyclops entity, float f, float f1, float f2, float f3, float f4) {
+    protected void animate(CyclopsRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
+
         animate(entity, f, f1, f2, f3, f4);
         float speed_walk = 0.2F;
         float speed_idle = 0.05F;
@@ -398,15 +393,11 @@ public class ModelCyclops extends ModelDragonBase<EntityCyclops> {
         this.flap(this.rightarm, speed_idle, degree_idle * -0.1F, false, 0, 0F, f2, 1);
         this.flap(this.leftarm2, speed_idle, degree_idle * -0.1F, true, 0, -0.1F, f2, 1);
         this.flap(this.rightarm2, speed_idle, degree_idle * -0.1F, false, 0, -0.1F, f2, 1);
-        if (entity.getAnimation() != EntityCyclops.ANIMATION_EATPLAYER) {
+        if (entity.animation != EntityCyclops.ANIMATION_EATPLAYER) {
             this.faceTarget(f3, f4, 1, this.Head);
         }
         this.walk(this.Jaw, speed_idle, degree_idle * -0.15F, true, 0F, -0.1F, f2, 1);
 
     }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
 }

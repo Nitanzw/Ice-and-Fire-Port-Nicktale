@@ -1,17 +1,15 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityMyrmexSoldier;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 
-public class ModelMyrmexSoldier extends ModelMyrmexBase {
+public class ModelMyrmexSoldier extends ModelMyrmexBase<MyrmexRenderState> {
     public AdvancedModelBox Body2;
     public AdvancedModelBox Body3;
     public AdvancedModelBox Body1;
@@ -222,22 +220,11 @@ public class ModelMyrmexSoldier extends ModelMyrmexBase {
         this.updateDefaultPose();
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Body2);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Body2, Body3, Body1, legTopR2, legTopR2_1, Body4, legTopR3, legTopR3_1, Body5,
-            Tail1, Tail2, Stinger, legMidR3, legBottomR3, legMidR3_1, legBottomR3_1, Neck1, legTopR1, legTopR1_1,
-            HeadBase, EyeR, MandibleL, MandibleR, EyeL, legMidR1, legBottomR1, legMidR1_1, legBottomR1_1,
-            legMidR2, legBottomR2, legMidR2_1, legBottomR2_1);
-    }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animate(MyrmexRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityMyrmexSoldier.ANIMATION_BITE)) {
             animator.startKeyframe(5);
             ModelUtils.rotate(animator, Neck1, -50, 0, 0);
@@ -277,8 +264,14 @@ public class ModelMyrmexSoldier extends ModelMyrmexBase {
     }
 
     @Override
-    public void setupAnim(Entity entity, float f, float f1, float f2, float f3, float f4) {
-        animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, 1);
+    protected void animate(MyrmexRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
+
+        animate(entity, f, f1, f2, f3, f4, 1);
         AdvancedModelBox[] GASTER = new AdvancedModelBox[]{Body4, Body5, Tail1, Tail2, Stinger};
         AdvancedModelBox[] NECK = new AdvancedModelBox[]{Neck1, HeadBase};
         AdvancedModelBox[] LEGR1 = new AdvancedModelBox[]{legTopR1, legMidR1, legBottomR1};
@@ -291,7 +284,7 @@ public class ModelMyrmexSoldier extends ModelMyrmexBase {
         float speed_idle = 0.05F;
         float degree_walk = 0.3F;
         float degree_idle = 0.25F;
-        if (entity.getPassengers().isEmpty()) {
+        if (!entity.hasPassengers) {
             this.faceTarget(f3, f4, 2, NECK);
         }
         this.chainWave(GASTER, speed_idle, degree_idle * 0.25F, 0, f2, 1);
@@ -316,12 +309,8 @@ public class ModelMyrmexSoldier extends ModelMyrmexBase {
     }
 
     @Override
-    public BasicModelPart[] getHeadParts() {
-        return new BasicModelPart[]{Neck1, HeadBase};
+    public AdvancedModelBox[] getHeadParts() {
+        return new AdvancedModelBox[]{Neck1, HeadBase};
     }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
 }

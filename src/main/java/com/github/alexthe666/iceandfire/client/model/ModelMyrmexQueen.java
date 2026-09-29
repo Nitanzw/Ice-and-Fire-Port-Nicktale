@@ -1,18 +1,16 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityMyrmexQueen;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
-public class ModelMyrmexQueen extends ModelMyrmexBase {
+public class ModelMyrmexQueen extends ModelMyrmexBase<MyrmexRenderState> {
     public AdvancedModelBox Body2;
     public AdvancedModelBox Body3;
     public AdvancedModelBox Body1;
@@ -248,22 +246,11 @@ public class ModelMyrmexQueen extends ModelMyrmexBase {
         this.updateDefaultPose();
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Body2);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Body2, Body3, Body1, legTopR2, legTopR2_1, Body4, legTopR3, legTopR3_1, Body5,
-            Tail1, Tail2, Tail3, Stinger, legMidR3, legBottomR3, legMidR3_1, legBottomR3_1, Neck1,
-            legTopR1, legTopR1_1, HeadBase, EyeR, MandibleL, MandibleR, EyeL, crestbase, crest1, crest2,
-            legMidR1, legBottomR1, legMidR1_1, legBottomR1_1, legMidR2, legBottomR2, legMidR2_1, legBottomR2_1);
-    }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animate(MyrmexRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityMyrmexQueen.ANIMATION_DIGNEST)) {
             animator.startKeyframe(15);
             ModelUtils.rotateFrom(animator, Body2, 26, 0, 0);
@@ -339,10 +326,9 @@ public class ModelMyrmexQueen extends ModelMyrmexBase {
             animator.endKeyframe();
             animator.resetKeyframe(10);
         }
-        EntityMyrmexQueen myrmexQueen = (EntityMyrmexQueen) entity;
 
-        if (myrmexQueen.getAnimation() == EntityMyrmexQueen.ANIMATION_EGG) {
-            int animationTick = Mth.clamp(myrmexQueen.getAnimationTick(), 0, 20);
+        if (entity.animation == EntityMyrmexQueen.ANIMATION_EGG) {
+            int animationTick = Mth.clamp((int) entity.animationTick, 0, 20);
             float swellToPi = (float) (animationTick / 20F * Math.PI);
             this.increaseScale(Body5, 0.5F * Math.abs(Mth.sin(swellToPi + 0.5F)));
             this.increaseScale(Tail1, 0.75F * Math.abs(Mth.sin(swellToPi)));
@@ -353,8 +339,14 @@ public class ModelMyrmexQueen extends ModelMyrmexBase {
     }
 
     @Override
-    public void setupAnim(Entity entity, float f, float f1, float f2, float f3, float f4) {
-        animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, 1);
+    protected void animate(MyrmexRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
+
+        animate(entity, f, f1, f2, f3, f4, 1);
         this.Body5.setScale(1.0F, 1.0F, 1.0F);
         this.Tail1.setScale(1.0F, 1.0F, 1.0F);
         this.Tail2.setScale(1.0F, 1.0F, 1.0F);
@@ -374,14 +366,13 @@ public class ModelMyrmexQueen extends ModelMyrmexBase {
         float gasterSwell1 = -0.05F + (0.2F * Math.abs(Mth.sin(entity.tickCount * 0.15F + 1.0F)));
         float gasterSwell2 = -0.05F + (0.2F * Math.abs(Mth.sin(entity.tickCount * 0.15F + 0.5F)));
         float gasterSwell3 = -0.05F + (0.2F * Math.abs(Mth.sin(entity.tickCount * 0.15F)));
-        EntityMyrmexQueen myrmexQueen = (EntityMyrmexQueen) entity;
-        if (myrmexQueen.getAnimation() != EntityMyrmexQueen.ANIMATION_EGG) {
+        if (entity.animation != EntityMyrmexQueen.ANIMATION_EGG) {
             this.increaseScale(Tail1, gasterSwell1);
             this.increaseScale(Tail2, gasterSwell2);
             this.increaseScale(Tail3, gasterSwell3);
             this.Stinger.rotationPointZ += 20 * gasterSwell3;
         }
-        if (myrmexQueen.getAnimation() == EntityMyrmexQueen.ANIMATION_DIGNEST) {
+        if (entity.animation == EntityMyrmexQueen.ANIMATION_DIGNEST) {
             this.animateLeg(LEGR1, speed_walk * 0.5F, degree_walk * 0.5F, false, 0, 1, f2, 1);
             this.animateLeg(LEGR3, speed_walk * 0.5F, degree_walk * 0.5F, false, 0, 1, f2, 1);
             this.animateLeg(LEGR2, speed_walk * 0.5F, degree_walk * 0.5F, true, 0, 1, f2, 1);
@@ -390,7 +381,7 @@ public class ModelMyrmexQueen extends ModelMyrmexBase {
             this.animateLeg(LEGL3, speed_walk * 0.5F, degree_walk * 0.5F, false, 1, -1, f2, 1);
             this.animateLeg(LEGL2, speed_walk * 0.5F, degree_walk * 0.5F, true, 1, -1, f2, 1);
         }
-        if (entity.getPassengers().isEmpty()) {
+        if (!entity.hasPassengers) {
             this.faceTarget(f3, f4, 2, NECK);
         }
         this.chainWave(GASTER, speed_idle, degree_idle * 0.15F, 0, f2, 1);
@@ -425,14 +416,6 @@ public class ModelMyrmexQueen extends ModelMyrmexBase {
         return new AdvancedModelBox[]{Neck1, HeadBase};
     }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        this.Body5.setScale(1.0F, 1.0F, 1.0F);
-        this.Tail1.setScale(1.0F, 1.0F, 1.0F);
-        this.Tail2.setScale(1.0F, 1.0F, 1.0F);
-        this.Tail3.setScale(1.0F, 1.0F, 1.0F);
-    }
 
     private void digPose() {
         ModelUtils.rotateFrom(animator, legTopR1, -28, -13, 36);

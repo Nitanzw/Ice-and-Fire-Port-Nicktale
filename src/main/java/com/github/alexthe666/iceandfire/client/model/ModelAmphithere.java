@@ -1,17 +1,15 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityAmphithere;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 
-public class ModelAmphithere extends ModelDragonBase<EntityAmphithere> {
+public class ModelAmphithere extends ModelDragonBase<AmphithereRenderState> {
     public AdvancedModelBox BodyUpper;
     public AdvancedModelBox BodyLower;
     public AdvancedModelBox Neck1;
@@ -296,22 +294,10 @@ public class ModelAmphithere extends ModelDragonBase<EntityAmphithere> {
         this.updateDefaultPose();
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(BodyUpper);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(BodyUpper, BodyLower, Neck1, WingL, WingR, Tail1, Tail2, Tail3, Tail4,
-            Club, TailR1, TailL1, TailL2, TailR2, Neck2, Neck3, Head, HeadFront, Jaw,
-            CrestL1, CrestL2, CrestR2, CrestR1, CrestR3, CrestL3, CrestRB, CrestLB,
-            Beak, Teeth2, Teeth1, WingL2, WingL3, WingL21, FingerL1, FingerL2, FingerL3,
-            FingerL4, WingR2, WingR3, WingR21, FingerR1, FingerR2, FingerR3, FingerR4);
-    }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        animator.update(entity);
+    public void animate(AmphithereRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityAmphithere.ANIMATION_BITE)) {
             animator.startKeyframe(5);
             this.rotate(animator, Neck1, -39, 0, 0);
@@ -431,7 +417,13 @@ public class ModelAmphithere extends ModelDragonBase<EntityAmphithere> {
     }
 
     @Override
-    public void setupAnim(EntityAmphithere amphithere, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    protected void animate(AmphithereRenderState amphithere) {
+        float limbSwing = amphithere.walkAnimationPos;
+        float limbSwingAmount = amphithere.walkAnimationSpeed;
+        float ageInTicks = amphithere.ageInTicks;
+        float netHeadYaw = amphithere.yRot;
+        float headPitch = amphithere.xRot;
+
         this.resetToDefaultPose();
         animate(amphithere, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, 0);
         if (this.young) {
@@ -560,7 +552,7 @@ public class ModelAmphithere extends ModelDragonBase<EntityAmphithere> {
             progressRotation(Neck3, sitProgress, 0.18203784098300857F, -0.0F, 0.0F);
         }
 
-        if (amphithere.groundProgress <= 0 && amphithere.getAnimation() != EntityAmphithere.ANIMATION_WING_BLAST && !amphithere.onGround()) {
+        if (amphithere.groundProgress <= 0 && amphithere.animation != EntityAmphithere.ANIMATION_WING_BLAST && !amphithere.onGround) {
             amphithere.roll_buffer.applyChainFlapBuffer(BodyUpper);
             amphithere.pitch_buffer.applyChainWaveBuffer(BodyUpper);
             amphithere.tail_buffer.applyChainSwingBuffer(TAIL);
@@ -568,9 +560,4 @@ public class ModelAmphithere extends ModelDragonBase<EntityAmphithere> {
         }
     }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-
-    }
 }

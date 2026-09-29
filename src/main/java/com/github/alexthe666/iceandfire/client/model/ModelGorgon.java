@@ -1,18 +1,16 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityGorgon;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
-public class ModelGorgon extends ModelDragonBase<EntityGorgon> {
+public class ModelGorgon extends ModelDragonBase<GorgonRenderState> {
     private final ModelAnimator animator;
     public AdvancedModelBox Tail_1;
     public AdvancedModelBox Tail_2;
@@ -568,9 +566,9 @@ public class ModelGorgon extends ModelDragonBase<EntityGorgon> {
         this.updateDefaultPose();
     }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animate(GorgonRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityGorgon.ANIMATION_SCARE)) {
             animator.startKeyframe(5);
             this.rotate(animator, Head, 0, 20, 0);
@@ -606,7 +604,13 @@ public class ModelGorgon extends ModelDragonBase<EntityGorgon> {
     }
 
     @Override
-    public void setupAnim(EntityGorgon entity, float f, float f1, float f2, float f3, float f4) {
+    protected void animate(GorgonRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
+
         animate(entity, f, f1, f2, f3, f4, 1);
         float speed_walk = 0.6F;
         float speed_idle = 0.05F;
@@ -703,30 +707,7 @@ public class ModelGorgon extends ModelDragonBase<EntityGorgon> {
         this.Neck.showModel = deathProg <= 0;
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Tail_1);
-    }
-
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Tail_1, Tail_2, Body, Tail_3, Tail_4, Tail_5, Tail_6, Tail_7, Tail_8, Tail_9, Left_Arm,
-            Head, Right_Arm, Neck, Head_Details, SnakeBaseR2, SnakeBaseR7, SnakeBaseR6, SnakeBaseR5, SnakeBaseR4,
-            SnakeBaseR3, SnakeBaseR1, SnakeBaseL1, SnakeBaseL2, SnakeBaseL4, SnakeBaseL3, SnakeBaseL7, SnakeBaseL6,
-            SnakeBaseL5, SnakeBodyR2, SnakeHeadR2, SnakeJawR2, SnakeFang1R2, SnakeFang2R2, SnakeBodyR7, SnakeHeadR7,
-            SnakeJawR7, SnakeFang1R7, SnakeFang2R7, SnakeBodyR6, SnakeHeadR6, SnakeJawR6, SnakeFang1R6, SnakeFang2R6,
-            SnakeBodyR5, SnakeHeadR5, SnakeJawR5, SnakeFang1R5, SnakeFang2R5, SnakeBodyR4, SnakeHeadR4, SnakeJawR4,
-            SnakeFang1R4, SnakeFang2R4, SnakeBodyR3, SnakeHeadR3, SnakeJawR3, SnakeFang1R3, SnakeFang2R3, SnakeBodyR1,
-            SnakeHeadR1, SnakeJawR1, SnakeFang1R1, SnakeFang2R1, SnakeBodyL1, SnakeHeadL1, SnakeJawL1, SnakeFang1L1,
-            SnakeFang2L1, SnakeBodyL2, SnakeHeadL2, SnakeJawL2, SnakeFang1L2, SnakeFang2L2, SnakeBodyL4, SnakeHeadR4_1,
-            SnakeJawR4_1, SnakeFang1R4_1, SnakeFang2R4_1, SnakeBodyL3, SnakeHeadL3, SnakeJawL3, SnakeFang1L3,
-            SnakeFang2L3, SnakeBodyL7, SnakeHeadL7, SnakeJawL7, SnakeFang1L7, SnakeFang2L7, snakeBodyL6, SnakeHeadL6,
-            SnakeJawL6, SnakeFang1L6, SnakeFang2L6, SnakeBodyL5, SnakeHeadL5, SnakeJawL5, SnakeFang1L5, SnakeFang2L5);
-    }
 
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
+
 }

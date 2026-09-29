@@ -1,17 +1,15 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityStymphalianBird;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 
-public class ModelStymphalianBird extends ModelDragonBase<EntityStymphalianBird> {
+public class ModelStymphalianBird extends ModelDragonBase<StymphalianBirdRenderState> {
     public AdvancedModelBox Body;
     public AdvancedModelBox LowerBody;
     public AdvancedModelBox Neck1;
@@ -311,10 +309,10 @@ public class ModelStymphalianBird extends ModelDragonBase<EntityStymphalianBird>
         this.updateDefaultPose();
     }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animate(StymphalianBirdRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
         this.resetToDefaultPose();
         animator = ModelAnimator.create();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityStymphalianBird.ANIMATION_PECK)) {
             animator.startKeyframe(5);
             this.rotate(animator, Neck1, -47, 0, 0);
@@ -376,7 +374,13 @@ public class ModelStymphalianBird extends ModelDragonBase<EntityStymphalianBird>
     }
 
     @Override
-    public void setupAnim(EntityStymphalianBird entity, float f, float f1, float f2, float f3, float f4) {
+    protected void animate(StymphalianBirdRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
+
         animate(entity, f, f1, f2, f3, f4, 1);
         float speed_walk = 0.3F;
         float speed_idle = 0.05F;
@@ -434,10 +438,10 @@ public class ModelStymphalianBird extends ModelDragonBase<EntityStymphalianBird>
             progressRotation(NeckPivot, entity.flyProgress, -0.31869712141416456F, 0.0F, 0.0F);
             progressRotation(ToeL4, entity.flyProgress, -0.22759093446006054F, -0.6108652381980153F, 0.0F);
 
-            this.chainFlap(WING_LEFT, speed_fly + (entity.getAnimation() == EntityStymphalianBird.ANIMATION_SHOOT_ARROWS ? 0.25F : 0), -degree_fly * 0.5F, 0, f2, 1);
-            this.chainFlap(WING_RIGHT, speed_fly + (entity.getAnimation() == EntityStymphalianBird.ANIMATION_SHOOT_ARROWS ? 0.25F : 0), degree_fly * 0.5F, 0, f2, 1);
+            this.chainFlap(WING_LEFT, speed_fly + (entity.animation == EntityStymphalianBird.ANIMATION_SHOOT_ARROWS ? 0.25F : 0), -degree_fly * 0.5F, 0, f2, 1);
+            this.chainFlap(WING_RIGHT, speed_fly + (entity.animation == EntityStymphalianBird.ANIMATION_SHOOT_ARROWS ? 0.25F : 0), degree_fly * 0.5F, 0, f2, 1);
 
-            if (entity.getAnimation() != EntityStymphalianBird.ANIMATION_SHOOT_ARROWS) {
+            if (entity.animation != EntityStymphalianBird.ANIMATION_SHOOT_ARROWS) {
                 this.chainWave(NECK, speed_fly, degree_fly * 0.15F, 4, f2, 1);
                 this.bob(Body, speed_fly * 0.5F, degree_fly * 2.5F, true, f2, 1);
                 this.walk(BackLegL1, speed_fly, degree_fly * 0.15F, true, 1, 0.2F, f2, 1);
@@ -476,22 +480,6 @@ public class ModelStymphalianBird extends ModelDragonBase<EntityStymphalianBird>
     }
 
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Body);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Body, LowerBody, Neck1, WingL, WingR, BackLegL1, BackLegR1, Lowerbodytilt,
-            TailR1, TailL1, TailR2, TailL2, BackLegL2, ToeL3, ToeL2, ToeL4, ToeL1, BackLegR2, ToeR3,
-            ToeL4_1, ToeR2, ToeR1, Neck2, HeadBase, HeadFront, Jaw, Crest1, uppernail, Crest2, Crest3, WingL2,
-            WingL3, WingL21, FingerL1, FingerL2, FingerL3, FingerL4, WingR2, WingR3, WingR21, FingerR1,
-            FingerR2, FingerR3, FingerR4, HeadPivot, NeckPivot);
-    }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
 }

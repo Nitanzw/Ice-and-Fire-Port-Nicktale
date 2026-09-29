@@ -1,12 +1,9 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityGorgon;
-import com.github.alexthe666.iceandfire.entity.EntityHydra;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -14,7 +11,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
-public class ModelHydraHead extends ModelDragonBase<EntityHydra> {
+public class ModelHydraHead extends ModelDragonBase<HydraRenderState> {
     public AdvancedModelBox Neck1;
     public AdvancedModelBox Neck2;
     public AdvancedModelBox Neck3;
@@ -111,22 +108,28 @@ public class ModelHydraHead extends ModelDragonBase<EntityHydra> {
     }
 
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animate(HydraRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
     }
 
     @Override
-    public void setupAnim(EntityHydra entity, float f, float f1, float f2, float f3, float f4) {
+    protected void animate(HydraRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
+
         animate(entity, f, f1, f2, f3, f4, 1);
         float speed_walk = 0.6F;
         float speed_idle = 0.05F;
         float degree_walk = 0.2F;
         float degree_idle = 0.5F;
-        if (EntityGorgon.isStoneMob(entity)) {
+        if (entity.stoneMob) {
             return;
         }
-        float partialTicks = Minecraft.getInstance().getFrameTime();
+        float partialTicks = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         AdvancedModelBox[] ENTIRE_HEAD = new AdvancedModelBox[]{Neck1, Neck2, Neck3, Neck4};
         this.chainFlap(ENTIRE_HEAD, speed_idle, degree_idle * 0.15F, -3 + headIndex % 4, f2, 1);
         this.chainSwing(ENTIRE_HEAD, speed_idle, degree_idle * 0.05F, -3 + headIndex % 3, f2, 1);
@@ -160,23 +163,10 @@ public class ModelHydraHead extends ModelDragonBase<EntityHydra> {
         this.progressRotationInterp(LowerJaw1, breathProgress, (float) Math.toRadians(50), 0.0F, 0.0F, 10F);
 
 
-        this.Neck2.showModel = entity.getSeveredHead() != headIndex && entity.isAlive();
-    }
-
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.Neck2.showModel = entity.getSeveredHead != headIndex && entity.isAlive;
     }
 
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Neck1);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Neck1, Neck2, Neck3, Neck4, Head1, HeadPivot, neckSpike1, neckSpike2, UpperJaw1,
-            LowerJaw1, TeethTR1, TeethL1, TeethR1, TeethTL1);
-    }
+
 }

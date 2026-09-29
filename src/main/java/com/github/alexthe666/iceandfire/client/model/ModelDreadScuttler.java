@@ -1,17 +1,15 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntityDreadScuttler;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 
-public class ModelDreadScuttler extends ModelDragonBase<EntityDreadScuttler> {
+public class ModelDreadScuttler extends ModelDragonBase<DreadScuttlerRenderState> {
     private final ModelAnimator animator;
     public AdvancedModelBox Body2;
     public AdvancedModelBox Body3;
@@ -231,9 +229,9 @@ public class ModelDreadScuttler extends ModelDragonBase<EntityDreadScuttler> {
         this.updateDefaultPose();
     }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animate(DreadScuttlerRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityDreadScuttler.ANIMATION_BITE)) {
             animator.startKeyframe(5);
             this.rotate(animator, Neck1, -30, 0, 0);
@@ -258,7 +256,13 @@ public class ModelDreadScuttler extends ModelDragonBase<EntityDreadScuttler> {
     }
 
     @Override
-    public void setupAnim(EntityDreadScuttler beast, float f, float f1, float f2, float f3, float f4) {
+    protected void animate(DreadScuttlerRenderState beast) {
+        float f = beast.walkAnimationPos;
+        float f1 = beast.walkAnimationSpeed;
+        float f2 = beast.ageInTicks;
+        float f3 = beast.yRot;
+        float f4 = beast.xRot;
+
         animate(beast, f, f1, f2, f3, f4, 1);
         float speed_idle = 0.05F;
         float degree_idle = 0.5F;
@@ -283,8 +287,8 @@ public class ModelDreadScuttler extends ModelDragonBase<EntityDreadScuttler> {
         this.walk(palpMidR1, speed_idle * 2F, degree_idle * -0.5F, true, 1, 0.2F, f2, 1);
         this.walk(palpMidL1, speed_idle * 2F, degree_idle * -0.5F, true, 1, 0.2F, f2, 1);
 
-        if (beast.getAnimation() == EntityDreadScuttler.ANIMATION_SPAWN) {
-            if (beast.getAnimationTick() < 39) {
+        if (beast.animation == EntityDreadScuttler.ANIMATION_SPAWN) {
+            if (beast.animationTick < 39) {
                 f = f2;
                 f1 = 1;
             }
@@ -307,22 +311,7 @@ public class ModelDreadScuttler extends ModelDragonBase<EntityDreadScuttler> {
 
     }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
 
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Body2);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Body2, Body3, Body1, legTopR2, legTopR2_1, Body4, legTopR3, legTopR3_1, Body5,
-            Tail1, Tail2, legMidR3, legBottomR3, legMidR3_1, legBottomR3_1, Neck1, legTopR1, legTopR1_1, HeadBase,
-            palpTopL1, palpTopR1, palpMidL1, palpBottomR1, palpMidR1, palpBottomR1_1, legMidR1_1, legBottomR1,
-            legMidR1_2, legBottomR1_1, legMidR2, legBottomR2, legMidR2_1, legBottomR2_1);
-    }
 }

@@ -3,13 +3,9 @@ package com.github.alexthe666.iceandfire.client.model;
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.github.alexthe666.iceandfire.entity.DragonType;
-import com.github.alexthe666.iceandfire.entity.EntityDragonEgg;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityEggInIce;
-import com.google.common.collect.ImmutableList;
-import net.minecraft.world.entity.LivingEntity;
 
-public class ModelDragonEgg<T extends LivingEntity> extends AdvancedEntityModel<T> {
+public class ModelDragonEgg extends AdvancedEntityModel<DragonEggRenderState> {
 
     public AdvancedModelBox Egg1;
     public AdvancedModelBox Egg2;
@@ -37,32 +33,17 @@ public class ModelDragonEgg<T extends LivingEntity> extends AdvancedEntityModel<
         this.updateDefaultPose();
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Egg1);
-    }
+
 
     @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Egg1, Egg2, Egg3, Egg4);
-    }
-
-    @Override
-    public void setupAnim(LivingEntity entity, float f, float f1, float f2, float f3, float f4) {
+    protected void animate(DragonEggRenderState state) {
+        float f2 = state.ageInTicks;
         this.resetToDefaultPose();
         this.Egg1.setPos(0.0F, 19.6F, 0.0F);
         this.Egg4.setPos(0.0F, -0.9F, 0.0F);
-        if (entity instanceof EntityDragonEgg egg) {
-            boolean isLocationValid = false;
-            if (egg.getEggType().dragonType == DragonType.FIRE) {
-                isLocationValid = egg.level().getBlockState(egg.blockPosition()).isBurning(entity.level(), egg.blockPosition());
-            } else if (egg.getEggType().dragonType == DragonType.LIGHTNING) {
-                isLocationValid = egg.level().isRainingAt(egg.blockPosition());
-            }
-            if (isLocationValid) {
-                this.walk(Egg1, 0.3F, 0.3F, true, 1, 0, f2, 1);
-                this.flap(Egg1, 0.3F, 0.3F, false, 0, 0, f2, 1);
-            }
+        if (state.shaking) {
+            this.walk(Egg1, 0.3F, 0.3F, true, 1, 0, f2, 1);
+            this.flap(Egg1, 0.3F, 0.3F, false, 0, 0, f2, 1);
         }
     }
 

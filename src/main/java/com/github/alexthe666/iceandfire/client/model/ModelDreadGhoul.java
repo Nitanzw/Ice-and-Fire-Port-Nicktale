@@ -5,7 +5,7 @@ import com.nicktale.api.client.model.ModelAnimator;
 import com.github.alexthe666.iceandfire.client.model.util.HideableModelRenderer;
 import com.github.alexthe666.iceandfire.entity.EntityDreadGhoul;
 
-public class ModelDreadGhoul extends ModelBipedBase<EntityDreadGhoul> {
+public class ModelDreadGhoul extends ModelBipedBase<BipedRenderState> {
 
     public AdvancedModelBox head2;
     public AdvancedModelBox clawsRight;
@@ -66,15 +66,20 @@ public class ModelDreadGhoul extends ModelBipedBase<EntityDreadGhoul> {
     }
 
     @Override
-    public void setupAnim(EntityDreadGhoul thrall, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    protected void animate(BipedRenderState thrall) {
+        float limbSwing = thrall.walkAnimationPos;
+        float limbSwingAmount = thrall.walkAnimationSpeed;
+        float ageInTicks = thrall.ageInTicks;
+        float netHeadYaw = thrall.yRot;
+        float headPitch = thrall.xRot;
         this.resetToDefaultPose();
         this.faceTarget(netHeadYaw, headPitch, 1.0F, head);
         animate(thrall, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, 0f);
         float speed_walk = 0.6F;
         float speed_idle = 0.05F;
         float degree_walk = 1F;
-        if (thrall.getAnimation() == EntityDreadGhoul.ANIMATION_SPAWN) {
-            if (thrall.getAnimationTick() < 30) {
+        if (thrall.animation == EntityDreadGhoul.ANIMATION_SPAWN) {
+            if (thrall.animationTick < 30) {
                 this.swing(armRight, 0.5F, 0.5F, false, 2, -0.7F, thrall.tickCount, 1);
                 this.swing(armLeft, 0.5F, 0.5F, true, 2, -0.7F, thrall.tickCount, 1);
                 this.flap(armRight, 0.5F, 0.5F, true, 1, 0, thrall.tickCount, 1);
@@ -100,10 +105,10 @@ public class ModelDreadGhoul extends ModelBipedBase<EntityDreadGhoul> {
     }
 
     @Override
-    void animate(EntityDreadGhoul entity, float limbSwing, float limbSwingAmount,
+    void animate(BipedRenderState entity, float limbSwing, float limbSwingAmount,
                  float ageInTicks, float netHeadYaw, float headPitch, float f) {
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntityDreadGhoul.ANIMATION_SLASH)) {
             animator.startKeyframe(5);
             rotate(animator, this.armRight, 20, 45, 80);

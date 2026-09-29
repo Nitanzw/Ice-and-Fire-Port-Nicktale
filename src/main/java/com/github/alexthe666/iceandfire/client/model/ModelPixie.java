@@ -2,10 +2,8 @@ package com.github.alexthe666.iceandfire.client.model;
 
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.AdvancedModelBox;
-import com.github.alexthe666.iceandfire.entity.EntityPixie;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityJar;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityPixieHouse;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -15,7 +13,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 
-public class ModelPixie extends ModelDragonBase<EntityPixie> {
+public class ModelPixie extends ModelDragonBase<PixieRenderState> {
     public AdvancedModelBox Body;
     public AdvancedModelBox Left_Arm;
     public AdvancedModelBox Head;
@@ -91,19 +89,16 @@ public class ModelPixie extends ModelDragonBase<EntityPixie> {
         this.updateDefaultPose();
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Body);
-    }
+
 
     @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Body, Left_Arm, Head, Right_Arm, Neck, Left_Leg, Right_Leg, Left_Wing,
-            Left_Wing2, Right_Wing, Right_Wing2, Dress);
-    }
+    protected void animate(PixieRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
 
-    @Override
-    public void setupAnim(EntityPixie entity, float f, float f1, float f2, float f3, float f4) {
         this.resetToDefaultPose();
         float speed_fly = 1.1F;
         float speed_idle = 0.05F;
@@ -124,7 +119,7 @@ public class ModelPixie extends ModelDragonBase<EntityPixie> {
         }
         this.Body.rotateAngleX = f12;
         this.Head.rotateAngleX -= f12;
-        ItemStack itemstack = entity.getItemInHand(InteractionHand.MAIN_HAND);
+        ItemStack itemstack = entity.heldItem;
         if (!itemstack.isEmpty()) {
 
             this.faceTarget(f3, f4, 1, this.Head);
@@ -139,7 +134,7 @@ public class ModelPixie extends ModelDragonBase<EntityPixie> {
             this.Left_Arm.rotateAngleX = Mth.cos(f * 0.6662F) * 1.0F * f1 * 0.5F;
         }
 
-        if (entity.isPixieSitting()) {
+        if (entity.isPixieSitting) {
             this.Right_Arm.rotateAngleX += -((float) Math.PI / 5F);
             this.Left_Arm.rotateAngleX += -((float) Math.PI / 5F);
             this.Right_Leg.rotateAngleX = -1.4137167F;
@@ -252,7 +247,7 @@ public class ModelPixie extends ModelDragonBase<EntityPixie> {
             this.Left_Wing2.rotateAngleZ = (float) Math.toRadians(-8);
             this.Right_Wing2.rotateAngleZ = (float) Math.toRadians(8);
         } else if (jar != null) {
-            float partialTicks = Minecraft.getInstance().getFrameTime();
+            float partialTicks = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
             this.chainWave(LEFT_WINGS, speed_fly, degree_fly * 0.75F, 1, jar.ticksExisted + partialTicks, 1);
             this.chainWave(RIGHT_WINGS, speed_fly, degree_fly * 0.75F, 1, jar.ticksExisted + partialTicks, 1);
         }
@@ -274,8 +269,4 @@ public class ModelPixie extends ModelDragonBase<EntityPixie> {
         */
     }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
 }

@@ -1,17 +1,15 @@
 package com.github.alexthe666.iceandfire.client.model;
 
-import com.nicktale.api.animation.IAnimatedEntity;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.ModelAnimator;
 import com.nicktale.api.client.model.AdvancedModelBox;
 import com.github.alexthe666.iceandfire.entity.EntitySiren;
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.Entity;
 
-public class ModelSiren extends ModelDragonBase<EntitySiren> {
+public class ModelSiren extends ModelDragonBase<SirenRenderState> {
     public AdvancedModelBox Tail_1;
     public AdvancedModelBox Tail_2;
     public AdvancedModelBox Body;
@@ -131,20 +129,11 @@ public class ModelSiren extends ModelDragonBase<EntitySiren> {
         this.updateDefaultPose();
     }
 
-    @Override
-    public Iterable<BasicModelPart> parts() {
-        return ImmutableList.of(Tail_1);
-    }
 
-    @Override
-    public Iterable<AdvancedModelBox> getAllParts() {
-        return ImmutableList.of(Tail_1, Tail_2, Body, Fin1, Tail_3, Fin2, FlukeL, FlukeR, Fin3,
-            Left_Arm, Head, Right_Arm, Neck, Hair1, HairR, HairL, Mouth, Jaw, Hair2);
-    }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animate(SirenRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
         this.resetToDefaultPose();
-        animator.update(entity);
+        animator.update(entity.animation, entity.animationTick);
         if (animator.setAnimation(EntitySiren.ANIMATION_BITE)) {
             animator.startKeyframe(5);
             this.rotate(animator, Mouth, -28, 0, 0);
@@ -168,7 +157,13 @@ public class ModelSiren extends ModelDragonBase<EntitySiren> {
     }
 
     @Override
-    public void setupAnim(EntitySiren entity, float f, float f1, float f2, float f3, float f4) {
+    protected void animate(SirenRenderState entity) {
+        float f = entity.walkAnimationPos;
+        float f1 = entity.walkAnimationSpeed;
+        float f2 = entity.ageInTicks;
+        float f3 = entity.yRot;
+        float f4 = entity.xRot;
+
         animate(entity, f, f1, f2, f3, f4, 1);
         float speed_walk = 0.6F;
         float speed_idle = 0.05F;
@@ -187,7 +182,7 @@ public class ModelSiren extends ModelDragonBase<EntitySiren> {
         this.progressRotation(Head, entity.swimProgress, (float) Math.toRadians(-70), 0.0F, 0.0F);
         this.progressRotation(Left_Arm, entity.swimProgress, (float) Math.toRadians(-15), 0.0F, 0.0F);
         this.progressRotation(Right_Arm, entity.swimProgress, (float) Math.toRadians(-15), 0.0F, 0.0F);
-        if (entity.isSwimming()) {
+        if (entity.isSwimming) {
             this.flap(Right_Arm, speed_walk, degree_walk * 1.2F, false, 0, 1.2F, f, f1);
             this.flap(Left_Arm, speed_walk, degree_walk * 1.2F, true, 0, 1.2F, f, f1);
             this.chainWave(TAIL_NO_BASE, speed_walk, degree_walk * 0.4F, 0, f, f1);
@@ -198,8 +193,8 @@ public class ModelSiren extends ModelDragonBase<EntitySiren> {
             this.chainFlap(TAIL_NO_BASE, speed_walk, degree_walk * 0.6F, 1, f, f1);
             this.swing(Tail_1, speed_walk, degree_walk * 0.2F, true, 0, 0F, f, f1);
         }
-        if (entity.isSinging()) {
-            switch (entity.getSingingPose()) {
+        if (entity.isSinging) {
+            switch (entity.getSingingPose) {
                 case 2:
                     this.progressRotation(Body, entity.singProgress, (float) Math.toRadians(-46F), 0.0F, 0.0F);
                     this.progressRotation(Tail_1, entity.singProgress, (float) Math.toRadians(90F), 0.0F, (float) Math.toRadians(20F));
@@ -211,7 +206,7 @@ public class ModelSiren extends ModelDragonBase<EntitySiren> {
                     this.progressPosition(Head, entity.singProgress, 0, -12.0F, -0.5F);
                     this.walk(Right_Arm, speed_idle * 1.5F, degree_idle * 0.6F, false, 2, 0F, f2, 1);
                     this.flap(Right_Arm, speed_idle * 1.5F, degree_idle * 0.6F, false, 2, 0F, f2, 1);
-                    if (entity.onGround()) {
+                    if (entity.onGround) {
                         this.chainFlap(TAIL_NO_BASE, speed_idle, degree_idle, 0, f2, 1);
                         this.swing(Tail_2, speed_idle, degree_idle * 0.4F, false, 0F, -0.4F, f2, 1);
                         this.swing(Tail_3, speed_idle, degree_idle * 0.4F, false, 0F, 0.6F, f2, 1);
@@ -228,7 +223,7 @@ public class ModelSiren extends ModelDragonBase<EntitySiren> {
                     this.progressPosition(Tail_1, entity.singProgress, 0.0F, 18.9F, -0.2F);
                     this.walk(Right_Arm, speed_idle * 1.5F, degree_idle * 0.6F, false, 2, 0F, f2, 1);
                     this.walk(Left_Arm, speed_idle * 1.5F, degree_idle * 0.6F, true, 2, 0F, f2, 1);
-                    if (entity.onGround()) {
+                    if (entity.onGround) {
                         this.chainFlap(TAIL_NO_BASE, speed_idle, degree_idle, 0, f2, 1);
                     }
                     break;
@@ -245,7 +240,7 @@ public class ModelSiren extends ModelDragonBase<EntitySiren> {
                     this.walk(Left_Arm, speed_idle * 1.5F, degree_idle * 0.6F, true, 2, 0F, f2, 1);
                     this.flap(Right_Arm, speed_idle * 1.5F, degree_idle * 0.6F, false, 2, 0F, f2, 1);
                     this.flap(Left_Arm, speed_idle * 1.5F, degree_idle * 0.6F, true, 2, 0F, f2, 1);
-                    if (entity.onGround()) {
+                    if (entity.onGround) {
                         this.chainFlap(TAIL_NO_BASE, speed_idle, degree_idle * 0.5F, -1, f2, 1);
                     }
                     break;
@@ -258,8 +253,4 @@ public class ModelSiren extends ModelDragonBase<EntitySiren> {
         }
     }
 
-    @Override
-    public void renderStatue(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, Entity living) {
-        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-    }
 }

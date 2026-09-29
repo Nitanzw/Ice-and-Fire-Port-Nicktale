@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
-public class ModelDreadKnight extends ModelDreadBase<EntityDreadKnight> {
+public class ModelDreadKnight extends ModelDreadBase<BipedRenderState> {
     public HideableModelRenderer chestplate;
     public HideableModelRenderer cloak;
     public HideableModelRenderer crown;
@@ -24,8 +24,6 @@ public class ModelDreadKnight extends ModelDreadBase<EntityDreadKnight> {
     public ModelDreadKnight(float modelScale) {
         this.texWidth = 128;
         this.texHeight = 64;
-        this.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-        this.rightArmPose = HumanoidModel.ArmPose.EMPTY;
         this.sleeveRight = new HideableModelRenderer(this, 35, 33);
         this.sleeveRight.setPos(0.0F, -0.1F, 0.0F);
         this.sleeveRight.addBox(-4.0F, -2.1F, -2.5F, 5, 6, 5, modelScale);
@@ -88,29 +86,14 @@ public class ModelDreadKnight extends ModelDreadBase<EntityDreadKnight> {
         animator = ModelAnimator.create();
     }
 
-    @Override
-    public void prepareMobModel(EntityDreadKnight livingEntityIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
-        this.rightArmPose = HumanoidModel.ArmPose.EMPTY;
-        this.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-        ItemStack itemstack = livingEntityIn.getItemInHand(InteractionHand.MAIN_HAND);
-
-        if (itemstack.getItem() == Items.BOW && livingEntityIn.swinging) {
-            if (livingEntityIn.getMainArm() == HumanoidArm.RIGHT) {
-                this.rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-            } else {
-                this.leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-            }
-        }
-        super.prepareMobModel(livingEntityIn, limbSwing, limbSwingAmount, partialTickTime);
-    }
 
     @Override
-    public void setRotationAnglesSpawn(EntityDreadKnight entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAnglesSpawn(BipedRenderState entityIn) {
         return;
     }
 
     @Override
-    public void animate(EntityDreadKnight entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void animate(BipedRenderState entity, float f, float f1, float f2, float f3, float f4, float f5) {
         return;
     }
 
@@ -119,16 +102,6 @@ public class ModelDreadKnight extends ModelDreadBase<EntityDreadKnight> {
         return EntityDreadKnight.ANIMATION_SPAWN;
     }
 
-    @Override
-    public void copyPropertiesTo(@NotNull EntityModel<EntityDreadKnight> p_217111_1_) {
-        super.copyPropertiesTo(p_217111_1_);
-        if (p_217111_1_ instanceof HumanoidModel) {
-            HumanoidModel modelbiped = (HumanoidModel) p_217111_1_;
-            modelbiped.leftArmPose = this.leftArmPose;
-            modelbiped.rightArmPose = this.rightArmPose;
-            modelbiped.crouching = this.isSneak;
-        }
-    }
 
 
 }
