@@ -68,6 +68,7 @@ public class RenderStoneStatue extends EntityRenderer<EntityStoneStatue, RenderS
         EntityType<?> type = statue.getTrappedEntityType();
         Entity build = type.create(minecraft.level, EntitySpawnReason.LOAD);
         if (build != null) {
+            build.setId(-(this.hollowEntityMap.size() + 2));
             try {
                 build.load(EntityDataIO.input(minecraft.level.registryAccess(), statue.getTrappedTag()));
             } catch (Exception e) {
