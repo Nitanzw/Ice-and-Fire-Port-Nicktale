@@ -62,7 +62,7 @@ public class ItemBestiary extends Item {
     }
 
     public static List<Integer> getPageIds(ItemStack stack) {
-        return java.util.Arrays.stream(ItemStackData.get(stack).getIntArray("Pages")).boxed().toList();
+        return java.util.Arrays.stream(ItemStackData.get(stack).getIntArray("Pages").orElseGet(() -> new int[0])).boxed().toList();
     }
 
     public static void setPageIds(ItemStack stack, Collection<Integer> pageIds) {
