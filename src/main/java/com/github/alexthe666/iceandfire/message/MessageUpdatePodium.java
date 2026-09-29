@@ -9,7 +9,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityPodium;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -36,13 +35,13 @@ public class MessageUpdatePodium implements CustomPacketPayload {
     public MessageUpdatePodium() {
     }
 
-    public static MessageUpdatePodium read(FriendlyByteBuf buf) {
-        return new MessageUpdatePodium(buf.readLong(), ItemStack.STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf));
+    public static MessageUpdatePodium read(RegistryFriendlyByteBuf buf) {
+        return new MessageUpdatePodium(buf.readLong(), ItemStack.STREAM_CODEC.decode(buf));
     }
 
-    public static void write(MessageUpdatePodium message, FriendlyByteBuf buf) {
+    public static void write(MessageUpdatePodium message, RegistryFriendlyByteBuf buf) {
         buf.writeLong(message.blockPos);
-        ItemStack.STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, message.heldStack);
+        ItemStack.STREAM_CODEC.encode(buf, message.heldStack);
     }
 
     public static class Handler {

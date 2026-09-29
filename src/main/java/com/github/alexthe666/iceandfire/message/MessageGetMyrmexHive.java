@@ -10,7 +10,6 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.util.MyrmexHive;
 import com.github.alexthe666.iceandfire.world.MyrmexWorldData;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
 
@@ -33,11 +32,11 @@ public class MessageGetMyrmexHive implements CustomPacketPayload {
     public MessageGetMyrmexHive() {
     }
 
-    public static MessageGetMyrmexHive read(FriendlyByteBuf buf) {
+    public static MessageGetMyrmexHive read(RegistryFriendlyByteBuf buf) {
         return new MessageGetMyrmexHive(buf.readNbt());
     }
 
-    public static void write(MessageGetMyrmexHive message, FriendlyByteBuf buf) {
+    public static void write(MessageGetMyrmexHive message, RegistryFriendlyByteBuf buf) {
         buf.writeNbt(message.hive);
     }
 

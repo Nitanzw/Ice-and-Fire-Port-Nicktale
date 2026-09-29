@@ -8,7 +8,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntityHydra;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -39,11 +38,11 @@ public class MessagePlayerHitMultipart implements CustomPacketPayload {
     public MessagePlayerHitMultipart() {
     }
 
-    public static MessagePlayerHitMultipart read(FriendlyByteBuf buf) {
+    public static MessagePlayerHitMultipart read(RegistryFriendlyByteBuf buf) {
         return new MessagePlayerHitMultipart(buf.readInt(), buf.readInt());
     }
 
-    public static void write(MessagePlayerHitMultipart message, FriendlyByteBuf buf) {
+    public static void write(MessagePlayerHitMultipart message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.creatureID);
         buf.writeInt(message.extraData);
     }

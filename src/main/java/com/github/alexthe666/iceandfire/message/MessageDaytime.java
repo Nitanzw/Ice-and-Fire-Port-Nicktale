@@ -8,7 +8,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -34,11 +33,11 @@ public class MessageDaytime implements CustomPacketPayload {
     public MessageDaytime() {
     }
 
-    public static MessageDaytime read(FriendlyByteBuf buf) {
+    public static MessageDaytime read(RegistryFriendlyByteBuf buf) {
         return new MessageDaytime(buf.readInt(), buf.readBoolean());
     }
 
-    public static void write(MessageDaytime message, FriendlyByteBuf buf) {
+    public static void write(MessageDaytime message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.dragonId);
         buf.writeBoolean(message.isDay);
     }

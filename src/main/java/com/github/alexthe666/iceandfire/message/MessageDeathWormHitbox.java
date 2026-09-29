@@ -8,7 +8,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntityDeathWorm;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -35,11 +34,11 @@ public class MessageDeathWormHitbox implements CustomPacketPayload {
     public MessageDeathWormHitbox() {
     }
 
-    public static MessageDeathWormHitbox read(FriendlyByteBuf buf) {
+    public static MessageDeathWormHitbox read(RegistryFriendlyByteBuf buf) {
         return new MessageDeathWormHitbox(buf.readInt(), buf.readFloat());
     }
 
-    public static void write(MessageDeathWormHitbox message, FriendlyByteBuf buf) {
+    public static void write(MessageDeathWormHitbox message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.deathWormId);
         buf.writeFloat(message.scale);
     }

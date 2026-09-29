@@ -9,7 +9,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityDragonforge;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
 
@@ -35,11 +34,11 @@ public class MessageUpdateDragonforge implements CustomPacketPayload {
     public MessageUpdateDragonforge() {
     }
 
-    public static MessageUpdateDragonforge read(FriendlyByteBuf buf) {
+    public static MessageUpdateDragonforge read(RegistryFriendlyByteBuf buf) {
         return new MessageUpdateDragonforge(buf.readLong(), buf.readInt());
     }
 
-    public static void write(MessageUpdateDragonforge message, FriendlyByteBuf buf) {
+    public static void write(MessageUpdateDragonforge message, RegistryFriendlyByteBuf buf) {
         buf.writeLong(message.blockPos);
         buf.writeInt(message.cookTime);
     }

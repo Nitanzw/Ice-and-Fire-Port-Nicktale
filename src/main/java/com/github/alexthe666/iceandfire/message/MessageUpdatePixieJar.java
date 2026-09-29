@@ -9,7 +9,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityJar;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
 
@@ -35,11 +34,11 @@ public class MessageUpdatePixieJar implements CustomPacketPayload {
     public MessageUpdatePixieJar() {
     }
 
-    public static MessageUpdatePixieJar read(FriendlyByteBuf buf) {
+    public static MessageUpdatePixieJar read(RegistryFriendlyByteBuf buf) {
         return new MessageUpdatePixieJar(buf.readLong(), buf.readBoolean());
     }
 
-    public static void write(MessageUpdatePixieJar message, FriendlyByteBuf buf) {
+    public static void write(MessageUpdatePixieJar message, RegistryFriendlyByteBuf buf) {
         buf.writeLong(message.blockPos);
         buf.writeBoolean(message.isProducing);
     }

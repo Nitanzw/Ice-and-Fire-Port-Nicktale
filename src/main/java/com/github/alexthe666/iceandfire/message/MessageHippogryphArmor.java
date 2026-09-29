@@ -9,7 +9,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import com.github.alexthe666.iceandfire.entity.EntityHippocampus;
 import com.github.alexthe666.iceandfire.entity.EntityHippogryph;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -37,11 +36,11 @@ public class MessageHippogryphArmor implements CustomPacketPayload {
     public MessageHippogryphArmor() {
     }
 
-    public static MessageHippogryphArmor read(FriendlyByteBuf buf) {
+    public static MessageHippogryphArmor read(RegistryFriendlyByteBuf buf) {
         return new MessageHippogryphArmor(buf.readInt(), buf.readInt(), buf.readInt());
     }
 
-    public static void write(MessageHippogryphArmor message, FriendlyByteBuf buf) {
+    public static void write(MessageHippogryphArmor message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.dragonId);
         buf.writeInt(message.slot_index);
         buf.writeInt(message.armor_type);
