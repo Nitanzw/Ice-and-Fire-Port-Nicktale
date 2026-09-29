@@ -270,8 +270,15 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     }
 
     @Override
+    protected void dropFromLootTable(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source, boolean killedByPlayer) {
+        Identifier lootId = this.iafLootTable();
+        if (lootId != null) {
+            this.dropFromLootTable(level, source, killedByPlayer, com.github.alexthe666.iceandfire.util.IafEntityUtil.lootKey(lootId));
+        }
+    }
+
     @Nullable
-    protected Identifier getDefaultLootTable() {
+    private Identifier iafLootTable() {
         switch (this.getVariant()) {
             case 0:
                 return this.getWormScale() > 3 ? TAN_GIANT_LOOT : TAN_LOOT;
@@ -383,7 +390,6 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         this.entityData.set(WORM_AGE, age);
     }
 
-    @Override
     public float getWormScale() {
         return Math.min(this.getDeathwormScale() * (this.getWormAge() / 5F), 7F);
     }
@@ -480,7 +486,6 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         super.move(typeIn, pos);
     }
 
-    @Override
     public @NotNull Vec3 collide(@NotNull Vec3 vec) {
         return ICustomCollisions.getAllowedMovementForEntity(this, vec);
     }

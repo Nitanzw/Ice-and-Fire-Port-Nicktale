@@ -36,7 +36,7 @@ public class EntityHydraArrow extends AbstractArrow {
 
 
     public EntityHydraArrow(EntityType t, Level worldIn, LivingEntity shooter) {
-        super(t, shooter, worldIn, ItemStack.EMPTY, ItemStack.EMPTY, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
+        super(t, shooter, worldIn, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
         this.setBaseDamage(DAMAGE);
     }
 

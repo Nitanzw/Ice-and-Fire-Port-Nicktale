@@ -78,8 +78,10 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
 
 
     @Override
-    protected @NotNull Identifier getDefaultLootTable() {
-        return this.wasFromChest() ? BuiltInLootTables.EMPTY : this.getType().getDefaultLootTable();
+    protected void dropFromLootTable(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source, boolean killedByPlayer) {
+        if (!this.wasFromChest()) {
+            super.dropFromLootTable(level, source, killedByPlayer);
+        }
     }
 
     @Override
@@ -266,7 +268,6 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
         return this.isDaytimeMode() || super.isSilent();
     }
 
-    @Override
     protected boolean isSunBurnTick() {
         if (this.level().isBrightOutside() && !this.level().isClientSide()) {
             float f = this.level().getBrightness(LightLayer.BLOCK, this.blockPosition());

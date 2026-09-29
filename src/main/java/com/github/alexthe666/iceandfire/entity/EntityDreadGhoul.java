@@ -218,7 +218,6 @@ public class EntityDreadGhoul extends EntityDreadMob implements IAnimatedEntity,
         this.entityData.set(SCREAMS, screamStage);
     }
 
-    @Override
     public float getDreadScale() {
         return getSize();
     }

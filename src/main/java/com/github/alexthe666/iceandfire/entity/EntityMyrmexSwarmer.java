@@ -233,8 +233,15 @@ public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
     }
 
     @Override
+    protected void dropFromLootTable(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source, boolean killedByPlayer) {
+        Identifier lootId = this.iafLootTable();
+        if (lootId != null) {
+            this.dropFromLootTable(level, source, killedByPlayer, com.github.alexthe666.iceandfire.util.IafEntityUtil.lootKey(lootId));
+        }
+    }
+
     @Nullable
-    protected Identifier getDefaultLootTable() {
+    private Identifier iafLootTable() {
         return null;
     }
 

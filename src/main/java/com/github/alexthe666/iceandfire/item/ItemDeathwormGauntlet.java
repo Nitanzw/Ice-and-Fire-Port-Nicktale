@@ -51,14 +51,14 @@ public class ItemDeathwormGauntlet extends Item {
     @Override
     public void onUseTick(@NotNull Level level, @NotNull LivingEntity entity, @NotNull ItemStack stack, int count) {
         CompoundTag stackData = ItemStackData.get(stack);
-        boolean deathwormReceded = !stackData.contains("DeathwormReceded") || stackData.getBoolean("DeathwormReceded");
+        boolean deathwormReceded = !stackData.contains("DeathwormReceded") || stackData.getBooleanOr("DeathwormReceded", false);
         boolean deathwormLaunched = stackData.getBooleanOr("DeathwormLaunched", false);
         if (!deathwormReceded && !deathwormLaunched) {
             if (entity instanceof Player player) {
                 ItemStackData.update(stack, tag -> tag.putInt("HolderID", player.getId()));
 
-                if (player.getCooldowns().getCooldownPercent(this, 0.0F) == 0) {
-                    player.getCooldowns().addCooldown(this, 10);
+                if (player.getCooldowns().getCooldownPercent(new ItemStack(this), 0.0F) == 0) {
+                    player.getCooldowns().addCooldown(new ItemStack(this), 10);
                     player.playSound(IafSoundRegistry.DEATHWORM_ATTACK, 1F, 1F);
                     ItemStackData.update(stack, tag -> {
                         tag.putBoolean("DeathwormReceded", false);
@@ -96,7 +96,7 @@ public class ItemDeathwormGauntlet extends Item {
         EntityDataProvider.getCapability(entity).ifPresent(data -> {
             int tempLungeTicks = data.miscData.lungeTicks;
 
-            boolean deathwormReceded = !stackData.contains("DeathwormReceded") || stackData.getBoolean("DeathwormReceded");
+            boolean deathwormReceded = !stackData.contains("DeathwormReceded") || stackData.getBooleanOr("DeathwormReceded", false);
             boolean deathwormLaunched = stackData.getBooleanOr("DeathwormLaunched", false);
             if (deathwormReceded) {
                 if (tempLungeTicks > 0) {
@@ -134,7 +134,7 @@ public class ItemDeathwormGauntlet extends Item {
                         boolean canSee = d1 > 1.0D - 0.5D / d0 && player.hasLineOfSight(livingEntity);
 
                         if (canSee) {
-                            stackData.putInt("SpecialDamage", stackData.getInt("SpecialDamage") + 1);
+                            stackData.putInt("SpecialDamage", stackData.getIntOr("SpecialDamage", 0) + 1);
                             IafDamage.hurt(livingEntity, entity.level().damageSources().playerAttack((Player) entity), 3F);
                             IafEntityUtil.knockback(livingEntity, 0.5F, livingEntity.getX() - player.getX(), livingEntity.getZ() - player.getZ());
                         }

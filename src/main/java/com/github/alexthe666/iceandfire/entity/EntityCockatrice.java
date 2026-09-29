@@ -182,8 +182,8 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
     }
 
     @Override
-    public float getHomeRadius() {
-        return 30.0F;
+    public int getHomeRadius() {
+        return 30;
     }
 
     public String getHomeDimensionName() {

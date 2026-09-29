@@ -155,7 +155,6 @@ private IntOpenHashSet piercedEntities;
     private List<Entity> hitEntities;
     private int knockbackStrength;
 
-    @Override
     public void setKnockback(int knockbackStrengthIn) {
         this.knockbackStrength = knockbackStrengthIn;
     }
@@ -220,7 +219,7 @@ private IntOpenHashSet piercedEntities;
 
                 this.doPostHurtEffects(livingentity);
                 if (entity1 != null && livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer) {
-                    ((ServerPlayer) entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+                    ((ServerPlayer) entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.PLAY_ARROW_HIT_SOUND, 0.0F));
                 }
 
                 if (!entity.isAlive() && this.hitEntities != null) {

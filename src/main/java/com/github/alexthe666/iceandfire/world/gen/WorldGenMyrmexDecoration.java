@@ -96,7 +96,7 @@ public class WorldGenMyrmexDecoration {
 
             if (worldIn.getBlockEntity(blockpos) != null && worldIn.getBlockEntity(blockpos) instanceof RandomizableContainerBlockEntity) {
                 BlockEntity tileentity1 = worldIn.getBlockEntity(blockpos);
-                ((RandomizableContainerBlockEntity) tileentity1).setLootTable(lootTable, rand.nextLong());
+                ((RandomizableContainerBlockEntity) tileentity1).setLootTable(com.github.alexthe666.iceandfire.util.IafEntityUtil.lootKey(lootTable), rand.nextLong());
 
             }
         }
@@ -127,7 +127,7 @@ public class WorldGenMyrmexDecoration {
                 if (worldIn.getBlockState(blockpos.above()).getBlock() instanceof ChestBlock) {
                     BlockEntity tileentity1 = worldIn.getBlockEntity(blockpos.above());
                     if (tileentity1 instanceof ChestBlockEntity) {
-                        ((ChestBlockEntity) tileentity1).setLootTable(MYRMEX_GOLD_CHEST, rand.nextLong());
+                        ((ChestBlockEntity) tileentity1).setLootTable(com.github.alexthe666.iceandfire.util.IafEntityUtil.lootKey(MYRMEX_GOLD_CHEST), rand.nextLong());
                     }
                 }
             }

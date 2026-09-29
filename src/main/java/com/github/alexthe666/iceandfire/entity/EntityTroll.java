@@ -236,8 +236,15 @@ public class EntityTroll extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
     @Override
+    protected void dropFromLootTable(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source, boolean killedByPlayer) {
+        Identifier lootId = this.iafLootTable();
+        if (lootId != null) {
+            this.dropFromLootTable(level, source, killedByPlayer, com.github.alexthe666.iceandfire.util.IafEntityUtil.lootKey(lootId));
+        }
+    }
+
     @Nullable
-    protected Identifier getDefaultLootTable() {
+    private Identifier iafLootTable() {
         switch (this.getTrollType()) {
             case MOUNTAIN:
                 return MOUNTAIN_LOOT;

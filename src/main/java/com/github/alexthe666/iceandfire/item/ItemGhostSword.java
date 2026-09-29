@@ -28,7 +28,7 @@ public class ItemGhostSword extends Item {
     }
 
     public static void spawnGhostSwordEntity(ItemStack stack, Player playerEntity) {
-        if (playerEntity.getCooldowns().isOnCooldown(stack.getItem()))
+        if (playerEntity.getCooldowns().isOnCooldown(stack))
             return;
         if (playerEntity.getItemInHand(InteractionHand.MAIN_HAND) != stack)
             return;
@@ -39,7 +39,7 @@ public class ItemGhostSword extends Item {
         shot.shootFromRotation(playerEntity, playerEntity.getXRot(), playerEntity.getYRot(), 0.0F, 1, 0.5f);
         playerEntity.level().addFreshEntity(shot);
         stack.hurtAndBreak(1, playerEntity, EquipmentSlot.MAINHAND);
-        playerEntity.getCooldowns().addCooldown(stack.getItem(), 10);
+        playerEntity.getCooldowns().addCooldown(stack, 10);
     }
 
     @Override

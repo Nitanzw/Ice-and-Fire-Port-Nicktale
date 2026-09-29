@@ -38,7 +38,7 @@ public class ItemMyrmexStaff extends Item {
 
     private static void initializeHiveData(ItemStack stack) {
         if (!ItemStackData.contains(stack, "HiveUUID")) {
-            ItemStackData.update(stack, tag -> tag.putUUID("HiveUUID", new UUID(0, 0)));
+            ItemStackData.update(stack, tag -> tag.store("HiveUUID", net.minecraft.core.UUIDUtil.CODEC, new UUID(0, 0)));
         }
     }
 

@@ -118,7 +118,7 @@ public class WorldGenHydraCave extends Feature<NoneFeatureConfiguration> impleme
                         if (worldIn.getBlockState(blockpos.above(1)).getBlock() instanceof ChestBlock) {
                             BlockEntity tileentity1 = worldIn.getBlockEntity(blockpos.above(1));
                             if (tileentity1 instanceof ChestBlockEntity) {
-                                ((ChestBlockEntity) tileentity1).setLootTable(HYDRA_CHEST, rand.nextLong());
+                                ((ChestBlockEntity) tileentity1).setLootTable(com.github.alexthe666.iceandfire.util.IafEntityUtil.lootKey(HYDRA_CHEST), rand.nextLong());
                             }
                         }
                         continue;

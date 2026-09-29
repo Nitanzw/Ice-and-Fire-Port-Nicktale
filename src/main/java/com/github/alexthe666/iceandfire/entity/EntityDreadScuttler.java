@@ -289,7 +289,6 @@ public class EntityDreadScuttler extends EntityDreadMob implements IAnimatedEnti
         this.playSound(IafSoundRegistry.MYRMEX_WALK, 0.25F, 1.0F);
     }
 
-    @Override
     public float getDreadScale() {
         return getSize();
     }

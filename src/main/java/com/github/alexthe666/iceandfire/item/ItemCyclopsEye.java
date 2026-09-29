@@ -42,10 +42,10 @@ public class ItemCyclopsEye extends Item {
                 }
             }
             if (inflictedDamage) {
-                ItemStackData.update(stack, tag -> tag.putInt("HurtingTicks", tag.getInt("HurtingTicks") + 1));
+                ItemStackData.update(stack, tag -> tag.putInt("HurtingTicks", tag.getIntOr("HurtingTicks", 0) + 1));
             }
         }
-        if (ItemStackData.get(stack).getInt("HurtingTicks") > 120) {
+        if (ItemStackData.get(stack).getIntOr("HurtingTicks", 0) > 120) {
             EquipmentSlot hand = living.getMainHandItem() == stack ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
             stack.hurtAndBreak(1, living, hand);
             ItemStackData.update(stack, tag -> tag.putInt("HurtingTicks", 0));

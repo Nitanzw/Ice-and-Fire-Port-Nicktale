@@ -28,13 +28,13 @@ public class EntityDeathWormEgg extends ThrowableItemProjectile implements IEnti
 
     public EntityDeathWormEgg(EntityType<? extends ThrowableItemProjectile> type, LivingEntity throwerIn, Level worldIn,
                               boolean giant) {
-        super(type, throwerIn, worldIn);
+        super(type, throwerIn, worldIn, new ItemStack(giant ? IafItemRegistry.DEATHWORM_EGG_GIGANTIC.get() : IafItemRegistry.DEATHWORM_EGG.get()));
         this.giant = giant;
     }
 
     public EntityDeathWormEgg(EntityType<? extends ThrowableItemProjectile> type, double x, double y, double z,
                               Level worldIn, boolean giant) {
-        super(type, x, y, z, worldIn);
+        super(type, x, y, z, worldIn, new ItemStack(giant ? IafItemRegistry.DEATHWORM_EGG_GIGANTIC.get() : IafItemRegistry.DEATHWORM_EGG.get()));
         this.giant = giant;
     }
 
@@ -72,13 +72,13 @@ public class EntityDeathWormEgg extends ThrowableItemProjectile implements IEnti
 
             EntityDeathWorm deathworm = new EntityDeathWorm(IafEntityRegistry.DEATH_WORM.get(), this.level());
             deathworm.setVariant(random.nextInt(3));
-            deathworm.setTame(true);
+            deathworm.setTame(true, true);
             deathworm.setWormHome(blockPosition());
             deathworm.setWormAge(1);
             deathworm.setDeathWormScale(giant ? (wormSize * 4) : wormSize);
             deathworm.snapTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
-            if (thrower instanceof Player) {
-                deathworm.setOwnerUUID(thrower.getUUID());
+            if (thrower instanceof Player playerThrower) {
+                deathworm.tame(playerThrower);
             }
             this.level().addFreshEntity(deathworm);
 

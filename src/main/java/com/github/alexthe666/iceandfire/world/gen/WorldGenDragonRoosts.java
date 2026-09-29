@@ -141,7 +141,7 @@ public abstract class WorldGenDragonRoosts extends Feature<NoneFeatureConfigurat
                         BlockEntity blockEntity = context.level().getBlockEntity(surfacePosition);
 
                         if (blockEntity instanceof ChestBlockEntity chest) {
-                            chest.setLootTable(getRoostLootTable(), context.random().nextLong());
+                            chest.setLootTable(com.github.alexthe666.iceandfire.util.IafEntityUtil.lootKey(getRoostLootTable()), context.random().nextLong());
                         }
                     }
                 }

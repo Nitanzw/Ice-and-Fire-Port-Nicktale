@@ -103,7 +103,6 @@ public class EntityDreadBeast extends EntityDreadMob implements IAnimatedEntity,
         builder.define(SCALE, 1F);
     }
 
-    @Override
     public float getDreadScale() {
         return getSize();
     }
@@ -249,19 +248,19 @@ public class EntityDreadBeast extends EntityDreadMob implements IAnimatedEntity,
     @Override
     @Nullable
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.WOLF_GROWL;
+        return SoundEvents.WOLF_SOUNDS.get(net.minecraft.world.entity.animal.wolf.WolfSoundVariants.SoundSet.CLASSIC).adultSounds().growlSound().value();
     }
 
     @Override
     @Nullable
     protected SoundEvent getHurtSound(@NotNull DamageSource source) {
-        return SoundEvents.WOLF_HURT;
+        return SoundEvents.WOLF_SOUNDS.get(net.minecraft.world.entity.animal.wolf.WolfSoundVariants.SoundSet.CLASSIC).adultSounds().hurtSound().value();
     }
 
     @Override
     @Nullable
     protected SoundEvent getDeathSound() {
-        return SoundEvents.WOLF_DEATH;
+        return SoundEvents.WOLF_SOUNDS.get(net.minecraft.world.entity.animal.wolf.WolfSoundVariants.SoundSet.CLASSIC).adultSounds().deathSound().value();
     }
 
     @Override

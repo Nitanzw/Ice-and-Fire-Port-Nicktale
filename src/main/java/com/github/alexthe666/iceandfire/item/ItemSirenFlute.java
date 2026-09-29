@@ -36,7 +36,7 @@ public class ItemSirenFlute extends Item {
     public @NotNull InteractionResult use(@NotNull Level worldIn, Player player, @NotNull InteractionHand hand) {
         ItemStack itemStackIn = player.getItemInHand(hand);
         player.startUsingItem(hand);
-        player.getCooldowns().addCooldown(this, 900);
+        player.getCooldowns().addCooldown(new ItemStack(this), 900);
 
         double dist = 32;
         Vec3 Vector3d = player.getEyePosition(1.0F);

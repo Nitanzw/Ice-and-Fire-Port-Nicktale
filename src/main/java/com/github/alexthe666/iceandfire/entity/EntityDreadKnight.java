@@ -216,7 +216,6 @@ public class EntityDreadKnight extends EntityDreadMob implements IAnimatedEntity
         return true;
     }
 
-    @Override
     public double getMyRidingOffset() {
         return -0.6D;
     }

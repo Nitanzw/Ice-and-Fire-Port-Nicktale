@@ -182,7 +182,7 @@ public class WorldUtil {
      * @return true if peaceful
      */
     public static boolean isPeaceful(@NotNull final Level world) {
-        return !IafEntityUtil.gameRule(world.getLevelData(), GameRules.SPAWN_MOBS) || world.getDifficulty().equals(Difficulty.PEACEFUL);
+        return !IafEntityUtil.gameRule(world, GameRules.SPAWN_MOBS) || world.getDifficulty().equals(Difficulty.PEACEFUL);
     }
 
     /**

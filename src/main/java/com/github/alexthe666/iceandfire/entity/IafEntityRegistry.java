@@ -140,7 +140,7 @@ public class IafEntityRegistry {
         event.register(TROLL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityTroll::canTrollSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
         event.register(DREAD_LICH.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityDreadLich::canLichSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
         event.register(COCKATRICE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityCockatrice::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(AMPHITHERE.get(), SpawnPlacementType.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING, EntityAmphithere::canAmphithereSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
+        event.register(AMPHITHERE.get(), SpawnPlacementTypes.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING, EntityAmphithere::canAmphithereSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
     }
 
     public static HashMap<String, Boolean> LOADED_ENTITIES;

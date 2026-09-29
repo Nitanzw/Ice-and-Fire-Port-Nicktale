@@ -88,7 +88,7 @@ public class ItemDragonSkull extends Item {
                 yaw = context.getPlayer().getDirection().toYRot();
             }
             skull.setYaw(yaw);
-            if (stack.hasCustomHoverName()) {
+            if (stack.has(net.minecraft.core.component.DataComponents.CUSTOM_NAME)) {
                 skull.setCustomName(stack.getHoverName());
             }
             if (!context.getLevel().isClientSide()) {

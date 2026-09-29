@@ -13,13 +13,13 @@ public class ItemGenericFood extends Item {
     private final float saturation;
 
     public ItemGenericFood(int amount, float saturation, boolean isWolfFood, boolean eatFast, boolean alwaysEdible) {
-        super(IafItemRegistry.itemProperties().food(createFood(amount, saturation, isWolfFood, eatFast, alwaysEdible, null)));
+        super(IafItemRegistry.itemProperties().food(createFood(amount, saturation, isWolfFood, eatFast, alwaysEdible, null), createConsumable(eatFast, null)));
         this.healAmount = amount;
         this.saturation = saturation;
     }
 
     public ItemGenericFood(int amount, float saturation, boolean isWolfFood, boolean eatFast, boolean alwaysEdible, int stackSize) {
-        super(IafItemRegistry.itemProperties().food(createFood(amount, saturation, isWolfFood, eatFast, alwaysEdible, null)).stacksTo(stackSize));
+        super(IafItemRegistry.itemProperties().food(createFood(amount, saturation, isWolfFood, eatFast, alwaysEdible, null), createConsumable(eatFast, null)).stacksTo(stackSize));
         this.healAmount = amount;
         this.saturation = saturation;
     }
@@ -27,20 +27,22 @@ public class ItemGenericFood extends Item {
     public static final FoodProperties createFood(int amount, float saturation, boolean isWolfFood, boolean eatFast, boolean alwaysEdible, MobEffectInstance potion) {
         FoodProperties.Builder builder = new FoodProperties.Builder();
         builder.nutrition(amount);
-        builder.saturationMod(saturation);
-        if (isWolfFood) {
-            builder.meat();
-        }
-        if (eatFast) {
-            builder.fast();
-        }
+        builder.saturationModifier(saturation);
         if (alwaysEdible) {
-            builder.alwaysEat();
+            builder.alwaysEdible();
         }
-        if (potion != null) {
-            builder.effect(potion, 1.0F);
-        }
+        // Wolf-food (meat) status is expressed through the minecraft:meat item tag in 26.2; potion and fast-eating
+        // behavior moved to the Consumable component (see createConsumable).
         return builder.build();
+    }
+
+    public static net.minecraft.world.item.component.Consumable createConsumable(boolean eatFast, MobEffectInstance potion) {
+        net.minecraft.world.item.component.Consumable.Builder consumable = net.minecraft.world.item.component.Consumable.builder()
+            .consumeSeconds(eatFast ? 0.8F : 1.6F);
+        if (potion != null) {
+            consumable.onConsume(new net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect(potion));
+        }
+        return consumable.build();
     }
 
     @Override

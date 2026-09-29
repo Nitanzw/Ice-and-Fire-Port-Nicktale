@@ -17,9 +17,8 @@ public class ItemLichStaff extends Item {
         super(IafItemRegistry.itemProperties().durability(100));
     }
 
-    @Override
     public boolean isValidRepairItem(@NotNull ItemStack toRepair, ItemStack repair) {
-        return repair.getItem() == IafItemRegistry.DREAD_SHARD.get() || super.isValidRepairItem(toRepair, repair);
+        return repair.getItem() == IafItemRegistry.DREAD_SHARD.get() ;
     }
 
     @Override
@@ -42,7 +41,7 @@ public class ItemLichStaff extends Item {
             charge.shoot(d2, d3, d4, 1, 1);
             playerIn.playSound(SoundEvents.ZOMBIE_INFECT, 1F, 0.75F + 0.5F * playerIn.getRandom().nextFloat());
             itemStackIn.hurtAndBreak(1, playerIn, hand);
-            playerIn.getCooldowns().addCooldown(this, 4);
+            playerIn.getCooldowns().addCooldown(new ItemStack(this), 4);
         }
         return InteractionResult.SUCCESS;
     }

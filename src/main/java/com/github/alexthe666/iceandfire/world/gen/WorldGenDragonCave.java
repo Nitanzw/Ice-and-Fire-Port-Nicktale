@@ -207,7 +207,7 @@ public abstract class WorldGenDragonCave extends Feature<NoneFeatureConfiguratio
                     BlockEntity blockEntity = world.getBlockEntity(pos);
 
                     if (blockEntity instanceof ChestBlockEntity chestBlockEntity) {
-                        chestBlockEntity.setLootTable(isMale ? DRAGON_MALE_CHEST : DRAGON_CHEST, rand.nextLong());
+                        chestBlockEntity.setLootTable(com.github.alexthe666.iceandfire.util.IafEntityUtil.lootKey(isMale ? DRAGON_MALE_CHEST : DRAGON_CHEST), rand.nextLong());
                     }
                 }
             }

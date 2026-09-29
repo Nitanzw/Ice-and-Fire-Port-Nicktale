@@ -83,11 +83,12 @@ public final class IafEntityUtil {
         return (target, level) -> predicate.test(target);
     }
 
-    public static net.minecraft.world.DifficultyInstance difficulty(Level level, net.minecraft.core.BlockPos pos) {
-        if (level instanceof ServerLevel serverLevel) {
-            return IafEntityUtil.difficulty(serverLevel, pos);
-        }
-        return new net.minecraft.world.DifficultyInstance(level.getDifficulty(), 0L, 0L, 0.0F);
+    public static net.minecraft.world.DifficultyInstance difficulty(net.minecraft.world.level.LevelAccessor level, net.minecraft.core.BlockPos pos) {
+        return level.getCurrentDifficultyAt(pos);
+    }
+
+    public static net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> lootKey(net.minecraft.resources.Identifier id) {
+        return net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE, id);
     }
 
     public static java.util.Optional<net.minecraft.world.entity.EntityType<?>> entityTypeByString(String id) {

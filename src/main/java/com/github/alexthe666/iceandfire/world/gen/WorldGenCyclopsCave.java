@@ -94,7 +94,7 @@ public class WorldGenCyclopsCave extends Feature<NoneFeatureConfiguration> imple
                         BlockEntity blockEntity = context.level().getBlockEntity(position.above(2));
 
                         if (blockEntity instanceof ChestBlockEntity chestBlockEntity) {
-                            chestBlockEntity.setLootTable(CYCLOPS_CHEST, context.random().nextLong());
+                            chestBlockEntity.setLootTable(com.github.alexthe666.iceandfire.util.IafEntityUtil.lootKey(CYCLOPS_CHEST), context.random().nextLong());
                         }
                     }
                 }

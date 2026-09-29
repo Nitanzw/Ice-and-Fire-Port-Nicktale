@@ -158,7 +158,6 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
         return this.getGrowthStage() > 1;
     }
 
-    @Override
     public boolean isMyrmexBaby() {
         return this.getGrowthStage() < 2;
     }
@@ -550,7 +549,6 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
 
     public abstract boolean shouldEnterHive();
 
-    @Override
     public float getMyrmexScale() {
         return this.getGrowthStage() == 0 ? 0.5F : this.getGrowthStage() == 1 ? 0.75F : 1F;
     }

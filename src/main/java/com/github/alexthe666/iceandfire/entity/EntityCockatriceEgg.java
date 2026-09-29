@@ -23,12 +23,12 @@ public class EntityCockatriceEgg extends ThrowableItemProjectile {
     }
 
     public EntityCockatriceEgg(EntityType<? extends ThrowableItemProjectile> type, Level worldIn, LivingEntity throwerIn) {
-        super(type, throwerIn, worldIn);
+        super(type, throwerIn, worldIn, new ItemStack(IafItemRegistry.ROTTEN_EGG.get()));
     }
 
     public EntityCockatriceEgg(EntityType<? extends ThrowableItemProjectile> type, double x, double y, double z,
                                Level worldIn) {
-        super(type, x, y, z, worldIn);
+        super(type, x, y, z, worldIn, new ItemStack(IafItemRegistry.ROTTEN_EGG.get()));
     }
 
 @Override

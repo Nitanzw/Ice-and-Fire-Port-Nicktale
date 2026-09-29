@@ -25,7 +25,7 @@ public class ItemDragonFlute extends Item {
     @Override
     public @NotNull InteractionResult use(Level worldIn, Player player, @NotNull InteractionHand hand) {
         ItemStack itemStackIn = player.getItemInHand(hand);
-        player.getCooldowns().addCooldown(this, 60);
+        player.getCooldowns().addCooldown(new ItemStack(this), 60);
 
         float chunksize = 16 * IafConfig.dragonFluteDistance;
         List<Entity> list = worldIn.getEntities(player, (new AABB(player.getX(), player.getY(), player.getZ(), player.getX() + 1.0D, player.getY() + 1.0D, player.getZ() + 1.0D)).inflate(chunksize, 256, chunksize));

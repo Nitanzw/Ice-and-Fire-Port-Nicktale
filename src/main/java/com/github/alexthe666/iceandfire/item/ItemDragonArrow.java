@@ -17,12 +17,12 @@ public class ItemDragonArrow extends ArrowItem {
     }
 
     @Override
-    public @NotNull AbstractArrow createArrow(@NotNull final Level level, @NotNull final ItemStack arrow, @NotNull final LivingEntity shooter) {
+    public @NotNull AbstractArrow createArrow(@NotNull final Level level, @NotNull final ItemStack arrow, @NotNull final LivingEntity shooter, final ItemStack weapon) {
         return new EntityDragonArrow(IafEntityRegistry.DRAGON_ARROW.get(), shooter, level);
     }
 
     @Override
-    public boolean isInfinite(@NotNull final ItemStack arrow, @NotNull final ItemStack bow, @NotNull final Player player) {
+    public boolean isInfinite(@NotNull final ItemStack arrow, @NotNull final ItemStack bow, @NotNull final LivingEntity player) {
         // Technically this would always return false - it's more a compat layer for Apotheosis' Endless Quiver enchantment
         boolean isInfinite = super.isInfinite(arrow, bow, player);
 

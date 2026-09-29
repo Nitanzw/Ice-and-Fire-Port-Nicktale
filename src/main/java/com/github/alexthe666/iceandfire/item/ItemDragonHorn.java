@@ -65,11 +65,10 @@ public class ItemDragonHorn extends Item {
     public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack stack, Player playerIn, @NotNull LivingEntity target, @NotNull InteractionHand hand) {
         ItemStack trueStack = playerIn.getItemInHand(hand);
         CompoundTag data = ItemStackData.get(trueStack);
-        if (!playerIn.level().isClientSide() && hand == InteractionHand.MAIN_HAND && target instanceof EntityDragonBase && ((EntityDragonBase) target).isOwnedBy(playerIn) && data.getCompound("EntityTag").isEmpty()) {
+        if (!playerIn.level().isClientSide() && hand == InteractionHand.MAIN_HAND && target instanceof EntityDragonBase && ((EntityDragonBase) target).isOwnedBy(playerIn) && data.getCompoundOrEmpty("EntityTag").isEmpty()) {
             CompoundTag newTag = new CompoundTag();
 
-            CompoundTag entityTag = new CompoundTag();
-            target.save(entityTag);
+            CompoundTag entityTag = com.github.alexthe666.iceandfire.entity.util.EntityDataIO.saveWithoutId(target);
             newTag.put("EntityTag", entityTag);
 
             newTag.putString("DragonHornEntityID", BuiltInRegistries.ENTITY_TYPE.getKey(target.getType()).toString());
@@ -91,7 +90,7 @@ public class ItemDragonHorn extends Item {
             return InteractionResult.FAIL;
         ItemStack stack = context.getItemInHand();
         CompoundTag data = ItemStackData.get(stack);
-        if (!data.getString("DragonHornEntityID").isEmpty()) {
+        if (!data.getStringOr("DragonHornEntityID", "").isEmpty()) {
             Level world = context.getLevel();
             String id = data.getStringOr("DragonHornEntityID", "");
             EntityType type = IafEntityUtil.entityTypeByString(id).orElse(null);
@@ -99,7 +98,7 @@ public class ItemDragonHorn extends Item {
                 Entity entity = type.create(world, EntitySpawnReason.EVENT);
                 if (entity instanceof EntityDragonBase) {
                     EntityDragonBase dragon = (EntityDragonBase) entity;
-                    dragon.load(data.getCompound("EntityTag"));
+                    dragon.load(com.github.alexthe666.iceandfire.entity.util.EntityDataIO.input(world.registryAccess(), data.getCompoundOrEmpty("EntityTag")));
                 }
                 //Still needed to allow for intercompatibility
                 if (data.contains("EntityUUID"))
@@ -121,23 +120,22 @@ public class ItemDragonHorn extends Item {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, @NotNull TooltipFlag flagIn) {
         if (ItemStackData.has(stack)) {
             CompoundTag data = ItemStackData.get(stack);
-            CompoundTag entityTag = data.getCompound("EntityTag");
+            CompoundTag entityTag = data.getCompoundOrEmpty("EntityTag");
             if (!entityTag.isEmpty()) {
                 String id = data.getStringOr("DragonHornEntityID", "");
                 if (IafEntityUtil.entityTypeByString(id).isPresent()) {
                     EntityType type = IafEntityUtil.entityTypeByString(id).get();
                     tooltip.accept((Component.translatable(type.getDescriptionId())).withStyle(getTextColorForEntityType(type)));
                     String name = (Component.translatable("dragon.unnamed")).getString();
-                    if (!entityTag.getString("CustomName").isEmpty()) {
-                        MutableComponent component = Component.Serializer.fromJson(entityTag.getString("CustomName"));
-                        if (component != null)
-                            name = component.getString();
+                    java.util.Optional<Component> customName = entityTag.read("CustomName", net.minecraft.network.chat.ComponentSerialization.CODEC);
+                    if (customName.isPresent()) {
+                        name = customName.get().getString();
                     }
 
                     tooltip.accept((Component.literal(name)).withStyle(ChatFormatting.GRAY));
                     String gender = (Component.translatable("dragon.gender")).getString() + " " + (Component.translatable(entityTag.getBooleanOr("Gender", false) ? "dragon.gender.male" : "dragon.gender.female")).getString();
                     tooltip.accept((Component.literal(gender)).withStyle(ChatFormatting.GRAY));
-                    int stagenumber = entityTag.getInt("AgeTicks") / 24000;
+                    int stagenumber = entityTag.getIntOr("AgeTicks", 0) / 24000;
                     int stage1 = 0;
                     if (stagenumber >= 100) {
                         stage1 = 5;

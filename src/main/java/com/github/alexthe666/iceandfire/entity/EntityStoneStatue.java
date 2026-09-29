@@ -188,11 +188,10 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
     }
 
     @Override
-    public void kill() {
+    public void kill(net.minecraft.server.level.ServerLevel level) {
         this.remove(RemovalReason.KILLED);
     }
 
-    @Override
     public @NotNull Iterable<ItemStack> getArmorSlots() {
         return ImmutableList.of();
     }

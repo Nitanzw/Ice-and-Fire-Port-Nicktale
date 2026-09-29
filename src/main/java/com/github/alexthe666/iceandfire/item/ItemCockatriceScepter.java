@@ -139,7 +139,7 @@ public class ItemCockatriceScepter extends Item {
                 target.addEffect(new MobEffectInstance(MobEffects.WITHER, 40, 2));
 
                 if (caster.tickCount % 20 == 0) {
-                    ItemStackData.update(stack, tag -> tag.putInt("SpecialWeaponDamage", tag.getInt("SpecialWeaponDamage") + 1));
+                    ItemStackData.update(stack, tag -> tag.putInt("SpecialWeaponDamage", tag.getIntOr("SpecialWeaponDamage", 0) + 1));
                     IafDamage.hurt(target, caster.level().damageSources().wither(), 2);
                 }
 

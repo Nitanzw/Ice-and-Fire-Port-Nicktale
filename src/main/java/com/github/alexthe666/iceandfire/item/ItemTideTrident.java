@@ -72,7 +72,7 @@ public class ItemTideTrident extends TridentItem {
                 }
 
                 level.addFreshEntity(thrown);
-                level.playSound(null, thrown, SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
+                level.playSound(null, thrown, SoundEvents.TRIDENT_THROW.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
                 if (!player.getAbilities().instabuild) {
                     player.getInventory().removeItem(stack);
                 }
