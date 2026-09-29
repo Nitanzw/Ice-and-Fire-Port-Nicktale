@@ -9,7 +9,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.*;
 import com.github.alexthe666.iceandfire.event.ServerEvents;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -42,11 +41,11 @@ public class MessageDragonControl implements CustomPacketPayload {
     public MessageDragonControl() {
     }
 
-    public static MessageDragonControl read(FriendlyByteBuf buf) {
+    public static MessageDragonControl read(RegistryFriendlyByteBuf buf) {
         return new MessageDragonControl(buf.readInt(), buf.readByte(), buf.readDouble(), buf.readDouble(), buf.readDouble());
     }
 
-    public static void write(MessageDragonControl message, FriendlyByteBuf buf) {
+    public static void write(MessageDragonControl message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.dragonId);
         buf.writeByte(message.controlState);
         buf.writeDouble(message.posX);

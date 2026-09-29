@@ -8,7 +8,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.util.ISyncMount;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
@@ -37,11 +36,11 @@ public class MessageStartRidingMob implements CustomPacketPayload {
     public MessageStartRidingMob() {
     }
 
-    public static MessageStartRidingMob read(FriendlyByteBuf buf) {
+    public static MessageStartRidingMob read(RegistryFriendlyByteBuf buf) {
         return new MessageStartRidingMob(buf.readInt(), buf.readBoolean(), buf.readBoolean());
     }
 
-    public static void write(MessageStartRidingMob message, FriendlyByteBuf buf) {
+    public static void write(MessageStartRidingMob message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.dragonId);
         buf.writeBoolean(message.ride);
         buf.writeBoolean(message.baby);

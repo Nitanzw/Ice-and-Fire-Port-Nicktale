@@ -9,7 +9,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import com.github.alexthe666.iceandfire.client.render.pathfinding.PathfindingDebugRenderer;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.MNode;
-import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -51,7 +50,7 @@ public class MessageSyncPath implements CustomPacketPayload {
         this.lastDebugNodesPath = lastDebugNodesPath;
     }
 
-    public void write(final FriendlyByteBuf buf) {
+    public void write(final RegistryFriendlyByteBuf buf) {
         buf.writeInt(lastDebugNodesVisited.size());
         for (final MNode MNode : lastDebugNodesVisited) {
             MNode.serializeToBuf(buf);
@@ -68,7 +67,7 @@ public class MessageSyncPath implements CustomPacketPayload {
         }
     }
 
-    public static MessageSyncPath read(final FriendlyByteBuf buf) {
+    public static MessageSyncPath read(final RegistryFriendlyByteBuf buf) {
         int size = buf.readInt();
 
         Set<MNode> lastDebugNodesVisited = new HashSet<>();

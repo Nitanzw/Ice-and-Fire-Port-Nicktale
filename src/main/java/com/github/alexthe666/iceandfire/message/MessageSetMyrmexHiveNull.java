@@ -7,7 +7,6 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
 
@@ -24,11 +23,11 @@ public class MessageSetMyrmexHiveNull implements CustomPacketPayload {
     public MessageSetMyrmexHiveNull() {
     }
 
-    public static MessageSetMyrmexHiveNull read(FriendlyByteBuf buf) {
+    public static MessageSetMyrmexHiveNull read(RegistryFriendlyByteBuf buf) {
         return new MessageSetMyrmexHiveNull();
     }
 
-    public static void write(MessageSetMyrmexHiveNull message, FriendlyByteBuf buf) {
+    public static void write(MessageSetMyrmexHiveNull message, RegistryFriendlyByteBuf buf) {
     }
 
     public static class Handler {

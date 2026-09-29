@@ -8,7 +8,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -40,11 +39,11 @@ public class MessageDragonSyncFire implements CustomPacketPayload {
     public MessageDragonSyncFire() {
     }
 
-    public static MessageDragonSyncFire read(FriendlyByteBuf buf) {
+    public static MessageDragonSyncFire read(RegistryFriendlyByteBuf buf) {
         return new MessageDragonSyncFire(buf.readInt(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readInt());
     }
 
-    public static void write(MessageDragonSyncFire message, FriendlyByteBuf buf) {
+    public static void write(MessageDragonSyncFire message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.dragonId);
         buf.writeDouble(message.posX);
         buf.writeDouble(message.posY);

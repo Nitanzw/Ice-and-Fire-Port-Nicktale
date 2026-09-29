@@ -4,10 +4,10 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.fml.loading.FMLEnvironment;
 
 /** NeoForge 26.2 payload registration and distribution for Ice and Fire. */
 public final class IafNetwork {
@@ -49,7 +49,10 @@ public final class IafNetwork {
     }
 
     public static void sendToServer(CustomPacketPayload payload) {
-        ClientPacketDistributor.sendToServer(payload);
+        if (!FMLEnvironment.getDist().isClient()) {
+            throw new IllegalStateException("Serverbound Ice and Fire payloads can only be sent from a client");
+        }
+        ClientSender.send(payload);
     }
 
     public static void sendToAll(CustomPacketPayload payload) {
@@ -58,5 +61,11 @@ public final class IafNetwork {
 
     public static void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
         PacketDistributor.sendToPlayer(player, payload);
+    }
+
+    private static final class ClientSender {
+        private static void send(CustomPacketPayload payload) {
+            net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(payload);
+        }
     }
 }

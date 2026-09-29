@@ -7,7 +7,6 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,11 +34,11 @@ public class MessageMultipartInteract implements CustomPacketPayload {
     public MessageMultipartInteract() {
     }
 
-    public static MessageMultipartInteract read(FriendlyByteBuf buf) {
+    public static MessageMultipartInteract read(RegistryFriendlyByteBuf buf) {
         return new MessageMultipartInteract(buf.readInt(), buf.readFloat());
     }
 
-    public static void write(MessageMultipartInteract message, FriendlyByteBuf buf) {
+    public static void write(MessageMultipartInteract message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.creatureID);
         buf.writeFloat(message.dmg);
     }

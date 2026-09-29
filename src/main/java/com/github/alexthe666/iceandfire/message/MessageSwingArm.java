@@ -8,7 +8,6 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import com.github.alexthe666.iceandfire.event.ServerEvents;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 
@@ -41,11 +40,11 @@ public class MessageSwingArm implements CustomPacketPayload {
     }
 
 
-    public static MessageSwingArm read(FriendlyByteBuf buf) {
+    public static MessageSwingArm read(RegistryFriendlyByteBuf buf) {
         return new MessageSwingArm();
     }
 
-    public static void write(MessageSwingArm message, FriendlyByteBuf buf) {
+    public static void write(MessageSwingArm message, RegistryFriendlyByteBuf buf) {
     }
 
 }

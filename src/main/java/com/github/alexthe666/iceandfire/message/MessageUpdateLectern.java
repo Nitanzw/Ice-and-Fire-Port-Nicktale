@@ -11,7 +11,6 @@ import com.github.alexthe666.iceandfire.entity.tile.TileEntityLectern;
 import com.github.alexthe666.iceandfire.enums.EnumBestiaryPages;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -46,11 +45,11 @@ public class MessageUpdateLectern implements CustomPacketPayload {
     public MessageUpdateLectern() {
     }
 
-    public static MessageUpdateLectern read(FriendlyByteBuf buf) {
+    public static MessageUpdateLectern read(RegistryFriendlyByteBuf buf) {
         return new MessageUpdateLectern(buf.readLong(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean(), buf.readInt());
     }
 
-    public static void write(MessageUpdateLectern message, FriendlyByteBuf buf) {
+    public static void write(MessageUpdateLectern message, RegistryFriendlyByteBuf buf) {
         buf.writeLong(message.blockPos);
         buf.writeInt(message.selectedPages1);
         buf.writeInt(message.selectedPages2);

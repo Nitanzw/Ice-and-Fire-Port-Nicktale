@@ -10,7 +10,6 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityJar;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityPixieHouse;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -37,11 +36,11 @@ public class MessageUpdatePixieHouseModel implements CustomPacketPayload {
     public MessageUpdatePixieHouseModel() {
     }
 
-    public static MessageUpdatePixieHouseModel read(FriendlyByteBuf buf) {
+    public static MessageUpdatePixieHouseModel read(RegistryFriendlyByteBuf buf) {
         return new MessageUpdatePixieHouseModel(buf.readLong(), buf.readInt());
     }
 
-    public static void write(MessageUpdatePixieHouseModel message, FriendlyByteBuf buf) {
+    public static void write(MessageUpdatePixieHouseModel message, RegistryFriendlyByteBuf buf) {
         buf.writeLong(message.blockPos);
         buf.writeInt(message.houseType);
     }

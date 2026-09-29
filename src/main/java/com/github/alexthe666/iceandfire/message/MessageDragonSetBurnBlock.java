@@ -9,7 +9,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -37,11 +36,11 @@ public class MessageDragonSetBurnBlock implements CustomPacketPayload {
         posZ = pos.getZ();
     }
 
-    public static MessageDragonSetBurnBlock read(FriendlyByteBuf buf) {
+    public static MessageDragonSetBurnBlock read(RegistryFriendlyByteBuf buf) {
         return new MessageDragonSetBurnBlock(buf.readInt(), buf.readBoolean(), new BlockPos(buf.readInt(), buf.readInt(), buf.readInt()));
     }
 
-    public static void write(MessageDragonSetBurnBlock message, FriendlyByteBuf buf) {
+    public static void write(MessageDragonSetBurnBlock message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.dragonId);
         buf.writeBoolean(message.breathingFire);
         buf.writeInt(message.posX);

@@ -10,7 +10,6 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntityMyrmexBase;
 import com.github.alexthe666.iceandfire.entity.util.MyrmexHive;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -37,11 +36,11 @@ public class MessageMyrmexSettings implements CustomPacketPayload {
         this.roomToDelete = roomToDelete;
     }
 
-    public static MessageMyrmexSettings read(FriendlyByteBuf buf) {
+    public static MessageMyrmexSettings read(RegistryFriendlyByteBuf buf) {
         return new MessageMyrmexSettings(buf.readInt(), buf.readBoolean(), buf.readBoolean(), buf.readLong());
     }
 
-    public static void write(MessageMyrmexSettings message, FriendlyByteBuf buf) {
+    public static void write(MessageMyrmexSettings message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.queenID);
         buf.writeBoolean(message.reproduces);
         buf.writeBoolean(message.deleteRoom);

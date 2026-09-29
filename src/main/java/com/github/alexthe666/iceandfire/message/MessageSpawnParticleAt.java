@@ -9,7 +9,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -38,11 +37,11 @@ public class MessageSpawnParticleAt implements CustomPacketPayload {
         this.particleType = particleType;
     }
 
-    public static MessageSpawnParticleAt read(FriendlyByteBuf buf) {
+    public static MessageSpawnParticleAt read(RegistryFriendlyByteBuf buf) {
         return new MessageSpawnParticleAt(buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readInt());
     }
 
-    public static void write(MessageSpawnParticleAt message, FriendlyByteBuf buf) {
+    public static void write(MessageSpawnParticleAt message, RegistryFriendlyByteBuf buf) {
         buf.writeDouble(message.x);
         buf.writeDouble(message.y);
         buf.writeDouble(message.z);

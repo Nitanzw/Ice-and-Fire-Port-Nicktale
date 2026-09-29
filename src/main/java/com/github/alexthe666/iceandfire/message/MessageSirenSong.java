@@ -8,7 +8,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntitySiren;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
@@ -34,11 +33,11 @@ public class MessageSirenSong implements CustomPacketPayload {
     public MessageSirenSong() {
     }
 
-    public static MessageSirenSong read(FriendlyByteBuf buf) {
+    public static MessageSirenSong read(RegistryFriendlyByteBuf buf) {
         return new MessageSirenSong(buf.readInt(), buf.readBoolean());
     }
 
-    public static void write(MessageSirenSong message, FriendlyByteBuf buf) {
+    public static void write(MessageSirenSong message, RegistryFriendlyByteBuf buf) {
         buf.writeInt(message.sirenId);
         buf.writeBoolean(message.isSinging);
     }

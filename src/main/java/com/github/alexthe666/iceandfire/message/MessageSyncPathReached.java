@@ -10,7 +10,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.github.alexthe666.iceandfire.client.render.pathfinding.PathfindingDebugRenderer;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.MNode;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,7 +39,7 @@ public class MessageSyncPathReached implements CustomPacketPayload {
         this.reached = reached;
     }
 
-    public void write(final FriendlyByteBuf buf) {
+    public void write(final RegistryFriendlyByteBuf buf) {
         buf.writeInt(reached.size());
         for (final BlockPos node : reached) {
             buf.writeBlockPos(node);
@@ -48,7 +47,7 @@ public class MessageSyncPathReached implements CustomPacketPayload {
 
     }
 
-    public static MessageSyncPathReached read(final FriendlyByteBuf buf) {
+    public static MessageSyncPathReached read(final RegistryFriendlyByteBuf buf) {
         int size = buf.readInt();
         Set<BlockPos> reached = new HashSet<>();
         for (int i = 0; i < size; i++) {
