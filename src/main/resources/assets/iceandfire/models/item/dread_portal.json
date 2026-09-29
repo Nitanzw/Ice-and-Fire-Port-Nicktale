@@ -1,5 +1,5 @@
 {
-  "parent": "builtin/entity",
+  "parent": "iceandfire:item/special_base",
   "display": {
     "gui": {
       "rotation": [ 30, 45, 0 ],

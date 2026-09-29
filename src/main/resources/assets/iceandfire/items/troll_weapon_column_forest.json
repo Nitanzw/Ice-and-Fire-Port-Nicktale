@@ -1,7 +1,7 @@
 {
   "model": {
     "type": "minecraft:special",
-    "base": "iceandfire:item/troll_weapon_column_forest",
+    "base": "iceandfire:item/special_base",
     "model": {
       "type": "iceandfire:troll_weapon"
     }

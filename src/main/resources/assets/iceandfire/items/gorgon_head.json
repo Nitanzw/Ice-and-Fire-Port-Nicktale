@@ -1,7 +1,7 @@
 {
   "model": {
     "type": "minecraft:special",
-    "base": "iceandfire:item/gorgon_head",
+    "base": "iceandfire:item/special_base",
     "model": {
       "type": "iceandfire:gorgon_head"
     }

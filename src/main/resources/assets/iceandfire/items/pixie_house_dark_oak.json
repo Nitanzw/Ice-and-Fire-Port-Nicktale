@@ -1,7 +1,7 @@
 {
   "model": {
     "type": "minecraft:special",
-    "base": "iceandfire:item/pixie_house_dark_oak",
+    "base": "iceandfire:item/special_base",
     "model": {
       "type": "iceandfire:pixie_house"
     }

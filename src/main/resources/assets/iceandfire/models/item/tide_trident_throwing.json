@@ -1,5 +1,5 @@
 {
-  "parent": "builtin/entity",
+  "parent": "iceandfire:item/special_base",
   "gui_light": "front",
   "ambientocclusion": true,
   "display": {

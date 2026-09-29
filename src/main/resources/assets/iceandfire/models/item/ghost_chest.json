@@ -1,5 +1,5 @@
 {
-    "parent": "builtin/entity",
+    "parent": "iceandfire:item/special_base",
     "textures": {
         "particle": "block/oak_planks"
     },

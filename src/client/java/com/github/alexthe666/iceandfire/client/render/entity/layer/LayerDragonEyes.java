@@ -25,11 +25,11 @@ public class LayerDragonEyes extends RenderLayer<DragonRenderState, TabulaModel>
         super(renderer);
         try {
             fireHead = onlyKeepCubes(new TabulaModelAccessor(
-                    TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/firedragon/firedragon_Ground")));
+                    TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/firedragon/firedragon_ground")));
             iceHead = onlyKeepCubes(new TabulaModelAccessor(
-                    TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/icedragon/icedragon_Ground")));
+                    TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/icedragon/icedragon_ground")));
             lightningHead = onlyKeepCubes(new TabulaModelAccessor(
-                    TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/lightningdragon/lightningdragon_Ground")));
+                    TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/lightningdragon/lightningdragon_ground")));
         } catch (Exception exception) {
             throw new IllegalStateException("Could not load dragon eye models", exception);
         }
