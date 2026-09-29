@@ -2,120 +2,113 @@ package com.github.alexthe666.iceandfire.client.render.pathfinding;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.MNode;
-import com.github.alexthe666.iceandfire.pathfinding.raycoms.WorldEventContext;
-import com.github.alexthe666.iceandfire.pathfinding.raycoms.WorldRenderMacros;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Set;
 
 public class PathfindingDebugRenderer {
-    public static final RenderBuffers renderBuffers = new RenderBuffers();
-    private static final MultiBufferSource.BufferSource renderBuffer = renderBuffers.bufferSource();
-    /**
-     * Set of visited nodes.
-     */
+    /** Set of visited nodes. */
     public static Set<MNode> lastDebugNodesVisited = new HashSet<>();
-
-    /**
-     * Set of not visited nodes.
-     */
+    /** Set of not visited nodes. */
     public static Set<MNode> lastDebugNodesNotVisited = new HashSet<>();
-
-    /**
-     * Set of nodes that belong to the chosen path.
-     */
+    /** Set of nodes that belong to the chosen path. */
     public static Set<MNode> lastDebugNodesPath = new HashSet<>();
 
-    /**
-     * Render debugging information for the pathfinding system.
-     *
-     * @param ctx rendering context
-     */
-    public static void render(final WorldEventContext ctx) {
+    /** Submit pathfinding debug geometry to the deferred 26.2 renderer. */
+    public static void render(@NotNull SubmitNodeCollector collector, @NotNull PoseStack poseStack, @NotNull Vec3 cameraPos) {
+        poseStack.pushPose();
+        poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
+        BlockPos cameraBlockPos = BlockPos.containing(cameraPos.x(), cameraPos.y(), cameraPos.z());
         try {
-            for (final MNode n : lastDebugNodesVisited) {
-                debugDrawNode(n, 0xffff0000, ctx);
+            for (MNode node : lastDebugNodesVisited) {
+                debugDrawNode(node, 0xffff0000, collector, poseStack, cameraBlockPos);
             }
 
-            for (final MNode n : lastDebugNodesNotVisited) {
-                debugDrawNode(n, 0xff0000ff, ctx);
+            for (MNode node : lastDebugNodesNotVisited) {
+                debugDrawNode(node, 0xff0000ff, collector, poseStack, cameraBlockPos);
             }
 
-            for (final MNode n : lastDebugNodesPath) {
-                if (n.isReachedByWorker()) {
-                    debugDrawNode(n, 0xffff6600, ctx);
-                } else {
-                    debugDrawNode(n, 0xff00ff00, ctx);
-                }
+            for (MNode node : lastDebugNodesPath) {
+                debugDrawNode(node, node.isReachedByWorker() ? 0xffff6600 : 0xff00ff00, collector, poseStack, cameraBlockPos);
             }
-        } catch (final ConcurrentModificationException exc) {
-            IceAndFire.LOGGER.catching(exc);
+        } catch (ConcurrentModificationException exception) {
+            IceAndFire.LOGGER.catching(exception);
+        } finally {
+            poseStack.popPose();
         }
     }
 
-    private static void debugDrawNode(final MNode n, final int argbColor, final WorldEventContext ctx) {
-        ctx.poseStack.pushPose();
-        ctx.poseStack.translate(n.pos.getX() + 0.375d, n.pos.getY() + 0.375d, n.pos.getZ() + 0.375d);
-
-        final Entity entity = Minecraft.getInstance().getCameraEntity();
-        if (n.pos.closerThan(entity.blockPosition(), 5d)) {
-            renderDebugText(n, ctx);
+    private static void debugDrawNode(MNode node, int argbColor, SubmitNodeCollector collector, PoseStack poseStack, BlockPos cameraBlockPos) {
+        poseStack.pushPose();
+        poseStack.translate(node.pos.getX() + 0.375D, node.pos.getY() + 0.375D, node.pos.getZ() + 0.375D);
+        if (node.pos.closerThan(cameraBlockPos, 5D)) {
+            renderDebugText(node, collector, poseStack);
         }
 
-        ctx.poseStack.scale(0.25F, 0.25F, 0.25F);
+        collector.submitCustomGeometry(poseStack, RenderTypes.debugQuads(), (pose, buffer) -> submitCube(buffer, pose, argbColor));
 
-        WorldRenderMacros.renderBox(ctx.bufferSource, ctx.poseStack, BlockPos.ZERO, BlockPos.ZERO, argbColor);
-
-        if (n.parent != null) {
-            final Matrix4f lineMatrix = ctx.poseStack.last().pose();
-
-            final float pdx = n.parent.pos.getX() - n.pos.getX() + 0.125f;
-            final float pdy = n.parent.pos.getY() - n.pos.getY() + 0.125f;
-            final float pdz = n.parent.pos.getZ() - n.pos.getZ() + 0.125f;
-
-            final VertexConsumer buffer = ctx.bufferSource.getBuffer(WorldRenderMacros.LINES);
-
-            buffer.vertex(lineMatrix, 0.5f, 0.5f, 0.5f).color(0.75F, 0.75F, 0.75F, 1.0F).endVertex();
-            buffer.vertex(lineMatrix, pdx / 0.25f, pdy / 0.25f, pdz / 0.25f).color(0.75F, 0.75F, 0.75F, 1.0F).endVertex();
+        if (node.parent != null) {
+            float dx = node.parent.pos.getX() - node.pos.getX();
+            float dy = node.parent.pos.getY() - node.pos.getY();
+            float dz = node.parent.pos.getZ() - node.pos.getZ();
+            collector.submitCustomGeometry(poseStack, RenderTypes.lines(), (pose, buffer) -> {
+                buffer.addVertex(pose, 0.125F, 0.125F, 0.125F).setColor(0xFFBFBFBF);
+                buffer.addVertex(pose, dx + 0.125F, dy + 0.125F, dz + 0.125F).setColor(0xFFBFBFBF);
+            });
         }
 
-        ctx.poseStack.popPose();
+        poseStack.popPose();
     }
 
-    private static void renderDebugText(@NotNull final MNode n, final WorldEventContext ctx) {
-        final Font fontrenderer = Minecraft.getInstance().font;
-
-        final String s1 = String.format("F: %.3f [%d]", n.getCost(), n.getCounterAdded());
-        final String s2 = String.format("G: %.3f [%d]", n.getScore(), n.getCounterVisited());
-        final int i = Math.max(fontrenderer.width(s1), fontrenderer.width(s2)) / 2;
-
-        ctx.poseStack.pushPose();
-        ctx.poseStack.translate(0.0F, 0.75F, 0.0F);
-
-        ctx.poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
-        ctx.poseStack.scale(-0.014F, -0.014F, 0.014F);
-        ctx.poseStack.translate(0.0F, 18F, 0.0F);
-        final Matrix4f mat = ctx.poseStack.last().pose();
-
-        WorldRenderMacros.renderFillRectangle(ctx.bufferSource, ctx.poseStack, -i - 1, -5, 0, 2 * i + 2, 17, 0x7f000000);
-
-        ctx.poseStack.translate(0.0F, -5F, -0.1F);
-        fontrenderer.drawInBatch(s1, -fontrenderer.width(s1) / 2.0f, 1, 0xFFFFFFFF, false, mat, ctx.bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-        ctx.poseStack.translate(0.0F, 8F, -0.1F);
-        fontrenderer.drawInBatch(s2, -fontrenderer.width(s2) / 2.0f, 1, 0xFFFFFFFF, false, mat, ctx.bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-
-        ctx.poseStack.popPose();
+    private static void submitCube(VertexConsumer buffer, PoseStack.Pose pose, int color) {
+        // A small filled node marker, matching the legacy 0.25 block cube.
+        quad(buffer, pose, color, 0, 0, 0, 0, 0.25F, 0, 0.25F, 0.25F, 0, 0.25F, 0, 0);
+        quad(buffer, pose, color, 0, 0, 0.25F, 0.25F, 0, 0.25F, 0.25F, 0.25F, 0.25F, 0, 0, 0.25F);
+        quad(buffer, pose, color, 0, 0, 0, 0.25F, 0, 0, 0.25F, 0, 0.25F, 0, 0, 0.25F);
+        quad(buffer, pose, color, 0, 0.25F, 0, 0, 0.25F, 0.25F, 0.25F, 0.25F, 0.25F, 0.25F, 0.25F, 0);
+        quad(buffer, pose, color, 0, 0, 0, 0, 0, 0.25F, 0, 0.25F, 0.25F, 0, 0.25F, 0);
+        quad(buffer, pose, color, 0.25F, 0, 0, 0.25F, 0.25F, 0, 0.25F, 0.25F, 0.25F, 0.25F, 0, 0.25F);
     }
 
+    private static void quad(VertexConsumer buffer, PoseStack.Pose pose, int color,
+                             float x0, float y0, float z0, float x1, float y1, float z1,
+                             float x2, float y2, float z2, float x3, float y3, float z3) {
+        buffer.addVertex(pose, x0, y0, z0).setColor(color);
+        buffer.addVertex(pose, x1, y1, z1).setColor(color);
+        buffer.addVertex(pose, x2, y2, z2).setColor(color);
+        buffer.addVertex(pose, x3, y3, z3).setColor(color);
+    }
 
+    private static void renderDebugText(@NotNull MNode node, SubmitNodeCollector collector, PoseStack poseStack) {
+        Font font = Minecraft.getInstance().font;
+        String f = String.format("F: %.3f [%d]", node.getCost(), node.getCounterAdded());
+        String g = String.format("G: %.3f [%d]", node.getScore(), node.getCounterVisited());
+        int halfWidth = Math.max(font.width(f), font.width(g)) / 2;
+
+        poseStack.pushPose();
+        poseStack.translate(0.125F, 0.75F, 0.125F);
+        poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
+        poseStack.scale(-0.014F, -0.014F, 0.014F);
+        poseStack.translate(0.0F, 18.0F, 0.0F);
+        collector.submitTextBackground(poseStack, -halfWidth - 1, -5, halfWidth + 1, 12,
+                0x7f000000, Font.DisplayMode.NORMAL, 15728880);
+        poseStack.translate(0.0F, -5.0F, 0.0F);
+        collector.submitText(poseStack, -font.width(f) / 2.0F, 1, Component.literal(f).getVisualOrderText(),
+                false, Font.DisplayMode.NORMAL, 15728880, 0xffffffff, 0, 0);
+        poseStack.translate(0.0F, 8.0F, 0.0F);
+        collector.submitText(poseStack, -font.width(g) / 2.0F, 1, Component.literal(g).getVisualOrderText(),
+                false, Font.DisplayMode.NORMAL, 15728880, 0xffffffff, 0, 0);
+        poseStack.popPose();
+    }
 }
