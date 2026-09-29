@@ -21,6 +21,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -63,6 +64,9 @@ public class IceAndFire {
         modBus.addListener(CommonProxy::onModConfigEvent);
         modBus.addListener(IafSoundRegistry::registerSoundEvents);
         modBus.addListener(IafDamageRegistry::gatherData);
+        modBus.addListener(IafTileEntityRegistry::registerCapabilities);
+        modBus.addListener(IafRecipeRegistry::preInit);
+        NeoForge.EVENT_BUS.addListener(IafRecipeRegistry::registerBrewingRecipes);
         IafNetwork.init(modBus);
 
         IafItemRegistry.ITEMS.register(modBus);
@@ -82,8 +86,6 @@ public class IceAndFire {
         IafVillagerRegistry.POI_TYPES.register(modBus);
         IafVillagerRegistry.PROFESSIONS.register(modBus);
 
-        NeoForge.EVENT_BUS.register(IafBlockRegistry.class);
-        NeoForge.EVENT_BUS.register(IafRecipeRegistry.class);
         modBus.addListener(IceAndFire::setup);
         modBus.addListener(IceAndFire::setupComplete);
         modBus.addListener(IceAndFire::setupClient);

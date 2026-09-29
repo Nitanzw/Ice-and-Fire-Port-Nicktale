@@ -13,14 +13,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 
 
 public class CommonProxy {
 
-    @SubscribeEvent
     public static void onModConfigEvent(final ModConfigEvent.Loading event) {
         final ModConfig config = event.getConfig();
         // Rebake the configs when they change
