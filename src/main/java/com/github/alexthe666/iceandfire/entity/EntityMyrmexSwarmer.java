@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.misc.IafDataSerializers;
+import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -33,7 +35,7 @@ import java.util.UUID;
 
 public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
 
-    private static final EntityDataAccessor<Optional<UUID>> SUMMONER_ID = SynchedEntityData.defineId(EntityMyrmexSwarmer.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> SUMMONER_ID = SynchedEntityData.defineId(EntityMyrmexSwarmer.class, IafDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Integer> TICKS_ALIVE = SynchedEntityData.defineId(EntityMyrmexSwarmer.class, EntityDataSerializers.INT);
 
     public EntityMyrmexSwarmer(EntityType type, Level worldIn) {
@@ -58,7 +60,7 @@ public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 0;
     }
 
@@ -115,7 +117,7 @@ public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
     }
 
     @Override
-    public boolean isAlliedTo(@NotNull Entity entityIn) {
+    public boolean considersEntityAsAlly(@NotNull Entity entityIn) {
         if (entityIn == null) {
             return false;
         }

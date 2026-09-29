@@ -53,7 +53,7 @@ public class EntityMobSkull extends Animal implements IBlacklistedFromStatues, I
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource i) {
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource i) {
         return i.getEntity() != null;
     }
 

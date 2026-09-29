@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityMyrmexBase;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.AdvancedPathNavigate;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.PathResult;
@@ -128,7 +129,7 @@ public class MyrmexAIAttackMelee extends Goal {
             if (d0 <= d1 && this.attackTick <= 0) {
                 this.attackTick = 20;
                 this.myrmex.swing(InteractionHand.MAIN_HAND);
-                this.myrmex.doHurtTarget(entity);
+                IafEntityUtil.attack(this.myrmex, entity);
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityDeathWorm;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
@@ -106,7 +107,7 @@ public class DeathWormAIAttack extends Goal {
         LivingEntity target = this.worm.getTarget();
         if (target != null && this.worm.hasLineOfSight(target)) {
             if (this.worm.distanceTo(target) < 3F) {
-                this.worm.doHurtTarget(target);
+                IafEntityUtil.attack(this.worm, target);
             }
         }
 

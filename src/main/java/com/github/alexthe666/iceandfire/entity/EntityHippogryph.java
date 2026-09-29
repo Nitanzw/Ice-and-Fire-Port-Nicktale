@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.world.item.ItemStackTemplate;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
@@ -114,7 +115,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
         ANIMATION_SCRATCH = Animation.create(25);
         ANIMATION_BITE = Animation.create(20);
         initHippogryphInv();
-        this.setMaxUpStep(1);
+        IafEntityUtil.setStepHeight(this, 1);
     }
 
     public static int getIntFromArmor(ItemStack stack) {
@@ -153,7 +154,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 10;
     }
 
@@ -163,7 +164,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
         this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
         this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2D, true));
         this.goalSelector.addGoal(4, new HippogryphAIMate(this, 1.0D));
-        this.goalSelector.addGoal(5, new TemptGoal(this, 1.0D, Ingredient.of(IafItemTags.TEMPT_HIPPOGRYPH), false));
+        this.goalSelector.addGoal(5, new TemptGoal(this, 1.0D, IafEntityUtil.ingredient(IafItemTags.TEMPT_HIPPOGRYPH), false));
         //TODO: This doesn't gurantee the hippogryph will fly, it can still and is likely to path on the ground
         this.goalSelector.addGoal(6, new WaterAvoidingRandomFlyingGoal(this, 1D));
         this.goalSelector.addGoal(7, new HippogryphAIWander(this, 1.0D));
@@ -291,7 +292,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
             }
             if (itemstack.is(IafItemTags.BREED_HIPPOGRYPH) && this.getAge() == 0 && !isInLove()) {
                 this.setInLove(player);
-                this.playSound(SoundEvents.GENERIC_EAT, 1, 1);
+                this.playSound(SoundEvents.GENERIC_EAT.value(), 1, 1);
                 if (!player.isCreative()) {
                     itemstack.shrink(1);
                 }
@@ -332,9 +333,9 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
             }
             if (itemstack.getItem().isEdible() && itemstack.getItem().getFoodProperties() != null && itemstack.getItem().getFoodProperties().isMeat() && this.getHealth() < this.getMaxHealth()) {
                 this.heal(5);
-                this.playSound(SoundEvents.GENERIC_EAT, 1, 1);
+                this.playSound(SoundEvents.GENERIC_EAT.value(), 1, 1);
                 for (int i = 0; i < 3; i++) {
-                    this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, itemstack), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), this.getY() + (double) (this.random.nextFloat() * this.getBbHeight()), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), 0, 0, 0);
+                    this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(itemstack)), this.getX() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), this.getY() + (double) (this.random.nextFloat() * this.getBbHeight()), this.getZ() + (double) (this.random.nextFloat() * this.getBbWidth() * 2.0F) - (double) this.getBbWidth(), 0, 0, 0);
                 }
                 if (!player.isCreative()) {
                     itemstack.shrink(1);
@@ -780,7 +781,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         if (this.getAnimation() != ANIMATION_SCRATCH && this.getAnimation() != ANIMATION_BITE) {
             this.setAnimation(this.getRandom().nextBoolean() ? ANIMATION_SCRATCH : ANIMATION_BITE);
         } else {
@@ -847,7 +848,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
             for (int i = 3; i < 18; i++) {
                 if (!hippogryphInventory.getItem(i).isEmpty()) {
                     if (!level().isClientSide()) {
-                        this.spawnAtLocation(hippogryphInventory.getItem(i), 1);
+                        IafEntityUtil.drop(this, hippogryphInventory.getItem(i), 1);
                     }
                     hippogryphInventory.removeItemNoUpdate(i);
                 }
@@ -1035,7 +1036,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
             for (int i = 0; i < hippogryphInventory.getContainerSize(); ++i) {
                 ItemStack itemstack = hippogryphInventory.getItem(i);
                 if (!itemstack.isEmpty()) {
-                    this.spawnAtLocation(itemstack, 0.0F);
+                    IafEntityUtil.drop(this, itemstack, 0.0F);
                 }
             }
         }
@@ -1088,7 +1089,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
     }
 
     @Override
-    public boolean isAlliedTo(@NotNull Entity entityIn) {
+    public boolean considersEntityAsAlly(@NotNull Entity entityIn) {
         if (this.isTame()) {
             LivingEntity livingentity = this.getOwner();
             if (entityIn == livingentity) {
@@ -1102,7 +1103,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
             }
         }
 
-        return super.isAlliedTo(entityIn);
+        return super.considersEntityAsAlly(entityIn);
     }
 
     @Override
@@ -1126,7 +1127,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
             for (int i = 0; i < hippogryphInventory.getContainerSize(); ++i) {
                 ItemStack itemstack = hippogryphInventory.getItem(i);
                 if (!itemstack.isEmpty()) {
-                    this.spawnAtLocation(itemstack, 0.0F);
+                    IafEntityUtil.drop(this, itemstack, 0.0F);
                 }
             }
         }

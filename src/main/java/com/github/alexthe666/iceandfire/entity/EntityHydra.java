@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import net.minecraft.server.level.ServerLevel;
 import com.nicktale.api.animation.Animation;
@@ -108,16 +109,16 @@ public class EntityHydra extends Monster implements IAnimatedEntity, IMultipartE
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 10, true, false, new Predicate<Entity>() {
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 10, true, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<Entity>() {
             @Override
             public boolean apply(@Nullable Entity entity) {
                 return entity instanceof LivingEntity && DragonUtils.isAlive((LivingEntity) entity) && !(entity instanceof EntityMutlipartPart) && !(entity instanceof Enemy) || (entity instanceof IBlacklistedFromStatues && ((IBlacklistedFromStatues) entity).canBeTurnedToStone());
             }
-        }));
+        }))));
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         return false;
     }
 
@@ -154,7 +155,7 @@ public class EntityHydra extends Monster implements IAnimatedEntity, IMultipartE
                 if (attackTarget != null && this.distanceTo(attackTarget) < 6) {
                     IafDamage.hurt(attackTarget, level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
                     attackTarget.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 3, false, false));
-                    attackTarget.knockback(0.25F, this.getX() - attackTarget.getX(), this.getZ() - attackTarget.getZ());
+                    IafEntityUtil.knockback(attackTarget, 0.25F, this.getX() - attackTarget.getX(), this.getZ() - attackTarget.getZ());
                 }
             }
             if (breathing) {

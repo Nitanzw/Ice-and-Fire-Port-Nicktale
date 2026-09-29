@@ -75,7 +75,7 @@ public class ItemHippogryphEgg extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        int eggOrdinal = ItemStackData.get(stack).getInt("EggOrdinal");
+        int eggOrdinal = ItemStackData.get(stack).getIntOr("EggOrdinal", 0);
 
         String type = EnumHippogryphTypes.values()[Mth.clamp(eggOrdinal, 0, EnumHippogryphTypes.values().length - 1)].name().toLowerCase();
         tooltip.accept(Component.translatable("entity.iceandfire.hippogryph." + type).withStyle(ChatFormatting.GRAY));

@@ -78,10 +78,10 @@ public class ItemDragonSkull extends Item {
             CompoundTag data = ItemStackData.get(stack);
             EntityDragonSkull skull = new EntityDragonSkull(IafEntityRegistry.DRAGON_SKULL.get(), context.getLevel());
             skull.setDragonType(dragonType);
-            skull.setStage(data.getInt("Stage"));
-            skull.setDragonAge(data.getInt("DragonAge"));
+            skull.setStage(data.getIntOr("Stage", 0));
+            skull.setDragonAge(data.getIntOr("DragonAge", 0));
             BlockPos offset = context.getClickedPos().relative(context.getClickedFace(), 1);
-            skull.moveTo(offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5, 0, 0);
+            skull.snapTo(offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5, 0, 0);
             float yaw = context.getPlayer().getYRot();
             if (context.getClickedFace() != Direction.UP) {
                 yaw = context.getPlayer().getDirection().toYRot();

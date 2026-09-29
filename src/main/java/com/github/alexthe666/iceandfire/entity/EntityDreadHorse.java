@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.misc.IafDataSerializers;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.entity.util.IDreadMob;
 import net.minecraft.nbt.CompoundTag;
@@ -24,7 +25,7 @@ import java.util.UUID;
 
 public class EntityDreadHorse extends SkeletonHorse implements IDreadMob {
 
-    protected static final EntityDataAccessor<Optional<UUID>> COMMANDER_UNIQUE_ID = SynchedEntityData.defineId(EntityDreadHorse.class, EntityDataSerializers.OPTIONAL_UUID);
+    protected static final EntityDataAccessor<Optional<UUID>> COMMANDER_UNIQUE_ID = SynchedEntityData.defineId(EntityDreadHorse.class, IafDataSerializers.OPTIONAL_UUID);
 
     public EntityDreadHorse(EntityType type, Level worldIn) {
         super(type, worldIn);
@@ -92,8 +93,8 @@ public class EntityDreadHorse extends SkeletonHorse implements IDreadMob {
     }
 
     @Override
-    public boolean isAlliedTo(@NotNull Entity entityIn) {
-        return entityIn instanceof IDreadMob || super.isAlliedTo(entityIn);
+    public boolean considersEntityAsAlly(@NotNull Entity entityIn) {
+        return entityIn instanceof IDreadMob || super.considersEntityAsAlly(entityIn);
     }
 
     @Nullable

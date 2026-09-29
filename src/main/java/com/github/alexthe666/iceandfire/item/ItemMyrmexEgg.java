@@ -43,7 +43,7 @@ public class ItemMyrmexEgg extends Item {
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, @NotNull TooltipFlag flagIn) {
         String caste;
-        int eggOrdinal = ItemStackData.get(stack).getInt("EggOrdinal");
+        int eggOrdinal = ItemStackData.get(stack).getIntOr("EggOrdinal", 0);
         switch (eggOrdinal) {
             default:
                 caste = "worker";
@@ -72,10 +72,10 @@ public class ItemMyrmexEgg extends Item {
         ItemStack itemstack = context.getPlayer().getItemInHand(context.getHand());
         BlockPos offset = context.getClickedPos().relative(context.getClickedFace());
         EntityMyrmexEgg egg = new EntityMyrmexEgg(IafEntityRegistry.MYRMEX_EGG.get(), context.getLevel());
-        int eggOrdinal = ItemStackData.get(itemstack).getInt("EggOrdinal");
+        int eggOrdinal = ItemStackData.get(itemstack).getIntOr("EggOrdinal", 0);
         egg.setJungle(isJungle);
         egg.setMyrmexCaste(eggOrdinal);
-        egg.moveTo(offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5, 0, 0);
+        egg.snapTo(offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5, 0, 0);
         egg.onPlayerPlace(context.getPlayer());
         if (itemstack.hasCustomHoverName()) {
             egg.setCustomName(itemstack.getHoverName());
@@ -89,7 +89,7 @@ public class ItemMyrmexEgg extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        int eggOrdinal = ItemStackData.get(stack).getInt("EggOrdinal");
+        int eggOrdinal = ItemStackData.get(stack).getIntOr("EggOrdinal", 0);
         return super.isFoil(stack) || eggOrdinal == 4;
     }
 }

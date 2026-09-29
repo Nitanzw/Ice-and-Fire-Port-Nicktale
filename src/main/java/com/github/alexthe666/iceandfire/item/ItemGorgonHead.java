@@ -109,7 +109,7 @@ public class ItemGorgonHead extends Item {
                 if (wasSuccesful) {
                     pointedEntity.playSound(IafSoundRegistry.TURN_STONE, 1, 1);
                     EntityStoneStatue statue = EntityStoneStatue.buildStatueEntity(livingEntity);
-                    statue.absMoveTo(pointedEntity.getX(), pointedEntity.getY(), pointedEntity.getZ(), pointedEntity.getYRot(), pointedEntity.getXRot());
+                    statue.snapTo(pointedEntity.getX(), pointedEntity.getY(), pointedEntity.getZ(), pointedEntity.getYRot(), pointedEntity.getXRot());
                     statue.yBodyRot = pointedEntity.getYRot();
                     if (!worldIn.isClientSide()) {
                         worldIn.addFreshEntity(statue);

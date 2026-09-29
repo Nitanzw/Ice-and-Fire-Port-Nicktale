@@ -104,7 +104,7 @@ public class ItemSummoningCrystal extends Item {
                     CompoundTag dragonTag = data.getCompound(tagInfo);
                     Component dragonName = Component.translatable(desc);
                     if (!dragonTag.getString("CustomName").isEmpty()) {
-                        dragonName = Component.literal(dragonTag.getString("CustomName"));
+                        dragonName = Component.literal(dragonTag.getStringOr("CustomName", ""));
                     }
                     tooltip.accept(Component.translatable("item.iceandfire.summoning_crystal.bound", dragonName).withStyle(ChatFormatting.GRAY));
                     flag = true;
@@ -191,7 +191,7 @@ public class ItemSummoningCrystal extends Item {
     }
 
     public void summonEntity(Entity entity, Level worldIn, BlockPos offsetPos, float yaw) {
-        entity.moveTo(offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D, yaw, 0);
+        entity.snapTo(offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D, yaw, 0);
         if (entity instanceof EntityDragonBase) {
             ((EntityDragonBase) entity).setCrystalBound(false);
         }

@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -100,7 +102,7 @@ public class EntityMyrmexRoyal extends EntityMyrmexBase {
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 10;
     }
 
@@ -264,7 +266,7 @@ public class EntityMyrmexRoyal extends EntityMyrmexBase {
         this.targetSelector.addGoal(2, new MyrmexAIFindMate(this));
         this.targetSelector.addGoal(3, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(4, new MyrmexAIAttackPlayers(this));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, new Predicate<LivingEntity>() {
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
             public boolean apply(@Nullable LivingEntity entity) {
                 if (entity instanceof EntityMyrmexBase && EntityMyrmexRoyal.this.isBreedingSeason() || entity instanceof EntityMyrmexRoyal) {
@@ -272,7 +274,7 @@ public class EntityMyrmexRoyal extends EntityMyrmexBase {
                 }
                 return entity != null && !EntityMyrmexBase.haveSameHive(EntityMyrmexRoyal.this, entity) && DragonUtils.isAlive(entity) && !(entity instanceof Enemy);
             }
-        }));
+        }))));
 
     }
 
@@ -344,7 +346,7 @@ public class EntityMyrmexRoyal extends EntityMyrmexBase {
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         if (this.getGrowthStage() < 2) {
             return false;
         }
@@ -531,7 +533,7 @@ public class EntityMyrmexRoyal extends EntityMyrmexBase {
             LivingEntity LivingEntity = EntityMyrmexRoyal.this.getTarget();
             if (LivingEntity != null) {
                 if (EntityMyrmexRoyal.this.getBoundingBox().intersects(LivingEntity.getBoundingBox())) {
-                    EntityMyrmexRoyal.this.doHurtTarget(LivingEntity);
+                    IafEntityUtil.attack(EntityMyrmexRoyal.this, LivingEntity);
                 } else {
                     double d0 = EntityMyrmexRoyal.this.distanceToSqr(LivingEntity);
 

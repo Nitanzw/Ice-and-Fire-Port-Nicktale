@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -36,7 +37,7 @@ public class ItemDragonFlesh extends ItemGenericFood {
                 livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 2));
             } else {
                 if (!livingEntity.level().isClientSide()) {
-                    LightningBolt lightningboltentity = EntityTypes.LIGHTNING_BOLT.create(livingEntity.level());
+                    LightningBolt lightningboltentity = EntityTypes.LIGHTNING_BOLT.create(livingEntity.level(), EntitySpawnReason.EVENT);
                     lightningboltentity.moveTo(livingEntity.position());
                     if (!livingEntity.level().isClientSide()) {
                         livingEntity.level().addFreshEntity(lightningboltentity);

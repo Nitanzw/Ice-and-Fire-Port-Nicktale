@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.misc.IafDataSerializers;
+import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
@@ -58,7 +60,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
         }
     };
     private static final int FLIGHT_CHANCE_PER_TICK = 100;
-    private static final EntityDataAccessor<Optional<UUID>> VICTOR_ENTITY = SynchedEntityData.defineId(EntityStymphalianBird.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> VICTOR_ENTITY = SynchedEntityData.defineId(EntityStymphalianBird.class, IafDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(EntityStymphalianBird.class, EntityDataSerializers.BOOLEAN);
     public static Animation ANIMATION_PECK = Animation.create(20);
     public static Animation ANIMATION_SHOOT_ARROWS = Animation.create(30);
@@ -118,7 +120,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 10;
     }
 
@@ -229,7 +231,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             this.setAnimation(ANIMATION_PECK);
         }

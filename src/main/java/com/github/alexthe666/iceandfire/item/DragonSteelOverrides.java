@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.item;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.IafConfig;
@@ -66,17 +68,17 @@ public interface DragonSteelOverrides<T extends Item> {
 
         if (isDragonsteelFire(material) && IafConfig.dragonWeaponFireAbility) {
             target.igniteForSeconds(15);
-            target.knockback(1.0F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            IafEntityUtil.knockback(target, 1.0F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (isDragonsteelIce(material) && IafConfig.dragonWeaponIceAbility) {
             EntityDataProvider.getCapability(target).ifPresent(data -> data.frozenData.setFrozen(target, 300));
             target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 300, 2));
-            target.knockback(1.0F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            IafEntityUtil.knockback(target, 1.0F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (isDragonsteelLightning(material) && IafConfig.dragonWeaponLightningAbility) {
             boolean createLightning = !(attacker instanceof Player) || attacker.attackAnim <= 0.2F;
             if (!attacker.level().isClientSide() && createLightning) {
-                LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(target.level());
+                LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(target.level(), EntitySpawnReason.EVENT);
                 if (bolt != null) {
                     bolt.getTags().add(ServerEvents.BOLT_DONT_DESTROY_LOOT);
                     bolt.getTags().add(attacker.getStringUUID());
@@ -84,7 +86,7 @@ public interface DragonSteelOverrides<T extends Item> {
                     target.level().addFreshEntity(bolt);
                 }
             }
-            target.knockback(1.0F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            IafEntityUtil.knockback(target, 1.0F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
     }
 

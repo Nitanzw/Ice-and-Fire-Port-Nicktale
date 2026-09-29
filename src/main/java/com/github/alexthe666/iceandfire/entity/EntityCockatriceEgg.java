@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.world.item.ItemStackTemplate;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -34,7 +35,7 @@ public class EntityCockatriceEgg extends ThrowableItemProjectile {
     public void handleEntityEvent(byte id) {
         if (id == 3) {
             for (int i = 0; i < 8; ++i) {
-                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.getItem()), this.getX(), this.getY(), this.getZ(), (this.random.nextFloat() - 0.5D) * 0.08D, (this.random.nextFloat() - 0.5D) * 0.08D, (this.random.nextFloat() - 0.5D) * 0.08D);
+                this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(this.getItem())), this.getX(), this.getY(), this.getZ(), (this.random.nextFloat() - 0.5D) * 0.08D, (this.random.nextFloat() - 0.5D) * 0.08D, (this.random.nextFloat() - 0.5D) * 0.08D);
             }
         }
 
@@ -62,7 +63,7 @@ public class EntityCockatriceEgg extends ThrowableItemProjectile {
                     EntityCockatrice cockatrice = new EntityCockatrice(IafEntityRegistry.COCKATRICE.get(), this.level());
                     cockatrice.setAge(-24000);
                     cockatrice.setHen(this.random.nextBoolean());
-                    cockatrice.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+                    cockatrice.snapTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
                     if (thrower instanceof Player) {
                         cockatrice.tame((Player) thrower);
                     }

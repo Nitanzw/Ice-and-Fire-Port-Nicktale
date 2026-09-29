@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.entity.props.EntityDataProvider;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
@@ -50,7 +51,7 @@ public class ItemDeathwormGauntlet extends Item {
     public void onUseTick(@NotNull Level level, @NotNull LivingEntity entity, @NotNull ItemStack stack, int count) {
         CompoundTag stackData = ItemStackData.get(stack);
         boolean deathwormReceded = !stackData.contains("DeathwormReceded") || stackData.getBoolean("DeathwormReceded");
-        boolean deathwormLaunched = stackData.getBoolean("DeathwormLaunched");
+        boolean deathwormLaunched = stackData.getBooleanOr("DeathwormLaunched", false);
         if (!deathwormReceded && !deathwormLaunched) {
             if (entity instanceof Player player) {
                 ItemStackData.update(stack, tag -> tag.putInt("HolderID", player.getId()));
@@ -69,7 +70,7 @@ public class ItemDeathwormGauntlet extends Item {
 
     @Override
     public boolean releaseUsing(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity livingEntity, int timeLeft) {
-        int specialDamage = ItemStackData.get(stack).getInt("SpecialDamage");
+        int specialDamage = ItemStackData.get(stack).getIntOr("SpecialDamage", 0);
         if (specialDamage > 0) {
             stack.hurtAndBreak(specialDamage, livingEntity, livingEntity.getUsedItemHand());
             ItemStackData.update(stack, tag -> tag.putInt("SpecialDamage", 0));
@@ -95,7 +96,7 @@ public class ItemDeathwormGauntlet extends Item {
             int tempLungeTicks = data.miscData.lungeTicks;
 
             boolean deathwormReceded = !stackData.contains("DeathwormReceded") || stackData.getBoolean("DeathwormReceded");
-            boolean deathwormLaunched = stackData.getBoolean("DeathwormLaunched");
+            boolean deathwormLaunched = stackData.getBooleanOr("DeathwormLaunched", false);
             if (deathwormReceded) {
                 if (tempLungeTicks > 0) {
                     tempLungeTicks = tempLungeTicks - 4;
@@ -134,7 +135,7 @@ public class ItemDeathwormGauntlet extends Item {
                         if (canSee) {
                             stackData.putInt("SpecialDamage", stackData.getInt("SpecialDamage") + 1);
                             IafDamage.hurt(livingEntity, entity.level().damageSources().playerAttack((Player) entity), 3F);
-                            livingEntity.knockback(0.5F, livingEntity.getX() - player.getX(), livingEntity.getZ() - player.getZ());
+                            IafEntityUtil.knockback(livingEntity, 0.5F, livingEntity.getX() - player.getX(), livingEntity.getZ() - player.getZ());
                         }
                     }
                 }

@@ -68,6 +68,7 @@ public class IceAndFire {
         NeoForge.EVENT_BUS.addListener(IafRecipeRegistry::registerBrewingRecipes);
         IafNetwork.init(modBus);
 
+        com.github.alexthe666.iceandfire.misc.IafDataSerializers.SERIALIZERS.register(modBus);
         IafItemRegistry.ITEMS.register(modBus);
         // Deferred items must be bound before repair ingredients resolve their suppliers.
         modBus.addListener(IafItemRegistry::setRepairMaterials);

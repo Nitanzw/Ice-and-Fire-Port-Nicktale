@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityCyclops;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,7 +22,7 @@ public class CyclopsAIAttackMelee extends MeleeAttackGoal {
         }
         if (distance <= d0) {
             this.mob.swing(InteractionHand.MAIN_HAND);
-            this.mob.doHurtTarget(entity);
+            IafEntityUtil.attack(this.mob, entity);
         }
     }
 

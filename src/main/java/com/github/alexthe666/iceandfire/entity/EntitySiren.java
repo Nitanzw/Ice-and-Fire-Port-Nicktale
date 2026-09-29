@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
@@ -97,7 +98,7 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
         if (worldIn.isClientSide()) {
             tail_buffer = new ChainBuffer();
         }
-        this.setMaxUpStep(1F);
+        IafEntityUtil.setStepHeight(this, 1F);
     }
 
     @Override
@@ -111,18 +112,18 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
         this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F, 1.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, Player.class, 10, true, false, new Predicate<Player>() {
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, Player.class, 10, true, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<Player>() {
             @Override
             public boolean apply(@Nullable Player entity) {
                 return EntitySiren.this.isAgressive() && !(entity.isCreative() || entity.isSpectator());
             }
-        }));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, AbstractVillager.class, 10, true, false, new Predicate<AbstractVillager>() {
+        }))));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, AbstractVillager.class, 10, true, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<AbstractVillager>() {
             @Override
             public boolean apply(@Nullable AbstractVillager entity) {
                 return EntitySiren.this.isAgressive();
             }
-        }));
+        }))));
     }
 
     public static boolean isWearingEarplugs(LivingEntity entity) {
@@ -131,7 +132,7 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 8;
     }
 
@@ -141,7 +142,7 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         if (this.getRandom().nextInt(2) == 0) {
             if (this.getAnimation() != ANIMATION_PULL) {
                 this.setAnimation(ANIMATION_PULL);

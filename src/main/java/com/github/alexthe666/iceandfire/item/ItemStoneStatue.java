@@ -31,8 +31,8 @@ public class ItemStoneStatue extends Item {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, @NotNull TooltipFlag flagIn) {
         if (ItemStackData.has(stack)) {
             CompoundTag data = ItemStackData.get(stack);
-            boolean isPlayer = data.getBoolean("IAFStoneStatuePlayerEntity");
-            String id = data.getString("IAFStoneStatueEntityID");
+            boolean isPlayer = data.getBooleanOr("IAFStoneStatuePlayerEntity", false);
+            String id = data.getStringOr("IAFStoneStatueEntityID", "");
             if (EntityType.byString(id).orElse(null) != null) {
                 EntityType type = EntityType.byString(id).orElse(null);
                 MutableComponent untranslated = isPlayer ? Component.translatable("entity.minecraft.player") : Component.translatable(type.getDescriptionId());
@@ -54,7 +54,7 @@ public class ItemStoneStatue extends Item {
             ItemStack stack = context.getPlayer().getItemInHand(context.getHand());
             if (ItemStackData.has(stack)) {
                 CompoundTag data = ItemStackData.get(stack);
-                String id = data.getString("IAFStoneStatueEntityID");
+                String id = data.getStringOr("IAFStoneStatueEntityID", "");
                 CompoundTag statueNBT = data.getCompound("IAFStoneStatueNBT");
                 EntityStoneStatue statue = new EntityStoneStatue(IafEntityRegistry.STONE_STATUE.get(),
                     context.getLevel());
@@ -68,7 +68,7 @@ public class ItemStoneStatue extends Item {
                 statue.yHeadRot = yaw;
                 statue.yBodyRot = yaw;
                 statue.yBodyRotO = yaw;
-                statue.absMoveTo(context.getClickedPos().getX() + 0.5, context.getClickedPos().getY() + 1, context.getClickedPos().getZ() + 0.5, yaw, 0);
+                statue.snapTo(context.getClickedPos().getX() + 0.5, context.getClickedPos().getY() + 1, context.getClickedPos().getZ() + 0.5, yaw, 0);
                 if (!context.getLevel().isClientSide()) {
                     context.getLevel().addFreshEntity(statue);
                     statue.readAdditionalSaveData(data);

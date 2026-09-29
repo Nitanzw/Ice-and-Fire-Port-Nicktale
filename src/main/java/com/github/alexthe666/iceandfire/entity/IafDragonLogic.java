@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
@@ -261,7 +262,7 @@ public class IafDragonLogic {
         }
         if (dragon.isFlying()) {
             if (dragon.getTarget() != null && dragon.getBoundingBox().expandTowards(3.0F, 3.0F, 3.0F).intersects(dragon.getTarget().getBoundingBox())) {
-                dragon.doHurtTarget(dragon.getTarget());
+                IafEntityUtil.attack(dragon, dragon.getTarget());
             }
             if (dragon.airAttack == IafDragonAttacks.Air.TACKLE && (dragon.horizontalCollision || dragon.onGround())) {
                 dragon.usingGroundAttack = true;

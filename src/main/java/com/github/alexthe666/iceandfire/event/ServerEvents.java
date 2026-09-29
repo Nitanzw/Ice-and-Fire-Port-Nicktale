@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.event;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
@@ -292,7 +294,7 @@ public class ServerEvents {
     public void makeItemDropsFireImmune(final LivingDropsEvent event) {
         boolean makeFireImmune = false;
 
-        if (event.getSource().getDirectEntity() instanceof LightningBolt bolt && bolt.getTags().contains(BOLT_DONT_DESTROY_LOOT)) {
+        if (event.getSource().getDirectEntity() instanceof LightningBolt bolt && bolt.entityTags().contains(BOLT_DONT_DESTROY_LOOT)) {
             makeFireImmune = true;
         } else if (event.getSource().getEntity() instanceof Player player && player.getItemInHand(player.getUsedItemHand()).is(IafItemTags.MAKE_ITEM_DROPS_FIREIMMUNE)) {
             makeFireImmune = true;
@@ -388,11 +390,11 @@ public class ServerEvents {
                             statue.addAdditionalSaveData(tag);
 
                             if (!statue.level().isClientSide()) {
-                                statue.spawnAtLocation(statuette, 1);
+                                IafEntityUtil.drop(statue, statuette, 1);
                             }
                         } else {
                             if (!statue.level().isClientSide()) {
-                                statue.spawnAtLocation(Blocks.COBBLESTONE.asItem(), 2 + event.getEntity().getRandom().nextInt(4));
+                                IafEntityUtil.drop(statue, Blocks.COBBLESTONE.asItem(), 2 + event.getEntity().getRandom().nextInt(4));
                             }
                         }
 
@@ -424,7 +426,7 @@ public class ServerEvents {
         });
 
         if (event.getEntity().getUUID().equals(ServerEvents.ALEX_UUID)) {
-            event.getEntity().spawnAtLocation(new ItemStack(IafItemRegistry.WEEZER_BLUE_ALBUM.get()), 1);
+            IafEntityUtil.drop(event.getEntity(), new ItemStack(IafItemRegistry.WEEZER_BLUE_ALBUM.get()), 1);
         }
 
         if (event.getEntity() instanceof Player && IafConfig.ghostsFromPlayerDeaths) {
@@ -438,7 +440,7 @@ public class ServerEvents {
                 }
                 if (flag) {
                     Level world = event.getEntity().level();
-                    EntityGhost ghost = IafEntityRegistry.GHOST.get().create(world);
+                    EntityGhost ghost = IafEntityRegistry.GHOST.get().create(world, EntitySpawnReason.EVENT);
                     ghost.copyPosition(event.getEntity());
                     if (!world.isClientSide()) {
                         ghost.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(event.getEntity().blockPosition()), EntitySpawnReason.SPAWNER, null, null);
@@ -484,7 +486,7 @@ public class ServerEvents {
                     data.chainData.removeChain(event.getEntity());
 
                     if (!event.getLevel().isClientSide()) {
-                        event.getTarget().spawnAtLocation(IafItemRegistry.CHAIN.get(), 1);
+                        IafEntityUtil.drop(event.getTarget(), IafItemRegistry.CHAIN.get(), 1);
                     }
 
                     event.setCanceled(true);
@@ -632,9 +634,9 @@ public class ServerEvents {
 
     @SubscribeEvent
     public void onLightningHit(final EntityStruckByLightningEvent event) {
-        if ((event.getEntity() instanceof ItemEntity || event.getEntity() instanceof ExperienceOrb) && event.getLightning().getTags().contains(BOLT_DONT_DESTROY_LOOT)) {
+        if ((event.getEntity() instanceof ItemEntity || event.getEntity() instanceof ExperienceOrb) && event.getLightning().entityTags().contains(BOLT_DONT_DESTROY_LOOT)) {
             event.setCanceled(true);
-        } else if (event.getLightning().getTags().contains(event.getEntity().getStringUUID())) {
+        } else if (event.getLightning().entityTags().contains(event.getEntity().getStringUUID())) {
             event.setCanceled(true);
         }
     }

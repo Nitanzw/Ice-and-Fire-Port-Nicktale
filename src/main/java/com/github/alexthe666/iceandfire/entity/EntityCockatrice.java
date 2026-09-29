@@ -117,7 +117,7 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 10;
     }
 
@@ -185,7 +185,7 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
     }
 
     @Override
-    public boolean isAlliedTo(@NotNull Entity entityIn) {
+    public boolean considersEntityAsAlly(@NotNull Entity entityIn) {
         if (ServerEvents.isChicken(entityIn)) {
             return true;
         }
@@ -202,7 +202,7 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
             }
         }
 
-        return super.isAlliedTo(entityIn);
+        return super.considersEntityAsAlly(entityIn);
     }
 
     @Override
@@ -237,7 +237,7 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         if (this.isStaring()) {
             return false;
         }
@@ -464,7 +464,7 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
             if (stackInHand.is(IafItemTags.HEAL_COCKATRICE)) {
                 if (this.getHealth() < this.getMaxHealth()) {
                     this.heal(8);
-                    this.playSound(SoundEvents.GENERIC_EAT, 1, 1);
+                    this.playSound(SoundEvents.GENERIC_EAT.value(), 1, 1);
                     stackInHand.shrink(1);
                 }
                 return InteractionResult.SUCCESS;

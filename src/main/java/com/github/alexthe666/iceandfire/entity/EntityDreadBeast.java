@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
@@ -65,12 +67,12 @@ public class EntityDreadBeast extends EntityDreadMob implements IAnimatedEntity,
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this, IDreadMob.class));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, new Predicate<LivingEntity>() {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
             public boolean apply(@Nullable LivingEntity entity) {
                 return DragonUtils.canHostilesTarget(entity);
             }
-        }));
+        }))));
         this.targetSelector.addGoal(3, new DreadAITargetNonDread(this, LivingEntity.class, false, new Predicate<LivingEntity>() {
             @Override
             public boolean apply(LivingEntity entity) {
@@ -114,7 +116,7 @@ public class EntityDreadBeast extends EntityDreadMob implements IAnimatedEntity,
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         if (this.getAnimation() == NO_ANIMATION) {
             this.setAnimation(ANIMATION_BITE);
         }
@@ -145,7 +147,7 @@ public class EntityDreadBeast extends EntityDreadMob implements IAnimatedEntity,
             if (this.getAnimation() == ANIMATION_BITE && this.getAnimationTick() == 6) {
                 IafDamage.hurt(this.getTarget(), level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
                 if (this.getTarget() != null)
-                    this.getTarget().knockback(0.25F, this.getX() - this.getTarget().getX(), this.getZ() - this.getTarget().getZ());
+                    IafEntityUtil.knockback(this.getTarget(), 0.25F, this.getX() - this.getTarget().getX(), this.getZ() - this.getTarget().getZ());
             }
         }
 
@@ -233,8 +235,8 @@ public class EntityDreadBeast extends EntityDreadMob implements IAnimatedEntity,
     }
 
     @Override
-    public boolean isAlliedTo(Entity entityIn) {
-        return entityIn instanceof IDreadMob || super.isAlliedTo(entityIn);
+    public boolean considersEntityAsAlly(Entity entityIn) {
+        return entityIn instanceof IDreadMob || super.considersEntityAsAlly(entityIn);
     }
 
 

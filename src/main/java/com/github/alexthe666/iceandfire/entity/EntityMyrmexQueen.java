@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
@@ -75,7 +76,7 @@ public class EntityMyrmexQueen extends EntityMyrmexBase {
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 20;
     }
 
@@ -158,7 +159,7 @@ public class EntityMyrmexQueen extends EntityMyrmexBase {
                         hiveGen.placeSmallGen((ServerLevel) level(), this.getRandom(), genPos);
                     }
                     this.setMadeHome(true);
-                    this.moveTo(genPos.getX(), down, genPos.getZ(), 0, 0);
+                    this.snapTo(genPos.getX(), down, genPos.getZ(), 0, 0);
                     this.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30));
                     this.setHive(hiveGen.hive);
                     for (int i = 0; i < 3; i++) {
@@ -188,7 +189,7 @@ public class EntityMyrmexQueen extends EntityMyrmexBase {
                     egg.setJungle(this.isJungle());
                     int caste = getRandomCaste(level(), this.getRandom(), getHive() == null || getHive().reproduces);
                     egg.setMyrmexCaste(caste);
-                    egg.moveTo(this.getX() + extraX, this.getY() + 0.75F, this.getZ() + extraZ, 0, 0);
+                    egg.snapTo(this.getX() + extraX, this.getY() + 0.75F, this.getZ() + extraZ, 0, 0);
                     if (getHive() != null) {
                         egg.hiveUUID = this.getHive().hiveUUID;
                     }
@@ -230,8 +231,8 @@ public class EntityMyrmexQueen extends EntityMyrmexBase {
     }
 
     @Override
-    public boolean isInvulnerableTo(@NotNull DamageSource source) {
-        return super.isInvulnerableTo(source) || this.getAnimation() == ANIMATION_DIGNEST;
+    public boolean isInvulnerableTo(ServerLevel level, @NotNull DamageSource source) {
+        return super.isInvulnerableTo(level, source) || this.getAnimation() == ANIMATION_DIGNEST;
     }
 
     @Override
@@ -248,12 +249,12 @@ public class EntityMyrmexQueen extends EntityMyrmexBase {
         this.targetSelector.addGoal(1, new MyrmexAIDefendHive(this));
         this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(3, new MyrmexAIAttackPlayers(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, new Predicate<LivingEntity>() {
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
             public boolean apply(@Nullable LivingEntity entity) {
                 return entity != null && !EntityMyrmexBase.haveSameHive(EntityMyrmexQueen.this, entity) && DragonUtils.isAlive(entity) && !(entity instanceof Enemy);
             }
-        }));
+        }))));
 
     }
 
@@ -321,14 +322,14 @@ public class EntityMyrmexQueen extends EntityMyrmexBase {
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         if (this.getGrowthStage() < 2) {
             return false;
         }
         if (this.getAnimation() != ANIMATION_STING && this.getAnimation() != ANIMATION_BITE) {
             this.setAnimation(this.getRandom().nextBoolean() ? ANIMATION_STING : ANIMATION_BITE);
             if (!this.level().isClientSide() && this.getRandom().nextInt(3) == 0 && this.getItemInHand(InteractionHand.MAIN_HAND) != ItemStack.EMPTY) {
-                this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0);
+                IafEntityUtil.drop(this, this.getItemInHand(InteractionHand.MAIN_HAND), 0);
                 this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             }
             if (!this.getPassengers().isEmpty()) {

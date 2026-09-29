@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.util.IBlacklistedFromStatues;
 import com.github.alexthe666.iceandfire.entity.util.IDeadMob;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
@@ -66,8 +67,8 @@ public class EntityDragonSkull extends Animal implements IBlacklistedFromStatues
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource i) {
-        return i.getEntity() != null && super.isInvulnerableTo(i);
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource i) {
+        return i.getEntity() != null && super.isInvulnerableTo(level, i);
     }
 
     @Override
@@ -148,7 +149,7 @@ public class EntityDragonSkull extends Animal implements IBlacklistedFromStatues
         skullData.putInt("DragonAge", this.getDragonAge());
         CustomData.set(DataComponents.CUSTOM_DATA, stack, skullData);
         if (!this.level().isClientSide())
-            this.spawnAtLocation(level, stack, 0.0F);
+            IafEntityUtil.drop(this, level, stack, 0.0F);
 
     }
 

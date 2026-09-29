@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.server.level.ServerLevel;
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
@@ -73,7 +75,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
 
     public EntityCyclops(EntityType<EntityCyclops> type, Level worldIn) {
         super(type, worldIn);
-        this.setMaxUpStep(2.5F);
+        IafEntityUtil.setStepHeight(this, 2.5F);
         this.setPathfindingMalus(PathType.WATER, -1.0F);
         this.setPathfindingMalus(PathType.FENCE, 0.0F);
         ANIMATION_STOMP = Animation.create(27);
@@ -108,7 +110,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 40;
     }
 
@@ -122,7 +124,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F, 1.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, new Predicate<LivingEntity>() {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
             public boolean apply(@Nullable LivingEntity entity) {
                 if (EntityGorgon.isStoneMob(entity))
@@ -145,14 +147,14 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
                 }
                 return !ServerEvents.isSheep(entity);
             }
-        }));
+        }))));
 
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, 10, true, true, new Predicate<Player>() {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, 10, true, true, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<Player>() {
             @Override
             public boolean apply(@Nullable Player entity) {
                 return entity != null && !(entity.isCreative() || entity.isSpectator());
             }
-        }));
+        }))));
         this.targetSelector.addGoal(3, new CyclopsAITargetSheepPlayers(this, Player.class, true));
     }
 
@@ -164,7 +166,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         int attackDescision = this.getRandom().nextInt(3);
         if (attackDescision == 0) {
             this.setAnimation(ANIMATION_STOMP);

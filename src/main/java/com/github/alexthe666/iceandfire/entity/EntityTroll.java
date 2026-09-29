@@ -144,7 +144,7 @@ public class EntityTroll extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         if (this.getRandom().nextBoolean()) {
             this.setAnimation(ANIMATION_STRIKE_VERTICAL);
 
@@ -249,7 +249,7 @@ public class EntityTroll extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 15;
     }
 
@@ -345,7 +345,7 @@ public class EntityTroll extends Monster implements IAnimatedEntity, IVillagerFe
                 this.stoneProgress = 20;
                 EntityStoneStatue statue = EntityStoneStatue.buildStatueEntity(this);
                 statue.getTrappedTag().putFloat("StoneProgress", 20);
-                statue.absMoveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
+                statue.snapTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
                 if (!level().isClientSide()) {
                     level().addFreshEntity(statue);
                 }
@@ -410,7 +410,7 @@ public class EntityTroll extends Monster implements IAnimatedEntity, IVillagerFe
                     explosion.finalizeExplosion(true);
                 }
 
-                this.playSound(SoundEvents.GENERIC_EXPLODE, 1, 1);
+                this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1, 1);
 
             }
         }

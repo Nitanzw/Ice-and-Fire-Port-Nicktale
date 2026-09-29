@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
@@ -130,7 +131,7 @@ public EntityPixieCharge(EntityType<? extends Fireball> t, Level worldIn, double
                     }
                     if (shootingEntity == null || !(shootingEntity instanceof Player) || !((Player) shootingEntity).isCreative()) {
                         if (random.nextInt(3) == 0) {
-                            this.spawnAtLocation(new ItemStack(IafItemRegistry.PIXIE_DUST.get(), 1), 0.45F);
+                            IafEntityUtil.drop(this, new ItemStack(IafItemRegistry.PIXIE_DUST.get(), 1), 0.45F);
                         }
                     }
                 }

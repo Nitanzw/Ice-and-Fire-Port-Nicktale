@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import net.minecraft.server.level.ServerLevel;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.IafConfig;
@@ -119,13 +121,13 @@ public class EntityLightningDragon extends EntityDragonBase {
         }
     }
     @Override
-    public boolean isInvulnerableTo(DamageSource i) {
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource i) {
         if (i.getMsgId().equals(this.level().damageSources().lightningBolt().getMsgId())) {
             this.heal(15F);
             this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 20, 1));
             return true;
         }
-        return super.isInvulnerableTo(i);
+        return super.isInvulnerableTo(level, i);
     }
     @Override
     public Item getVariantScale(int variant) {
@@ -192,7 +194,7 @@ public class EntityLightningDragon extends EntityDragonBase {
     }*/
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         this.getLookControl().setLookAt(entityIn, 30.0F, 30.0F);
         if (!this.isPlayingAttackAnimation()) {
             switch (groundAttack) {
@@ -229,7 +231,7 @@ public class EntityLightningDragon extends EntityDragonBase {
         LivingEntity attackTarget = this.getTarget();
         if (!level().isClientSide() && attackTarget != null) {
             if (this.getBoundingBox().inflate(2.5F + this.getRenderSize() * 0.33F, 2.5F + this.getRenderSize() * 0.33F, 2.5F + this.getRenderSize() * 0.33F).intersects(attackTarget.getBoundingBox())) {
-                doHurtTarget(attackTarget);
+                IafEntityUtil.attack(this, attackTarget);
             }
             if (this.groundAttack == IafDragonAttacks.Ground.FIRE && (usingGroundAttack || this.onGround())) {
                 shootFireAtMob(attackTarget);
@@ -240,7 +242,7 @@ public class EntityLightningDragon extends EntityDragonBase {
                 double difZ = attackTarget.getZ() - this.getZ();
                 this.setDeltaMovement(this.getDeltaMovement().add(difX * 0.1D, difY * 0.1D, difZ * 0.1D));
                 if (this.getBoundingBox().inflate(1 + this.getRenderSize() * 0.5F, 1 + this.getRenderSize() * 0.5F, 1 + this.getRenderSize() * 0.5F).intersects(attackTarget.getBoundingBox())) {
-                    doHurtTarget(attackTarget);
+                    IafEntityUtil.attack(this, attackTarget);
                     usingGroundAttack = true;
                     randomizeAttacks();
                     setFlying(false);

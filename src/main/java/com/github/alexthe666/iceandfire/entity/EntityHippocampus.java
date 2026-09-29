@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.world.item.ItemStackTemplate;
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
@@ -95,7 +97,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         ANIMATION_SPEAK = Animation.create(15);
         this.setPathfindingMalus(PathType.WATER, 0.0F);
         this.moveControl = new EntityHippocampus.HippoMoveControl(this);
-        this.setMaxUpStep(1F);
+        IafEntityUtil.setStepHeight(this, 1F);
         if (worldIn.isClientSide()) {
             tail_buffer = new ChainBuffer();
         }
@@ -141,11 +143,11 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     }
 
     protected void addBehaviourGoals() {
-        this.goalSelector.addGoal(0, new TemptGoal(this, 1.0D, Ingredient.of(IafItemTags.TEMPT_HIPPOCAMPUS), false));
+        this.goalSelector.addGoal(0, new TemptGoal(this, 1.0D, IafEntityUtil.ingredient(IafItemTags.TEMPT_HIPPOCAMPUS), false));
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 2;
     }
 
@@ -154,10 +156,6 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         return this.level().getBlockState(pos.below()).is(Blocks.WATER) ? 10.0F : this.level().getMaxLocalRawBrightness(pos) - 0.5F;
     }
 
-    @Override
-    public @NotNull MobType getMobType() {
-        return MobType.WATER;
-    }
 
     @Override
     public boolean isPushedByFluid(FluidType fluid) {
@@ -165,7 +163,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     }
 
     @Override
-    public boolean isAlliedTo(@NotNull Entity entityIn) {
+    public boolean considersEntityAsAlly(@NotNull Entity entityIn) {
         if (this.isTame()) {
             LivingEntity livingentity = this.getOwner();
             if (entityIn == livingentity) {
@@ -179,7 +177,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
             }
         }
 
-        return super.isAlliedTo(entityIn);
+        return super.considersEntityAsAlly(entityIn);
     }
 
     @Override
@@ -225,19 +223,19 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     }
 
     @Override
-    protected void dropEquipment() {
-        super.dropEquipment();
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
         if (inventory != null && !this.level().isClientSide()) {
             for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
                 ItemStack itemstack = this.inventory.getItem(i);
-                if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
-                    this.spawnAtLocation(itemstack);
+                if (!itemstack.isEmpty() && !EnchantmentHelper.has(itemstack, net.minecraft.world.item.enchantment.EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
+                    IafEntityUtil.drop(this, itemstack);
                 }
             }
         }
         if (this.isChested()) {
             if (!this.level().isClientSide()) {
-                this.spawnAtLocation(Blocks.CHEST);
+                IafEntityUtil.drop(this, Blocks.CHEST);
             }
             this.setChested(false);
         }
@@ -247,7 +245,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         for (int i = 3; i < 18; i++) {
             if (!inventory.getItem(i).isEmpty()) {
                 if (!level().isClientSide()) {
-                    this.spawnAtLocation(inventory.getItem(i), 1);
+                    IafEntityUtil.drop(this, inventory.getItem(i), 1);
                 }
                 inventory.removeItemNoUpdate(i);
             }
@@ -331,7 +329,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
             if (this.isGoingUp()) {
                 if (!this.isInWater() && this.onGround()) {
                     this.jumpFromGround();
-                    net.neoforged.neoforge.common.ForgeHooks.onLivingJump(this);
+                    net.neoforged.neoforge.common.CommonHooks.onLivingJump(this);
                 } else if (this.isInWater()) {
                     this.setDeltaMovement(vec3.add(0, 0.04F, 0));
                 }
@@ -610,7 +608,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         if (itemstack.is(IafItemTags.BREED_HIPPOCAMPUS) && this.getAge() == 0 && !isInLove()) {
             this.setOrderedToSit(false);
             this.setInLove(player);
-            this.playSound(SoundEvents.GENERIC_EAT, 1, 1);
+            this.playSound(SoundEvents.GENERIC_EAT.value(), 1, 1);
             if (!player.isCreative()) {
                 itemstack.shrink(1);
             }
@@ -620,9 +618,9 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         if (itemstack.is(IafItemTags.HEAL_HIPPOCAMPUS)) {
             if (!level().isClientSide()) {
                 this.heal(5);
-                this.playSound(SoundEvents.GENERIC_EAT, 1, 1);
+                this.playSound(SoundEvents.GENERIC_EAT.value(), 1, 1);
                 for (int i = 0; i < 3; i++) {
-                    this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, itemstack), this.getX() + this.random.nextFloat() * this.getBbWidth() * 2.0F - this.getBbWidth(), this.getY() + this.random.nextFloat() * this.getBbHeight(), this.getZ() + this.random.nextFloat() * this.getBbWidth() * 2.0F - this.getBbWidth(), 0, 0, 0);
+                    this.level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(itemstack)), this.getX() + this.random.nextFloat() * this.getBbWidth() * 2.0F - this.getBbWidth(), this.getY() + this.random.nextFloat() * this.getBbHeight(), this.getZ() + this.random.nextFloat() * this.getBbWidth() * 2.0F - this.getBbWidth(), 0, 0, 0);
                 }
                 if (!player.isCreative()) {
                     itemstack.shrink(1);
@@ -645,7 +643,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         // Inventory
         if (isOwnedBy(player) && itemstack.isEmpty() && player.isShiftKeyDown()) {
             this.openInventory(player);
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
+            return InteractionResult.SUCCESS;
         }
         // Riding
         if (isOwnedBy(player) && this.isSaddled() && !this.isBaby() && !player.isPassenger()) {
@@ -738,7 +736,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         boolean flag = this.isSaddled();
         this.updateContainerEquipment();
         if (this.tickCount > 20 && !flag && this.isSaddled()) {
-            this.playSound(SoundEvents.HORSE_SADDLE, 0.5F, 1.0F);
+            this.playSound(SoundEvents.HORSE_SADDLE.value(), 0.5F, 1.0F);
         }
 
     }

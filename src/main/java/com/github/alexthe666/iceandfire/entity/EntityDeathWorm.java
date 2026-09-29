@@ -112,7 +112,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         if (worldIn.isClientSide()) {
             tail_buffer = new ChainBuffer();
         }
-        this.setMaxUpStep(1F);
+        IafEntityUtil.setStepHeight(this, 1F);
         this.switchNavigator(false);
     }
 
@@ -209,7 +209,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return this.getScale() > 3 ? 20 : 10;
     }
 
@@ -244,7 +244,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         if (this.getAnimation() != ANIMATION_BITE) {
             this.setAnimation(ANIMATION_BITE);
             this.playSound(this.getScale() > 3 ? IafSoundRegistry.DEATHWORM_GIANT_ATTACK : IafSoundRegistry.DEATHWORM_ATTACK, 1, 1);
@@ -542,7 +542,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     }
 
     @Override
-    public boolean isAlliedTo(@NotNull Entity entityIn) {
+    public boolean considersEntityAsAlly(@NotNull Entity entityIn) {
         if (this.isTame()) {
             LivingEntity livingentity = this.getOwner();
             if (entityIn == livingentity) {
@@ -556,7 +556,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
             }
         }
 
-        return super.isAlliedTo(entityIn);
+        return super.considersEntityAsAlly(entityIn);
     }
 
     @Override

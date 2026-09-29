@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
@@ -124,18 +125,18 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
         });
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, Player.class, 10, false, false, new Predicate<Entity>() {
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, Player.class, 10, false, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<Entity>() {
             @Override
             public boolean apply(@Nullable Entity entity) {
                 return entity.isAlive();
             }
-        }));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 10, true, false, new Predicate<Entity>() {
+        }))));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 10, true, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<Entity>() {
             @Override
             public boolean apply(@Nullable Entity entity) {
                 return entity instanceof LivingEntity && DragonUtils.isAlive((LivingEntity) entity) || (entity instanceof IBlacklistedFromStatues && ((IBlacklistedFromStatues) entity).canBeTurnedToStone());
             }
-        }));
+        }))));
         this.goalSelector.removeGoal(aiMelee);
     }
 
@@ -146,7 +147,7 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         boolean blindness = this.hasEffect(MobEffects.BLINDNESS) || this.getTarget() != null && this.getTarget().hasEffect(MobEffects.BLINDNESS) || this.getTarget() != null && this.getTarget() instanceof IBlacklistedFromStatues && !((IBlacklistedFromStatues) this.getTarget()).canBeTurnedToStone();
         if (blindness && this.deathTime == 0) {
             if (this.getAnimation() != ANIMATION_HIT) {
@@ -156,7 +157,7 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
                 ((LivingEntity) entityIn).addEffect(new MobEffectInstance(MobEffects.POISON, 100, 2, false, true));
             }
         }
-        return super.doHurtTarget(entityIn);
+        return super.doHurtTarget(level, entityIn);
     }
 
     @Override
@@ -177,7 +178,7 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 30;
     }
 
@@ -244,7 +245,7 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
                         if (!level().isClientSide()) {
                             if (playerStatueCooldown == 0) {
                                 EntityStoneStatue statue = EntityStoneStatue.buildStatueEntity(attackTarget);
-                                statue.absMoveTo(attackTarget.getX(), attackTarget.getY(), attackTarget.getZ(), attackTarget.getYRot(), attackTarget.getXRot());
+                                statue.snapTo(attackTarget.getX(), attackTarget.getY(), attackTarget.getZ(), attackTarget.getYRot(), attackTarget.getXRot());
                                 if (!level().isClientSide()) {
                                     level().addFreshEntity(statue);
                                 }
@@ -281,10 +282,6 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
         return 30;
     }
 
-    @Override
-    public @NotNull MobType getMobType() {
-        return MobType.UNDEAD;
-    }
 
     public void forcePreyToLook(LivingEntity mob) {
         if (mob instanceof Mob) {

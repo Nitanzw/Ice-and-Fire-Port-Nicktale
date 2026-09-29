@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
@@ -80,12 +81,12 @@ public class EntityDreadLich extends EntityDreadMob implements IAnimatedEntity, 
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this, IDreadMob.class));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, new Predicate<LivingEntity>() {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
             public boolean apply(@Nullable LivingEntity entity) {
                 return DragonUtils.canHostilesTarget(entity);
             }
-        }));
+        }))));
         this.targetSelector.addGoal(3, new DreadAITargetNonDread(this, LivingEntity.class, false, new Predicate<LivingEntity>() {
             @Override
             public boolean apply(LivingEntity entity) {
@@ -278,7 +279,7 @@ public class EntityDreadLich extends EntityDreadMob implements IAnimatedEntity, 
             int x = (int) (this.getX()) - 5 + random.nextInt(10);
             int z = (int) (this.getZ()) - 5 + random.nextInt(10);
             double y = getHeightFromXZ(x, z);
-            minion.moveTo(x + 0.5D, y, z + 0.5D, this.getYRot(), this.getXRot());
+            minion.snapTo(x + 0.5D, y, z + 0.5D, this.getYRot(), this.getXRot());
             minion.setTarget(target);
             Level currentLevel = level();
             if (currentLevel instanceof ServerLevelAccessor) {
@@ -332,8 +333,8 @@ public class EntityDreadLich extends EntityDreadMob implements IAnimatedEntity, 
     }
 
     @Override
-    public boolean isAlliedTo(Entity entityIn) {
-        return entityIn instanceof IDreadMob || super.isAlliedTo(entityIn);
+    public boolean considersEntityAsAlly(Entity entityIn) {
+        return entityIn instanceof IDreadMob || super.considersEntityAsAlly(entityIn);
     }
 
     @Override

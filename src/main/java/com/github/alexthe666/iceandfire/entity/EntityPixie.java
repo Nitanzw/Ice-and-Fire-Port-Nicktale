@@ -127,7 +127,7 @@ public class EntityPixie extends TamableAnimal {
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 3;
     }
 
@@ -154,8 +154,8 @@ public class EntityPixie extends TamableAnimal {
     }
 
     @Override
-    public boolean isInvulnerableTo(@NotNull DamageSource source) {
-        boolean invulnerable = super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel level, @NotNull DamageSource source) {
+        boolean invulnerable = super.isInvulnerableTo(level, source);
         if (!invulnerable) {
             Entity owner = this.getOwner();
             if (owner != null && source.getEntity() == owner) {
@@ -168,7 +168,7 @@ public class EntityPixie extends TamableAnimal {
     @Override
     public void die(@NotNull DamageSource cause) {
         if (!this.level().isClientSide() && !this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
-            this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0);
+            IafEntityUtil.drop(this, this.getItemInHand(InteractionHand.MAIN_HAND), 0);
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         }
         super.die(cause);
@@ -239,11 +239,11 @@ public class EntityPixie extends TamableAnimal {
             ItemStack stack = new ItemStack(jar, 1);
             if (!level().isClientSide()) {
                 if (!this.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
-                    this.spawnAtLocation(this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
+                    IafEntityUtil.drop(this, this.getItemInHand(InteractionHand.MAIN_HAND), 0.0F);
                     this.stealCooldown = STEAL_COOLDOWN;
                 }
 
-                this.spawnAtLocation(stack, 0.0F);
+                IafEntityUtil.drop(this, stack, 0.0F);
             }
             //player.addStat(ModAchievements.jarPixie);
             this.remove(RemovalReason.DISCARDED);
@@ -435,7 +435,7 @@ public class EntityPixie extends TamableAnimal {
     }
 
     @Override
-    public boolean isAlliedTo(@NotNull Entity entityIn) {
+    public boolean considersEntityAsAlly(@NotNull Entity entityIn) {
         if (this.isTame()) {
             LivingEntity livingentity = this.getOwner();
             if (entityIn == livingentity) {
@@ -449,7 +449,7 @@ public class EntityPixie extends TamableAnimal {
             }
         }
 
-        return super.isAlliedTo(entityIn);
+        return super.considersEntityAsAlly(entityIn);
     }
 
     class AIMoveControl extends MoveControl {

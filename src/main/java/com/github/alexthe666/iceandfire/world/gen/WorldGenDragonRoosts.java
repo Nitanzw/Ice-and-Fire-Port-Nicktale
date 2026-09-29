@@ -236,7 +236,7 @@ public abstract class WorldGenDragonRoosts extends Feature<NoneFeatureConfigurat
         dragon.setAgingDisabled(true);
         dragon.setHealth(dragon.getMaxHealth());
         dragon.setVariant(new Random().nextInt(4));
-        dragon.absMoveTo(context.origin().getX() + 0.5, context.level().getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, context.origin()).getY() + 1.5, context.origin().getZ() + 0.5, context.random().nextFloat() * 360, 0);
+        dragon.snapTo(context.origin().getX() + 0.5, context.level().getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, context.origin()).getY() + 1.5, context.origin().getZ() + 0.5, context.random().nextFloat() * 360, 0);
         dragon.homePos = new HomePosition(context.origin(), context.level().getLevel());
         dragon.hasHomePosition = true;
         dragon.setHunger(50);

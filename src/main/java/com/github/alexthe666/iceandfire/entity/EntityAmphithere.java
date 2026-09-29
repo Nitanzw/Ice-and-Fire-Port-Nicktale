@@ -112,7 +112,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
             pitch_buffer = new ChainBuffer();
             tail_buffer = new ChainBuffer();
         }
-        this.setMaxUpStep(1F);
+        IafEntityUtil.setStepHeight(this, 1F);
         switchNavigator(0);
     }
 
@@ -195,7 +195,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
             if (this.getAge() == 0 && !isInLove()) {
                 this.setOrderedToSit(false);
                 this.setInLove(player);
-                this.playSound(SoundEvents.GENERIC_EAT, 1, 1);
+                this.playSound(SoundEvents.GENERIC_EAT.value(), 1, 1);
                 if (!player.isCreative()) {
                     itemstack.shrink(1);
                 }
@@ -204,7 +204,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
         }
         if (itemstack != null && itemstack.is(IafItemTags.HEAL_AMPITHERE) && this.getHealth() < this.getMaxHealth()) {
             this.heal(5);
-            this.playSound(SoundEvents.GENERIC_EAT, 1, 1);
+            this.playSound(SoundEvents.GENERIC_EAT.value(), 1, 1);
             if (!player.isCreative()) {
                 itemstack.shrink(1);
             }
@@ -560,7 +560,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
     }
 
     @Override
-    public boolean isAlliedTo(@NotNull Entity entityIn) {
+    public boolean considersEntityAsAlly(@NotNull Entity entityIn) {
         if (this.isTame()) {
             LivingEntity livingentity = this.getOwner();
             if (entityIn == livingentity) {
@@ -574,7 +574,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
             }
         }
 
-        return super.isAlliedTo(entityIn);
+        return super.considersEntityAsAlly(entityIn);
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
@@ -750,7 +750,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         if (this.getAnimation() != ANIMATION_BITE && this.getAnimation() != ANIMATION_TAIL_WHIP && this.getAnimation() != ANIMATION_WING_BLAST && this.getControllingPassenger() == null) {
             if (random.nextBoolean()) {
                 this.setAnimation(ANIMATION_BITE);
@@ -929,7 +929,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return 10;
     }
 

@@ -158,7 +158,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return this.isAncient() ? 30 : 15;
     }
 
@@ -267,7 +267,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
 
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel level, @NotNull Entity entityIn) {
         if (this.getAnimation() != ANIMATION_BITE) {
             this.setAnimation(ANIMATION_BITE);
             return true;
@@ -592,10 +592,10 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
             boat.remove(RemovalReason.KILLED);
             if (IafEntityUtil.gameRule(this.level(), GameRules.ENTITY_DROPS)) {
                 for (int i = 0; i < 3; ++i) {
-                    boat.spawnAtLocation(new ItemStack(boat.getVariant().getPlanks().asItem()), 0.0F);
+                    IafEntityUtil.drop(boat, new ItemStack(boat.getVariant().getPlanks().asItem()), 0.0F);
                 }
                 for (int j = 0; j < 2; ++j) {
-                    boat.spawnAtLocation(new ItemStack(Items.STICK));
+                    IafEntityUtil.drop(boat, new ItemStack(Items.STICK));
                 }
             }
         }
@@ -877,11 +877,11 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
     }
 
     @Override
-    public boolean isInvulnerableTo(@NotNull DamageSource source) {
+    public boolean isInvulnerableTo(ServerLevel level, @NotNull DamageSource source) {
         DamageSources damageSources = this.level().damageSources();
         return source == damageSources.fall() || source == damageSources.drown() || source == damageSources.inWall()
                 || (source.getEntity() != null && source == damageSources.fallingBlock(source.getEntity()))
-                || source == damageSources.lava() || source.is(DamageTypes.IN_FIRE) || super.isInvulnerableTo(source);
+                || source == damageSources.lava() || source.is(DamageTypes.IN_FIRE) || super.isInvulnerableTo(level, source);
     }
 
     public class SwimmingMoveHelper extends MoveControl {

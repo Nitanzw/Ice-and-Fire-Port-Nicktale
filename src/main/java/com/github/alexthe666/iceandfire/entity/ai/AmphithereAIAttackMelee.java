@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityAmphithere;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -169,7 +170,7 @@ public class AmphithereAIAttackMelee extends Goal {
         if (distToEnemySqr <= d0) {
             this.attackTick = 20;
             this.attacker.swing(InteractionHand.MAIN_HAND);
-            this.attacker.doHurtTarget(enemy);
+            IafEntityUtil.attack(this.attacker, enemy);
         }
     }
 

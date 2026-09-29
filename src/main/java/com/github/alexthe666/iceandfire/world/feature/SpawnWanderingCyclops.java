@@ -32,7 +32,7 @@ public class SpawnWanderingCyclops extends Feature<NoneFeatureConfiguration> {
 
         if (IafWorldRegistry.isFarEnoughFromSpawn(worldIn, position)) {
             if (rand.nextInt(IafConfig.spawnWanderingCyclopsChance + 1) == 0 && rand.nextInt(12) == 0) {
-                EntityCyclops cyclops = IafEntityRegistry.CYCLOPS.get().create(worldIn.getLevel());
+                EntityCyclops cyclops = IafEntityRegistry.CYCLOPS.get().create(worldIn.getLevel(), EntitySpawnReason.EVENT);
                 cyclops.setPos(position.getX() + 0.5F, position.getY() + 1, position.getZ() + 0.5F);
                 cyclops.finalizeSpawn(worldIn, worldIn.getCurrentDifficultyAt(position), EntitySpawnReason.SPAWNER, null);
                 worldIn.addFreshEntity(cyclops);

@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.misc.IafDataSerializers;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.entity.util.IDreadMob;
 import com.github.alexthe666.iceandfire.entity.util.IHumanoid;
@@ -27,7 +28,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class EntityDreadMob extends Monster implements IDreadMob {
-    protected static final EntityDataAccessor<Optional<UUID>> COMMANDER_UNIQUE_ID = SynchedEntityData.defineId(EntityDreadMob.class, EntityDataSerializers.OPTIONAL_UUID);
+    protected static final EntityDataAccessor<Optional<UUID>> COMMANDER_UNIQUE_ID = SynchedEntityData.defineId(EntityDreadMob.class, IafDataSerializers.OPTIONAL_UUID);
 
     public EntityDreadMob(EntityType<? extends Monster> t, Level worldIn) {
         super(t, worldIn);
@@ -127,8 +128,8 @@ public class EntityDreadMob extends Monster implements IDreadMob {
 
 
     @Override
-    public boolean isAlliedTo(@NotNull Entity entityIn) {
-        return entityIn instanceof IDreadMob || super.isAlliedTo(entityIn);
+    public boolean considersEntityAsAlly(@NotNull Entity entityIn) {
+        return entityIn instanceof IDreadMob || super.considersEntityAsAlly(entityIn);
     }
 
     @Nullable

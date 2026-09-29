@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.props;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.event.ServerEvents;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
@@ -25,7 +26,7 @@ public class ChickenData {
             if (entity.tickCount > 30 && entity.getRandom().nextInt(IafConfig.cockatriceEggChance + 1) == 0) {
                 entity.playSound(SoundEvents.CHICKEN_HURT, 2.0F, (entity.getRandom().nextFloat() - entity.getRandom().nextFloat()) * 0.2F + 1.0F);
                 entity.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (entity.getRandom().nextFloat() - entity.getRandom().nextFloat()) * 0.2F + 1.0F);
-                entity.spawnAtLocation(IafItemRegistry.ROTTEN_EGG.get(), 1);
+                IafEntityUtil.drop(entity, IafItemRegistry.ROTTEN_EGG.get(), 1);
             }
 
             timeUntilNextEgg = -1;

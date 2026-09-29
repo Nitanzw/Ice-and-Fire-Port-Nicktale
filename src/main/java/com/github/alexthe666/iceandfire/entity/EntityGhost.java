@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import net.minecraft.server.level.ServerLevel;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
@@ -123,8 +125,8 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
     @Override
-    public boolean isInvulnerableTo(@NotNull DamageSource source) {
-        return super.isInvulnerableTo(source) || source.is(DamageTypeTags.IS_FIRE) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.CACTUS)
+    public boolean isInvulnerableTo(ServerLevel level, @NotNull DamageSource source) {
+        return super.isInvulnerableTo(level, source) || source.is(DamageTypeTags.IS_FIRE) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.CACTUS)
             || source.is(DamageTypes.DROWN) || source.is(DamageTypes.FALLING_BLOCK) || source.is(DamageTypes.FALLING_ANVIL) || source.is(DamageTypes.SWEET_BERRY_BUSH);
     }
 
@@ -158,10 +160,6 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
 
-    @Override
-    public @NotNull MobType getMobType() {
-        return MobType.UNDEAD;
-    }
 
     @Override
     public boolean isPushable() {
@@ -201,18 +199,18 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
         });
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, Player.class, 10, false, false, new Predicate<Entity>() {
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, Player.class, 10, false, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<Entity>() {
             @Override
             public boolean apply(@Nullable Entity entity) {
                 return entity.isAlive();
             }
-        }));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 10, false, false, new Predicate<Entity>() {
+        }))));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 10, false, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<Entity>() {
             @Override
             public boolean apply(@Nullable Entity entity) {
                 return entity instanceof LivingEntity && DragonUtils.isAlive((LivingEntity) entity) && DragonUtils.isVillager(entity);
             }
-        }));
+        }))));
     }
 
     @Override
@@ -251,7 +249,7 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
         if (this.getAnimation() == ANIMATION_HIT && this.getTarget() != null) {
             if (this.distanceTo(this.getTarget()) < 1.4D && this.getAnimationTick() >= 4 && this.getAnimationTick() < 6) {
                 this.playSound(IafSoundRegistry.GHOST_ATTACK, this.getSoundVolume(), this.getVoicePitch());
-                this.doHurtTarget(this.getTarget());
+                IafEntityUtil.attack(this, this.getTarget());
             }
         }
         AnimationHandler.INSTANCE.updateAnimations(this);

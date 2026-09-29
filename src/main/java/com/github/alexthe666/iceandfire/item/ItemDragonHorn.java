@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import net.minecraft.world.entity.EntitySpawnReason;
 
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
@@ -35,7 +36,7 @@ public class ItemDragonHorn extends Item {
 
     public static int getDragonType(ItemStack stack) {
         if (ItemStackData.has(stack)) {
-            String id = ItemStackData.get(stack).getString("DragonHornEntityID");
+            String id = ItemStackData.get(stack).getStringOr("DragonHornEntityID", "");
             if (EntityType.byString(id).isPresent()) {
                 EntityType entityType = EntityType.byString(id).get();
                 if (entityType == IafEntityRegistry.FIRE_DRAGON.get())
@@ -91,10 +92,10 @@ public class ItemDragonHorn extends Item {
         CompoundTag data = ItemStackData.get(stack);
         if (!data.getString("DragonHornEntityID").isEmpty()) {
             Level world = context.getLevel();
-            String id = data.getString("DragonHornEntityID");
+            String id = data.getStringOr("DragonHornEntityID", "");
             EntityType type = EntityType.byString(id).orElse(null);
             if (type != null) {
-                Entity entity = type.create(world);
+                Entity entity = type.create(world, EntitySpawnReason.EVENT);
                 if (entity instanceof EntityDragonBase) {
                     EntityDragonBase dragon = (EntityDragonBase) entity;
                     dragon.load(data.getCompound("EntityTag"));
@@ -103,7 +104,7 @@ public class ItemDragonHorn extends Item {
                 if (data.contains("EntityUUID"))
                     entity.setUUID(data.getUUID("EntityUUID"));
 
-                entity.absMoveTo(context.getClickedPos().getX() + 0.5D, (context.getClickedPos().getY() + 1), context.getClickedPos().getZ() + 0.5D, 180 + (context.getHorizontalDirection()).toYRot(), 0.0F);
+                entity.snapTo(context.getClickedPos().getX() + 0.5D, (context.getClickedPos().getY() + 1), context.getClickedPos().getZ() + 0.5D, 180 + (context.getHorizontalDirection()).toYRot(), 0.0F);
                 if (world.addFreshEntity(entity)) {
                     data.remove("DragonHornEntityID");
                     data.remove("EntityTag");
@@ -121,7 +122,7 @@ public class ItemDragonHorn extends Item {
             CompoundTag data = ItemStackData.get(stack);
             CompoundTag entityTag = data.getCompound("EntityTag");
             if (!entityTag.isEmpty()) {
-                String id = data.getString("DragonHornEntityID");
+                String id = data.getStringOr("DragonHornEntityID", "");
                 if (EntityType.byString(id).isPresent()) {
                     EntityType type = EntityType.byString(id).get();
                     tooltip.accept((Component.translatable(type.getDescriptionId())).withStyle(getTextColorForEntityType(type)));
@@ -133,7 +134,7 @@ public class ItemDragonHorn extends Item {
                     }
 
                     tooltip.accept((Component.literal(name)).withStyle(ChatFormatting.GRAY));
-                    String gender = (Component.translatable("dragon.gender")).getString() + " " + (Component.translatable(entityTag.getBoolean("Gender") ? "dragon.gender.male" : "dragon.gender.female")).getString();
+                    String gender = (Component.translatable("dragon.gender")).getString() + " " + (Component.translatable(entityTag.getBooleanOr("Gender", false) ? "dragon.gender.male" : "dragon.gender.female")).getString();
                     tooltip.accept((Component.literal(gender)).withStyle(ChatFormatting.GRAY));
                     int stagenumber = entityTag.getInt("AgeTicks") / 24000;
                     int stage1 = 0;

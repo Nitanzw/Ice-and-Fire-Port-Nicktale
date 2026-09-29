@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.nicktale.api.server.item.CustomArmorMaterial;
 import com.nicktale.api.server.item.CustomToolMaterial;
 import com.github.alexthe666.iceandfire.IafConfig;
@@ -457,9 +458,9 @@ public class IafItemRegistry {
             return;
         }
 
-        IafItemRegistry.BLINDFOLD_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(Tags.Items.STRINGS));
-        IafItemRegistry.SILVER_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemTags.INGOTS_SILVER));
-        IafItemRegistry.SILVER_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemTags.INGOTS_SILVER));
+        IafItemRegistry.BLINDFOLD_ARMOR_MATERIAL.setRepairMaterial(IafEntityUtil.ingredient(Tags.Items.STRINGS));
+        IafItemRegistry.SILVER_ARMOR_MATERIAL.setRepairMaterial(IafEntityUtil.ingredient(IafItemTags.INGOTS_SILVER));
+        IafItemRegistry.SILVER_TOOL_MATERIAL.setRepairMaterial(IafEntityUtil.ingredient(IafItemTags.INGOTS_SILVER));
         IafItemRegistry.DRAGONBONE_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGON_BONE.get()));
         IafItemRegistry.FIRE_DRAGONBONE_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGON_BONE.get()));
         IafItemRegistry.ICE_DRAGONBONE_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGON_BONE.get()));
@@ -478,7 +479,7 @@ public class IafItemRegistry {
         IafItemRegistry.DEATHWORM_0_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DEATH_WORM_CHITIN_YELLOW.get()));
         IafItemRegistry.DEATHWORM_1_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DEATH_WORM_CHITIN_RED.get()));
         IafItemRegistry.DEATHWORM_2_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DEATH_WORM_CHITIN_WHITE.get()));
-        IafItemRegistry.TROLL_WEAPON_TOOL_MATERIAL.setRepairMaterial(Ingredient.of(Tags.Items.STONES));
+        IafItemRegistry.TROLL_WEAPON_TOOL_MATERIAL.setRepairMaterial(IafEntityUtil.ingredient(Tags.Items.STONES));
         IafItemRegistry.TROLL_MOUNTAIN_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(EnumTroll.MOUNTAIN.leather.get()));
         IafItemRegistry.TROLL_FOREST_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(EnumTroll.FOREST.leather.get()));
         IafItemRegistry.TROLL_FROST_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(EnumTroll.FROST.leather.get()));

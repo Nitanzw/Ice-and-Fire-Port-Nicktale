@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -159,7 +160,7 @@ public class HippogryphAIAttackMelee extends Goal {
         if (distToEnemySqr <= d0) {
             this.attackTick = 20;
             this.attacker.swing(InteractionHand.MAIN_HAND);
-            this.attacker.doHurtTarget(enemy);
+            IafEntityUtil.attack(this.attacker, enemy);
         }
     }
 

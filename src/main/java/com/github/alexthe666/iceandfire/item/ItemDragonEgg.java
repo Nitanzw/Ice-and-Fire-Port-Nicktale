@@ -41,7 +41,7 @@ public class ItemDragonEgg extends Item {
         BlockPos offset = context.getClickedPos().relative(context.getClickedFace());
         EntityDragonEgg egg = new EntityDragonEgg(IafEntityRegistry.DRAGON_EGG.get(), context.getLevel());
         egg.setEggType(type);
-        egg.moveTo(offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5, 0, 0);
+        egg.snapTo(offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5, 0, 0);
         egg.onPlayerPlace(context.getPlayer());
         if (itemstack.hasCustomHoverName()) {
             egg.setCustomName(itemstack.getHoverName());

@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.item;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.IafConfig;
@@ -35,7 +37,7 @@ public class ItemAlchemySword extends Item {
                 IafDamage.hurt(target, attacker.level().damageSources().inFire(), 13.5F);
             }
             target.igniteForSeconds(5);
-            target.knockback(1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            IafEntityUtil.knockback(target, 1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (this == IafItemRegistry.DRAGONBONE_SWORD_ICE.get() && IafConfig.dragonWeaponIceAbility) {
             if (target instanceof EntityFireDragon) {
@@ -45,7 +47,7 @@ public class ItemAlchemySword extends Item {
             EntityDataProvider.getCapability(target).ifPresent(data -> data.frozenData.setFrozen(target, 200));
             target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 2));
             target.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 100, 2));
-            target.knockback(1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            IafEntityUtil.knockback(target, 1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (this == IafItemRegistry.DRAGONBONE_SWORD_LIGHTNING.get() && IafConfig.dragonWeaponLightningAbility) {
             boolean flag = true;
@@ -55,7 +57,7 @@ public class ItemAlchemySword extends Item {
                 }
             }
             if (!attacker.level().isClientSide() && flag) {
-                LightningBolt lightningboltentity = EntityTypes.LIGHTNING_BOLT.create(target.level());
+                LightningBolt lightningboltentity = EntityTypes.LIGHTNING_BOLT.create(target.level(), EntitySpawnReason.EVENT);
                 lightningboltentity.getTags().add(ServerEvents.BOLT_DONT_DESTROY_LOOT);
                 lightningboltentity.getTags().add(attacker.getStringUUID());
                 lightningboltentity.moveTo(target.position());
@@ -66,7 +68,7 @@ public class ItemAlchemySword extends Item {
             if (target instanceof EntityFireDragon || target instanceof EntityIceDragon) {
                 IafDamage.hurt(target, attacker.level().damageSources().lightningBolt(), 9.5F);
             }
-            target.knockback(1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            IafEntityUtil.knockback(target, 1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         super.hurtEnemy(stack, target, attacker);
     }

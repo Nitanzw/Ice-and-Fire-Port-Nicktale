@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import net.minecraft.sounds.SoundEvents;
@@ -34,7 +35,7 @@ public class EntityStymphalianFeather extends AbstractArrow {
         super.remove(reason);
         if (IafConfig.stymphalianBirdFeatherDropChance > 0) {
             if (this.level().isClientSide() && this.random.nextInt(IafConfig.stymphalianBirdFeatherDropChance) == 0) {
-                this.spawnAtLocation(getPickupItem(), 0.1F);
+                IafEntityUtil.drop(this, getPickupItem(), 0.1F);
             }
         }
 
@@ -85,7 +86,7 @@ public class EntityStymphalianFeather extends AbstractArrow {
                 } else {
                     this.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                 }
-                this.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
+                this.playSound(SoundEvents.SHIELD_BREAK.value(), 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
             }
         }
     }

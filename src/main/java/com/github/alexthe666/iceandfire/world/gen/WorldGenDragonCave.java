@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.world.gen;
 
+import net.minecraft.world.entity.EntitySpawnReason;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.block.BlockGoldPile;
 import com.github.alexthe666.iceandfire.datagen.tags.IafBlockTags;
@@ -220,13 +221,13 @@ public abstract class WorldGenDragonCave extends Feature<NoneFeatureConfiguratio
     }
 
     private EntityDragonBase createDragon(final WorldGenLevel worldGen, final RandomSource random, final BlockPos position, int dragonAge) {
-        EntityDragonBase dragon = getDragonType().create(worldGen.getLevel());
+        EntityDragonBase dragon = getDragonType().create(worldGen.getLevel(), EntitySpawnReason.EVENT);
         dragon.setGender(isMale);
         dragon.growDragon(dragonAge);
         dragon.setAgingDisabled(true);
         dragon.setHealth(dragon.getMaxHealth());
         dragon.setVariant(random.nextInt(4));
-        dragon.absMoveTo(position.getX() + 0.5, position.getY() + 0.5, position.getZ() + 0.5, random.nextFloat() * 360, 0);
+        dragon.snapTo(position.getX() + 0.5, position.getY() + 0.5, position.getZ() + 0.5, random.nextFloat() * 360, 0);
         dragon.setInSittingPose(true);
         dragon.homePos = new HomePosition(position, worldGen.getLevel());
         dragon.setHunger(50);

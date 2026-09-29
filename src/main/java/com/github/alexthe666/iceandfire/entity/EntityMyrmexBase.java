@@ -163,7 +163,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel level) {
         if (!this.hasCustomer() && this.timeUntilReset > 0) {
             --this.timeUntilReset;
             if (this.timeUntilReset <= 0) {
@@ -178,11 +178,11 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
             this.level().broadcastEntityEvent(this, (byte) 14);
             this.getHive().setWorld(this.level());
         }
-        super.customServerAiStep();
+        super.customServerAiStep(level);
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return (this.getCasteImportance() * 7) + this.level().getRandom().nextInt(3);
     }
 
@@ -235,7 +235,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     @Override
     public void tick() {
         super.tick();
-        this.setMaxUpStep(1);
+        IafEntityUtil.setStepHeight(this, 1);
         if (level().getDifficulty() == Difficulty.PEACEFUL && this.getTarget() instanceof Player) {
             this.setTarget(null);
         }

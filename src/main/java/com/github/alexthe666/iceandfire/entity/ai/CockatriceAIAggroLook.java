@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityCockatrice;
 import com.github.alexthe666.iceandfire.entity.EntityGorgon;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,7 +23,7 @@ public class CockatriceAIAggroLook extends NearestAttackableTargetGoal<Player> {
             return EntityGorgon.isEntityLookingAt(target, this.cockatrice,
                 EntityCockatrice.VIEW_RADIUS) && cockatrice.distanceTo(target) < getFollowDistance();
         };
-        this.predicate = TargetingConditions.forCombat().range(25.0D).selector(LIVING_ENTITY_SELECTOR);
+        this.predicate = TargetingConditions.forCombat().range(25.0D).selector(IafEntityUtil.selector(LIVING_ENTITY_SELECTOR));
     }
 
     /**

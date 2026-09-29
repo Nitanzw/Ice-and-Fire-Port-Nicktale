@@ -47,7 +47,7 @@ public class ItemCockatriceScepter extends Item {
 
     @Override
     public boolean releaseUsing(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity livingEntity, int timeLeft) {
-        int specialWeaponDamage = ItemStackData.get(stack).getInt("SpecialWeaponDamage");
+        int specialWeaponDamage = ItemStackData.get(stack).getIntOr("SpecialWeaponDamage", 0);
         if (specialWeaponDamage > 0) {
             stack.hurtAndBreak(specialWeaponDamage, livingEntity, livingEntity.getUsedItemHand());
             ItemStackData.update(stack, tag -> tag.putInt("SpecialWeaponDamage", 0));

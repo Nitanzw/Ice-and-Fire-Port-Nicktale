@@ -116,7 +116,7 @@ public class DragonAIMate extends Goal {
             int nestY = (int) (this.dragon.isMale() ? this.targetMate.getY() : this.dragon.getY()) - 1;
             int nestZ = (int) (this.dragon.isMale() ? this.targetMate.getZ() : this.dragon.getZ());
 
-            egg.moveTo(nestX - 0.5F, nestY + 1F, nestZ - 0.5F, 0.0F, 0.0F);
+            egg.snapTo(nestX - 0.5F, nestY + 1F, nestZ - 0.5F, 0.0F, 0.0F);
             this.theWorld.addFreshEntity(egg);
             RandomSource random = this.dragon.getRandom();
 
