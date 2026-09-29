@@ -66,13 +66,14 @@ public class IceAndFire {
         modBus.addListener(CommonProxy::onModConfigReloading);
         modBus.addListener(IafSoundRegistry::registerSoundEvents);
         modBus.addListener(IafDamageRegistry::gatherData);
-        modBus.addListener(IafItemRegistry::setRepairMaterials);
         modBus.addListener(IafTileEntityRegistry::registerCapabilities);
         modBus.addListener(IafRecipeRegistry::preInit);
         NeoForge.EVENT_BUS.addListener(IafRecipeRegistry::registerBrewingRecipes);
         IafNetwork.init(modBus);
 
         IafItemRegistry.ITEMS.register(modBus);
+        // Deferred items must be bound before repair ingredients resolve their suppliers.
+        modBus.addListener(IafItemRegistry::setRepairMaterials);
         IafBlockRegistry.BLOCKS.register(modBus);
         IafTabRegistry.TAB_REGISTER.register(modBus);
         IafEntityRegistry.ENTITIES.register(modBus);
