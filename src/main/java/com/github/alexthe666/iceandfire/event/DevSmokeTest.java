@@ -116,5 +116,80 @@ public class DevSmokeTest {
             j++;
         }
         IceAndFire.LOGGER.info("SMOKETEST spawned {} entities, {} block entities", i, j);
+        this.blockOrigin = bbase;
+        this.gameplayAt = player.tickCount + 100;
+    }
+
+    private BlockPos blockOrigin;
+    private int gameplayAt = -1;
+    private boolean gameplayDone;
+
+    /** Scripted gameplay: hit, feed and kill every mod mob, use every block-entity block (opens its menu). */
+    @SubscribeEvent
+    public void onGameplay(PlayerTickEvent.Post event) {
+        if (gameplayDone || gameplayAt < 0 || !(event.getEntity() instanceof ServerPlayer player) || player.tickCount < gameplayAt) {
+            return;
+        }
+        gameplayDone = true;
+        var level = (net.minecraft.server.level.ServerLevel) player.level();
+        java.util.List<net.minecraft.world.item.ItemStack> tools = new java.util.ArrayList<>();
+        for (var item : new net.minecraft.world.item.Item[]{net.minecraft.world.item.Items.BEEF, net.minecraft.world.item.Items.BONE, net.minecraft.world.item.Items.COD, net.minecraft.world.item.Items.WHEAT, net.minecraft.world.item.Items.DIAMOND_SWORD, net.minecraft.world.item.Items.STICK}) {
+            tools.add(new net.minecraft.world.item.ItemStack(item, 16));
+        }
+        for (var item : BuiltInRegistries.ITEM) {
+            if (BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(IceAndFire.MODID)) {
+                tools.add(new net.minecraft.world.item.ItemStack(item, 1));
+            }
+        }
+        int mobs = 0;
+        int uses = 0;
+        int fails = 0;
+        java.util.List<net.minecraft.world.entity.LivingEntity> living = level.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, player.getBoundingBox().inflate(400), e -> e != player && BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).getNamespace().equals(IceAndFire.MODID));
+        for (var mob : living) {
+            mobs++;
+            for (var stack : tools) {
+                try {
+                    player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, stack.copy());
+                    player.interactOn(mob, net.minecraft.world.InteractionHand.MAIN_HAND, mob.position());
+                    uses++;
+                } catch (Throwable t) {
+                    fails++;
+                    IceAndFire.LOGGER.error("SMOKETEST interact failed: {} with {}", mob.getType(), stack, t);
+                }
+            }
+            try {
+                player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND_SWORD));
+                mob.hurt(level.damageSources().playerAttack(player), 4.0F);
+                mob.hurt(level.damageSources().onFire(), 2.0F);
+            } catch (Throwable t) {
+                fails++;
+                IceAndFire.LOGGER.error("SMOKETEST hurt failed: {}", mob.getType(), t);
+            }
+        }
+        int blocks = 0;
+        for (var pos : BlockPos.betweenClosed(blockOrigin, blockOrigin.offset(40, 3, 40))) {
+            var state = level.getBlockState(pos);
+            if (state.getBlock() instanceof EntityBlock && BuiltInRegistries.BLOCK.getKey(state.getBlock()).getNamespace().equals(IceAndFire.MODID)) {
+                blocks++;
+                try {
+                    player.closeContainer();
+                    state.useWithoutItem(level, player, new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(pos), net.minecraft.core.Direction.UP, pos.immutable(), false));
+                    player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND));
+                    state.useItemOn(player.getMainHandItem(), level, player, net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(pos), net.minecraft.core.Direction.UP, pos.immutable(), false));
+                } catch (Throwable t) {
+                    fails++;
+                    IceAndFire.LOGGER.error("SMOKETEST block use failed: {}", state, t);
+                }
+            }
+        }
+        for (var mob : living) {
+            try {
+                mob.kill(level);
+            } catch (Throwable t) {
+                fails++;
+                IceAndFire.LOGGER.error("SMOKETEST kill failed: {}", mob.getType(), t);
+            }
+        }
+        IceAndFire.LOGGER.info("SMOKETEST gameplay done: {} mobs, {} interactions, {} blocks used, {} failures", mobs, uses, blocks, fails);
     }
 }
