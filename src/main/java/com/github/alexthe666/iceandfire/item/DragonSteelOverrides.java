@@ -3,7 +3,6 @@ package com.github.alexthe666.iceandfire.item;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityDeathWorm;
 import com.github.alexthe666.iceandfire.entity.props.EntityDataProvider;
-import com.github.alexthe666.iceandfire.event.ServerEvents;
 import com.nicktale.api.server.item.CustomToolMaterial;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -52,12 +51,12 @@ public interface DragonSteelOverrides<T extends Item> {
 
     default void applyMaterialHit(T item, ItemStack stack, LivingEntity target, LivingEntity attacker) {
         CustomToolMaterial material = getToolMaterial();
-        if (material == IafItemRegistry.SILVER_TOOL_MATERIAL && target.getType().is(EntityTypeTags.UNDEAD)) {
+        if (material == IafItemRegistry.SILVER_TOOL_MATERIAL && target.getType().builtInRegistryHolder().is(EntityTypeTags.UNDEAD)) {
             target.hurt(attacker.level().damageSources().magic(), getAttackDamage(item) + 3.0F);
         }
 
         if (material == IafItemRegistry.MYRMEX_CHITIN_TOOL_MATERIAL) {
-            if (!target.getType().is(EntityTypeTags.ARTHROPOD) || target instanceof EntityDeathWorm) {
+            if (!target.getType().builtInRegistryHolder().is(EntityTypeTags.ARTHROPOD) || target instanceof EntityDeathWorm) {
                 target.hurt(attacker.level().damageSources().generic(), getAttackDamage(item) + 5.0F);
             }
         }
@@ -76,9 +75,8 @@ public interface DragonSteelOverrides<T extends Item> {
             if (!attacker.level().isClientSide() && createLightning) {
                 LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(target.level());
                 if (bolt != null) {
-                    bolt.getTags().add(ServerEvents.BOLT_DONT_DESTROY_LOOT);
-                    bolt.getTags().add(attacker.getStringUUID());
-                    bolt.moveTo(target.position());
+                    bolt.setCause(attacker instanceof Player player ? player : null);
+                    bolt.setPos(target.position());
                     target.level().addFreshEntity(bolt);
                 }
             }
