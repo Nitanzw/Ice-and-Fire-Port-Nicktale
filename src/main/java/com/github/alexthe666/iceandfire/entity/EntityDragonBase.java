@@ -9,8 +9,6 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.api.FoodUtils;
 import com.github.alexthe666.iceandfire.api.event.GenericGriefEvent;
 import com.github.alexthe666.iceandfire.block.IDragonProof;
-import com.github.alexthe666.iceandfire.client.model.IFChainBuffer;
-import com.github.alexthe666.iceandfire.client.model.util.LegSolverQuadruped;
 import com.github.alexthe666.iceandfire.datagen.tags.IafBlockTags;
 import com.github.alexthe666.iceandfire.datagen.tags.IafItemTags;
 import com.github.alexthe666.iceandfire.entity.ai.*;
@@ -170,9 +168,9 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     public int flightCycle;
     public HomePosition homePos;
     public boolean hasHomePosition = false;
-    public IFChainBuffer roll_buffer;
-    public IFChainBuffer pitch_buffer;
-    public IFChainBuffer pitch_buffer_body;
+    public ChainBuffer roll_buffer;
+    public ChainBuffer pitch_buffer;
+    public ChainBuffer pitch_buffer_body;
     public ReversedBuffer turn_buffer;
     public ChainBuffer tail_buffer;
     public int spacebarTicks;
@@ -185,7 +183,6 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
 
     public float[][] growth_stages = new float[][]{growth_stage_1, growth_stage_2, growth_stage_3, growth_stage_4, growth_stage_5};;
 
-    public LegSolverQuadruped legSolver;
     public int walkCycle;
     public BlockPos burningTarget;
     public int burnProgress;
@@ -251,13 +248,12 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
         ANIMATION_EAT = Animation.create(20);
         this.createInventory();
         if (world.isClientSide()) {
-            roll_buffer = new IFChainBuffer();
-            pitch_buffer = new IFChainBuffer();
-            pitch_buffer_body = new IFChainBuffer();
+            roll_buffer = new ChainBuffer();
+            pitch_buffer = new ChainBuffer();
+            pitch_buffer_body = new ChainBuffer();
             turn_buffer = new ReversedBuffer();
             tail_buffer = new ChainBuffer();
         }
-        legSolver = new LegSolverQuadruped(0.3F, 0.35F, 0.2F, 1.45F, 1.0F);
         this.flightManager = new IafDragonFlightManager(this);
         this.logic = createDragonLogic();
         this.noCulling = true;
