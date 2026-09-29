@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "iceandfire:scribe/level_1/emerald_manuscript",
+    "iceandfire:scribe/level_1/bookshelf_emerald",
+    "iceandfire:scribe/level_1/paper_emerald",
+    "iceandfire:scribe/level_1/ash_emerald"
+  ]
+}

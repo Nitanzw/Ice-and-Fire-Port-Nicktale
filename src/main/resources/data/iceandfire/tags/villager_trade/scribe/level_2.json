@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "iceandfire:scribe/level_2/silver_emerald",
+    "iceandfire:scribe/level_2/fire_lily_emerald",
+    "iceandfire:scribe/level_2/lightning_lily_emerald",
+    "iceandfire:scribe/level_2/emerald_frost_lily",
+    "iceandfire:scribe/level_2/emerald_ice_spikes",
+    "iceandfire:scribe/level_2/sapphire_emerald",
+    "iceandfire:scribe/level_2/emerald_empty_jar",
+    "iceandfire:scribe/level_2/emerald_desert_resin",
+    "iceandfire:scribe/level_2/emerald_jungle_resin",
+    "iceandfire:scribe/level_2/amethyst_emerald"
+  ]
+}
