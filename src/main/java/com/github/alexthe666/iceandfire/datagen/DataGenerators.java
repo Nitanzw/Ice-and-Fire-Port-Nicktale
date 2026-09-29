@@ -1,10 +1,8 @@
 package com.github.alexthe666.iceandfire.datagen;
 
-import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.datagen.tags.*;
 import net.minecraft.DetectedVersion;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.network.chat.Component;
@@ -13,37 +11,36 @@ import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.bus.api.SubscribeEvent;
 
-import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 public class DataGenerators {
 
-    @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
-        DataGenerator generator = event.getGenerator();
         PackOutput output = event.getGenerator().getPackOutput();
         CompletableFuture<HolderLookup.Provider> provider = event.getLookupProvider();
-        DatapackBuiltinEntriesProvider datapackProvider = new RegistryDataGenerator(output, provider);
-        CompletableFuture<HolderLookup.Provider> lookupProvider = datapackProvider.getRegistryProvider();
-        generator.addProvider(event.includeServer(), datapackProvider);
-        generator.addProvider(event.includeServer(), new BannerPatternTagGenerator(output, provider));
-        generator.addProvider(event.includeServer(), new POITagGenerator(output, provider));
-        generator.addProvider(true, new PackMetadataGenerator(output).add(PackMetadataSection.TYPE, new PackMetadataSection(
-                Component.literal("Resources for Ice and Fire"),
-                DetectedVersion.BUILT_IN.getPackVersion(PackType.CLIENT_RESOURCES),
-                Arrays.stream(PackType.values()).collect(Collectors.toMap(Function.identity(), DetectedVersion.BUILT_IN::getPackVersion)))));
-        generator.addProvider(event.includeServer(), new IafBiomeTagGenerator(output, lookupProvider));
-        generator.addProvider(event.includeClient(), new AtlasGenerator(output, provider));
-        BlockTagsProvider blocktags  = new IafBlockTags(output, provider);
-        generator.addProvider(event.includeServer(), blocktags);
-        generator.addProvider(event.includeServer(), new IafItemTags(output, provider, blocktags.contentsGetter()));
-        generator.addProvider(event.includeServer(), new IafEntityTags(output, provider));
-        generator.addProvider(event.includeServer(), new IafRecipes.Runner(output, lookupProvider));
+        if (event instanceof GatherDataEvent.Server) {
+            event.addProvider(new PackMetadataGenerator(output)
+                    .add(PackMetadataSection.SERVER_TYPE, new PackMetadataSection(
+                            Component.literal("Resources for Ice and Fire"),
+                            DetectedVersion.BUILT_IN.packVersion(PackType.SERVER_DATA).minorRange())));
+            DatapackBuiltinEntriesProvider datapackProvider = new RegistryDataGenerator(output, provider);
+            CompletableFuture<HolderLookup.Provider> lookupProvider = datapackProvider.getRegistryProvider();
+            event.addProvider(datapackProvider);
+            event.addProvider(new BannerPatternTagGenerator(output, provider));
+            event.addProvider(new POITagGenerator(output, provider));
+            event.addProvider(new IafBiomeTagGenerator(output, lookupProvider));
+            BlockTagsProvider blockTags = new IafBlockTags(output, provider);
+            event.addProvider(blockTags);
+            event.addProvider(new IafItemTags(output, provider, blockTags.contentsGetter()));
+            event.addProvider(new IafEntityTags(output, provider));
+            event.addProvider(new IafRecipes.Runner(output, lookupProvider));
+        }
+
+        if (event instanceof GatherDataEvent.Client) {
+            event.addProvider(new AtlasGenerator(output, provider));
+        }
 
     }
 }
