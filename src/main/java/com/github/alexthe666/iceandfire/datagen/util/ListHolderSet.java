@@ -29,6 +29,11 @@ public class ListHolderSet<T> extends HolderSet.ListBacked<T> {
     }
 
     @Override
+    public boolean isBound() {
+        return true;
+    }
+
+    @Override
     public Optional<TagKey<T>> unwrapKey() {
         return Optional.empty();
     }

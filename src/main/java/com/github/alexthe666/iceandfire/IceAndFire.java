@@ -14,6 +14,7 @@ import com.github.alexthe666.iceandfire.loot.IafLootRegistry;
 import com.github.alexthe666.iceandfire.message.IafNetwork;
 import com.github.alexthe666.iceandfire.misc.IafDamageRegistry;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
+import com.github.alexthe666.iceandfire.datagen.DataGenerators;
 import com.github.alexthe666.iceandfire.recipe.IafBannerPatterns;
 import com.github.alexthe666.iceandfire.recipe.IafRecipeRegistry;
 import com.github.alexthe666.iceandfire.world.*;
@@ -29,6 +30,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -65,6 +67,7 @@ public class IceAndFire {
         modBus.addListener(IafDamageRegistry::gatherData);
         modBus.addListener(IafTileEntityRegistry::registerCapabilities);
         modBus.addListener(IafRecipeRegistry::preInit);
+        modBus.addListener(DataGenerators::gatherData);
         NeoForge.EVENT_BUS.addListener(IafRecipeRegistry::registerBrewingRecipes);
         IafNetwork.init(modBus);
 
