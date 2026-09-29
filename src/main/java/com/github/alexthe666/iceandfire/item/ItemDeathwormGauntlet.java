@@ -47,6 +47,9 @@ public class ItemDeathwormGauntlet extends Item {
 
     @Override
     public void onUseTick(@NotNull Level level, @NotNull LivingEntity entity, @NotNull ItemStack stack, int count) {
+        CompoundTag stackData = ItemStackData.get(stack);
+        boolean deathwormReceded = !stackData.contains("DeathwormReceded") || stackData.getBoolean("DeathwormReceded");
+        boolean deathwormLaunched = stackData.getBoolean("DeathwormLaunched");
         if (!deathwormReceded && !deathwormLaunched) {
             if (entity instanceof Player player) {
                 ItemStackData.update(stack, tag -> tag.putInt("HolderID", player.getId()));
@@ -54,8 +57,10 @@ public class ItemDeathwormGauntlet extends Item {
                 if (player.getCooldowns().getCooldownPercent(this, 0.0F) == 0) {
                     player.getCooldowns().addCooldown(this, 10);
                     player.playSound(IafSoundRegistry.DEATHWORM_ATTACK, 1F, 1F);
-                    deathwormReceded = false;
-                    deathwormLaunched = true;
+                    ItemStackData.update(stack, tag -> {
+                        tag.putBoolean("DeathwormReceded", false);
+                        tag.putBoolean("DeathwormLaunched", true);
+                    });
                 }
             }
         }
