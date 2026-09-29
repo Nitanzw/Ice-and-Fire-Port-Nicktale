@@ -1,26 +1,30 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
 import com.nicktale.api.client.model.AdvancedEntityModel;
+import com.nicktale.api.client.model.AdvancedModelBox;
 import com.nicktale.api.client.model.TabulaModel;
 import com.github.alexthe666.iceandfire.client.model.*;
 import com.github.alexthe666.iceandfire.entity.EntityMobSkull;
 import com.github.alexthe666.iceandfire.enums.EnumSkullType;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import com.github.alexthe666.iceandfire.client.model.SimpleEntityRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.Map;
 
-public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
+public class RenderMobSkull extends EntityRenderer<EntityMobSkull, RenderMobSkull.SkullRenderState> {
 
     private static final Map<String, Identifier> SKULL_TEXTURE_CACHE = Maps.newHashMap();
     private final ModelHippogryph hippogryphModel;
@@ -51,35 +55,55 @@ public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
     }
 
     @Override
-    public void render(@NotNull EntityMobSkull entity, float entityYaw, float partialTicks, @NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn) {
-        super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+    public @NotNull SkullRenderState createRenderState() {
+        return new SkullRenderState();
+    }
+
+    @Override
+    public void extractRenderState(@NotNull EntityMobSkull entity, @NotNull SkullRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.entity = entity;
+        state.skullType = entity.getSkullType();
+        state.onWall = entity.isOnWall();
+        state.skullYaw = entity.getYaw();
+    }
+
+    @Override
+    public void submit(@NotNull SkullRenderState state, @NotNull PoseStack matrixStackIn, @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState camera) {
+        super.submit(state, matrixStackIn, collector, camera);
         matrixStackIn.pushPose();
         matrixStackIn.mulPose(Axis.XP.rotationDegrees(-180.0F));
-        matrixStackIn.mulPose(Axis.YN.rotationDegrees(180.0F - entity.getYaw()));
-        float f = 0.0625F;
+        matrixStackIn.mulPose(Axis.YN.rotationDegrees(180.0F - state.skullYaw));
         float size = 1.0F;
         matrixStackIn.scale(size, size, size);
-        matrixStackIn.translate(0, entity.isOnWall() ? -0.24F : -0.12F, 0.5F);
-        renderForEnum(entity.getSkullType(), entity.isOnWall(), matrixStackIn, bufferIn, packedLightIn);
+        matrixStackIn.translate(0, state.onWall ? -0.24F : -0.12F, 0.5F);
+        renderForEnum(state.skullType, state.onWall, matrixStackIn, collector, state.lightCoords);
         matrixStackIn.popPose();
     }
 
-    private void renderForEnum(EnumSkullType skull, boolean onWall, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(getSkullTexture(skull)));
+    private static void submitPart(SubmitNodeCollector collector, PoseStack poseStack, AdvancedEntityModel<?> model, AdvancedModelBox box, RenderType renderType, int light) {
+        ModelPart part = model.getPart(box);
+        if (part != null) {
+            collector.submitModelPart(part, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, null);
+        }
+    }
+
+    private void renderForEnum(EnumSkullType skull, boolean onWall, PoseStack matrixStackIn, SubmitNodeCollector collector, int packedLightIn) {
+        RenderType renderType = RenderTypes.entityTranslucent(getSkullTexture(skull));
         switch (skull) {
             case HIPPOGRYPH:
                 matrixStackIn.translate(0, -0.0F, -0.2F);
                 matrixStackIn.scale(1.2F, 1.2F, 1.2F);
                 hippogryphModel.resetToDefaultPose();
                 setRotationAngles(hippogryphModel.Head, onWall ? (float) Math.toRadians(50F) : (float) Math.toRadians(-5), 0, 0);
-                hippogryphModel.Head.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                submitPart(collector, matrixStackIn, hippogryphModel, hippogryphModel.Head, renderType, packedLightIn);
                 break;
             case CYCLOPS:
                 matrixStackIn.translate(0, 1.8F, -0.5F);
                 matrixStackIn.scale(2.25F, 2.25F, 2.25F);
                 cyclopsModel.resetToDefaultPose();
                 setRotationAngles(cyclopsModel.Head, onWall ? (float) Math.toRadians(50F) : 0F, 0, 0);
-                cyclopsModel.Head.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                submitPart(collector, matrixStackIn, cyclopsModel, cyclopsModel.Head, renderType, packedLightIn);
 
                 break;
             case COCKATRICE:
@@ -88,7 +112,7 @@ public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
                 }
                 cockatriceModel.resetToDefaultPose();
                 setRotationAngles(cockatriceModel.head, onWall ? (float) Math.toRadians(50F) : 0F, 0, 0);
-                cockatriceModel.head.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                submitPart(collector, matrixStackIn, cockatriceModel, cockatriceModel.head, renderType, packedLightIn);
 
                 break;
             case STYMPHALIAN:
@@ -97,7 +121,7 @@ public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
                 }
                 stymphalianBirdModel.resetToDefaultPose();
                 setRotationAngles(stymphalianBirdModel.HeadBase, onWall ? (float) Math.toRadians(50F) : 0F, 0, 0);
-                stymphalianBirdModel.HeadBase.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                submitPart(collector, matrixStackIn, stymphalianBirdModel, stymphalianBirdModel.HeadBase, renderType, packedLightIn);
 
                 break;
             case TROLL:
@@ -107,7 +131,7 @@ public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
                 }
                 trollModel.resetToDefaultPose();
                 setRotationAngles(trollModel.head, onWall ? (float) Math.toRadians(50F) : (float) Math.toRadians(-20), 0, 0);
-                trollModel.head.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                submitPart(collector, matrixStackIn, trollModel, trollModel.head, renderType, packedLightIn);
 
                 break;
             case AMPHITHERE:
@@ -115,7 +139,7 @@ public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
                 matrixStackIn.scale(2.0F, 2.0F, 2.0F);
                 amphithereModel.resetToDefaultPose();
                 setRotationAngles(amphithereModel.Head, onWall ? (float) Math.toRadians(50F) : 0F, 0, 0);
-                amphithereModel.Head.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                submitPart(collector, matrixStackIn, amphithereModel, amphithereModel.Head, renderType, packedLightIn);
 
                 break;
             case SEASERPENT:
@@ -123,7 +147,7 @@ public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
                 matrixStackIn.scale(2.5F, 2.5F, 2.5F);
                 seaSerpentModel.resetToDefaultPose();
                 setRotationAngles(seaSerpentModel.getCube("Head"), onWall ? (float) Math.toRadians(50F) : 0F, 0, 0);
-                seaSerpentModel.getCube("Head").render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                submitPart(collector, matrixStackIn, seaSerpentModel, seaSerpentModel.getCube("Head"), renderType, packedLightIn);
 
                 break;
             case HYDRA:
@@ -131,15 +155,10 @@ public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
                 matrixStackIn.scale(2.0F, 2.0F, 2.0F);
                 hydraModel.resetToDefaultPose();
                 setRotationAngles(hydraModel.Head1, onWall ? (float) Math.toRadians(50F) : 0F, 0, 0);
-                hydraModel.Head1.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                submitPart(collector, matrixStackIn, hydraModel, hydraModel.Head1, renderType, packedLightIn);
 
                 break;
         }
-    }
-
-    @Override
-    public @NotNull Identifier getTextureLocation(EntityMobSkull entity) {
-        return getSkullTexture(entity.getSkullType());
     }
 
     public Identifier getSkullTexture(EnumSkullType skull) {
@@ -150,6 +169,12 @@ public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
             SKULL_TEXTURE_CACHE.put(s, resourcelocation);
         }
         return resourcelocation;
+    }
+
+    public static class SkullRenderState extends SimpleEntityRenderState {
+        public EnumSkullType skullType = EnumSkullType.HIPPOGRYPH;
+        public boolean onWall;
+        public float skullYaw;
     }
 
 }

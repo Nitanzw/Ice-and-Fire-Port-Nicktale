@@ -1,24 +1,17 @@
 package com.github.alexthe666.iceandfire.client.render.entity.layer;
 
-import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.github.alexthe666.iceandfire.client.model.ModelMyrmexBase;
+import com.github.alexthe666.iceandfire.client.model.MyrmexRenderState;
 import com.github.alexthe666.iceandfire.client.render.entity.RenderMyrmexBase;
-import com.github.alexthe666.iceandfire.entity.EntityMyrmexBase;
-import com.github.alexthe666.iceandfire.entity.EntityMyrmexWorker;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class LayerMyrmexItem extends RenderLayer<EntityMyrmexBase, AdvancedEntityModel<EntityMyrmexBase>> {
+public class LayerMyrmexItem extends RenderLayer<MyrmexRenderState, EntityModel<MyrmexRenderState>> {
 
     protected final RenderMyrmexBase livingEntityRenderer;
 
@@ -27,44 +20,22 @@ public class LayerMyrmexItem extends RenderLayer<EntityMyrmexBase, AdvancedEntit
         this.livingEntityRenderer = livingEntityRendererIn;
     }
 
-    private void renderHeldItem(EntityMyrmexBase myrmex, ItemStack stack, ItemDisplayContext transform, HumanoidArm handSide) {
-
-    }
-
-    protected void translateToHand(HumanoidArm side, PoseStack stack) {
-        ((ModelMyrmexBase) this.livingEntityRenderer.getModel()).postRenderArm(0, stack);
-    }
-
-    public boolean shouldCombineTextures() {
-        return false;
-    }
-
     @Override
-    public void render(@NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn, @NotNull EntityMyrmexBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entitylivingbaseIn instanceof EntityMyrmexWorker) {
-            ItemStack itemstack = entitylivingbaseIn.getItemInHand(InteractionHand.MAIN_HAND);
-            if (!itemstack.isEmpty()) {
-                matrixStackIn.pushPose();
-                if (!itemstack.isEmpty()) {
-                    matrixStackIn.pushPose();
-
-                    if (entitylivingbaseIn.isShiftKeyDown()) {
-                        matrixStackIn.translate(0.0F, 0.2F, 0.0F);
-                    }
-                    this.translateToHand(HumanoidArm.RIGHT, matrixStackIn);
-                    matrixStackIn.translate(0F, 0.3F, -1.6F);
-                    if (itemstack.getItem() instanceof BlockItem) {
-                        matrixStackIn.translate(0F, 0, 0.2F);
-                    } else {
-                        matrixStackIn.translate(0F, 0.2F, 0.3F);
-                    }
-                    matrixStackIn.mulPose(Axis.XP.rotationDegrees(160.0F));
-                    matrixStackIn.mulPose(Axis.YP.rotationDegrees(180.0F));
-                    Minecraft.getInstance().getItemRenderer().renderStatic(itemstack, ItemDisplayContext.FIXED, packedLightIn, OverlayTexture.NO_OVERLAY, matrixStackIn, bufferIn, Minecraft.getInstance().level, 0);
-                    matrixStackIn.popPose();
-                }
-                matrixStackIn.popPose();
-            }
+    public void submit(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, @NotNull MyrmexRenderState state, float yRot, float xRot) {
+        if (state.heldItem.isEmpty() || !(this.getParentModel() instanceof ModelMyrmexBase<?> myrmexModel)) {
+            return;
         }
+        poseStack.pushPose();
+        myrmexModel.postRenderArm(0, poseStack);
+        poseStack.translate(0F, 0.3F, -1.6F);
+        if (state.holdsBlockItem) {
+            poseStack.translate(0F, 0, 0.2F);
+        } else {
+            poseStack.translate(0F, 0.2F, 0.3F);
+        }
+        poseStack.mulPose(Axis.XP.rotationDegrees(160.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+        state.heldItem.submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, state.outlineColor);
+        poseStack.popPose();
     }
 }

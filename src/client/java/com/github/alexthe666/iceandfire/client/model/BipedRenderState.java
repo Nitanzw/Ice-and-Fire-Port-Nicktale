@@ -13,4 +13,8 @@ public class BipedRenderState extends HumanoidRenderState {
     public float partialTick;
     /** Entity tick count, used for spawn flailing. */
     public int tickCount;
+    /** Ghost transparency (0-1) and mode flags; unused by the other humanoids. */
+    public float alpha = 1.0F;
+    public boolean ghostDaytime;
+    public boolean ghostShoppingList;
 }

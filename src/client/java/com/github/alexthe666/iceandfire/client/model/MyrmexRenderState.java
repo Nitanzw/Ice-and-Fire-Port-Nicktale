@@ -10,4 +10,7 @@ public class MyrmexRenderState extends IafRenderState {
     public boolean isHiding;
     public boolean onGround;
     public int tickCount;
+    public int growthStage = 2;
+    public final net.minecraft.client.renderer.item.ItemStackRenderState heldItem = new net.minecraft.client.renderer.item.ItemStackRenderState();
+    public boolean holdsBlockItem;
 }

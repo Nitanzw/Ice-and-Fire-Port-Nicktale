@@ -2,27 +2,26 @@ package com.github.alexthe666.iceandfire.client.model.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
-
-public class HideableLayer<T extends Entity, M extends EntityModel<T>, C extends RenderLayer<T, M>> extends RenderLayer<T, M> {
+public class HideableLayer<S extends EntityRenderState, M extends EntityModel<S>, C extends RenderLayer<S, M>> extends RenderLayer<S, M> {
 
     public boolean hidden;
     C layerRenderer;
 
-    public HideableLayer(C layerRenderer, RenderLayerParent<T, M> entityRendererIn) {
+    public HideableLayer(C layerRenderer, RenderLayerParent<S, M> entityRendererIn) {
         super(entityRendererIn);
         hidden = false;
         this.layerRenderer = layerRenderer;
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn, @NotNull T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void submit(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, @NotNull S state, float yRot, float xRot) {
         if (!hidden)
-            layerRenderer.render(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+            layerRenderer.submit(poseStack, collector, light, state, yRot, xRot);
     }
 }

@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
+import com.github.alexthe666.iceandfire.client.model.BipedRenderState;
 import com.github.alexthe666.iceandfire.client.model.ModelDreadThrall;
 import com.github.alexthe666.iceandfire.client.model.util.HideableLayer;
 import com.github.alexthe666.iceandfire.client.render.entity.layer.IHasArmorVariantResource;
@@ -8,15 +9,11 @@ import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerGenericG
 import com.github.alexthe666.iceandfire.entity.EntityDreadThrall;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-
-public class RenderDreadThrall extends MobRenderer<EntityDreadThrall, ModelDreadThrall> implements IHasArmorVariantResource {
+public class RenderDreadThrall extends IafBipedRenderer<EntityDreadThrall, ModelDreadThrall> implements IHasArmorVariantResource {
     public static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/models/dread/dread_thrall.png");
     public static final Identifier TEXTURE_EYES = Identifier.parse("iceandfire:textures/models/dread/dread_thrall_eyes.png");
     public static final Identifier TEXTURE_LEG_ARMOR = Identifier.parse("iceandfire:textures/models/dread/thrall_legs.png");
@@ -28,13 +25,13 @@ public class RenderDreadThrall extends MobRenderer<EntityDreadThrall, ModelDread
     public static final Identifier TEXTURE_ARMOR_5 = Identifier.parse("iceandfire:textures/models/dread/thrall_chest_6.png");
     public static final Identifier TEXTURE_ARMOR_6 = Identifier.parse("iceandfire:textures/models/dread/thrall_chest_7.png");
     public static final Identifier TEXTURE_ARMOR_7 = Identifier.parse("iceandfire:textures/models/dread/thrall_chest_8.png");
-    public final HideableLayer<EntityDreadThrall, ModelDreadThrall, ItemInHandLayer<EntityDreadThrall, ModelDreadThrall>> itemLayer;
+    public final HideableLayer<BipedRenderState, ModelDreadThrall, ItemInHandLayer<BipedRenderState, ModelDreadThrall>> itemLayer;
 
     public RenderDreadThrall(EntityRendererProvider.Context context) {
         super(context, new ModelDreadThrall(0.0F, false), 0.6F);
 
         this.addLayer(new LayerGenericGlowing<>(this, TEXTURE_EYES));
-        this.itemLayer = new HideableLayer<>(new ItemInHandLayer<>(this, context.getItemInHandRenderer()), this);
+        this.itemLayer = new HideableLayer<>(new ItemInHandLayer<>(this), this);
         this.addLayer(this.itemLayer);
         this.addLayer(new LayerBipedArmorMultiple<>(this,
             new ModelDreadThrall(0.5F, true), new ModelDreadThrall(1.0F, true),
@@ -68,21 +65,17 @@ public class RenderDreadThrall extends MobRenderer<EntityDreadThrall, ModelDread
     }
 
     @Override
-    public void scale(EntityDreadThrall livingEntityIn, PoseStack stack, float partialTickTime) {
+    protected void scaleFor(EntityDreadThrall entity, PoseStack stack, float partialTick) {
         stack.scale(0.95F, 0.95F, 0.95F);
-        if (livingEntityIn.getAnimation() == this.getModel().getSpawnAnimation()) {
-            itemLayer.hidden = livingEntityIn.getAnimationTick() <= this.getModel().getSpawnAnimation().getDuration() - 10;
+        if (entity.getAnimation() == this.getModel().getSpawnAnimation()) {
+            itemLayer.hidden = entity.getAnimationTick() <= this.getModel().getSpawnAnimation().getDuration() - 10;
             return;
         }
         itemLayer.hidden = false;
-
     }
 
-    @Nullable
     @Override
-    public Identifier getTextureLocation(@NotNull EntityDreadThrall entity) {
+    protected Identifier textureFor(EntityDreadThrall entity) {
         return TEXTURE;
     }
-
-
 }

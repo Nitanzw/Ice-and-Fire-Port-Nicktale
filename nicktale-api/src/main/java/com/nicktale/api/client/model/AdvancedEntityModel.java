@@ -64,6 +64,16 @@ public abstract class AdvancedEntityModel<S extends EntityRenderState> extends E
         sync();
     }
 
+    /**
+     * Returns the posed model part of a single bone (with its children), independent of the bone's ancestors, so a
+     * bone can be drawn on its own (mob skulls, held pieces). Poses are synced before returning.
+     */
+    public ModelPart getPart(AdvancedModelBox box) {
+        sync();
+        ModelPart[] pair = parts.get(box);
+        return pair == null ? null : pair[0];
+    }
+
     private void bake() {
         rootChildren.clear();
         parts.clear();
