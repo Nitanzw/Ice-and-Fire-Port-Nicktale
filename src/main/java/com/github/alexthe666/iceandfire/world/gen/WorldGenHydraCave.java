@@ -79,9 +79,9 @@ public class WorldGenHydraCave extends Feature<NoneFeatureConfiguration> impleme
                             worldIn.setBlock(blockpos.above(), Blocks.SHORT_GRASS.defaultBlockState(), 2);
                         }
                         if (rand.nextInt(9) == 0) {
-                            Holder<ConfiguredFeature<?, ?>> holder = context.level().registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE).getHolder(TreeFeatures.SWAMP_OAK).orElse((Holder.Reference<ConfiguredFeature<?, ?>>)null);
+                            Holder<ConfiguredFeature<?, ?>> holder = context.level().registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE).get(TreeFeatures.SWAMP_OAK).orElse(null);
                             if (holder != null)
-                                holder.get().place(worldIn, generator, rand, blockpos.above());
+                                holder.value().place(worldIn, generator, rand, blockpos.above());
                         }
 
                     }

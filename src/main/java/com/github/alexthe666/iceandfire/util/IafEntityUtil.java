@@ -79,8 +79,9 @@ public final class IafEntityUtil {
     }
 
     /** Adapts an old {@code Predicate<LivingEntity>} target filter to the level-aware selector. */
-    public static net.minecraft.world.entity.ai.targeting.TargetingConditions.Selector selector(java.util.function.Predicate<? super LivingEntity> predicate) {
-        return (target, level) -> predicate.test(target);
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static net.minecraft.world.entity.ai.targeting.TargetingConditions.Selector selector(java.util.function.Predicate<?> predicate) {
+        return (target, level) -> ((java.util.function.Predicate) predicate).test(target);
     }
 
     public static net.minecraft.world.DifficultyInstance difficulty(net.minecraft.world.level.LevelAccessor level, net.minecraft.core.BlockPos pos) {

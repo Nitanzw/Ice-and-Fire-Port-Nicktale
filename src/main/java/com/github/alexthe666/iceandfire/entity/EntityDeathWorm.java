@@ -545,7 +545,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     }
 
     @Override
-    public boolean killedEntity(@NotNull ServerLevel world, @NotNull LivingEntity entity) {
+    public boolean killedEntity(@NotNull ServerLevel world, @NotNull LivingEntity entity, @NotNull net.minecraft.world.damagesource.DamageSource damageSource) {
         if (this.isTame()) {
             this.heal(14);
             return false;
@@ -599,7 +599,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         }
         if (this.willExplode) {
             if (this.ticksTillExplosion == 0) {
-                boolean b = !NeoForge.EVENT_BUS.post(new GenericGriefEvent(this, this.getX(), this.getY(), this.getZ()));
+                boolean b = !NeoForge.EVENT_BUS.post(new GenericGriefEvent(this, this.getX(), this.getY(), this.getZ())).isCanceled();
                 if (b) {
                     level().explode(this.thrower, this.getX(), this.getY(), this.getZ(), 2.5F * this.getWormScale(), false, Level.ExplosionInteraction.MOB);
                 }

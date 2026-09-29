@@ -430,7 +430,13 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
 
     protected void createInventory() {
         SimpleContainer simplecontainer = this.inventory;
-        this.inventory = new SimpleContainer(this.getInventorySize());
+        this.inventory = new SimpleContainer(this.getInventorySize()) {
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                EntityHippocampus.this.containerChanged(this);
+            }
+        };
         if (simplecontainer != null) {
             int i = Math.min(simplecontainer.getContainerSize(), this.inventory.getContainerSize());
 
@@ -471,7 +477,6 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         }
     }
 
-    @Override
     public ResourceHandler<ItemResource> getItemHandler() {
         return this.isAlive() ? this.itemHandler : null;
     }
@@ -741,7 +746,6 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
         return 5; // TODO :: Introduce upgrade item?
     }
 
-    @Override
     public void containerChanged(@NotNull Container pInvBasic) {
         boolean flag = this.isSaddled();
         this.updateContainerEquipment();

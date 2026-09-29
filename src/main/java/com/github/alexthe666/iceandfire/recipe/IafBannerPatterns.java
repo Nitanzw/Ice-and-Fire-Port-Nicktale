@@ -3,36 +3,37 @@ package com.github.alexthe666.iceandfire.recipe;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
+/**
+ * Banner patterns are a data-driven registry in 26.2; the definitions live in
+ * {@code data/iceandfire/banner_pattern/*.json}. These keys reference them.
+ */
 public final class IafBannerPatterns {
-    public static final DeferredRegister<BannerPattern> BANNERS = DeferredRegister.create(Registries.BANNER_PATTERN, IceAndFire.MODID);
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_FIRE = register("fire");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_ICE = register("ice");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_LIGHTNING = register("lightning");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_FIRE_HEAD = register("fire_head");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_ICE_HEAD = register("ice_head");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_LIGHTNING_HEAD = register("lightning_head");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_AMPHITHERE = register("amphithere");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_BIRD = register("bird");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_EYE = register("eye");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_FAE = register("fae");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_FEATHER = register("feather");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_GORGON = register("gorgon");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_HIPPOCAMPUS = register("hippocampus");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_HIPPOGRYPH_HEAD = register("hippogryph_head");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_MERMAID = register("mermaid");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_SEA_SERPENT = register("sea_serpent");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_TROLL = register("troll");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_WEEZER = register("weezer");
-    public static final DeferredHolder<BannerPattern, BannerPattern> PATTERN_DREAD = register("dread");
+    public static final ResourceKey<BannerPattern> PATTERN_FIRE = key("fire");
+    public static final ResourceKey<BannerPattern> PATTERN_ICE = key("ice");
+    public static final ResourceKey<BannerPattern> PATTERN_LIGHTNING = key("lightning");
+    public static final ResourceKey<BannerPattern> PATTERN_FIRE_HEAD = key("fire_head");
+    public static final ResourceKey<BannerPattern> PATTERN_ICE_HEAD = key("ice_head");
+    public static final ResourceKey<BannerPattern> PATTERN_LIGHTNING_HEAD = key("lightning_head");
+    public static final ResourceKey<BannerPattern> PATTERN_AMPHITHERE = key("amphithere");
+    public static final ResourceKey<BannerPattern> PATTERN_BIRD = key("bird");
+    public static final ResourceKey<BannerPattern> PATTERN_EYE = key("eye");
+    public static final ResourceKey<BannerPattern> PATTERN_FAE = key("fae");
+    public static final ResourceKey<BannerPattern> PATTERN_FEATHER = key("feather");
+    public static final ResourceKey<BannerPattern> PATTERN_GORGON = key("gorgon");
+    public static final ResourceKey<BannerPattern> PATTERN_HIPPOCAMPUS = key("hippocampus");
+    public static final ResourceKey<BannerPattern> PATTERN_HIPPOGRYPH_HEAD = key("hippogryph_head");
+    public static final ResourceKey<BannerPattern> PATTERN_MERMAID = key("mermaid");
+    public static final ResourceKey<BannerPattern> PATTERN_SEA_SERPENT = key("sea_serpent");
+    public static final ResourceKey<BannerPattern> PATTERN_TROLL = key("troll");
+    public static final ResourceKey<BannerPattern> PATTERN_WEEZER = key("weezer");
+    public static final ResourceKey<BannerPattern> PATTERN_DREAD = key("dread");
 
     private IafBannerPatterns() {}
 
-    private static DeferredHolder<BannerPattern, BannerPattern> register(String name) {
-        Identifier id = Identifier.fromNamespaceAndPath(IceAndFire.MODID, name);
-        return BANNERS.register(name, () -> new BannerPattern(id, "pattern." + IceAndFire.MODID + "." + name));
+    private static ResourceKey<BannerPattern> key(String name) {
+        return ResourceKey.create(Registries.BANNER_PATTERN, Identifier.fromNamespaceAndPath(IceAndFire.MODID, name));
     }
 }

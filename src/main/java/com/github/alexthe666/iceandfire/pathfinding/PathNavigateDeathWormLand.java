@@ -287,4 +287,9 @@ public class PathNavigateDeathWormLand extends PathNavigation {
     public void setAvoidSun(boolean avoidSun) {
         this.shouldAvoidSun = avoidSun;
     }
+
+    @Override
+    public boolean canNavigateGround() {
+        return true;
+    }
 }

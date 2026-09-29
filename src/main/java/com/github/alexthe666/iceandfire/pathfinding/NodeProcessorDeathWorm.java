@@ -31,7 +31,7 @@ public class NodeProcessorDeathWorm extends NodeEvaluator {
     }
 
     @Override
-    public @NotNull Target getGoal(double x, double y, double z) {
+    public @NotNull Target getTarget(double x, double y, double z) {
         return new Target(this.getNode(Mth.floor(x - 0.4D), Mth.floor(y + 0.5D), Mth.floor(z - 0.4D)));
     }
 

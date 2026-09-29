@@ -63,9 +63,9 @@ public class MessageStartRidingMob implements CustomPacketPayload {
                         if (tamable.isOwnedBy(player) && tamable.distanceTo(player) < 14) {
                             if (message.ride) {
                                 if (message.baby) {
-                                    tamable.startRiding(player, true);
+                                    tamable.startRiding(player, true, false);
                                 } else {
-                                    player.startRiding(tamable, true);
+                                    player.startRiding(tamable, true, false);
                                 }
                             } else {
                                 if (message.baby) {

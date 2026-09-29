@@ -63,7 +63,10 @@ public class IafWorldRegistry {
     }
 
     public static boolean isFarEnoughFromSpawn(final LevelAccessor level, final BlockPos position) {
-        BlockPos spawnPoint = level.getRespawnData().pos();
+        if (!(level instanceof net.minecraft.world.level.ServerLevelAccessor serverAccessor)) {
+            return true;
+        }
+        BlockPos spawnPoint = serverAccessor.getLevel().getRespawnData().pos();
         BlockPos spawnRelative = new BlockPos(spawnPoint.getX(), position.getY(), spawnPoint.getZ());
         return !spawnRelative.closerThan(position, IafConfig.dangerousWorldGenDistanceLimit);
     }

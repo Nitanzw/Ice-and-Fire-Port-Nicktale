@@ -13,17 +13,17 @@ import java.util.function.Predicate;
 public class CockatriceAIAggroLook extends NearestAttackableTargetGoal<Player> {
 
     private final EntityCockatrice cockatrice;
-    private final TargetingConditions predicate;
+    private final Predicate<LivingEntity> LIVING_ENTITY_SELECTOR;
     private Player player;
 
     public CockatriceAIAggroLook(EntityCockatrice cockatriceIn) {
         super(cockatriceIn, Player.class, false);
         this.cockatrice = cockatriceIn;
-        Predicate<LivingEntity> LIVING_ENTITY_SELECTOR = (target) -> {
+        LIVING_ENTITY_SELECTOR = (target) -> {
             return EntityGorgon.isEntityLookingAt(target, this.cockatrice,
                 EntityCockatrice.VIEW_RADIUS) && cockatrice.distanceTo(target) < getFollowDistance();
         };
-        this.predicate = TargetingConditions.forCombat().range(25.0D).selector(IafEntityUtil.selector(LIVING_ENTITY_SELECTOR));
+        
     }
 
     /**
@@ -33,8 +33,9 @@ public class CockatriceAIAggroLook extends NearestAttackableTargetGoal<Player> {
     public boolean canUse() {
         if (cockatrice.isTame())
             return false;
-        this.player = this.cockatrice.level().getNearestPlayer(predicate, this.cockatrice.getX(),
-            this.cockatrice.getY(), this.cockatrice.getZ());
+        this.player = this.cockatrice.level().getNearestPlayer(this.cockatrice.getX(),
+            this.cockatrice.getY(), this.cockatrice.getZ(), 25.0D, entity -> entity instanceof LivingEntity living
+                && living != this.cockatrice && !living.isSpectator() && LIVING_ENTITY_SELECTOR.test(living));
         return this.player != null;
     }
 

@@ -71,9 +71,9 @@ public class ChunkCache implements LevelReader {
         for (int k = this.chunkX; k <= i; ++k) {
             for (int l = this.chunkZ; l <= j; ++l) {
                 if (WorldUtil.isEntityChunkLoaded(world, new ChunkPos(k, l)) && worldIn.getChunkSource() instanceof ServerChunkCache serverChunkCache) {
-                    final ChunkHolder holder = serverChunkCache.chunkMap.getVisibleChunkIfPresent(ChunkPos.asLong(k, l));
+                    final ChunkHolder holder = serverChunkCache.chunkMap.getVisibleChunkIfPresent(ChunkPos.pack(k, l));
                     if (holder != null) {
-                        this.chunkArray[k - this.chunkX][l - this.chunkZ] = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).left().orElse(null);
+                        this.chunkArray[k - this.chunkX][l - this.chunkZ] = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).orElse(null);
                     }
                 }
             }
@@ -110,14 +110,27 @@ public class ChunkCache implements LevelReader {
         return this.chunkArray[i][j].getBlockEntity(pos, createType);
     }
 
-    @Override
     public int getMinBuildHeight() {
         return minBuildHeight;
     }
 
-    @Override
     public int getMaxBuildHeight() {
         return maxBuildHeight;
+    }
+
+    @Override
+    public int getMinY() {
+        return minBuildHeight;
+    }
+
+    @Override
+    public int getHeight() {
+        return maxBuildHeight - minBuildHeight;
+    }
+
+    @Override
+    public net.minecraft.world.attribute.EnvironmentAttributeReader environmentAttributes() {
+        return this.world.environmentAttributes();
     }
 
     @NotNull
@@ -256,11 +269,6 @@ public class ChunkCache implements LevelReader {
 
     private boolean withinBounds(int x, int z) {
         return x >= 0 && x < chunkArray.length && z >= 0 && z < chunkArray[x].length && chunkArray[x][z] != null;
-    }
-
-    @Override
-    public float getShade(final Direction direction, final boolean b) {
-        return 0;
     }
 
     @Override

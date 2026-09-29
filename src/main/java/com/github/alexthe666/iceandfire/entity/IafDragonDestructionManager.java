@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
+import net.minecraft.world.level.block.SpreadingSnowyBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.NeoForge;
@@ -298,7 +298,7 @@ public class IafDragonDestructionManager {
     }
 
     public static BlockState transformBlockFire(BlockState in) {
-        if (in.getBlock() instanceof SpreadingSnowyDirtBlock) {
+        if (in.getBlock() instanceof SpreadingSnowyBlock) {
             return IafBlockRegistry.CHARRED_GRASS.get().defaultBlockState().setValue(BlockReturningState.REVERTS, true);
         } else if (in.is(Blocks.DIRT)) {
             return IafBlockRegistry.CHARRED_DIRT.get().defaultBlockState().setValue(BlockReturningState.REVERTS, true);
@@ -319,7 +319,7 @@ public class IafDragonDestructionManager {
     }
 
     public static BlockState transformBlockIce(BlockState in) {
-        if (in.getBlock() instanceof SpreadingSnowyDirtBlock) {
+        if (in.getBlock() instanceof SpreadingSnowyBlock) {
             return IafBlockRegistry.FROZEN_GRASS.get().defaultBlockState().setValue(BlockReturningState.REVERTS, true);
         } else if (in.is(BlockTags.DIRT) && in.getBlock() == Blocks.DIRT || in.is(BlockTags.SNOW)) {
             return IafBlockRegistry.FROZEN_DIRT.get().defaultBlockState().setValue(BlockReturningState.REVERTS, true);
@@ -344,7 +344,7 @@ public class IafDragonDestructionManager {
     }
 
     public static BlockState transformBlockLightning(BlockState in) {
-        if (in.getBlock() instanceof SpreadingSnowyDirtBlock) {
+        if (in.getBlock() instanceof SpreadingSnowyBlock) {
             return IafBlockRegistry.CRACKLED_GRASS.get().defaultBlockState().setValue(BlockReturningState.REVERTS, true);
         } else if (in.is(BlockTags.DIRT) && in.getBlock() == Blocks.DIRT) {
             return IafBlockRegistry.CRACKLED_DIRT.get().defaultBlockState().setValue(BlockReturningState.REVERTS, true);

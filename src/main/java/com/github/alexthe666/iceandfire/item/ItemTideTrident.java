@@ -34,13 +34,13 @@ import org.jetbrains.annotations.NotNull;
 public class ItemTideTrident extends TridentItem {
 
     public ItemTideTrident() {
-        super(IafItemRegistry.itemProperties().durability(400).attributes(createAttributes())
+        super(IafItemRegistry.itemProperties().durability(400).attributes(tridentAttributes())
             .component(DataComponents.TOOL, TridentItem.createToolProperties())
             .component(DataComponents.WEAPON, new Weapon(1))
             .enchantable(1));
     }
 
-    private static ItemAttributeModifiers createAttributes() {
+    private static ItemAttributeModifiers tridentAttributes() {
         return ItemAttributeModifiers.builder()
             .add(Attributes.ATTACK_DAMAGE,
                 new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 12.0D, AttributeModifier.Operation.ADD_VALUE),

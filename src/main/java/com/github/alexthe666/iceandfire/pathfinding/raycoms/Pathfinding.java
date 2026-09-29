@@ -7,7 +7,6 @@ import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.thread.BlockableEventLoop;
-import net.neoforged.neoforge.common.util.LogicalSidedProvider;
 import net.neoforged.fml.LogicalSide;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,17 +51,9 @@ public final class Pathfinding {
 
         @Override
         public Thread newThread(final @NotNull Runnable runnable) throws RuntimeException {
-            BlockableEventLoop<?> workqueue = LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER);
-            ClassLoader classLoader;
-            if (workqueue.isSameThread()) {
-                classLoader = Thread.currentThread().getContextClassLoader();
-            } else if (workqueue instanceof MinecraftServer server){
-               classLoader = server.getRunningThread().getContextClassLoader();
-            } else {
-                classLoader = CompletableFuture.supplyAsync(() -> Thread.currentThread().getContextClassLoader(), workqueue).orTimeout(10, TimeUnit.SECONDS).exceptionally((ex)-> {
-                    throw new RuntimeException(String.format("Couldn't join threads within timeout range. Tried joining '%s' on '%s'", Thread.currentThread().getName(), workqueue.name()));
-                }).join();
-            }
+            MinecraftServer server = net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer();
+            ClassLoader classLoader = server != null && server.getRunningThread() != null
+                ? server.getRunningThread().getContextClassLoader() : Thread.currentThread().getContextClassLoader();
             final Thread thread = new Thread(runnable, "Ice and Fire Pathfinding Worker #" + (id++));
             thread.setDaemon(true);
             thread.setPriority(Thread.MAX_PRIORITY);

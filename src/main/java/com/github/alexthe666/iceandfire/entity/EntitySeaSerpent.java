@@ -90,7 +90,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
     private static final Predicate<Entity> NOT_SEA_SERPENT_IN_WATER = new Predicate<Entity>() {
         @Override
         public boolean apply(@Nullable Entity entity) {
-            return entity instanceof LivingEntity && !(entity instanceof EntitySeaSerpent) && DragonUtils.isAlive((LivingEntity) entity) && entity.isInWaterOrBubble();
+            return entity instanceof LivingEntity && !(entity instanceof EntitySeaSerpent) && DragonUtils.isAlive((LivingEntity) entity) && entity.isInWater();
         }
     };
     public int swimCycle;
@@ -593,7 +593,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
             boat.remove(RemovalReason.KILLED);
             if (IafEntityUtil.gameRule(this.level(), GameRules.ENTITY_DROPS)) {
                 for (int i = 0; i < 3; ++i) {
-                    IafEntityUtil.drop(boat, new ItemStack(boat.getVariant().getPlanks().asItem()), 0.0F);
+                    IafEntityUtil.drop(boat, new ItemStack(net.minecraft.world.item.Items.OAK_PLANKS), 0.0F);
                 }
                 for (int j = 0; j < 2; ++j) {
                     IafEntityUtil.drop(boat, new ItemStack(Items.STICK));
@@ -850,7 +850,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
     }
 
     @Override
-    public boolean killedEntity(@NotNull ServerLevel world, @NotNull LivingEntity entity) {
+    public boolean killedEntity(@NotNull ServerLevel world, @NotNull LivingEntity entity, @NotNull net.minecraft.world.damagesource.DamageSource damageSource) {
         this.attackDecision = this.getRandom().nextBoolean();
         return attackDecision;
     }

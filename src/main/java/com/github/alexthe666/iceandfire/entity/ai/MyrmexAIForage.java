@@ -186,7 +186,7 @@ public class MyrmexAIForage extends Goal {
         BlockPos.betweenClosedStream(this.myrmex.blockPosition().offset(-RADIUS, -RADIUS / 2, -RADIUS),
             this.myrmex.blockPosition().offset(RADIUS, RADIUS / 2, RADIUS)).map(BlockPos::immutable).forEach(pos -> {
             if (!NeoForge.EVENT_BUS
-                .post(new GenericGriefEvent(this.myrmex, pos.getX(), pos.getY(), pos.getZ()))) {
+                .post(new GenericGriefEvent(this.myrmex, pos.getX(), pos.getY(), pos.getZ())).isCanceled()) {
                 if (EntityMyrmexBase.isEdibleBlock(this.myrmex.level().getBlockState(pos))) {
                     allBlocks.add(pos);
                     this.myrmex.keepSearching = false;

@@ -55,7 +55,6 @@ import javax.annotation.Nullable;
 
 public class EntityDreadKnight extends EntityDreadMob implements IAnimatedEntity, IVillagerFear, IAnimalFear {
 
-    public static final ItemStack SHIELD = generateShield();
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(EntityDreadKnight.class, EntityDataSerializers.INT);
     public static Animation ANIMATION_SPAWN = Animation.create(40);
     private int animationTick;
@@ -65,10 +64,11 @@ public class EntityDreadKnight extends EntityDreadMob implements IAnimatedEntity
         super(type, worldIn);
     }
 
-    private static ItemStack generateShield() {
+    private static ItemStack generateShield(net.minecraft.core.HolderLookup.Provider registries) {
+        net.minecraft.core.HolderLookup.RegistryLookup<net.minecraft.world.level.block.entity.BannerPattern> lookup = registries.lookupOrThrow(net.minecraft.core.registries.Registries.BANNER_PATTERN);
         BannerPatternLayers patterns = new BannerPatternLayers.Builder()
-            .add(BuiltInRegistries.BANNER_PATTERN.getHolderOrThrow(BannerPatterns.BASE), DyeColor.CYAN)
-            .add(BuiltInRegistries.BANNER_PATTERN.getHolderOrThrow(IafBannerPatterns.PATTERN_DREAD.getKey()), DyeColor.WHITE)
+            .add(lookup.getOrThrow(BannerPatterns.BASE), DyeColor.CYAN)
+            .add(lookup.getOrThrow(IafBannerPatterns.PATTERN_DREAD), DyeColor.WHITE)
             .build();
         ItemStack shield = new ItemStack(Items.SHIELD, 1);
         shield.set(DataComponents.BANNER_PATTERNS, patterns);
@@ -139,7 +139,7 @@ public class EntityDreadKnight extends EntityDreadMob implements IAnimatedEntity
         super.populateDefaultEquipmentSlots(pRandom, pDifficulty);
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(IafItemRegistry.DREAD_KNIGHT_SWORD.get()));
         if (random.nextBoolean()) {
-            this.setItemSlot(EquipmentSlot.OFFHAND, SHIELD.copy());
+            this.setItemSlot(EquipmentSlot.OFFHAND, generateShield(this.registryAccess()));
         }
         setArmorVariant(random.nextInt(3));
     }

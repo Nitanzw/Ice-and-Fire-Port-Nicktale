@@ -79,7 +79,7 @@ public interface DragonSteelOverrides<T extends Item> {
             if (!attacker.level().isClientSide() && createLightning) {
                 LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(target.level(), EntitySpawnReason.EVENT);
                 if (bolt != null) {
-                    bolt.setCause(attacker instanceof Player player ? player : null);
+                    bolt.setCause(attacker instanceof net.minecraft.server.level.ServerPlayer player ? player : null);
                     bolt.setPos(target.position());
                     target.level().addFreshEntity(bolt);
                 }

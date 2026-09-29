@@ -87,7 +87,6 @@ public class IceAndFire {
         IafWorldRegistry.FEATURES.register(modBus);
         IafLootRegistry.LOOT_FUNCTIONS.register(modBus);
         IafRecipeRegistry.RECIPE_TYPE.register(modBus);
-        IafBannerPatterns.BANNERS.register(modBus);
         IafStructureTypes.STRUCTURE_TYPES.register(modBus);
         IafContainerRegistry.CONTAINERS.register(modBus);
         IafRecipeRegistry.RECIPE_SERIALIZER.register(modBus);
