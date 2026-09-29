@@ -3,7 +3,7 @@ package com.github.alexthe666.iceandfire.world.gen.processor;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import com.github.alexthe666.iceandfire.world.IafProcessors;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -19,10 +19,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class DreadRuinProcessor extends StructureProcessor {
+public class DreadRuinProcessor implements StructureProcessor {
 
     public static final DreadRuinProcessor INSTANCE = new DreadRuinProcessor();
-    public static final Codec<DreadRuinProcessor> CODEC = Codec.unit(() -> INSTANCE);
+    public static final MapCodec<DreadRuinProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
     public DreadRuinProcessor() {
     }
@@ -66,8 +66,8 @@ public class DreadRuinProcessor extends StructureProcessor {
     }
 
     @Override
-    protected @NotNull StructureProcessorType getType() {
-        return IafProcessors.DREADRUINPROCESSOR.get();
+    public @NotNull MapCodec<? extends StructureProcessor> codec() {
+        return CODEC;
     }
 
     private EntityType getRandomMobForMobSpawner(RandomSource random) {

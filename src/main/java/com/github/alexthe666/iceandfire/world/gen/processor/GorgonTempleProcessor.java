@@ -1,7 +1,7 @@
 package com.github.alexthe666.iceandfire.world.gen.processor;
 
 import com.github.alexthe666.iceandfire.world.IafProcessors;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.ChunkPos;
@@ -16,10 +16,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class GorgonTempleProcessor extends StructureProcessor {
+public class GorgonTempleProcessor implements StructureProcessor {
 
     public static final GorgonTempleProcessor INSTANCE = new GorgonTempleProcessor();
-    public static final Codec<GorgonTempleProcessor> CODEC = Codec.unit(() -> INSTANCE);
+    public static final MapCodec<GorgonTempleProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
     public GorgonTempleProcessor() {
     }
@@ -33,7 +33,7 @@ public class GorgonTempleProcessor extends StructureProcessor {
         if (infoIn2.state().getBlock() instanceof SimpleWaterloggedBlock) {
             if (worldReader.getFluidState(infoIn2.pos()).is(FluidTags.WATER)) {
                 ChunkPos currentChunk = ChunkPos.containing(infoIn2.pos());
-                worldReader.getChunk(currentChunk.x, currentChunk.z).setBlockState(infoIn2.pos(), Blocks.AIR.defaultBlockState(), false);
+                worldReader.getChunk(currentChunk.x(), currentChunk.z()).setBlockState(infoIn2.pos(), Blocks.AIR.defaultBlockState(), 0);
             }
         }
 
@@ -41,7 +41,7 @@ public class GorgonTempleProcessor extends StructureProcessor {
     }
 
     @Override
-    protected @NotNull StructureProcessorType getType() {
-        return IafProcessors.GORGONTEMPLEPROCESSOR.get();
+    public @NotNull MapCodec<? extends StructureProcessor> codec() {
+        return CODEC;
     }
 }

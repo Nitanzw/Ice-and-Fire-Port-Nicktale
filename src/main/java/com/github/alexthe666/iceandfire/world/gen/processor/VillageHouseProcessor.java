@@ -1,7 +1,7 @@
 package com.github.alexthe666.iceandfire.world.gen.processor;
 
 import com.github.alexthe666.iceandfire.world.IafProcessors;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
@@ -16,11 +16,11 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class VillageHouseProcessor extends StructureProcessor {
+public class VillageHouseProcessor implements StructureProcessor {
 
     public static final Identifier LOOT = Identifier.fromNamespaceAndPath("iceandfire", "chest/village_scribe");
     public static final VillageHouseProcessor INSTANCE = new VillageHouseProcessor();
-    public static final Codec<VillageHouseProcessor> CODEC = Codec.unit(() -> INSTANCE);
+    public static final MapCodec<VillageHouseProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
     public VillageHouseProcessor() {
     }
@@ -39,8 +39,8 @@ public class VillageHouseProcessor extends StructureProcessor {
 
 
     @Override
-    protected @NotNull StructureProcessorType getType() {
-        return IafProcessors.VILLAGEHOUSEPROCESSOR.get();
+    public @NotNull MapCodec<? extends StructureProcessor> codec() {
+        return CODEC;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.github.alexthe666.iceandfire.world.gen.processor;
 
 import com.github.alexthe666.iceandfire.world.IafProcessors;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
@@ -15,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class GraveyardProcessor extends StructureProcessor {
+public class GraveyardProcessor implements StructureProcessor {
 
     private final float integrity = 1.0F;
     public static final GraveyardProcessor INSTANCE = new GraveyardProcessor();
-    public static final Codec<GraveyardProcessor> CODEC = Codec.unit(() -> INSTANCE);
+    public static final MapCodec<GraveyardProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
     public GraveyardProcessor() {
     }
@@ -62,8 +62,8 @@ public class GraveyardProcessor extends StructureProcessor {
 
 
     @Override
-    protected @NotNull StructureProcessorType getType() {
-        return IafProcessors.GRAVEYARDPROCESSOR.get();
+    public @NotNull MapCodec<? extends StructureProcessor> codec() {
+        return CODEC;
     }
 
 }

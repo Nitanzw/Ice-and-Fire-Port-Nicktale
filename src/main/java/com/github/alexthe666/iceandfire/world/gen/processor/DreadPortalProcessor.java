@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class DreadPortalProcessor extends StructureProcessor {
+public class DreadPortalProcessor implements StructureProcessor {
 
     private final float integrity = 1.0F;
 
@@ -52,8 +52,8 @@ public class DreadPortalProcessor extends StructureProcessor {
     }
 
     @Override
-    protected @NotNull StructureProcessorType getType() {
-        return StructureProcessorType.BLOCK_ROT;
+    public @NotNull com.mojang.serialization.MapCodec<? extends StructureProcessor> codec() {
+        return net.minecraft.world.level.levelgen.structure.templatesystem.BlockRotProcessor.CODEC;
     }
 
 }

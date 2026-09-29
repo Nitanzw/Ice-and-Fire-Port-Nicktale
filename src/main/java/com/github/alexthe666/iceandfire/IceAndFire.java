@@ -85,6 +85,7 @@ public class IceAndFire {
         IafTileEntityRegistry.TYPES.register(modBus);
         IafPlacementFilterRegistry.PLACEMENT_MODIFIER_TYPES.register(modBus);
         IafWorldRegistry.FEATURES.register(modBus);
+        IafLootRegistry.LOOT_FUNCTIONS.register(modBus);
         IafRecipeRegistry.RECIPE_TYPE.register(modBus);
         IafBannerPatterns.BANNERS.register(modBus);
         IafStructureTypes.STRUCTURE_TYPES.register(modBus);
@@ -150,7 +151,6 @@ public class IceAndFire {
     private static void setup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             PROXY.setup();
-            IafLootRegistry.init();
         });
     }
 
