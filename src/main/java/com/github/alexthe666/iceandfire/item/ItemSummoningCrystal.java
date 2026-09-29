@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -21,7 +22,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.world.ForgeChunkManager;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
+import net.neoforged.neoforge.common.world.chunk.TicketController;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -30,8 +34,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Mod.EventBusSubscriber(modid = IceAndFire.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ItemSummoningCrystal extends Item {
+    private static final TicketController SUMMONING_TICKETS = new TicketController(
+        Identifier.fromNamespaceAndPath(IceAndFire.MODID, "summoning_crystal"));
+
     public static Map<UUID, ItemSummoningCrystal> DELAYED_SUMMONS = new HashMap<>();
+
+    @SubscribeEvent
+    public static void registerTicketController(RegisterTicketControllersEvent event) {
+        event.register(SUMMONING_TICKETS);
+    }
 
     private UUID dragonUuid;
     private BlockPos dragonTargetPosition;
@@ -167,7 +180,7 @@ public class ItemSummoningCrystal extends Item {
         IceAndFire.LOGGER.info("Dragon entity not loaded, loading chunk {}", pos);
 
         // try to load the chunk, and mark the entity to be summoned as soon as it gets added to the world
-        if (ForgeChunkManager.forceChunk(serverWorld, IceAndFire.MODID, this.summoningPlayer, pos.x, pos.z, true, false)) {
+        if (SUMMONING_TICKETS.forceChunk(serverWorld, this.summoningPlayer, pos.x, pos.z, true, false)) {
             this.summoningTime = serverWorld.getGameTime();
             DELAYED_SUMMONS.put(this.dragonUuid, this);
         } else {
@@ -216,7 +229,7 @@ public class ItemSummoningCrystal extends Item {
             }
         }
 
-        ForgeChunkManager.forceChunk(this.serverWorld, IceAndFire.MODID, this.summoningPlayer, pos.x, pos.z, false, false);
+        SUMMONING_TICKETS.forceChunk(this.serverWorld, this.summoningPlayer, pos.x, pos.z, false, false);
 
         this.dragonUuid = null;
         this.summoningPlayer = null;
