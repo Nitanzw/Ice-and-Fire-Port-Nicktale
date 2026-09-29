@@ -27,10 +27,15 @@ public class ItemMyrmexStaff extends Item {
     @Override
     public void onCraftedBy(ItemStack itemStack, @NotNull Player player) {
         super.onCraftedBy(itemStack, player);
+        initializeHiveData(itemStack);
     }
 
     @Override
     public void inventoryTick(ItemStack stack, @NotNull net.minecraft.server.level.ServerLevel world, @NotNull Entity entity, net.minecraft.world.entity.EquipmentSlot slot) {
+        initializeHiveData(stack);
+    }
+
+    private static void initializeHiveData(ItemStack stack) {
         if (!ItemStackData.contains(stack, "HiveUUID")) {
             ItemStackData.update(stack, tag -> tag.putUUID("HiveUUID", new UUID(0, 0)));
         }
@@ -63,10 +68,14 @@ public class ItemMyrmexStaff extends Item {
 
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
-        if (!context.getPlayer().isShiftKeyDown()) {
+        Player player = context.getPlayer();
+        if (player == null) {
+            return InteractionResult.PASS;
+        }
+        if (!player.isShiftKeyDown()) {
             return super.useOn(context);
         } else {
-            CompoundTag data = ItemStackData.get(context.getPlayer().getItemInHand(context.getHand()));
+            CompoundTag data = ItemStackData.get(player.getItemInHand(context.getHand()));
             if (data.hasUUID("HiveUUID")) {
                 UUID id = data.getUUID("HiveUUID");
                 if (!context.getLevel().isClientSide()) {
@@ -77,10 +86,10 @@ public class ItemMyrmexStaff extends Item {
                         IceAndFire.sendMSGToAll(new MessageSetMyrmexHiveNull());
                     }
                 } else if (id != null && !id.equals(new UUID(0, 0))) {
-                    IceAndFire.PROXY.openMyrmexAddRoomGui(context.getPlayer().getItemInHand(context.getHand()), context.getClickedPos(), context.getPlayer().getDirection());
+                    IceAndFire.PROXY.openMyrmexAddRoomGui(player.getItemInHand(context.getHand()), context.getClickedPos(), player.getDirection());
                 }
             }
-            context.getPlayer().swing(context.getHand());
+            player.swing(context.getHand());
             return InteractionResult.SUCCESS;
         }
     }

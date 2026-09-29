@@ -9,11 +9,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -32,15 +32,10 @@ public class ItemGhostSword extends Item {
             return;
         if (playerEntity.getItemInHand(InteractionHand.MAIN_HAND) != stack)
             return;
-        final ItemAttributeModifiers modifiers = stack.getAttributeModifiers();
-        double[] totalDmg = {0D};
-        modifiers.forEach(EquipmentSlotGroup.MAINHAND, (attribute, modifier, display) -> {
-            if (attribute == Attributes.ATTACK_DAMAGE) {
-                totalDmg[0] += modifier.amount();
-            }
-        });
+        final ItemAttributeModifiers modifiers = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+        double totalDmg = modifiers.compute(Attributes.ATTACK_DAMAGE, 0.0D, EquipmentSlot.MAINHAND);
         playerEntity.playSound(SoundEvents.ZOMBIE_INFECT, 1, 1);
-        EntityGhostSword shot = new EntityGhostSword(IafEntityRegistry.GHOST_SWORD.get(), playerEntity.level(), playerEntity, totalDmg[0] * 0.5F);
+        EntityGhostSword shot = new EntityGhostSword(IafEntityRegistry.GHOST_SWORD.get(), playerEntity.level(), playerEntity, (float) (totalDmg * 0.5D));
         shot.shootFromRotation(playerEntity, playerEntity.getXRot(), playerEntity.getYRot(), 0.0F, 1, 0.5f);
         playerEntity.level().addFreshEntity(shot);
         stack.hurtAndBreak(1, playerEntity, EquipmentSlot.MAINHAND);

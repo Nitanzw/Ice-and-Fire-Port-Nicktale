@@ -4,8 +4,8 @@ package com.github.alexthe666.iceandfire.item;
 import com.nicktale.api.server.item.CustomArmorMaterial;
 import com.nicktale.api.server.item.CustomToolMaterial;
 import com.github.alexthe666.iceandfire.IafConfig;
-import net.minecraft.core.HolderSet;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ToolMaterial;
@@ -91,11 +91,12 @@ public final class ItemProperties {
 
     /**
      * 26.2 replaced Tier with a value record. The custom repair Ingredient is installed independently as a delayed
-     * REPAIRABLE component; the record's repair set is empty to avoid freezing it before registry setup.
+     * REPAIRABLE component; the record uses a vanilla placeholder because its repair set is represented by a tag,
+     * while our custom repair Ingredient is only available after registry setup.
      */
     public static ToolMaterial toVanillaToolMaterial(CustomToolMaterial material) {
         return new ToolMaterial(incorrectBlocksFor(material), material.getUses(), material.getSpeed(),
-            material.getAttackDamageBonus(), material.getEnchantmentValue(), HolderSet.empty());
+            material.getAttackDamageBonus(), material.getEnchantmentValue(), ItemTags.REPAIRS_IRON_ARMOR);
     }
 
     private static TagKey<Block> incorrectBlocksForLevel(int level) {
