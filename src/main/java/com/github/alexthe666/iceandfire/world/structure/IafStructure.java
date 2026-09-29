@@ -1,6 +1,6 @@
 package com.github.alexthe666.iceandfire.world.structure;
 
-import com.github.alexthe666.citadel.config.biome.SpawnBiomeData;
+import com.nicktale.api.config.biome.SpawnBiomeData;
 import com.github.alexthe666.iceandfire.config.BiomeConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -11,7 +11,6 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
 import java.util.Optional;
@@ -40,10 +39,6 @@ public class IafStructure extends Structure {
         this.startHeight = startHeight;
         this.projectStartToHeightmap = projectStartToHeightmap;
         this.maxDistanceFromCenter = maxDistanceFromCenter;
-    }
-
-    protected boolean isBiomeValid(GenerationContext pContext, Pair<String, SpawnBiomeData> validBiomes, BlockPos blockPos) {
-        return isBiomeValid(pContext, validBiomes, blockPos);
     }
 
     protected boolean isBiomeValid(GenerationContext pContext, Map.Entry<String, SpawnBiomeData> validBiomes, BlockPos blockPos) {

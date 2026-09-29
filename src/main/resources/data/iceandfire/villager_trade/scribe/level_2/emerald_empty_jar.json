@@ -1,0 +1,12 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 2
+  },
+  "gives": {
+    "id": "iceandfire:jar_empty",
+    "count": 1
+  },
+  "max_uses": 3,
+  "xp": 4
+}
