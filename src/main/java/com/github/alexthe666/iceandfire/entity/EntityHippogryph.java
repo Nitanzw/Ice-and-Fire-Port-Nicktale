@@ -274,7 +274,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
         String s = ChatFormatting.stripFormatting(player.getName().getString());
         boolean isDev = s.equals("Alexthe666") || s.equals("Raptorfarian") || s.equals("tweakbsd");
         if (this.isTame() && this.isOwnedBy(player)) {
-            if (itemstack.getItem() == Items.RED_DYE && this.getEnumVariant() != EnumHippogryphTypes.ALEX && isDev) {
+            if (itemstack.getItem() == Items.DYE.red() && this.getEnumVariant() != EnumHippogryphTypes.ALEX && isDev) {
                 this.setEnumVariant(EnumHippogryphTypes.ALEX);
                 if (!player.isCreative()) {
                     itemstack.shrink(1);
@@ -285,7 +285,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
                 }
                 return InteractionResult.SUCCESS;
             }
-            if (itemstack.getItem() == Items.LIGHT_GRAY_DYE && this.getEnumVariant() != EnumHippogryphTypes.RAPTOR && isDev) {
+            if (itemstack.getItem() == Items.DYE.lightGray() && this.getEnumVariant() != EnumHippogryphTypes.RAPTOR && isDev) {
                 this.setEnumVariant(EnumHippogryphTypes.RAPTOR);
                 if (!player.isCreative()) {
                     itemstack.shrink(1);
@@ -337,7 +337,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
                 }
                 return InteractionResult.SUCCESS;
             }
-            if (itemstack.getItem().isEdible() && itemstack.getItem().getFoodProperties() != null && itemstack.getItem().getFoodProperties().isMeat() && this.getHealth() < this.getMaxHealth()) {
+            if (itemstack.is(net.minecraft.tags.ItemTags.MEAT) && this.getHealth() < this.getMaxHealth()) {
                 this.heal(5);
                 this.playSound(SoundEvents.GENERIC_EAT.value(), 1, 1);
                 for (int i = 0; i < 3; i++) {
@@ -353,7 +353,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
                     this.openGUI(player);
                     return InteractionResult.SUCCESS;
                 } else if (this.isSaddled() && !this.isBaby() && !player.isPassenger()) {
-                    player.startRiding(this, true);
+                    player.startRiding(this);
                     return InteractionResult.SUCCESS;
                 }
             }

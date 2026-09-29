@@ -56,10 +56,10 @@ public class ItemStoneStatue extends Item {
             if (ItemStackData.has(stack)) {
                 CompoundTag data = ItemStackData.get(stack);
                 String id = data.getStringOr("IAFStoneStatueEntityID", "");
-                CompoundTag statueNBT = data.getCompound("IAFStoneStatueNBT");
+                CompoundTag statueNBT = data.getCompoundOrEmpty("IAFStoneStatueNBT");
                 EntityStoneStatue statue = new EntityStoneStatue(IafEntityRegistry.STONE_STATUE.get(),
                     context.getLevel());
-                statue.readAdditionalSaveData(statueNBT);
+                statue.readAdditionalSaveData(com.github.alexthe666.iceandfire.entity.util.EntityDataIO.input(context.getLevel().registryAccess(), statueNBT));
                 statue.setTrappedEntityTypeString(id);
                 double d1 = context.getPlayer().getX() - (context.getClickedPos().getX() + 0.5);
                 double d2 = context.getPlayer().getZ() - (context.getClickedPos().getZ() + 0.5);
@@ -72,7 +72,7 @@ public class ItemStoneStatue extends Item {
                 statue.snapTo(context.getClickedPos().getX() + 0.5, context.getClickedPos().getY() + 1, context.getClickedPos().getZ() + 0.5, yaw, 0);
                 if (!context.getLevel().isClientSide()) {
                     context.getLevel().addFreshEntity(statue);
-                    statue.readAdditionalSaveData(data);
+                    statue.readAdditionalSaveData(com.github.alexthe666.iceandfire.entity.util.EntityDataIO.input(context.getLevel().registryAccess(), data));
                 }
                 statue.setCrackAmount(0);
 

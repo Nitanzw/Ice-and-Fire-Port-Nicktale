@@ -84,7 +84,7 @@ public abstract class EntityMutlipartPart extends Entity {
 
     @Override
     public @NotNull EntityDimensions getDimensions(@NotNull Pose poseIn) {
-        return new EntityDimensions(getScaleX(), getScaleY(), false);
+        return EntityDimensions.scalable(getScaleX(), getScaleY());
     }
 
     @Override
@@ -249,12 +249,12 @@ public abstract class EntityMutlipartPart extends Entity {
     }
 
     @Override
-    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull net.minecraft.world.phys.Vec3 location) {
         Entity parent = getParent();
         if (level().isClientSide() && parent != null) {
             IceAndFire.NETWORK_WRAPPER.sendToServer(new MessageMultipartInteract(parent.getId(), 0));
         }
-        return parent != null ? parent.interact(player, hand) : InteractionResult.PASS;
+        return parent != null ? parent.interact(player, hand, location) : InteractionResult.PASS;
     }
 
     @Override
@@ -266,12 +266,11 @@ public abstract class EntityMutlipartPart extends Entity {
         return parent != null && IafDamage.hurt(parent, source, damage * this.damageMultiplier);
     }
 
-    @Override
     public boolean isInvulnerableTo(ServerLevel level, @NotNull DamageSource source) {
-        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.FALLING_BLOCK) || source.is(DamageTypes.LAVA) || source.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo(level, source);
+        return source.is(DamageTypes.FALL) || source.is(DamageTypes.DROWN) || source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.FALLING_BLOCK) || source.is(DamageTypes.LAVA) || source.is(DamageTypeTags.IS_FIRE) || isInvulnerableToBase(source);
     }
 
     public boolean shouldContinuePersisting() {
-        return isAddedToWorld() || this.isRemoved();
+        return !this.isRemoved();
     }
 }

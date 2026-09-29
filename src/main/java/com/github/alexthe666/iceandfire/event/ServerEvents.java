@@ -131,7 +131,7 @@ public class ServerEvents {
     }
 
     private static boolean isInEntityTag(Identifier loc, EntityType<?> type) {
-        return type.is(net.minecraft.tags.TagKey.create(Registries.ENTITY_TYPE, loc));
+        return type.builtInRegistryHolder().is(net.minecraft.tags.TagKey.create(Registries.ENTITY_TYPE, loc));
     }
 
     public static boolean isLivestock(Entity entity) {
@@ -200,8 +200,8 @@ public class ServerEvents {
     @SubscribeEvent
     public static void addNewVillageBuilding(final ServerAboutToStartEvent event) {
         if (IafConfig.villagerHouseWeight > 0) {
-            Registry<StructureTemplatePool> templatePoolRegistry = event.getServer().registryAccess().registry(Registries.TEMPLATE_POOL).orElseThrow();
-            Registry<StructureProcessorList> processorListRegistry = event.getServer().registryAccess().registry(Registries.PROCESSOR_LIST).orElseThrow();
+            net.minecraft.core.HolderLookup.RegistryLookup<StructureTemplatePool> templatePoolRegistry = event.getServer().registryAccess().lookupOrThrow(Registries.TEMPLATE_POOL);
+            net.minecraft.core.HolderLookup.RegistryLookup<StructureProcessorList> processorListRegistry = event.getServer().registryAccess().lookupOrThrow(Registries.PROCESSOR_LIST);
             for (String type : VILLAGE_TYPES) {
                 IafVillagerRegistry.addBuildingToPool(templatePoolRegistry, processorListRegistry, Identifier.parse("village/" + type + "/houses"), "iceandfire:village/" + type + "_scriber_1", IafConfig.villagerHouseWeight);
             }
@@ -374,30 +374,30 @@ public class ServerEvents {
                 ItemStack stack = event.getEntity().getMainHandItem();
                 event.getTarget().playSound(SoundEvents.STONE_BREAK, 2, 0.5F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 0.5F);
 
-                if (stack.getItem().isCorrectToolForDrops(Blocks.STONE.defaultBlockState()) || stack.getItem().getDescriptionId().contains("pickaxe")) {
+                if (stack.isCorrectToolForDrops(Blocks.STONE.defaultBlockState()) || stack.getItem().getDescriptionId().contains("pickaxe")) {
                     event.setCanceled(true);
                     statue.setCrackAmount(statue.getCrackAmount() + 1);
 
                     if (statue.getCrackAmount() > 9) {
-                        CompoundTag writtenTag = new CompoundTag();
-                        event.getTarget().saveWithoutId(writtenTag);
+                        CompoundTag writtenTag = com.github.alexthe666.iceandfire.entity.util.EntityDataIO.saveWithoutId(event.getTarget());
                         event.getTarget().playSound(SoundEvents.STONE_BREAK, 2, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 0.5F);
                         event.getTarget().remove(Entity.RemovalReason.KILLED);
 
-                        if (stack.getEnchantmentLevel(Enchantments.SILK_TOUCH) > 0) {
+                        if (com.github.alexthe666.iceandfire.util.EnchantUtil.getLevel(statue.level().registryAccess(), Enchantments.SILK_TOUCH, stack) > 0) {
                             ItemStack statuette = new ItemStack(IafItemRegistry.STONE_STATUE.get());
-                            CompoundTag tag = statuette.getOrCreateTag();
+                            CompoundTag tag = new CompoundTag();
                             tag.putBoolean("IAFStoneStatuePlayerEntity", statue.getTrappedEntityTypeString().equalsIgnoreCase("minecraft:player"));
                             tag.putString("IAFStoneStatueEntityID", statue.getTrappedEntityTypeString());
                             tag.put("IAFStoneStatueNBT", writtenTag);
-                            statue.addAdditionalSaveData(tag);
+                            tag.merge(com.github.alexthe666.iceandfire.entity.util.EntityDataIO.saveAdditional(statue, statue::addAdditionalSaveData));
+                            com.github.alexthe666.iceandfire.item.ItemStackData.set(statuette, tag);
 
                             if (!statue.level().isClientSide()) {
                                 IafEntityUtil.drop(statue, statuette, 1);
                             }
                         } else {
                             if (!statue.level().isClientSide()) {
-                                IafEntityUtil.drop(statue, Blocks.COBBLESTONE.asItem(), 2 + event.getEntity().getRandom().nextInt(4));
+                                IafEntityUtil.drop(statue, new ItemStack(Blocks.COBBLESTONE.asItem(), 2 + event.getEntity().getRandom().nextInt(4)));
                             }
                         }
 
@@ -446,7 +446,7 @@ public class ServerEvents {
                     EntityGhost ghost = IafEntityRegistry.GHOST.get().create(world, EntitySpawnReason.EVENT);
                     ghost.copyPosition(event.getEntity());
                     if (!world.isClientSide()) {
-                        ghost.finalizeSpawn((ServerLevelAccessor) world, IafEntityUtil.difficulty(world, event.getEntity().blockPosition()), EntitySpawnReason.SPAWNER, null, null);
+                        ghost.finalizeSpawn((ServerLevelAccessor) world, IafEntityUtil.difficulty(world, event.getEntity().blockPosition()), EntitySpawnReason.SPAWNER, null);
                         world.addFreshEntity(ghost);
                     }
                     ghost.setDaytimeMode(true);
@@ -492,7 +492,7 @@ public class ServerEvents {
                     data.chainData.removeChain(event.getEntity());
 
                     if (!event.getLevel().isClientSide()) {
-                        IafEntityUtil.drop(event.getTarget(), IafItemRegistry.CHAIN.get(), 1);
+                        IafEntityUtil.drop(event.getTarget(), new ItemStack(IafItemRegistry.CHAIN.get(), 1));
                     }
 
                     event.setCanceled(true);
@@ -553,7 +553,7 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public void onBreakBlock(BlockEvent.BreakEvent event) {
+    public void onBreakBlock(net.neoforged.neoforge.event.level.block.BreakBlockEvent event) {
         if (event.getPlayer() != null && (event.getState().getBlock() instanceof AbstractChestBlock || event.getState().getBlock() == IafBlockRegistry.GOLD_PILE.get() || event.getState().getBlock() == IafBlockRegistry.SILVER_PILE.get() || event.getState().getBlock() == IafBlockRegistry.COPPER_PILE.get())) {
             final float dist = IafConfig.dragonGoldSearchLength;
             List<Entity> list = event.getLevel().getEntities(event.getPlayer(), event.getPlayer().getBoundingBox().inflate(dist, dist, dist));

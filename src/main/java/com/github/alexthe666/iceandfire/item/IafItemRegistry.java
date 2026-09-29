@@ -357,7 +357,7 @@ public class IafItemRegistry {
     }
 
     private static DeferredItem<Item> registerEgg(String name, Supplier<? extends net.minecraft.world.entity.EntityType<?>> entityType) {
-        return registerItem(name, properties -> new SpawnEggItem(properties.spawnEgg(entityType.get())));
+        return registerItemProps(name, properties -> new SpawnEggItem(properties.spawnEgg(entityType.get())), true);
     }
 
     public static Item.Properties defaultBuilder() {
@@ -475,7 +475,7 @@ public class IafItemRegistry {
         DRAGONSTEEL_TIER_FIRE.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGONSTEEL_FIRE_INGOT.get()));
         DRAGONSTEEL_TIER_ICE.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGONSTEEL_ICE_INGOT.get()));
         DRAGONSTEEL_TIER_LIGHTNING.setRepairMaterial(Ingredient.of(IafItemRegistry.DRAGONSTEEL_LIGHTNING_INGOT.get()));
-        IafItemRegistry.SHEEP_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(Items.WHITE_WOOL));
+        IafItemRegistry.SHEEP_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(Items.WOOL.white()));
         IafItemRegistry.EARPLUGS_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(Blocks.OAK_BUTTON));
         IafItemRegistry.DEATHWORM_0_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DEATH_WORM_CHITIN_YELLOW.get()));
         IafItemRegistry.DEATHWORM_1_ARMOR_MATERIAL.setRepairMaterial(Ingredient.of(IafItemRegistry.DEATH_WORM_CHITIN_RED.get()));

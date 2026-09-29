@@ -66,14 +66,13 @@ public class EntityChainTie extends HangingEntity {
     }
 
     @Override
-    protected void recalculateBoundingBox() {
-        this.setPosRaw(this.pos.getX() + 0.5D, this.pos.getY() + 0.5D,
-            this.pos.getZ() + 0.5D);
+    protected @NotNull AABB calculateBoundingBox(@NotNull BlockPos blockPos, @NotNull net.minecraft.core.Direction direction) {
+        double x = blockPos.getX() + 0.5D;
+        double y = blockPos.getY() + 0.5D;
+        double z = blockPos.getZ() + 0.5D;
         double xSize = 0.3D;
         double ySize = 0.875D;
-        double zSize = xSize;
-        this.setBoundingBox(new AABB(this.getX() - xSize, this.getY() - 0.5, this.getZ() - zSize,
-            this.getX() + xSize, this.getY() + ySize - 0.5, this.getZ() + zSize));
+        return new AABB(x - xSize, y - 0.5, z - xSize, x + xSize, y + ySize - 0.5, z + xSize);
     }
 
     @Override
@@ -82,16 +81,6 @@ public class EntityChainTie extends HangingEntity {
             return super.hurtServer(level, source, amount);
         }
         return false;
-    }
-
-    @Override
-    public int getWidth() {
-        return 9;
-    }
-
-    @Override
-    public int getHeight() {
-        return 9;
     }
 
     @Override
@@ -117,18 +106,13 @@ public class EntityChainTie extends HangingEntity {
     }
 
     @Override
-    protected float getEyeHeight(@NotNull Pose poseIn, @NotNull EntityDimensions sizeIn) {
-        return -0.0625F;
-    }
-
-    @Override
     public boolean shouldRenderAtSqrDistance(double distance) {
         return distance < 1024.0D;
     }
 
     @Override
-    public void dropItem(@Nullable Entity brokenEntity) {
-        this.playSound(SoundEvents.ARMOR_EQUIP_CHAIN, 1.0F, 1.0F);
+    public void dropItem(@NotNull ServerLevel level, @Nullable Entity brokenEntity) {
+        this.playSound(SoundEvents.ARMOR_EQUIP_CHAIN.value(), 1.0F, 1.0F);
     }
 
     @Override
@@ -151,7 +135,7 @@ public class EntityChainTie extends HangingEntity {
     }
 
     @Override
-    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull net.minecraft.world.phys.Vec3 location) {
         if (this.level().isClientSide()) {
             return InteractionResult.SUCCESS;
         } else {
@@ -178,13 +162,13 @@ public class EntityChainTie extends HangingEntity {
         }
     }
 
-@Override
+    @Override
     public boolean survives() {
         return this.level().getBlockState(this.pos).getBlock() instanceof WallBlock;
     }
 
     @Override
     public void playPlacementSound() {
-        this.playSound(SoundEvents.ARMOR_EQUIP_CHAIN, 1.0F, 1.0F);
+        this.playSound(SoundEvents.ARMOR_EQUIP_CHAIN.value(), 1.0F, 1.0F);
     }
 }

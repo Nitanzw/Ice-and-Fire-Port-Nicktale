@@ -52,7 +52,7 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
         CompoundTag entityTag = new CompoundTag();
         try {
             if (!(parent instanceof Player)) {
-                parent.saveWithoutId(entityTag);
+                entityTag = com.github.alexthe666.iceandfire.entity.util.EntityDataIO.saveWithoutId(parent);
             }
         } catch (Exception e) {
             IceAndFire.LOGGER.debug("Encountered issue creating stone statue from {}", parent);
@@ -146,7 +146,6 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
         output.store(tag);
     }
 
-    @Override
     @Override
     public void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
