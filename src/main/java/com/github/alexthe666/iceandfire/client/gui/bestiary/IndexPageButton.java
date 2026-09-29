@@ -1,15 +1,15 @@
 package com.github.alexthe666.iceandfire.client.gui.bestiary;
 
+import com.github.alexthe666.iceandfire.client.gui.GuiDrawUtils;
+
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 
 public class IndexPageButton extends Button {
 
@@ -21,17 +21,14 @@ public class IndexPageButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics pGuiGraphics, int mouseX, int mouseY, float partial) {
+    protected void extractContents(GuiGraphicsExtractor pGuiGraphicsExtractor, int mouseX, int mouseY, float partial) {
         if (this.active) {
-            pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-            RenderSystem.enableBlend();
-            RenderSystem.enableDepthTest();
             Font font = IafConfig.useVanillaFont ? Minecraft.getInstance().font : (Font) IceAndFire.PROXY.getFontRenderer();
             boolean flag = isHoveredOrFocused();
-            pGuiGraphics.blit(Identifier.parse("iceandfire:textures/gui/bestiary/widgets.png"), this.getX(), this.getY(), 0, flag ? 32 : 0, this.width, this.height);
-            pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-            int i = getFGColor();
-            this.renderString(pGuiGraphics, font, i | Mth.ceil(this.alpha * 255.0F) << 24);
+            GuiDrawUtils.blit(pGuiGraphicsExtractor, Identifier.parse("iceandfire:textures/gui/bestiary/widgets.png"), this.getX(), this.getY(), 0, flag ? 32 : 0, this.width, this.height);
+            int color = getFGColor() & 0x00FFFFFF | (Math.round(this.alpha * 255.0F) << 24);
+            pGuiGraphicsExtractor.centeredText(font, this.getMessage(), this.getX() + this.width / 2,
+                this.getY() + (this.height - 9) / 2, color);
         }
     }
 }

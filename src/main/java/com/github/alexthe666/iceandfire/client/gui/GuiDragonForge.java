@@ -6,9 +6,7 @@ import com.github.alexthe666.iceandfire.entity.tile.TileEntityDragonforge;
 import com.github.alexthe666.iceandfire.inventory.ContainerDragonForge;
 import com.github.alexthe666.iceandfire.recipe.DragonForgeRecipe;
 import com.github.alexthe666.iceandfire.recipe.IafRecipeRegistry;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -17,70 +15,58 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GuiDragonForge extends AbstractContainerScreen<ContainerDragonForge> {
     private static final Identifier TEXTURE_FIRE = Identifier.parse("iceandfire:textures/gui/dragonforge_fire.png");
     private static final Identifier TEXTURE_ICE = Identifier.parse("iceandfire:textures/gui/dragonforge_ice.png");
     private static final Identifier TEXTURE_LIGHTNING = Identifier.parse("iceandfire:textures/gui/dragonforge_lightning.png");
-    private final ContainerDragonForge tileFurnace;
     private final int dragonType;
 
-    public GuiDragonForge(ContainerDragonForge container, Inventory inv, Component name) {
-        super(container, inv, name);
-        this.tileFurnace = container;
-        this.dragonType = tileFurnace.fireType;
+    public GuiDragonForge(ContainerDragonForge container, Inventory inventory, Component title) {
+        super(container, inventory, title, 176, 166);
+        this.dragonType = container.fireType;
     }
 
     @Override
-    protected void renderLabels(GuiGraphics pGuiGraphics, int mouseX, int mouseY) {
-        Font font = this.getMinecraft().font;
-        if (tileFurnace != null) {
-            String s = I18n.get("block.iceandfire.dragonforge_" + DragonType.getNameFromInt(dragonType) + "_core");
-            pGuiGraphics.drawString(this.font, s, this.imageWidth / 2 - font.width(s) / 2, 6, 4210752, false);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+        Identifier texture = switch (this.dragonType) {
+            case 0 -> TEXTURE_FIRE;
+            case 1 -> TEXTURE_ICE;
+            default -> TEXTURE_LIGHTNING;
+        };
+        GuiDrawUtils.blit(graphics, texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        int progress = this.getCookProgress(126);
+        if (progress > 0) {
+            GuiDrawUtils.blit(graphics, texture, this.leftPos + 12, this.topPos + 23, 0, 166, progress, 38);
         }
-        pGuiGraphics.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 4210752, false);
     }
 
     @Override
-    protected void renderBg(GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        Identifier texture = TEXTURE_FIRE;
-        if (dragonType == 0) {
-            texture = TEXTURE_FIRE;
-        } else if (dragonType == 1) {
-            texture = TEXTURE_ICE;
-        } else {
-            texture = TEXTURE_LIGHTNING;
-        }
-
-        int k = (this.width - this.imageWidth) / 2;
-        int l = (this.height - this.imageHeight) / 2;
-        pGuiGraphics.blit(texture, k, l, 0, 0, this.imageWidth, this.imageHeight);
-        int i1 = this.getCookTime(126);
-        pGuiGraphics.blit(texture, k + 12, l + 23, 0, 166, i1, 38);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        String title = I18n.get("block.iceandfire.dragonforge_" + DragonType.getNameFromInt(this.dragonType) + "_core");
+        graphics.text(this.font, title, this.imageWidth / 2 - this.font.width(title) / 2, 6, 4210752);
+        graphics.text(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 4210752);
     }
 
-    private int getCookTime(int p_175381_1_) {
-        BlockEntity te = IceAndFire.PROXY.getRefrencedTE();
-        int j = 0;
+    private int getCookProgress(int progressWidth) {
+        if (this.minecraft.level == null) {
+            return 0;
+        }
 
-        List<DragonForgeRecipe> recipes = this.getMinecraft().level.getRecipeManager()
+        BlockEntity blockEntity = IceAndFire.PROXY.getRefrencedTE();
+        if (!(blockEntity instanceof TileEntityDragonforge forge)) {
+            return 0;
+        }
+
+        List<DragonForgeRecipe> recipes = this.minecraft.level.getRecipeManager()
                 .getAllRecipesFor(IafRecipeRegistry.DRAGON_FORGE_TYPE.get())
-                .stream().filter(item ->
-                        item.isValidInput(tileFurnace.getSlot(0).getItem()) && item.isValidBlood(tileFurnace.getSlot(1).getItem())).collect(Collectors.toList());
-        int maxCookTime = recipes.isEmpty() ? 100 : recipes.get(0).getCookTime();
-        if (te instanceof TileEntityDragonforge) {
-            j = Math.min(((TileEntityDragonforge) te).cookTime, maxCookTime);
-        }
-        return j != 0 ? j * p_175381_1_ / maxCookTime : 0;
+                .stream()
+                .filter(recipe -> recipe.isValidInput(this.menu.getSlot(0).getItem())
+                        && recipe.isValidBlood(this.menu.getSlot(1).getItem()))
+                .toList();
+        int maxCookTime = recipes.isEmpty() ? 100 : Math.max(1, recipes.getFirst().getCookTime());
+        int cookTime = Math.min(forge.cookTime, maxCookTime);
+        return cookTime == 0 ? 0 : cookTime * progressWidth / maxCookTime;
     }
-
-    @Override
-    public void render(GuiGraphics pGuiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(pGuiGraphics);
-        super.render(pGuiGraphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(pGuiGraphics, mouseX, mouseY);
-    }
-
 }

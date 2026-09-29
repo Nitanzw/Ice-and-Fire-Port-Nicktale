@@ -7,10 +7,9 @@ import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.message.MessageGetMyrmexHive;
 import com.github.alexthe666.iceandfire.world.gen.WorldGenMyrmexHive;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
@@ -18,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -117,21 +115,18 @@ public class GuiMyrmexStaff extends Screen {
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics ms) {
-        super.renderBackground(ms);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    public void extractBackground(GuiGraphicsExtractor ms, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(ms, mouseX, mouseY, partialTicks);
         int i = (this.width - 248) / 2;
         int j = (this.height - 166) / 2;
-        ms.blit(jungle ? JUNGLE_TEXTURE : DESERT_TEXTURE, i, j, 0, 0, 248, 166);
+        GuiDrawUtils.blit(ms, jungle ? JUNGLE_TEXTURE : DESERT_TEXTURE, i, j, 0, 0, 248, 166);
     }
 
     @Override
-    public void render(@NotNull GuiGraphics ms, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(ms);
-        init();
+    public void extractRenderState(GuiGraphicsExtractor ms, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(ms, mouseX, mouseY, partialTicks);
         int i = (this.width - 248) / 2 + 10;
         int j = (this.height - 166) / 2 + 8;
-        super.render(ms, mouseX, mouseY, partialTicks);
         int color = this.jungle ? 0X35EA15 : 0XFFBF00;
         if (ticksSinceDeleted > 0) {
             ticksSinceDeleted--;
@@ -145,29 +140,29 @@ public class GuiMyrmexStaff extends Screen {
         if (ClientProxy.getReferedClientHive() != null) {
             if (!ClientProxy.getReferedClientHive().colonyName.isEmpty()) {
                 String title = I18n.get("myrmex.message.colony_named", ClientProxy.getReferedClientHive().colonyName);
-                this.getMinecraft().font.drawInBatch(title, i + 40 - title.length() / 2, j - 3, color, false, ms.pose().last().pose(), ms.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
+                ms.text(this.getMinecraft().font, title, i + 40 - title.length() / 2, j - 3, color, false);
             } else {
-                this.getMinecraft().font.drawInBatch(I18n.get("myrmex.message.colony"), i + 80, j - 3, color, false, ms.pose().last().pose(), ms.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
+                ms.text(this.getMinecraft().font, I18n.get("myrmex.message.colony"), i + 80, j - 3, color, false);
             }
             int opinion = ClientProxy.getReferedClientHive().getPlayerReputation(Minecraft.getInstance().player.getUUID());
-            this.getMinecraft().font.drawInBatch(I18n.get("myrmex.message.hive_opinion", opinion), i, j + 12, color, false, ms.pose().last().pose(), ms.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
-            this.getMinecraft().font.drawInBatch(I18n.get("myrmex.message.rooms"), i, j + 25, color, false, ms.pose().last().pose(), ms.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
+            ms.text(this.getMinecraft().font, I18n.get("myrmex.message.hive_opinion", opinion), i, j + 12, color, false);
+            ms.text(this.getMinecraft().font, I18n.get("myrmex.message.rooms"), i, j + 25, color, false);
             /*int hiveCount = 0;
             for (WorldGenMyrmexHive.RoomType type : ROOMS) {
                 List<BlockPos> roomPos = ClientProxy.getReferedClientHive().getRooms(type);
                 String name = type == WorldGenMyrmexHive.RoomType.FOOD ? "myrmex.message.room.food" : type == WorldGenMyrmexHive.RoomType.NURSERY ? "myrmex.message.room.nursery" : "myrmex.message.room.misc";
                 for (BlockPos pos : roomPos) {
                     hiveCount++;
-                    this.fontRenderer.drawString(I18n.format(name, pos.getX(), pos.getY(), pos.getZ()), i, j + 16 + hiveCount * 22, color, true);
+                    this.fontRenderer.text(I18n.format(name, pos.getX(), pos.getY(), pos.getZ()), i, j + 16 + hiveCount * 22, color, true);
                 }
             }
             for (BlockPos pos : ClientProxy.getReferedClientHive().getEntrances().keySet()) {
                 hiveCount++;
-                this.fontRenderer.drawString(I18n.format("myrmex.message.room.enterance_surface", pos.getX(), pos.getY(), pos.getZ()), i, j + 16 + hiveCount * 22, color, true);
+                this.fontRenderer.text(I18n.format("myrmex.message.room.enterance_surface", pos.getX(), pos.getY(), pos.getZ()), i, j + 16 + hiveCount * 22, color, true);
             }
             for (BlockPos pos : ClientProxy.getReferedClientHive().getEntranceBottoms().keySet()) {
                 hiveCount++;
-                this.fontRenderer.drawString(I18n.format("myrmex.message.room.enterance_bottom", pos.getX(), pos.getY(), pos.getZ()), i, j + 16 + hiveCount * 22, color, true);
+                this.fontRenderer.text(I18n.format("myrmex.message.room.enterance_bottom", pos.getX(), pos.getY(), pos.getZ()), i, j + 16 + hiveCount * 22, color, true);
             }*/
 
         }
@@ -181,9 +176,9 @@ public class GuiMyrmexStaff extends Screen {
     }
 
 
-    private void drawRoomInfo(GuiGraphics ms, String type, BlockPos pos, int i, int j, int color) {
+    private void drawRoomInfo(GuiGraphicsExtractor ms, String type, BlockPos pos, int i, int j, int color) {
         String translate = "myrmex.message.room." + type;
-        this.getMinecraft().font.drawInBatch(I18n.get(translate, pos.getX(), pos.getY(), pos.getZ()), i, j + 36 + hiveCount * 22, color, false, ms.pose().last().pose(), ms.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
+        ms.text(this.getMinecraft().font, I18n.get(translate, pos.getX(), pos.getY(), pos.getZ()), i, j + 36 + hiveCount * 22, color, false);
         hiveCount++;
     }
 

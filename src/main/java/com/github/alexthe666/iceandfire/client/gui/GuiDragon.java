@@ -4,72 +4,73 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.client.StatCollector;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import com.github.alexthe666.iceandfire.inventory.ContainerDragon;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
-import org.jetbrains.annotations.NotNull;
-import org.joml.Quaternionf;
 
 public class GuiDragon extends AbstractContainerScreen<ContainerDragon> {
-    private static final Identifier texture = Identifier.parse("iceandfire:textures/gui/dragon.png");
+    private static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/gui/dragon.png");
 
-    public GuiDragon(ContainerDragon dragonInv, Inventory playerInv, Component name) {
-        super(dragonInv, playerInv, name);
-        this.imageHeight = 214;
+    public GuiDragon(ContainerDragon menu, Inventory inventory, Component title) {
+        super(menu, inventory, title, 176, 214);
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+        GuiDrawUtils.blit(graphics, TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
-    }
-
-    @Override
-    public void render(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
-    }
-
-    @Override
-    protected void renderBg(@NotNull GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        int k = (this.width - this.imageWidth) / 2;
-        int l = (this.height - this.imageHeight) / 2;
-        matrixStack.blit(texture, k, l, 0, 0, this.imageWidth, this.imageHeight);
         Entity entity = IceAndFire.PROXY.getReferencedMob();
-        if (entity instanceof EntityDragonBase) {
-            EntityDragonBase dragon = (EntityDragonBase) entity;
-            float dragonScale = 1F / Math.max(0.0001F, dragon.getScale());
-            Quaternionf quaternionf = (new Quaternionf()).rotateY((float) Mth.lerp((float) mouseX / this.width, 0, Math.PI)).rotateZ((float) Mth.lerp((float) mouseY / this.width, Math.PI, Math.PI + 0.2));
-            InventoryScreen.renderEntityInInventory(matrixStack, k + 88, l + (int) (0.5F * (dragon.flyProgress)) + 55, (int) (dragonScale * 23F), quaternionf, null, dragon);
-        }
-        if (entity instanceof EntityDragonBase) {
-            EntityDragonBase dragon = (EntityDragonBase) entity;
-
-            Font font = this.getMinecraft().font;
-            String s3 = dragon.getCustomName() == null ? StatCollector.translateToLocal("dragon.unnamed") : StatCollector.translateToLocal("dragon.name") + " " + dragon.getCustomName().getString();
-            font.drawInBatch(s3, k + this.imageWidth / 2 - font.width(s3) / 2, l + 75, 0XFFFFFF, false, matrixStack.pose().last().pose(), matrixStack.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
-            String s2 = StatCollector.translateToLocal("dragon.health") + " " + Math.floor(Math.min(dragon.getHealth(), dragon.getMaxHealth())) + " / " + dragon.getMaxHealth();
-            font.drawInBatch(s2, k + this.imageWidth / 2 - font.width(s2) / 2, l + 84, 0XFFFFFF, false, matrixStack.pose().last().pose(), matrixStack.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
-            String s5 = StatCollector.translateToLocal("dragon.gender") + StatCollector.translateToLocal((dragon.isMale() ? "dragon.gender.male" : "dragon.gender.female"));
-            font.drawInBatch(s5, k + this.imageWidth / 2 - font.width(s5) / 2, l + 93, 0XFFFFFF, false, matrixStack.pose().last().pose(), matrixStack.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
-            String s6 = StatCollector.translateToLocal("dragon.hunger") + dragon.getHunger() + "/100";
-            font.drawInBatch(s6, k + this.imageWidth / 2 - font.width(s6) / 2, l + 102, 0XFFFFFF, false, matrixStack.pose().last().pose(), matrixStack.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
-            String s4 = StatCollector.translateToLocal("dragon.stage") + " " + dragon.getDragonStage() + " " + StatCollector.translateToLocal("dragon.days.front") + dragon.getAgeInDays() + " " + StatCollector.translateToLocal("dragon.days.back");
-            font.drawInBatch(s4, k + this.imageWidth / 2 - font.width(s4) / 2, l + 111, 0XFFFFFF, false, matrixStack.pose().last().pose(), matrixStack.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
-            String s7 = dragon.getOwner() != null ? StatCollector.translateToLocal("dragon.owner") + dragon.getOwner().getName().getString() : StatCollector.translateToLocal("dragon.untamed");
-            font.drawInBatch(s7, k + this.imageWidth / 2 - font.width(s7) / 2, l + 120, 0XFFFFFF, false, matrixStack.pose().last().pose(), matrixStack.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
+        if (entity instanceof EntityDragonBase dragon) {
+            int x0 = this.leftPos + 52;
+            int y0 = this.topPos + 22;
+            int x1 = this.leftPos + 124;
+            int y1 = this.topPos + 104;
+            float xAngle = (float) Math.atan((((x0 + x1) / 2.0F) - mouseX) / 40.0F);
+            float yAngle = (float) Math.atan((((y0 + y1) / 2.0F) - mouseY) / 40.0F);
+            InventoryScreen.renderEntityInInventoryFollowsAngle(
+                    graphics, x0, y0, x1, y1, 23, dragon.flyProgress * 0.5F, xAngle, yAngle, dragon);
         }
     }
 
+    @Override
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        Entity entity = IceAndFire.PROXY.getReferencedMob();
+        if (!(entity instanceof EntityDragonBase dragon)) {
+            return;
+        }
 
+        Font font = this.font;
+        int center = this.imageWidth / 2;
+        String name = dragon.getCustomName() == null
+                ? StatCollector.translateToLocal("dragon.unnamed")
+                : StatCollector.translateToLocal("dragon.name") + " " + dragon.getCustomName().getString();
+        String health = StatCollector.translateToLocal("dragon.health") + " "
+                + Math.floor(Math.min(dragon.getHealth(), dragon.getMaxHealth())) + " / " + dragon.getMaxHealth();
+        String gender = StatCollector.translateToLocal("dragon.gender")
+                + StatCollector.translateToLocal(dragon.isMale() ? "dragon.gender.male" : "dragon.gender.female");
+        String hunger = StatCollector.translateToLocal("dragon.hunger") + dragon.getHunger() + "/100";
+        String stage = StatCollector.translateToLocal("dragon.stage") + " " + dragon.getDragonStage() + " "
+                + StatCollector.translateToLocal("dragon.days.front") + dragon.getAgeInDays() + " "
+                + StatCollector.translateToLocal("dragon.days.back");
+        String owner = dragon.getOwner() != null
+                ? StatCollector.translateToLocal("dragon.owner") + dragon.getOwner().getName().getString()
+                : StatCollector.translateToLocal("dragon.untamed");
+
+        drawCentered(graphics, font, name, center, 75);
+        drawCentered(graphics, font, health, center, 84);
+        drawCentered(graphics, font, gender, center, 93);
+        drawCentered(graphics, font, hunger, center, 102);
+        drawCentered(graphics, font, stage, center, 111);
+        drawCentered(graphics, font, owner, center, 120);
+    }
+
+    private static void drawCentered(GuiGraphicsExtractor graphics, Font font, String text, int centerX, int y) {
+        graphics.text(font, text, centerX - font.width(text) / 2, y, 0xFFFFFF);
+    }
 }

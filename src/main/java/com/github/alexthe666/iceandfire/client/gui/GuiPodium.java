@@ -1,8 +1,7 @@
 package com.github.alexthe666.iceandfire.client.gui;
 
 import com.github.alexthe666.iceandfire.inventory.ContainerPodium;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -10,37 +9,22 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class GuiPodium extends AbstractContainerScreen<ContainerPodium> {
+    public static final Identifier PODIUM_TEXTURE = Identifier.parse("iceandfire:textures/gui/podium.png");
 
-    public static final Identifier PODUIM_TEXTURE = Identifier.parse("iceandfire:textures/gui/podium.png");
-
-    public GuiPodium(ContainerPodium container, Inventory inv, Component name) {
-        super(container, inv, name);
-        this.imageHeight = 133;
+    public GuiPodium(ContainerPodium menu, Inventory inventory, Component title) {
+        super(menu, inventory, title, 176, 133);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics pGuiGraphics, int x, int y) {
-        if (menu != null) {
-            String s = I18n.get("block.iceandfire.podium");
-            pGuiGraphics.drawString(this.font, s, this.imageWidth / 2 - this.getMinecraft().font.width(s) / 2, 6, 4210752, false);
-        }
-        pGuiGraphics.drawString(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 4210752, false);
-    }
-
-
-    @Override
-    public void render(GuiGraphics pGuiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(pGuiGraphics);
-        super.render(pGuiGraphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(pGuiGraphics, mouseX, mouseY);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+        GuiDrawUtils.blit(graphics, PODIUM_TEXTURE, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     @Override
-    protected void renderBg(GuiGraphics pGuiGraphics, float partialTicks, int x, int y) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        int i = (this.width - this.imageWidth) / 2;
-        int j = (this.height - this.imageHeight) / 2;
-        pGuiGraphics.blit(PODUIM_TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        String title = I18n.get("block.iceandfire.podium");
+        graphics.text(this.font, title, this.imageWidth / 2 - this.font.width(title) / 2, 6, 4210752);
+        graphics.text(this.font, this.playerInventoryTitle, 8, this.imageHeight - 96 + 2, 4210752);
     }
-
 }
