@@ -111,7 +111,8 @@ public class TileEntityPixieHouse extends BlockEntity {
         tamedPixie = input.getBooleanOr("TamedPixie", false);
         pixieOwnerUUID = input.read("PixieOwnerUUID", UUIDUtil.LENIENT_CODEC).orElse(null);
         if (pixieOwnerUUID == null) {
-            input.getStringOr("PixieOwnerUUID", "").ifPresent(ownerName -> {
+            String ownerName = input.getStringOr("PixieOwnerUUID", "");
+            if (!ownerName.isBlank()) {
                 try {
                     if (this.level != null && this.level.getServer() != null) {
                         this.pixieOwnerUUID = net.minecraft.server.players.OldUsersConverter.convertMobOwnerIfNecessary(
@@ -119,7 +120,7 @@ public class TileEntityPixieHouse extends BlockEntity {
                     }
                 } catch (Exception ignored) {
                 }
-            });
+            }
         }
         this.pixieItems = NonNullList.withSize(1, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(input, pixieItems);
