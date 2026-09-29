@@ -1,19 +1,17 @@
 package com.github.alexthe666.iceandfire.item;
 
 import com.github.alexthe666.iceandfire.entity.EntityTideTrident;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -22,100 +20,100 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.TridentItem;
-import net.minecraft.world.item.enchantment.ArrowPiercingEnchantment;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.Weapon;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.function.Consumer;
-
 public class ItemTideTrident extends TridentItem {
 
     public ItemTideTrident() {
-        super(IafItemRegistry.itemProperties()/*.tab(IceAndFire.TAB_ITEMS)*/.durability(400));
+        super(IafItemRegistry.itemProperties().durability(400).attributes(createAttributes())
+            .component(DataComponents.TOOL, TridentItem.createToolProperties())
+            .component(DataComponents.WEAPON, new Weapon(1))
+            .enchantable(1));
+    }
+
+    private static ItemAttributeModifiers createAttributes() {
+        return ItemAttributeModifiers.builder()
+            .add(Attributes.ATTACK_DAMAGE,
+                new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 12.0D, AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND)
+            .add(Attributes.ATTACK_SPEED,
+                new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.9D, AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.MAINHAND)
+            .build();
     }
 
     @Override
-    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity entityLiving, int timeLeft) {
-        if (entityLiving instanceof Player) {
-            Player lvt_5_1_ = (Player) entityLiving;
-            int lvt_6_1_ = this.getUseDuration(stack) - timeLeft;
-            if (lvt_6_1_ >= 10) {
-                int lvt_7_1_ = EnchantmentHelper.getRiptide(stack);
-                if (lvt_7_1_ <= 0 || lvt_5_1_.isInWaterOrRain()) {
-                    if (!worldIn.isClientSide()) {
-                        stack.hurtAndBreak(1, lvt_5_1_, entityLiving.getUsedItemHand());
-                        if (lvt_7_1_ == 0) {
-                            EntityTideTrident lvt_8_1_ = new EntityTideTrident(worldIn, lvt_5_1_, stack);
-                            lvt_8_1_.shootFromRotation(lvt_5_1_, lvt_5_1_.getXRot(), lvt_5_1_.getYRot(), 0.0F, 2.5F + (float) lvt_7_1_ * 0.5F, 1.0F);
-                            if (lvt_5_1_.getAbilities().instabuild) {
-                                lvt_8_1_.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
-                            }
+    public boolean releaseUsing(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity user, int timeLeft) {
+        if (!(user instanceof Player player) || this.getUseDuration(stack, player) - timeLeft < 10) {
+            return false;
+        }
 
-                            worldIn.addFreshEntity(lvt_8_1_);
-                            worldIn.playSound(null, lvt_8_1_, SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
-                            if (!lvt_5_1_.getAbilities().instabuild) {
-                                lvt_5_1_.getInventory().removeItem(stack);
-                            }
-                        }
-                    }
+        float riptideStrength = EnchantmentHelper.getTridentSpinAttackStrength(stack, player);
+        if (riptideStrength > 0 && !player.isInWaterOrRain()) {
+            return false;
+        }
 
-                    lvt_5_1_.awardStat(Stats.ITEM_USED.get(this));
-                    if (lvt_7_1_ > 0) {
-                        float lvt_8_2_ = lvt_5_1_.getYRot();
-                        float lvt_9_1_ = lvt_5_1_.getXRot();
-                        float lvt_10_1_ = -Mth.sin(lvt_8_2_ * 0.017453292F) * Mth.cos(lvt_9_1_ * 0.017453292F);
-                        float lvt_11_1_ = -Mth.sin(lvt_9_1_ * 0.017453292F);
-                        float lvt_12_1_ = Mth.cos(lvt_8_2_ * 0.017453292F) * Mth.cos(lvt_9_1_ * 0.017453292F);
-                        float lvt_13_1_ = Mth.sqrt(lvt_10_1_ * lvt_10_1_ + lvt_11_1_ * lvt_11_1_ + lvt_12_1_ * lvt_12_1_);
-                        float lvt_14_1_ = 3.0F * ((1.0F + (float) lvt_7_1_) / 4.0F);
-                        lvt_10_1_ *= lvt_14_1_ / lvt_13_1_;
-                        lvt_11_1_ *= lvt_14_1_ / lvt_13_1_;
-                        lvt_12_1_ *= lvt_14_1_ / lvt_13_1_;
-                        lvt_5_1_.push(lvt_10_1_, lvt_11_1_, lvt_12_1_);
-                        lvt_5_1_.startAutoSpinAttack(20);
-                        if (lvt_5_1_.onGround()) {
-                            float lvt_15_1_ = 1.1999999F;
-                            lvt_5_1_.move(MoverType.SELF, new Vec3(0.0D, 1.1999999284744263D, 0.0D));
-                        }
-
-                        SoundEvent lvt_15_4_;
-                        if (lvt_7_1_ >= 3) {
-                            lvt_15_4_ = SoundEvents.TRIDENT_RIPTIDE_3;
-                        } else if (lvt_7_1_ == 2) {
-                            lvt_15_4_ = SoundEvents.TRIDENT_RIPTIDE_2;
-                        } else {
-                            lvt_15_4_ = SoundEvents.TRIDENT_RIPTIDE_1;
-                        }
-
-                        worldIn.playSound(null, lvt_5_1_, lvt_15_4_, SoundSource.PLAYERS, 1.0F, 1.0F);
-                    }
-
+        if (level instanceof net.minecraft.server.level.ServerLevel) {
+            stack.hurtAndBreak(1, player, player.getUsedItemHand());
+            if (riptideStrength == 0) {
+                EntityTideTrident thrown = new EntityTideTrident(level, player, stack);
+                thrown.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, TridentItem.PROJECTILE_SHOOT_POWER, 1.0F);
+                if (player.getAbilities().instabuild) {
+                    thrown.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                 }
+
+                level.addFreshEntity(thrown);
+                level.playSound(null, thrown, SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
+                if (!player.getAbilities().instabuild) {
+                    player.getInventory().removeItem(stack);
+                }
+                player.awardStat(Stats.ITEM_USED.get(this));
+                return true;
             }
         }
-    }
 
+        player.awardStat(Stats.ITEM_USED.get(this));
+        if (riptideStrength > 0) {
+            Vec3 direction = player.getViewVector(1.0F).normalize().scale(riptideStrength);
+            player.push(direction.x, direction.y, direction.z);
+            player.startAutoSpinAttack(20, TridentItem.BASE_DAMAGE, stack);
+            if (player.onGround()) {
+                player.move(MoverType.SELF, new Vec3(0.0D, 1.1999999D, 0.0D));
+            }
 
-    @Override
-    public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot equipmentSlot) {
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        if (equipmentSlot == EquipmentSlot.MAINHAND) {
-            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 12.0D, AttributeModifier.Operation.ADDITION));
-            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.9F, AttributeModifier.Operation.ADDITION));
+            Holder<SoundEvent> sound = EnchantmentHelper.pickHighestLevel(stack, EnchantmentEffectComponents.TRIDENT_SOUND)
+                .orElse(SoundEvents.TRIDENT_RIPTIDE_1);
+            level.playSound(null, player, sound.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
+            return true;
         }
 
-        return builder.build();
+        return false;
+    }
+
+    private static boolean isTridentEnchantment(Holder<Enchantment> enchantment) {
+        return enchantment.is(Enchantments.LOYALTY)
+            || enchantment.is(Enchantments.IMPALING)
+            || enchantment.is(Enchantments.RIPTIDE)
+            || enchantment.is(Enchantments.CHANNELING)
+            || enchantment.is(Enchantments.PIERCING);
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, net.minecraft.world.item.enchantment.Enchantment enchantment) {
-        if (enchantment instanceof ArrowPiercingEnchantment)
-            return true;
-        return enchantment.category.canEnchant(stack.getItem());
+    public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+        return isTridentEnchantment(enchantment) || super.supportsEnchantment(stack, enchantment);
+    }
+
+    @Override
+    public boolean isPrimaryItemFor(ItemStack stack, Holder<Enchantment> enchantment) {
+        return isTridentEnchantment(enchantment) || super.isPrimaryItemFor(stack, enchantment);
     }
 
     @Override
