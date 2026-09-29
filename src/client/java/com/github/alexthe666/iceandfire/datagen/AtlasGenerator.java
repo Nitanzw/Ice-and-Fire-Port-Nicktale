@@ -20,12 +20,11 @@ public class AtlasGenerator extends SpriteSourceProvider {
         super(output, lookupProvider, IceAndFire.MODID);
     }
     @Override
-    protected void addSources() {
+    protected void gather() {
         this.atlas(AtlasIds.CHESTS).addSource(new SingleFile(GHOST_CHEST_LOCATION, Optional.empty()));
         this.atlas(AtlasIds.CHESTS).addSource(new SingleFile(GHOST_CHEST_LEFT_LOCATION, Optional.empty()));
         this.atlas(AtlasIds.CHESTS).addSource(new SingleFile(GHOST_CHEST_RIGHT_LOCATION, Optional.empty()));
 
-        //this.atlas(SHIELD_PATTERNS_ATLAS).addSource(new SingleFile(TwilightForestMod.prefix("model/knightmetal_shield"), Optional.empty()));
 
 
     }

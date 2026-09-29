@@ -4,7 +4,6 @@
  */
 package com.github.alexthe666.iceandfire.entity.props;
 
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
@@ -24,6 +23,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 /** Registration and synchronization for Ice and Fire entity data and entity inventories. */
@@ -69,11 +69,10 @@ public final class CapabilityHandler {
         }
     }
 
-    public static void tickData(EntityTickEvent.Pre event) {
-        if (!(event.getEntity() instanceof net.minecraft.world.entity.LivingEntity iafLiving)) {
-            return;
+    public static void tickData(EntityTickEvent.Post event) {
+        if (event.getEntity() instanceof LivingEntity living) {
+            EntityDataProvider.getCapability(living).ifPresent(data -> data.tick(living));
         }
-        EntityDataProvider.getCapability(iafLiving).ifPresent(data -> data.tick(iafLiving));
     }
 
     public static void syncEntityData(Entity entity) {

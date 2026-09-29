@@ -4,10 +4,7 @@ import net.minecraft.world.level.gamerules.GameRules;
 import com.github.alexthe666.iceandfire.world.IafWorldData;
 import com.github.alexthe666.iceandfire.world.IafWorldRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
@@ -18,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,9 +44,9 @@ public class WorldUtil {
      */
     public static boolean isChunkLoaded(final LevelAccessor world, final int x, final int z) {
         if (world.getChunkSource() instanceof ServerChunkCache serverChunkCache) {
-            final ChunkHolder holder = serverChunkCache.chunkMap.getVisibleChunkIfPresent(ChunkPos.asLong(x, z));
+            final ChunkHolder holder = serverChunkCache.chunkMap.getVisibleChunkIfPresent(ChunkPos.pack(x, z));
             if (holder != null) {
-                return holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).left().isPresent();
+                return holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).isSuccess();
             }
 
             return false;
@@ -64,7 +62,7 @@ public class WorldUtil {
      */
     public static void markChunkDirty(final Level world, final BlockPos pos) {
         if (WorldUtil.isBlockLoaded(world, pos)) {
-            world.getChunk(pos.getX() >> 4, pos.getZ() >> 4).setUnsaved(true);
+            world.getChunk(pos.getX() >> 4, pos.getZ() >> 4).markUnsaved();
             final BlockState state = world.getBlockState(pos);
             world.sendBlockUpdated(pos, state, state, 3);
         }
@@ -78,7 +76,7 @@ public class WorldUtil {
      * @return true if loaded
      */
     public static boolean isChunkLoaded(final LevelAccessor world, final ChunkPos pos) {
-        return isChunkLoaded(world, pos.x, pos.z);
+        return isChunkLoaded(world, pos.x(), pos.z());
     }
 
     /**
@@ -140,7 +138,7 @@ public class WorldUtil {
      * @return true if so.
      */
     public static boolean isPastTime(final Level world, final int pastTime) {
-        return world.getDayTime() % 24000 <= pastTime;
+        return world.getDefaultClockTime() % 24000 <= pastTime;
     }
 
 
@@ -172,16 +170,7 @@ public class WorldUtil {
      * @return true if it matches.
      */
     public static boolean isOfWorldType(@NotNull final Level world, @NotNull final ResourceKey<DimensionType> type) {
-        RegistryAccess dynRegistries = world.registryAccess();
-        Identifier loc = dynRegistries.registry(Registries.DIMENSION_TYPE).get().getKey(world.dimensionType());
-        if (loc == null) {
-            if (world.isClientSide()) {
-                return world.dimensionType().effectsLocation().equals(type.identifier());
-            }
-            return false;
-        }
-        ResourceKey<DimensionType> regKey = ResourceKey.create(Registries.DIMENSION_TYPE, loc);
-        return regKey == type;
+        return world.dimensionTypeRegistration().is(type);
     }
 
     /**

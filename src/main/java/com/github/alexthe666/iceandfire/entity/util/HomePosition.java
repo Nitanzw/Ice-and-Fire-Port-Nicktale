@@ -64,7 +64,7 @@ public class HomePosition {
         this.x = input.getIntOr("HomeAreaX", this.x);
         this.y = input.getIntOr("HomeAreaY", this.y);
         this.z = input.getIntOr("HomeAreaZ", this.z);
-        this.dimension = input.getStringOr("HomeDimension", "").orElseGet(() ->
+        this.dimension = input.getStringOr("HomeDimension",
             this.dimension == null ? DragonUtils.getDimensionName(world) : this.dimension);
         this.pos = new BlockPos(this.x, this.y, this.z);
         return this;

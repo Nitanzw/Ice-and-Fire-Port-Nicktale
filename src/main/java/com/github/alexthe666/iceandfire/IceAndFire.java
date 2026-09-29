@@ -121,8 +121,8 @@ public class IceAndFire {
     }
 
     public static void onServerStarted(ServerStartedEvent event) {
-        LOGGER.info(IafWorldRegistry.LOADED_FEATURES);
-        LOGGER.info(IafEntityRegistry.LOADED_ENTITIES);
+        LOGGER.info("Loaded world features: {}", IafWorldRegistry.LOADED_FEATURES);
+        LOGGER.info("Loaded entities: {}", IafEntityRegistry.LOADED_ENTITIES);
         IafWorldRegistry.LOADED_FEATURES.clear();
     }
 

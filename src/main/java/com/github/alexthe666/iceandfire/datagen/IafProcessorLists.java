@@ -13,6 +13,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class IafProcessorLists {
@@ -25,8 +26,9 @@ public class IafProcessorLists {
         return ResourceKey.create(Registries.PROCESSOR_LIST, Identifier.fromNamespaceAndPath(IceAndFire.MODID, name));
     }
 
-    private static void register(BootstrapContext<StructureProcessorList> pContext, ResourceKey<StructureProcessorList> pKey, List<StructureProcessor> pProcessors) {
-        pContext.register(pKey, new StructureProcessorList(pProcessors));
+    private static void register(BootstrapContext<StructureProcessorList> pContext, ResourceKey<StructureProcessorList> pKey, List<? extends StructureProcessor> pProcessors) {
+        List<StructureProcessor> processors = new ArrayList<>(pProcessors);
+        pContext.register(pKey, new StructureProcessorList(processors));
     }
 
     public static void bootstrap(BootstrapContext<StructureProcessorList> pContext) {

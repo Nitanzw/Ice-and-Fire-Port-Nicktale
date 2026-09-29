@@ -1,9 +1,8 @@
 package com.github.alexthe666.iceandfire.datagen;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
-import com.github.alexthe666.iceandfire.datagen.util.ListHolderSet;
 import com.github.alexthe666.iceandfire.world.IafFeatureBiomeModifier;
-import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class IafBiomeModifierSerializers {
@@ -23,10 +21,8 @@ public class IafBiomeModifierSerializers {
         return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, Identifier.fromNamespaceAndPath(IceAndFire.MODID, name));
     }
 
-    private static ListHolderSet<PlacedFeature> createHolderSet(HolderGetter<PlacedFeature> holderGetter, List<ResourceKey<PlacedFeature>> features) {
-        List<Holder<PlacedFeature>> holders = new ArrayList<>();
-        features.forEach(feature -> holders.add(holderGetter.getOrThrow(feature)));
-        return new ListHolderSet<>(holders);
+    private static HolderSet<PlacedFeature> createHolderSet(HolderGetter<PlacedFeature> holderGetter, List<ResourceKey<PlacedFeature>> features) {
+        return HolderSet.direct(features.stream().map(holderGetter::getOrThrow).toList());
     }
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
         HolderGetter<PlacedFeature> holderGetter = context.lookup(Registries.PLACED_FEATURE);

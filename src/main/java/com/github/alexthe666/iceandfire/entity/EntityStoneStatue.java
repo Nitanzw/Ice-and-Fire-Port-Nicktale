@@ -147,10 +147,6 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
     }
 
     @Override
-    public float getScale() {
-        return this.getTrappedScale();
-    }
-
     @Override
     public void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
@@ -174,7 +170,7 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
     }
 
     @Override
-    public @NotNull EntityDimensions getDimensions(@NotNull Pose poseIn) {
+    protected EntityDimensions getDefaultDimensions(Pose poseIn) {
         return stoneStatueSize;
     }
 

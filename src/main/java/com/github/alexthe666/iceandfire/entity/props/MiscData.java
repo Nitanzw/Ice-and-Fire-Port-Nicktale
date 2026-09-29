@@ -40,8 +40,6 @@ public class MiscData {
             }
 
             if (entity instanceof Mob mob) {
-                mob.setLastHurtByPlayer(null);
-                mob.setLastHurtByMob(null);
                 mob.setTarget(null);
                 mob.setAggressive(false);
             }

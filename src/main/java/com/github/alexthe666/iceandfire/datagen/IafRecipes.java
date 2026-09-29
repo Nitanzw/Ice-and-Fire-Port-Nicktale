@@ -8,6 +8,7 @@ import com.github.alexthe666.iceandfire.enums.EnumSeaSerpent;
 import com.github.alexthe666.iceandfire.enums.EnumTroll;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.item.ItemDragonArmor;
+import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -49,6 +50,11 @@ public class IafRecipes extends RecipeProvider {
         @Override
         protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
             return new IafRecipes(registries, output);
+        }
+
+        @Override
+        public String getName() {
+            return "Ice and Fire Recipes";
         }
     }
 
@@ -93,12 +99,12 @@ public class IafRecipes extends RecipeProvider {
                 .pattern("S")
                 .pattern("S")
                 .pattern("S")
-                .define('S', Items.CHAIN)
-                .unlockedBy("has_item", has(Items.CHAIN))
+                .define('S', Items.IRON_CHAIN)
+                .unlockedBy("has_item", has(Items.IRON_CHAIN))
                 .save(consumer);
 
         // FIXME :: Currently uses `minecraft` namespace
-        armorSet(consumer, Items.CHAIN,
+        armorSet(consumer, Items.IRON_CHAIN,
                 Items.CHAINMAIL_HELMET,
                 Items.CHAINMAIL_CHESTPLATE,
                 Items.CHAINMAIL_LEGGINGS,
@@ -350,7 +356,8 @@ public class IafRecipes extends RecipeProvider {
         compact(consumer, IafItemRegistry.DRAGONSCALES_BLACK.get(), IafBlockRegistry.DRAGON_SCALE_BLACK.get());
 
         for (EnumDragonArmor type : EnumDragonArmor.values()) {
-            armorSet(consumer, type.armorMaterial.getRepairIngredient(),
+            Ingredient material = type.armorMaterial.getRepairIngredient();
+            armorSet(consumer, material, firstIngredientItemCriterion(material),
                     type.helmet.get(),
                     type.chestplate.get(),
                     type.leggings.get(),
@@ -661,7 +668,7 @@ public class IafRecipes extends RecipeProvider {
                 .save(consumer);
 
         this.shapeless(RecipeCategory.MISC, IafItemRegistry.CHAIN_STICKY.get())
-                .requires(Tags.Items.SLIMEBALLS)
+                .requires(Tags.Items.SLIME_BALLS)
                 .requires(IafItemRegistry.CHAIN.get())
                 .unlockedBy("has_item", has(IafItemRegistry.CHAIN.get()))
                 .save(consumer);
@@ -768,35 +775,35 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void toolSet(@NotNull final RecipeOutput consumer, final TagKey<Item> material, final TagKey<Item> handle, final ItemLike... items) {
-        toolSet(consumer, this.tag(material), this.tag(handle), items);
+        toolSet(consumer, this.tag(material), has(material), this.tag(handle), items);
     }
 
     private void toolSet(@NotNull final RecipeOutput consumer, final ItemLike material, final TagKey<Item> handle, final ItemLike... items) {
-        toolSet(consumer, Ingredient.of(material), this.tag(handle), items);
+        toolSet(consumer, Ingredient.of(material), has(material), this.tag(handle), items);
     }
 
     private void toolSet(@NotNull final RecipeOutput consumer, final TagKey<Item> material, final ItemLike handle, final ItemLike... items) {
-        toolSet(consumer, this.tag(material), Ingredient.of(handle), items);
+        toolSet(consumer, this.tag(material), has(material), Ingredient.of(handle), items);
     }
 
     private void toolSet(@NotNull final RecipeOutput consumer, final ItemLike material, final ItemLike handle, final ItemLike... items) {
-        toolSet(consumer, Ingredient.of(material), Ingredient.of(handle), items);
+        toolSet(consumer, Ingredient.of(material), has(material), Ingredient.of(handle), items);
     }
 
-    private void toolSet(@NotNull final RecipeOutput consumer, final Ingredient material, final Ingredient handle, final ItemLike... results) {
+    private void toolSet(@NotNull final RecipeOutput consumer, final Ingredient material, final Criterion<?> materialCriterion,
+                         final Ingredient handle, final ItemLike... results) {
         for (ItemLike result : results) {
-            Item item = result.asItem();
-
-            if (item instanceof SwordItem) {
-                sword(consumer, material, handle, result);
-            } else if (item instanceof PickaxeItem) {
-                pickaxe(consumer, material, handle, result);
-            } else if (item instanceof AxeItem) {
-                axe(consumer, material, handle, result);
-            } else if (item instanceof ShovelItem) {
-                shovel(consumer, material, handle, result);
-            } else if (item instanceof HoeItem) {
-                hoe(consumer, material, handle, result);
+            String path = BuiltInRegistries.ITEM.getKey(result.asItem()).getPath();
+            if (hasPathPart(path, "sword")) {
+                sword(consumer, material, materialCriterion, handle, result);
+            } else if (hasPathPart(path, "pickaxe")) {
+                pickaxe(consumer, material, materialCriterion, handle, result);
+            } else if (hasPathPart(path, "axe")) {
+                axe(consumer, material, materialCriterion, handle, result);
+            } else if (hasPathPart(path, "shovel")) {
+                shovel(consumer, material, materialCriterion, handle, result);
+            } else if (hasPathPart(path, "hoe")) {
+                hoe(consumer, material, materialCriterion, handle, result);
             } else {
                 throw new IllegalArgumentException("Result is not a valid tool: [" + result + "]");
             }
@@ -804,138 +811,143 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void armorSet(@NotNull final RecipeOutput consumer, final TagKey<Item> tag, final ItemLike... results) {
-        armorSet(consumer, this.tag(tag), results);
+        armorSet(consumer, this.tag(tag), has(tag), results);
     }
 
     private void armorSet(@NotNull final RecipeOutput consumer, final ItemLike item, final ItemLike... results) {
-        armorSet(consumer, Ingredient.of(item), results);
+        armorSet(consumer, Ingredient.of(item), has(item), results);
     }
 
     private void armorSet(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike... results) {
+        armorSet(consumer, ingredient, firstIngredientItemCriterion(ingredient), results);
+    }
+
+    private void armorSet(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final Criterion<?> materialCriterion, final ItemLike... results) {
         for (ItemLike result : results) {
-            if (result.asItem() instanceof ArmorItem armorItem) {
-                switch (armorItem.getType()) {
-                    case HELMET -> helmet(consumer, ingredient, result);
-                    case CHESTPLATE -> chestPlate(consumer, ingredient, result);
-                    case LEGGINGS -> leggings(consumer, ingredient, result);
-                    case BOOTS -> boots(consumer, ingredient, result);
-                    default -> throw new IllegalArgumentException("Result is not a valid armor item: [" + result + "]");
-                }
+            String path = BuiltInRegistries.ITEM.getKey(result.asItem()).getPath();
+            if (hasPathPart(path, "helmet")) {
+                helmet(consumer, ingredient, materialCriterion, result);
+            } else if (hasPathPart(path, "chestplate")) {
+                chestPlate(consumer, ingredient, materialCriterion, result);
+            } else if (hasPathPart(path, "leggings")) {
+                leggings(consumer, ingredient, materialCriterion, result);
+            } else if (hasPathPart(path, "boots")) {
+                boots(consumer, ingredient, materialCriterion, result);
             } else {
-                throw new IllegalArgumentException("Result is not an armor item: [" + result + "]");
+                throw new IllegalArgumentException("Result is not a humanoid armor item: [" + result + "]");
             }
         }
     }
 
-    private void helmet(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
+    private void helmet(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final Criterion<?> materialCriterion, final ItemLike result) {
         this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("###")
                 .pattern("# #")
                 .define('#', ingredient)
-                .unlockedBy("has_item", has(Arrays.stream(ingredient.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
-    private void chestPlate(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
+    private void chestPlate(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final Criterion<?> materialCriterion, final ItemLike result) {
         this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("# #")
                 .pattern("###")
                 .pattern("###")
                 .define('#', ingredient)
-                .unlockedBy("has_item", has(Arrays.stream(ingredient.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
-    private void leggings(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
+    private void leggings(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final Criterion<?> materialCriterion, final ItemLike result) {
         this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("###")
                 .pattern("# #")
                 .pattern("# #")
                 .define('#', ingredient)
-                .unlockedBy("has_item", has(Arrays.stream(ingredient.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
-    private void boots(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
+    private void boots(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final Criterion<?> materialCriterion, final ItemLike result) {
         this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("# #")
                 .pattern("# #")
                 .define('#', ingredient)
-                .unlockedBy("has_item", has(Arrays.stream(ingredient.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
-    private void sword(@NotNull final RecipeOutput consumer, final Ingredient material, final Ingredient handle, final ItemLike result) {
+    private void sword(@NotNull final RecipeOutput consumer, final Ingredient material, final Criterion<?> materialCriterion, final Ingredient handle, final ItemLike result) {
         this.shaped(RecipeCategory.TOOLS, result)
                 .pattern("M")
                 .pattern("M")
                 .pattern("H")
                 .define('M', material)
                 .define('H', handle)
-                .unlockedBy("has_item", has(Arrays.stream(material.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
-    private void pickaxe(@NotNull final RecipeOutput consumer, final Ingredient material, final Ingredient handle, final ItemLike result) {
+    private void pickaxe(@NotNull final RecipeOutput consumer, final Ingredient material, final Criterion<?> materialCriterion, final Ingredient handle, final ItemLike result) {
         this.shaped(RecipeCategory.TOOLS, result)
                 .pattern("MMM")
                 .pattern(" H ")
                 .pattern(" H ")
                 .define('M', material)
                 .define('H', handle)
-                .unlockedBy("has_item", has(Arrays.stream(material.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
-    private void axe(@NotNull final RecipeOutput consumer, final Ingredient material, final Ingredient handle, final ItemLike result) {
+    private void axe(@NotNull final RecipeOutput consumer, final Ingredient material, final Criterion<?> materialCriterion, final Ingredient handle, final ItemLike result) {
         this.shaped(RecipeCategory.TOOLS, result)
                 .pattern("MM")
                 .pattern("MH")
                 .pattern(" H")
                 .define('M', material)
                 .define('H', handle)
-                .unlockedBy("has_item", has(Arrays.stream(material.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
-    private void shovel(@NotNull final RecipeOutput consumer, final Ingredient material, final Ingredient handle, final ItemLike result) {
+    private void shovel(@NotNull final RecipeOutput consumer, final Ingredient material, final Criterion<?> materialCriterion, final Ingredient handle, final ItemLike result) {
         this.shaped(RecipeCategory.TOOLS, result)
                 .pattern("M")
                 .pattern("H")
                 .pattern("H")
                 .define('M', material)
                 .define('H', handle)
-                .unlockedBy("has_item", has(Arrays.stream(material.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
-    private void hoe(@NotNull final RecipeOutput consumer, final Ingredient material, final Ingredient handle, final ItemLike result) {
+    private void hoe(@NotNull final RecipeOutput consumer, final Ingredient material, final Criterion<?> materialCriterion, final Ingredient handle, final ItemLike result) {
         this.shaped(RecipeCategory.TOOLS, result)
                 .pattern("MM")
                 .pattern(" H")
                 .pattern(" H")
                 .define('M', material)
                 .define('H', handle)
-                .unlockedBy("has_item", has(Arrays.stream(material.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
     private void dragonArmorSet(@NotNull final RecipeOutput consumer, final ItemLike material, final ItemLike... results) {
-        dragonArmorSet(consumer, Ingredient.of(material), results);
+        dragonArmorSet(consumer, Ingredient.of(material), has(material), results);
     }
 
     private void dragonArmorSet(@NotNull final RecipeOutput consumer, final TagKey<Item> tag, final ItemLike... results) {
-        dragonArmorSet(consumer, this.tag(tag), results);
+        dragonArmorSet(consumer, this.tag(tag), has(tag), results);
     }
 
-    private void dragonArmorSet(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike... results) {
+    private void dragonArmorSet(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final Criterion<?> materialCriterion, final ItemLike... results) {
         for (ItemLike result : results) {
             if (result instanceof ItemDragonArmor dragonArmor) {
                 switch (dragonArmor.dragonSlot) {
-                    case 0 -> dragonHead(consumer, ingredient, result);
-                    case 1 -> dragonNeck(consumer, ingredient, result);
-                    case 2 -> dragonBody(consumer, ingredient, result);
-                    case 3 -> dragonTail(consumer, ingredient, result);
+                    case 0 -> dragonHead(consumer, ingredient, materialCriterion, result);
+                    case 1 -> dragonNeck(consumer, ingredient, materialCriterion, result);
+                    case 2 -> dragonBody(consumer, ingredient, materialCriterion, result);
+                    case 3 -> dragonTail(consumer, ingredient, materialCriterion, result);
                     default ->
                             throw new IllegalArgumentException("Result is not a valid dragon armor [" + result + "]");
                 }
@@ -945,43 +957,43 @@ public class IafRecipes extends RecipeProvider {
         }
     }
 
-    private void dragonHead(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
+    private void dragonHead(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final Criterion<?> materialCriterion, final ItemLike result) {
         this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("   ")
                 .pattern(" ##")
                 .pattern("###")
                 .define('#', ingredient)
-                .unlockedBy("has_item", has(Arrays.stream(ingredient.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
-    private void dragonNeck(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
+    private void dragonNeck(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final Criterion<?> materialCriterion, final ItemLike result) {
         this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("   ")
                 .pattern("###")
                 .pattern(" ##")
                 .define('#', ingredient)
-                .unlockedBy("has_item", has(Arrays.stream(ingredient.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
-    private void dragonBody(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
+    private void dragonBody(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final Criterion<?> materialCriterion, final ItemLike result) {
         this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("###")
                 .pattern("###")
                 .pattern("# #")
                 .define('#', ingredient)
-                .unlockedBy("has_item", has(Arrays.stream(ingredient.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
-    private void dragonTail(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
+    private void dragonTail(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final Criterion<?> materialCriterion, final ItemLike result) {
         this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("   ")
                 .pattern("  #")
                 .pattern("## ")
                 .define('#', ingredient)
-                .unlockedBy("has_item", has(Arrays.stream(ingredient.getItems()).findFirst().get().getItem()))
+                .unlockedBy("has_item", materialCriterion)
                 .save(consumer);
     }
 
@@ -1030,6 +1042,17 @@ public class IafRecipes extends RecipeProvider {
                 .save(consumer);
     }
     
+    private static boolean hasPathPart(String path, String part) {
+        return Arrays.asList(path.split("_")).contains(part);
+    }
+
+    private Criterion<?> firstIngredientItemCriterion(Ingredient ingredient) {
+        return ingredient.items()
+                .findFirst()
+                .<Criterion<?>>map(holder -> has(holder.value()))
+                .orElseThrow(() -> new IllegalArgumentException("Recipe material has no concrete item for its unlock criterion: " + ingredient));
+    }
+
     private static String location(final String path) {
         return IceAndFire.MODID + ":" + path;
     }

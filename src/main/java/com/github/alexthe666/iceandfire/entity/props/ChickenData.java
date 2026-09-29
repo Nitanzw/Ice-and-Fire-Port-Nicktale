@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 
 public class ChickenData {
@@ -24,9 +25,11 @@ public class ChickenData {
 
         if (timeUntilNextEgg == 0) {
             if (entity.tickCount > 30 && entity.getRandom().nextInt(IafConfig.cockatriceEggChance + 1) == 0) {
-                entity.playSound(SoundEvents.CHICKEN_HURT, 2.0F, (entity.getRandom().nextFloat() - entity.getRandom().nextFloat()) * 0.2F + 1.0F);
-                entity.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (entity.getRandom().nextFloat() - entity.getRandom().nextFloat()) * 0.2F + 1.0F);
-                IafEntityUtil.drop(entity, IafItemRegistry.ROTTEN_EGG.get(), 1);
+                entity.playSound(SoundEvents.CHICKEN_HURT.value(), 2.0F, (entity.getRandom().nextFloat() - entity.getRandom().nextFloat()) * 0.2F + 1.0F);
+                entity.playSound(SoundEvents.CHICKEN_EGG.value(), 1.0F, (entity.getRandom().nextFloat() - entity.getRandom().nextFloat()) * 0.2F + 1.0F);
+                if (entity.level() instanceof ServerLevel serverLevel) {
+                    entity.spawnAtLocation(serverLevel, IafItemRegistry.ROTTEN_EGG.get());
+                }
             }
 
             timeUntilNextEgg = -1;
