@@ -322,11 +322,11 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        this.getEntityData().define(COLOR, 0);
-        this.getEntityData().define(CHARGING, false);
-        this.getEntityData().define(IS_DAYTIME_MODE, false);
-        this.getEntityData().define(WAS_FROM_CHEST, false);
-        this.getEntityData().define(DAYTIME_COUNTER, 0);
+        builder.define(COLOR, 0);
+        builder.define(CHARGING, false);
+        builder.define(IS_DAYTIME_MODE, false);
+        builder.define(WAS_FROM_CHEST, false);
+        builder.define(DAYTIME_COUNTER, 0);
     }
 
     public int getColor() {

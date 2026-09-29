@@ -29,7 +29,7 @@ public class ItemPixieWand extends Item {
     @Override
     public @NotNull InteractionResult use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
         ItemStack itemStackIn = playerIn.getItemInHand(hand);
-        boolean flag = playerIn.isCreative() || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, itemStackIn) > 0;
+        boolean flag = playerIn.isCreative() || com.github.alexthe666.iceandfire.util.EnchantUtil.getLevel(worldIn.registryAccess(), Enchantments.INFINITY, itemStackIn) > 0;
         ItemStack itemstack = this.findAmmo(playerIn);
         playerIn.startUsingItem(hand);
         playerIn.swing(hand);
@@ -62,7 +62,7 @@ public class ItemPixieWand extends Item {
     }
 
     public boolean isInfinite(ItemStack stack, ItemStack bow, net.minecraft.world.entity.player.Player player) {
-        int enchant = net.minecraft.world.item.enchantment.EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, bow);
+        int enchant = com.github.alexthe666.iceandfire.util.EnchantUtil.getLevel(player.level().registryAccess(), Enchantments.INFINITY, bow);
         return enchant > 0 && stack.getItem() == IafItemRegistry.PIXIE_DUST.get();
     }
 

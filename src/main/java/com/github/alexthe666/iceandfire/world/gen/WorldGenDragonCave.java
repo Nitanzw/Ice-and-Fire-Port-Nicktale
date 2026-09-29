@@ -31,8 +31,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.tags.ITagManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,12 +120,10 @@ public abstract class WorldGenDragonCave extends Feature<NoneFeatureConfiguratio
     }
 
     public void createShell(LevelAccessor worldIn, RandomSource rand, Set<BlockPos> positions) {
-        ITagManager<Block> tagManager = ForgeRegistries.BLOCKS.tags();
-
-        List<Block> rareOres = getBlockList(tagManager, IafBlockTags.DRAGON_CAVE_RARE_ORES);
-        List<Block> uncommonOres = getBlockList(tagManager, IafBlockTags.DRAGON_CAVE_UNCOMMON_ORES);
-        List<Block> commonOres = getBlockList(tagManager, IafBlockTags.DRAGON_CAVE_COMMON_ORES);
-        List<Block> dragonTypeOres = getBlockList(tagManager, dragonTypeOreTag);
+        List<Block> rareOres = getBlockList(IafBlockTags.DRAGON_CAVE_RARE_ORES);
+        List<Block> uncommonOres = getBlockList(IafBlockTags.DRAGON_CAVE_UNCOMMON_ORES);
+        List<Block> commonOres = getBlockList(IafBlockTags.DRAGON_CAVE_COMMON_ORES);
+        List<Block> dragonTypeOres = getBlockList(dragonTypeOreTag);
 
         positions.forEach(blockPos -> {
             if (!(worldIn.getBlockState(blockPos).getBlock() instanceof BaseEntityBlock) && worldIn.getBlockState(blockPos).getDestroySpeed(worldIn, blockPos) >= 0) {
@@ -162,12 +158,10 @@ public abstract class WorldGenDragonCave extends Feature<NoneFeatureConfiguratio
         });
     }
 
-    private List<Block> getBlockList(final ITagManager<Block> tagManager, final TagKey<Block> tagKey) {
-        if (tagManager == null) {
-            return List.of();
-        }
-
-        return tagManager.getTag(tagKey).stream().toList();
+    private List<Block> getBlockList(final TagKey<Block> tagKey) {
+        return net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(tagKey)
+            .map(set -> set.stream().map(net.minecraft.core.Holder::value).toList())
+            .orElse(List.of());
     }
 
     public void hollowOut(LevelAccessor worldIn, Set<BlockPos> positions) {

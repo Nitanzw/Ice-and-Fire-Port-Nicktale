@@ -27,7 +27,7 @@ public class ItemDragonArrow extends ArrowItem {
         boolean isInfinite = super.isInfinite(arrow, bow, player);
 
         if (!isInfinite) {
-            isInfinite = bow.getEnchantmentLevel(Enchantments.INFINITY_ARROWS) > 0 && getClass() == ItemDragonArrow.class;
+            isInfinite = com.github.alexthe666.iceandfire.util.EnchantUtil.getLevel(player.level().registryAccess(), Enchantments.INFINITY, bow) > 0 && getClass() == ItemDragonArrow.class;
         }
 
         return isInfinite;

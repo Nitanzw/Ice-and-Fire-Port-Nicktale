@@ -11,6 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.SpawnPlacementType;
+import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -135,10 +136,10 @@ public class IafEntityRegistry {
     }
 
     public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
-        event.register(HIPPOGRYPH.get(), SpawnPlacementType.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityHippogryph::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(TROLL.get(), SpawnPlacementType.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityTroll::canTrollSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(DREAD_LICH.get(), SpawnPlacementType.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityDreadLich::canLichSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
-        event.register(COCKATRICE.get(), SpawnPlacementType.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityCockatrice::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
+        event.register(HIPPOGRYPH.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityHippogryph::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
+        event.register(TROLL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityTroll::canTrollSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
+        event.register(DREAD_LICH.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityDreadLich::canLichSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
+        event.register(COCKATRICE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EntityCockatrice::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
         event.register(AMPHITHERE.get(), SpawnPlacementType.NO_RESTRICTIONS, Heightmap.Types.MOTION_BLOCKING, EntityAmphithere::canAmphithereSpawnOn, RegisterSpawnPlacementsEvent.Operation.OR);
     }
 

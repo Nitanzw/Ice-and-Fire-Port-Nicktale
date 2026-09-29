@@ -103,7 +103,7 @@ public class ItemDragonHorn extends Item {
                 }
                 //Still needed to allow for intercompatibility
                 if (data.contains("EntityUUID"))
-                    entity.setUUID(data.getUUID("EntityUUID"));
+                    entity.setUUID(data.read("EntityUUID", net.minecraft.core.UUIDUtil.CODEC).orElseThrow());
 
                 entity.snapTo(context.getClickedPos().getX() + 0.5D, (context.getClickedPos().getY() + 1), context.getClickedPos().getZ() + 0.5D, 180 + (context.getHorizontalDirection()).toYRot(), 0.0F);
                 if (world.addFreshEntity(entity)) {

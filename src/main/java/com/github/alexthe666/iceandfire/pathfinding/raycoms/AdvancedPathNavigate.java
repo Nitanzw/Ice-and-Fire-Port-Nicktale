@@ -271,7 +271,7 @@ public class AdvancedPathNavigate extends AbstractAdvancedPathNavigate {
                 try {
                     processCompletedCalculationResult();
                 } catch (InterruptedException | ExecutionException e) {
-                    IceAndFire.LOGGER.catching(e);
+                    IceAndFire.LOGGER.error("Pathfinding error", e);
                 }
             }
         }

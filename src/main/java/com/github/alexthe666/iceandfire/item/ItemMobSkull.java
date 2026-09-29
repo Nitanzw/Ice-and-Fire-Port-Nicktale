@@ -37,7 +37,7 @@ public class ItemMobSkull extends Item {
         if (!context.getLevel().isClientSide()) {
             context.getLevel().addFreshEntity(skull);
         }
-        if (stack.hasCustomHoverName()) {
+        if (stack.has(net.minecraft.core.component.DataComponents.CUSTOM_NAME)) {
             skull.setCustomName(stack.getHoverName());
         }
         if (!player.isCreative()) {

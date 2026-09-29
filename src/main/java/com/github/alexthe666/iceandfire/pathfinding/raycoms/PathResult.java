@@ -175,9 +175,9 @@ public class PathResult<T extends Callable<Path>>
                 IceAndFire.LOGGER.error("Mod tried to move an entity from non server thread",e);
             } catch (RuntimeException e) {
                 threadException = true;
-                IceAndFire.LOGGER.catching(e);
+                IceAndFire.LOGGER.error("Pathfinding error", e);
             } catch (Exception e) {
-                IceAndFire.LOGGER.catching(e);
+                IceAndFire.LOGGER.error("Pathfinding error", e);
             }
         }
     }
@@ -200,7 +200,7 @@ public class PathResult<T extends Callable<Path>>
         }
         catch (InterruptedException | ExecutionException e)
         {
-            IceAndFire.LOGGER.catching(e);
+            IceAndFire.LOGGER.error("Pathfinding error", e);
         }
     }
 

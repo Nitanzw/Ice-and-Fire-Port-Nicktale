@@ -77,7 +77,6 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -132,7 +131,7 @@ public class ServerEvents {
     }
 
     private static boolean isInEntityTag(Identifier loc, EntityType<?> type) {
-        return type.is(Objects.requireNonNull(ForgeRegistries.ENTITY_TYPES.tags()).createTagKey(loc));
+        return type.is(net.minecraft.tags.TagKey.create(Registries.ENTITY_TYPE, loc));
     }
 
     public static boolean isLivestock(Entity entity) {

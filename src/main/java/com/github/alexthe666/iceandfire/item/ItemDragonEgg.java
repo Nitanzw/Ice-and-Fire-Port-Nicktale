@@ -43,7 +43,7 @@ public class ItemDragonEgg extends Item {
         egg.setEggType(type);
         egg.snapTo(offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5, 0, 0);
         egg.onPlayerPlace(context.getPlayer());
-        if (itemstack.hasCustomHoverName()) {
+        if (itemstack.has(net.minecraft.core.component.DataComponents.CUSTOM_NAME)) {
             egg.setCustomName(itemstack.getHoverName());
         }
         if (!context.getLevel().isClientSide()) {

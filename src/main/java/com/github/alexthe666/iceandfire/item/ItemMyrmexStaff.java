@@ -49,8 +49,8 @@ public class ItemMyrmexStaff extends Item {
             return super.use(worldIn, playerIn, hand);
         }
         CompoundTag data = ItemStackData.get(itemStackIn);
-        if (data.hasUUID("HiveUUID")) {
-            UUID id = data.getUUID("HiveUUID");
+        if (data.contains("HiveUUID")) {
+            UUID id = data.read("HiveUUID", net.minecraft.core.UUIDUtil.CODEC).orElseThrow();
             if (!worldIn.isClientSide()) {
                 MyrmexHive hive = MyrmexWorldData.get(worldIn).getHiveFromUUID(id);
                 MyrmexWorldData.addHive(worldIn, new MyrmexHive());
@@ -77,8 +77,8 @@ public class ItemMyrmexStaff extends Item {
             return super.useOn(context);
         } else {
             CompoundTag data = ItemStackData.get(player.getItemInHand(context.getHand()));
-            if (data.hasUUID("HiveUUID")) {
-                UUID id = data.getUUID("HiveUUID");
+            if (data.contains("HiveUUID")) {
+                UUID id = data.read("HiveUUID", net.minecraft.core.UUIDUtil.CODEC).orElseThrow();
                 if (!context.getLevel().isClientSide()) {
                     MyrmexHive hive = MyrmexWorldData.get(context.getLevel()).getHiveFromUUID(id);
                     if (hive != null) {
