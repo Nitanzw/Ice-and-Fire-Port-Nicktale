@@ -182,7 +182,7 @@ public class EntityHydra extends Monster implements IAnimatedEntity, IMultipartE
                     isBreathing[i] = false;
                     breathTicks[i] = 0;
                     breathCooldown = 15;
-                    this.level().broadcastEntityEvent(this, (byte) (60 + i));
+                    this.level().broadcastEntityEvent(this, (byte) (100 + i));
                 }
                 breathTicks[i]++;
             } else {
@@ -455,8 +455,9 @@ public class EntityHydra extends Monster implements IAnimatedEntity, IMultipartE
         } else if (id >= 50 && id <= 58) {
             int index = id - 50;
             isBreathing[Mth.clamp(index, 0, 8)] = true;
-        } else if (id >= 60 && id <= 68) {
-            int index = id - 60;
+        } else if (id >= 100 && id <= 108) {
+            // 60-68 would collide with vanilla's client-side special-cased id 63 (Sniffer)
+            int index = id - 100;
             isBreathing[Mth.clamp(index, 0, 8)] = false;
         } else {
             super.handleEntityEvent(id);

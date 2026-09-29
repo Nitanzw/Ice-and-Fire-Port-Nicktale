@@ -33,3 +33,4 @@ src/generated/resources/.cache/*
 # Nicktale API package named "server" must be tracked
 !nicktale-api/src/main/java/com/nicktale/api/server/
 runs/
+dist/
