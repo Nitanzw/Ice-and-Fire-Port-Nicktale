@@ -1,17 +1,28 @@
 package com.github.alexthe666.iceandfire.message;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntityDeathWorm;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 
-public class MessageDeathWormHitbox {
+
+public class MessageDeathWormHitbox implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MessageDeathWormHitbox> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "death_worm_hitbox"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageDeathWormHitbox> STREAM_CODEC = StreamCodec.of((buffer, message) -> MessageDeathWormHitbox.write(message, buffer), MessageDeathWormHitbox::read);
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
 
     public int deathWormId;
     public float scale;
@@ -37,15 +48,11 @@ public class MessageDeathWormHitbox {
         public Handler() {
         }
 
-        public static void handle(final MessageDeathWormHitbox message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            NetworkEvent.Context context = contextSupplier.get();
+        public static void handle(final MessageDeathWormHitbox message, final IPayloadContext context) {
+
 
             context.enqueueWork(() -> {
-                Player player = context.getSender();
-
-                if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-                    player = IceAndFire.PROXY.getClientSidePlayer();
-                }
+                Player player = context.player();
 
                 if (player != null) {
                     Entity entity = player.level().getEntity(message.deathWormId);
@@ -56,7 +63,7 @@ public class MessageDeathWormHitbox {
                 }
             });
 
-            context.setPacketHandled(true);
+
         }
     }
 }

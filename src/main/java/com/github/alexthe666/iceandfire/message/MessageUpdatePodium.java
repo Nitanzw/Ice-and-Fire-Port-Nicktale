@@ -1,18 +1,28 @@
 package com.github.alexthe666.iceandfire.message;
 
-import com.github.alexthe666.citadel.server.message.PacketBufferUtils;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.tile.TileEntityPodium;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
 
-public class MessageUpdatePodium {
+public class MessageUpdatePodium implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MessageUpdatePodium> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "update_podium"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageUpdatePodium> STREAM_CODEC = StreamCodec.of((buffer, message) -> MessageUpdatePodium.write(message, buffer), MessageUpdatePodium::read);
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
 
     public long blockPos;
     public ItemStack heldStack;
@@ -27,27 +37,23 @@ public class MessageUpdatePodium {
     }
 
     public static MessageUpdatePodium read(FriendlyByteBuf buf) {
-        return new MessageUpdatePodium(buf.readLong(), PacketBufferUtils.readItemStack(buf));
+        return new MessageUpdatePodium(buf.readLong(), ItemStack.STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf));
     }
 
     public static void write(MessageUpdatePodium message, FriendlyByteBuf buf) {
         buf.writeLong(message.blockPos);
-        PacketBufferUtils.writeItemStack(buf, message.heldStack);
+        ItemStack.STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, message.heldStack);
     }
 
     public static class Handler {
         public Handler() {
         }
 
-        public static void handle(final MessageUpdatePodium message, final Supplier<NetworkEvent.Context> contextSupplier) {
-            NetworkEvent.Context context = contextSupplier.get();
+        public static void handle(final MessageUpdatePodium message, final IPayloadContext context) {
+
 
             context.enqueueWork(() -> {
-                Player player = context.getSender();
-
-                if (context.getDirection().getReceptionSide() == LogicalSide.CLIENT) {
-                    player = IceAndFire.PROXY.getClientSidePlayer();
-                }
+                Player player = context.player();
 
                 if (player != null) {
                     BlockPos pos = BlockPos.of(message.blockPos);
@@ -58,7 +64,7 @@ public class MessageUpdatePodium {
                 }
             });
 
-            context.setPacketHandled(true);
+
         }
     }
 }

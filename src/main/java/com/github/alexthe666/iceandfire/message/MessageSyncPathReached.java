@@ -1,21 +1,32 @@
 package com.github.alexthe666.iceandfire.message;
 
+import com.github.alexthe666.iceandfire.IceAndFire;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+
 import com.github.alexthe666.iceandfire.client.render.pathfinding.PathfindingDebugRenderer;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.MNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkDirection;
-import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * Message to sync the reached positions over to the client for rendering.
  */
-public class MessageSyncPathReached {
+public class MessageSyncPathReached implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<MessageSyncPathReached> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "sync_path_reached"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MessageSyncPathReached> STREAM_CODEC = StreamCodec.ofMember(MessageSyncPathReached::write, MessageSyncPathReached::read);
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
+
     /**
      * Set of reached positions.
      */
@@ -46,24 +57,14 @@ public class MessageSyncPathReached {
         return new MessageSyncPathReached(reached);
     }
 
-    public LogicalSide getExecutionSide() {
-        return LogicalSide.CLIENT;
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> contextSupplier) {
-        contextSupplier.get().enqueueWork(() -> {
-            contextSupplier.get().setPacketHandled(true);
-
-            if (contextSupplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-                for (final MNode node : PathfindingDebugRenderer.lastDebugNodesPath) {
-                    if (reached.contains(node.pos)) {
-                        node.setReachedByWorker(true);
-                    }
+    public void handle(IPayloadContext context) {
+        context.enqueueWork(() -> {
+            for (final MNode node : PathfindingDebugRenderer.lastDebugNodesPath) {
+                if (reached.contains(node.pos)) {
+                    node.setReachedByWorker(true);
                 }
             }
-
         });
-        return true;
     }
 
 }
