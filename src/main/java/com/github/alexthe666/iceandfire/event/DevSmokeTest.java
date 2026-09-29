@@ -35,11 +35,24 @@ public class DevSmokeTest {
             loads.add("execute in minecraft:overworld run forceload add " + x + " 0");
             commands.add("execute in minecraft:overworld run place feature iceandfire:" + f + " " + x + " @Y@ 0");
         }
+        for (int w = 0; w < 60; w++) {
+            commands.add("#wait");
+        }
         for (String st : new String[]{"gorgon_temple", "graveyard", "mausoleum"}) {
             int x = 300 * ++i;
             loads.add("execute in minecraft:overworld run forceload add " + x + " 0");
             commands.add("execute in minecraft:overworld run place structure iceandfire:" + st + " " + x + " @Y@ 0");
         }
+        java.util.List<String> retry = new java.util.ArrayList<>();
+        for (String c : commands) {
+            if (c.contains("place structure")) {
+                retry.add(c);
+            }
+        }
+        for (int w = 0; w < 60; w++) {
+            commands.add("#wait");
+        }
+        commands.addAll(retry);
         commands = withLoads(loads, commands);
     }
 
