@@ -159,6 +159,27 @@ public class DevSmokeTest {
             }
             i++;
         }
+        int a = 0;
+        java.util.Map<String, java.util.List<net.minecraft.world.item.ItemStack>> bySet = new java.util.LinkedHashMap<>();
+        for (var item : BuiltInRegistries.ITEM) {
+            if (item instanceof com.github.alexthe666.iceandfire.item.ItemModArmor armor) {
+                bySet.computeIfAbsent(armor.getArmorMaterial().assetName(), k -> new java.util.ArrayList<>()).add(new net.minecraft.world.item.ItemStack(item));
+            }
+        }
+        for (var entry : bySet.entrySet()) {
+            try {
+                var stand = new net.minecraft.world.entity.decoration.ArmorStand(level, player.getX() - 4.5 + (a % 7) * 1.5, player.getY(), player.getZ() + 5 + (a / 7) * 2);
+                for (var stack : entry.getValue()) {
+                    var slot = ((com.github.alexthe666.iceandfire.item.ItemModArmor) stack.getItem()).getArmorType().getSlot();
+                    stand.setItemSlot(slot, stack);
+                }
+                level.addFreshEntity(stand);
+            } catch (Throwable t) {
+                IceAndFire.LOGGER.error("SMOKETEST armor stand failed: {}", entry.getKey(), t);
+            }
+            a++;
+        }
+        IceAndFire.LOGGER.info("SMOKETEST armor stands: {}", a);
         int j = 0;
         BlockPos bbase = player.blockPosition().offset(-6, 0, -30);
         for (var block : BuiltInRegistries.BLOCK) {

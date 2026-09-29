@@ -24,6 +24,14 @@ public class ItemModArmor extends Item {
         this.armorType = armorType;
     }
 
+    public CustomArmorMaterial getArmorMaterial() {
+        return material;
+    }
+
+    public ArmorType getArmorType() {
+        return armorType;
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display,
                                 Consumer<Component> tooltip, TooltipFlag flag) {
