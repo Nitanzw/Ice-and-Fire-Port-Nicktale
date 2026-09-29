@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.datagen.tags.IafItemTags;
@@ -19,6 +20,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -50,7 +53,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.capabilities.Capability;
@@ -58,7 +61,6 @@ import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -93,7 +95,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     public EntityHippocampus(EntityType<? extends EntityHippocampus> entityType, Level worldIn) {
         super(entityType, worldIn);
         ANIMATION_SPEAK = Animation.create(15);
-        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.setPathfindingMalus(PathType.WATER, 0.0F);
         this.moveControl = new EntityHippocampus.HippoMoveControl(this);
         this.setMaxUpStep(1F);
         if (worldIn.isClientSide()) {
@@ -380,8 +382,10 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag compound = new CompoundTag();
+
         compound.putInt("Variant", this.getVariant());
         compound.putBoolean("Chested", this.isChested());
         compound.putBoolean("Saddled", this.isSaddled());
@@ -397,11 +401,15 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
             }
         }
         compound.put("Items", nbttaglist);
+
+        output.store(compound);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag compound = EntityDataIO.readLegacyFields(input);
+
         this.setVariant(compound.getInt("Variant"));
         this.setChested(compound.getBoolean("Chested"));
         this.setSaddled(compound.getBoolean("Saddled"));
@@ -415,6 +423,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
                 this.inventory.setItem(j, ItemStack.of(CompoundNBT));
             }
         }
+
     }
 
     protected int getInventorySize() {
@@ -524,8 +533,8 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        SpawnGroupData data = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        SpawnGroupData data = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.setVariant(this.getRandom().nextInt(6));
         return data;
     }
@@ -666,7 +675,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
 
     public void openInventory(Player player) {
         if (!this.level().isClientSide())
-            NetworkHooks.openScreen((ServerPlayer) player, getMenuProvider());
+            ((ServerPlayer) player).openMenu(getMenuProvider());
         IceAndFire.PROXY.setReferencedMob(this);
     }
 

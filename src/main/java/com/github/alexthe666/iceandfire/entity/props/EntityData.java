@@ -1,12 +1,15 @@
 package com.github.alexthe666.iceandfire.entity.props;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
+import com.github.alexthe666.iceandfire.message.IafNetwork;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
-public class EntityData {
+public class EntityData implements ValueIOSerializable {
     public FrozenData frozenData = new FrozenData();
     public ChainData chainData = new ChainData();
     public SirenData sirenData = new SirenData();
@@ -26,11 +29,7 @@ public class EntityData {
         triggerClientUpdate = miscData.doesClientNeedUpdate() || triggerClientUpdate;
 
         if (triggerClientUpdate && !entity.level().isClientSide()) {
-            if (entity instanceof ServerPlayer serverPlayer) {
-                IceAndFire.NETWORK_WRAPPER.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer), new SyncEntityData(entity.getId(), serialize()));
-            } else {
-                IceAndFire.NETWORK_WRAPPER.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new SyncEntityData(entity.getId(), serialize()));
-            }
+            IafNetwork.sendToAll(new SyncEntityData(entity.getId(), serialize()));
         }
     }
 
@@ -50,5 +49,15 @@ public class EntityData {
         sirenData.deserialize(tag);
         chickenData.deserialize(tag);
         miscData.deserialize(tag);
+    }
+
+    @Override
+    public void serialize(ValueOutput output) {
+        output.store(serialize());
+    }
+
+    @Override
+    public void deserialize(ValueInput input) {
+        deserialize(EntityDataIO.readLegacyFields(input));
     }
 }

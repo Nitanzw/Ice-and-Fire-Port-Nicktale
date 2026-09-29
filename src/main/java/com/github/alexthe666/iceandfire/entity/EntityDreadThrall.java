@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.entity.ai.DreadAITargetNonDread;
 import com.github.alexthe666.iceandfire.entity.util.*;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
@@ -11,6 +12,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -156,8 +159,8 @@ public class EntityDreadThrall extends EntityDreadMob implements IAnimatedEntity
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        SpawnGroupData data = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        SpawnGroupData data = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.setAnimation(ANIMATION_SPAWN);
         this.populateDefaultEquipmentSlots(worldIn.getRandom(), difficultyIn);
         return data;
@@ -174,23 +177,30 @@ public class EntityDreadThrall extends EntityDreadMob implements IAnimatedEntity
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag compound = new CompoundTag();
+
         compound.putInt("ArmorVariant", getBodyArmorVariant());
         compound.putBoolean("HasCustomHelmet", hasCustomArmorHead());
         compound.putBoolean("HasCustomChestplate", hasCustomArmorChest());
         compound.putBoolean("HasCustomLeggings", hasCustomArmorLegs());
         compound.putBoolean("HasCustomBoots", hasCustomArmorFeet());
+
+        output.store(compound);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag compound = EntityDataIO.readLegacyFields(input);
+
         setBodyArmorVariant(compound.getInt("ArmorVariant"));
         setCustomArmorHead(compound.getBoolean("HasCustomHelmet"));
         setCustomArmorChest(compound.getBoolean("HasCustomChestplate"));
         setCustomArmorLegs(compound.getBoolean("HasCustomLeggings"));
         setCustomArmorFeet(compound.getBoolean("HasCustomBoots"));
+
     }
 
     @Override

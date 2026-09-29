@@ -4,23 +4,19 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Fireball;
+import net.minecraft.world.entity.projectile.hurtingprojectile.Fireball;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.NetworkHooks;
-import net.neoforged.neoforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityPixieCharge extends Fireball {
@@ -33,12 +29,7 @@ public class EntityPixieCharge extends Fireball {
         rgb = EntityPixie.PARTICLE_RGB[random.nextInt(EntityPixie.PARTICLE_RGB.length - 1)];
     }
 
-
-    public EntityPixieCharge(PlayMessages.SpawnEntity spawnEntity, Level worldIn) {
-        this(IafEntityRegistry.PIXIE_CHARGE.get(), worldIn);
-    }
-
-    public EntityPixieCharge(EntityType<? extends Fireball> t, Level worldIn, double posX, double posY,
+public EntityPixieCharge(EntityType<? extends Fireball> t, Level worldIn, double posX, double posY,
                              double posZ, double accelX, double accelY, double accelZ) {
         super(t, posX, posY, posZ, accelX, accelY, accelZ, worldIn);
         double d0 = Math.sqrt(accelX * accelX + accelY * accelY + accelZ * accelZ);
@@ -58,12 +49,7 @@ public class EntityPixieCharge extends Fireball {
         rgb = EntityPixie.PARTICLE_RGB[random.nextInt(EntityPixie.PARTICLE_RGB.length - 1)];
     }
 
-    @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
+@Override
     protected boolean shouldBurn() {
         return false;
     }

@@ -3,8 +3,6 @@ package com.github.alexthe666.iceandfire.entity;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -15,15 +13,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.NetworkHooks;
-import net.neoforged.neoforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -48,11 +44,7 @@ public class EntityGhostSword extends AbstractArrow {
         this.setBaseDamage(dmg);
     }
 
-    public EntityGhostSword(PlayMessages.SpawnEntity spawnEntity, Level worldIn) {
-        this(IafEntityRegistry.GHOST_SWORD.get(), worldIn);
-    }
-
-    @Override
+@Override
     public boolean isInWater() {
         return false;
     }
@@ -148,12 +140,7 @@ public class EntityGhostSword extends AbstractArrow {
         return ItemStack.EMPTY;
     }
 
-    @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    private IntOpenHashSet piercedEntities;
+private IntOpenHashSet piercedEntities;
     private List<Entity> hitEntities;
     private int knockbackStrength;
 

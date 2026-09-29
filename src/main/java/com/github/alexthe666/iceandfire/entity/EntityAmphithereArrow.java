@@ -3,16 +3,12 @@ package com.github.alexthe666.iceandfire.entity;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.NetworkHooks;
-import net.neoforged.neoforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityAmphithereArrow extends AbstractArrow {
@@ -29,22 +25,12 @@ public class EntityAmphithereArrow extends AbstractArrow {
         this.setBaseDamage(2.5F);
     }
 
-    public EntityAmphithereArrow(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(IafEntityRegistry.AMPHITHERE_ARROW.get(), world);
-    }
-
-    public EntityAmphithereArrow(EntityType type, LivingEntity shooter, Level worldIn) {
+public EntityAmphithereArrow(EntityType type, LivingEntity shooter, Level worldIn) {
         super(type, shooter, worldIn);
         this.setBaseDamage(2.5F);
     }
 
-
-    @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
+@Override
     public void tick() {
         super.tick();
         if ((tickCount == 1 || this.tickCount % 70 == 0) && !this.inGround && !this.onGround()) {

@@ -1,9 +1,12 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.util.IBlacklistedFromStatues;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -125,14 +128,18 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag tag = new CompoundTag();
+
         tag.putInt("CrackAmount", this.getCrackAmount());
         tag.putFloat("StatueWidth", this.getTrappedWidth());
         tag.putFloat("StatueHeight", this.getTrappedHeight());
         tag.putFloat("StatueScale", this.getTrappedScale());
         tag.putString("StatueEntityType", this.getTrappedEntityTypeString());
         tag.put("StatueEntityTag", this.getTrappedTag());
+
+        output.store(tag);
     }
 
     @Override
@@ -141,8 +148,10 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag tag = EntityDataIO.readLegacyFields(input);
+
         this.setCrackAmount(tag.getByte("CrackAmount"));
         this.setTrappedEntityWidth(tag.getFloat("StatueWidth"));
         this.setTrappedHeight(tag.getFloat("StatueHeight"));
@@ -152,6 +161,7 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
             this.setTrappedTag(tag.getCompound("StatueEntityTag"));
 
         }
+
     }
 
     @Override

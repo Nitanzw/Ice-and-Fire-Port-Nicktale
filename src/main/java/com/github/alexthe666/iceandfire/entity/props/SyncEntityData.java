@@ -1,36 +1,42 @@
+/*
+ * Ice and Fire NeoForge port
+ * SPDX-License-Identifier: LGPL-3.0-or-later
+ */
 package com.github.alexthe666.iceandfire.entity.props;
 
+import com.github.alexthe666.iceandfire.IceAndFire;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.NetworkDirection;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.function.Supplier;
+/** Server-to-client update for custom state attached to a living entity. */
+public record SyncEntityData(int entityId, CompoundTag tag) implements CustomPacketPayload {
+    public static final Type<SyncEntityData> TYPE = new Type<>(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "sync_entity_data"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, CompoundTag> TAG_CODEC =
+        ByteBufCodecs.fromCodecWithRegistries(CompoundTag.CODEC);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncEntityData> STREAM_CODEC = StreamCodec.composite(
+        ByteBufCodecs.VAR_INT, SyncEntityData::entityId,
+        TAG_CODEC, SyncEntityData::tag,
+        SyncEntityData::new);
 
-public record SyncEntityData(int entityId, CompoundTag tag) {
-    public void encode(final FriendlyByteBuf buffer) {
-        buffer.writeInt(entityId);
-        buffer.writeNbt(tag);
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
-    public static SyncEntityData decode(final FriendlyByteBuf buffer) {
-        return new SyncEntityData(buffer.readInt(), buffer.readNbt());
-    }
-
-    public static void handle(final SyncEntityData message, final Supplier<NetworkEvent.Context> contextSupplier) {
-        NetworkEvent.Context context = contextSupplier.get();
-
-        if (context.getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
-            context.enqueueWork(() -> {
-                Player localPlayer = CapabilityHandler.getLocalPlayer();
-
-                if (localPlayer != null) {
-                    EntityDataProvider.getCapability(localPlayer.level().getEntity(message.entityId)).ifPresent(data -> data.deserialize(message.tag));
-                }
-            });
-        }
-
-        context.setPacketHandled(true);
+    public static void handle(SyncEntityData message, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Player player = context.player();
+            if (player != null) {
+                Entity entity = player.level().getEntity(message.entityId());
+                EntityDataProvider.getCapability(entity).ifPresent(data -> data.deserialize(message.tag()));
+            }
+        });
     }
 }

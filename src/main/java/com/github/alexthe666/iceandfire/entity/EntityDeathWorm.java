@@ -4,6 +4,7 @@ import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.citadel.server.entity.collision.ICustomCollisions;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.api.event.GenericGriefEvent;
@@ -21,6 +22,8 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -51,12 +54,12 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.MinecraftForge;
@@ -97,9 +100,9 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
 
     public EntityDeathWorm(EntityType<EntityDeathWorm> type, Level worldIn) {
         super(type, worldIn);
-        setPathfindingMalus(BlockPathTypes.OPEN, 2.0f); // FIXME :: Death worms are trying to go upwards -> figure out why (or if this really helps)
-        setPathfindingMalus(BlockPathTypes.WATER, 4.0f);
-        setPathfindingMalus(BlockPathTypes.WATER_BORDER, 4.0f);
+        setPathfindingMalus(PathType.OPEN, 2.0f); // FIXME :: Death worms are trying to go upwards -> figure out why (or if this really helps)
+        setPathfindingMalus(PathType.WATER, 4.0f);
+        setPathfindingMalus(PathType.WATER_BORDER, 4.0f);
         this.lookHelper = new IAFLookHelper(this);
         this.noCulling = true;
         if (worldIn.isClientSide()) {
@@ -294,19 +297,25 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag compound = new CompoundTag();
+
         compound.putInt("Variant", this.getVariant());
         compound.putInt("GrowthCounter", this.growthCounter);
         compound.putFloat("Scale", this.getDeathwormScale());
         compound.putInt("WormAge", this.getWormAge());
         compound.putLong("WormHome", this.getWormHome().asLong());
         compound.putBoolean("WillExplode", this.willExplode);
+
+        output.store(compound);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag compound = EntityDataIO.readLegacyFields(input);
+
         this.setVariant(compound.getInt("Variant"));
         this.growthCounter = compound.getInt("GrowthCounter");
         this.setDeathWormScale(compound.getFloat("Scale"));
@@ -314,6 +323,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         this.setWormHome(BlockPos.of(compound.getLong("WormHome")));
         this.willExplode = compound.getBoolean("WillExplode");
         this.setConfigurableAttributes();
+
     }
 
     private void setStateField(int i, boolean newState) {
@@ -390,8 +400,8 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.setVariant(this.getRandom().nextInt(3));
         float size = 0.25F + (float) (Math.random() * 0.35F);
         this.setDeathWormScale(this.getRandom().nextInt(20) == 0 ? size * 4 : size);
@@ -446,14 +456,14 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
         if (source.is(DamageTypes.IN_WALL) || source.is(DamageTypes.FALLING_BLOCK)) {
             return false;
         }
         if (this.isVehicle() && source.getEntity() != null && this.getControllingPassenger() != null && source.getEntity() == this.getControllingPassenger()) {
             return false;
         }
-        return super.hurt(source, amount);
+        return super.hurtServer(level, source, amount);
     }
 
     @Override

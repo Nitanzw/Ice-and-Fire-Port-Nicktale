@@ -2,6 +2,8 @@ package com.github.alexthe666.iceandfire.entity.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.Level;
 
 
@@ -47,6 +49,25 @@ public class HomePosition {
         if (dimension != null)
             compound.putString("HomeDimension", this.dimension);
         return compound;
+    }
+
+    public void write(ValueOutput output) {
+        output.putInt("HomeAreaX", this.x);
+        output.putInt("HomeAreaY", this.y);
+        output.putInt("HomeAreaZ", this.z);
+        if (this.dimension != null) {
+            output.putString("HomeDimension", this.dimension);
+        }
+    }
+
+    public HomePosition read(ValueInput input, Level world) {
+        this.x = input.getIntOr("HomeAreaX", this.x);
+        this.y = input.getIntOr("HomeAreaY", this.y);
+        this.z = input.getIntOr("HomeAreaZ", this.z);
+        this.dimension = input.getString("HomeDimension").orElseGet(() ->
+            this.dimension == null ? DragonUtils.getDimensionName(world) : this.dimension);
+        this.pos = new BlockPos(this.x, this.y, this.z);
+        return this;
     }
 
     public HomePosition read(CompoundTag compound, Level world) {

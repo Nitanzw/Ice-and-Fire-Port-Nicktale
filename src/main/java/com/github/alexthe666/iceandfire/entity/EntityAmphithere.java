@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.client.model.IFChainBuffer;
 import com.github.alexthe666.iceandfire.datagen.tags.IafItemTags;
@@ -15,6 +16,8 @@ import com.github.alexthe666.iceandfire.pathfinding.PathNavigateFlyingCreature;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -120,7 +123,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
         return pos;
     }
 
-    public static boolean canAmphithereSpawnOn(EntityType<EntityAmphithere> parrotIn, ServerLevelAccessor worldIn, MobSpawnType reason, BlockPos p_223317_3_, RandomSource random) {
+    public static boolean canAmphithereSpawnOn(EntityType<EntityAmphithere> parrotIn, ServerLevelAccessor worldIn, EntitySpawnReason reason, BlockPos p_223317_3_, RandomSource random) {
         BlockState blockState = worldIn.getBlockState(p_223317_3_.below());
         Block block = blockState.getBlock();
         return (blockState.is(BlockTags.LEAVES)
@@ -279,14 +282,14 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float damage) {
+    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
         if (!this.isTame() && this.isFlying() && !onGround() && source.is(DamageTypeTags.IS_PROJECTILE) && !level().isClientSide()) {
             this.isFallen = true;
         }
         if (source.getEntity() instanceof LivingEntity && source.getEntity().isPassengerOfSameVehicle(this) && this.isTame() && this.isOwnedBy((LivingEntity) source.getEntity())) {
             return false;
         }
-        return super.hurt(source, damage);
+        return super.hurtServer(level, source, damage);
     }
 
     @Override
@@ -602,8 +605,10 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        CompoundTag compound = new CompoundTag();
+
         compound.putInt("Variant", this.getVariant());
         compound.putBoolean("Flying", this.isFlying());
         compound.putInt("FlightCooldown", flightCooldown);
@@ -615,11 +620,15 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
             compound.putInt("HomeAreaZ", homePos.getZ());
         }
         compound.putInt("Command", this.getCommand());
+
+        output.store(compound);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        CompoundTag compound = EntityDataIO.readLegacyFields(input);
+
         this.setVariant(compound.getInt("Variant"));
         this.setFlying(compound.getBoolean("Flying"));
         flightCooldown = compound.getInt("FlightCooldown");
@@ -630,6 +639,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
         }
         this.setCommand(compound.getInt("Command"));
         this.setConfigurableAttributes();
+
     }
 
     //TODO: Create entity placements
@@ -921,8 +931,8 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
 
     @Override
     @Nullable
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull EntitySpawnReason reason, @Nullable SpawnGroupData spawnDataIn) {
+        spawnDataIn = super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
         this.setVariant(this.getRandom().nextInt(5));
         return spawnDataIn;
     }

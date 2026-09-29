@@ -2,15 +2,11 @@ package com.github.alexthe666.iceandfire.entity;
 
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.NetworkHooks;
-import net.neoforged.neoforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 
 public class EntitySeaSerpentArrow extends AbstractArrow {
@@ -27,17 +23,8 @@ public class EntitySeaSerpentArrow extends AbstractArrow {
         this.setBaseDamage(3F);
     }
 
-    public EntitySeaSerpentArrow(PlayMessages.SpawnEntity spawnEntity, Level world) {
-        this(IafEntityRegistry.SEA_SERPENT_ARROW.get(), world);
-    }
 
-    @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-
-    public EntitySeaSerpentArrow(EntityType t, Level worldIn, LivingEntity shooter) {
+public EntitySeaSerpentArrow(EntityType t, Level worldIn, LivingEntity shooter) {
         super(t, shooter, worldIn);
         this.setBaseDamage(3F);
     }
