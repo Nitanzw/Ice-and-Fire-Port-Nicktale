@@ -126,8 +126,46 @@ public abstract class DragonTabulaModelAnimator extends IceAndFireTabulaModelAni
             model.chainSwing(neckParts, speed_shake * 0.65F, degree_shake * 0.1F, 1, ageInTicks, 1);
         }
 
+        if (entity.breathingFire && !entity.vehicle && !entity.passenger) {
+            applyYawBuffer(neckParts, entity.turnBufferYawDegrees, true);
+        }
+        if (!entity.passenger) {
+            applyYawBuffer(tailPartsWBody, entity.tailBufferYawDegrees, false);
+        }
+        if (entity.flyProgress > 0.0F || entity.hoverProgress > 0.0F) {
+            AdvancedModelBox bodyUpper = model.getCube("BodyUpper");
+            if (bodyUpper != null) {
+                bodyUpper.rotateAngleZ += degreesToRadians(entity.rollBufferYawDegrees);
+                bodyUpper.rotateAngleX += degreesToRadians(entity.pitchBufferBodyPitchDegrees);
+            }
+            applyPitchBuffer(tailPartsWBody, entity.pitchBufferPitchDegrees, true);
+        }
 
         // Pose progression, cycle poses, and keyframe clips are derived from the render snapshot.
+    }
+
+    private static void applyYawBuffer(AdvancedModelBox[] boxes, float degrees, boolean reverse) {
+        if (degrees == 0.0F || boxes.length == 0) {
+            return;
+        }
+        float amount = degreesToRadians(degrees) / boxes.length * (reverse ? -1.0F : 1.0F);
+        for (AdvancedModelBox box : boxes) {
+            box.rotateAngleY += amount;
+        }
+    }
+
+    private static void applyPitchBuffer(AdvancedModelBox[] boxes, float degrees, boolean reverse) {
+        if (degrees == 0.0F || boxes.length == 0) {
+            return;
+        }
+        float amount = degreesToRadians(degrees) / boxes.length * (reverse ? -1.0F : 1.0F);
+        for (AdvancedModelBox box : boxes) {
+            box.rotateAngleX += amount;
+        }
+    }
+
+    private static float degreesToRadians(float degrees) {
+        return (float) Math.toRadians(degrees);
     }
 
 

@@ -66,21 +66,31 @@ public class LayerBipedArmor<T extends LivingEntity & IAnimatedEntity,
         switch (slotIn) {
             case HEAD:
                 modelIn.head.invisible = false;
+                modelIn.head.showSelf = true;
                 modelIn.headware.invisible = false;
+                modelIn.headware.showSelf = true;
                 break;
             case CHEST:
                 modelIn.body.invisible = false;
+                modelIn.body.showSelf = true;
                 modelIn.armRight.invisible = false;
+                modelIn.armRight.showSelf = true;
                 modelIn.armLeft.invisible = false;
+                modelIn.armLeft.showSelf = true;
                 break;
             case LEGS:
                 modelIn.body.invisible = false;
+                modelIn.body.showSelf = true;
                 modelIn.legRight.invisible = false;
+                modelIn.legRight.showSelf = true;
                 modelIn.legLeft.invisible = false;
+                modelIn.legLeft.showSelf = true;
                 break;
             case FEET:
                 modelIn.legRight.invisible = false;
+                modelIn.legRight.showSelf = true;
                 modelIn.legLeft.invisible = false;
+                modelIn.legLeft.showSelf = true;
         }
     }
 

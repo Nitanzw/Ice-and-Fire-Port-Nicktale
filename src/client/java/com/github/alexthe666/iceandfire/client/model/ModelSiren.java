@@ -248,9 +248,7 @@ public class ModelSiren extends ModelDragonBase<SirenRenderState> {
         }else{
             this.faceTarget(f3, f4, 2, Neck, Head);
         }
-        if(entity.tail_buffer != null){
-            entity.tail_buffer.applyChainSwingBuffer(TAIL_NO_BASE);
-        }
+        applyChainYawToY(entity.tail_buffer, TAIL_NO_BASE);
     }
 
 }

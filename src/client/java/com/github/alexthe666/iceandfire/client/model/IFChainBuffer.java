@@ -240,9 +240,9 @@ public class IFChainBuffer {
      *
      * @param boxes the box array
      */
-    public void applyChainSwingBuffer(BasicModelPart... boxes) {
+    public void applyChainSwingBuffer(AdvancedModelBox... boxes) {
         float rotateAmount = 0.01745329251F * Mth.lerp(getPartialTicks(), this.prevYawVariation, this.yawVariation) / boxes.length;
-        for (BasicModelPart box : boxes) {
+        for (AdvancedModelBox box : boxes) {
             box.rotateAngleY += rotateAmount;
         }
     }
@@ -252,9 +252,9 @@ public class IFChainBuffer {
      *
      * @param boxes the box array
      */
-    public void applyChainWaveBuffer(BasicModelPart... boxes) {
+    public void applyChainWaveBuffer(AdvancedModelBox... boxes) {
         float rotateAmount = 0.01745329251F * Mth.lerp(getPartialTicks(), this.prevYawVariation, this.yawVariation) / boxes.length;
-        for (BasicModelPart box : boxes) {
+        for (AdvancedModelBox box : boxes) {
             box.rotateAngleX += rotateAmount;
         }
     }
@@ -264,9 +264,9 @@ public class IFChainBuffer {
      *
      * @param boxes the box array
      */
-    public void applyChainFlapBuffer(BasicModelPart... boxes) {
+    public void applyChainFlapBuffer(AdvancedModelBox... boxes) {
         float rotateAmount = 0.01745329251F * Mth.lerp(getPartialTicks(), this.prevYawVariation, this.yawVariation) / boxes.length;
-        for (BasicModelPart box : boxes) {
+        for (AdvancedModelBox box : boxes) {
             box.rotateAngleZ += rotateAmount;
         }
     }
@@ -276,23 +276,23 @@ public class IFChainBuffer {
      *
      * @param boxes the box array
      */
-    public void applyChainFlapBufferReverse(BasicModelPart... boxes) {
+    public void applyChainFlapBufferReverse(AdvancedModelBox... boxes) {
         float rotateAmount = 0.01745329251F * Mth.lerp(getPartialTicks(), this.prevYawVariation, this.yawVariation) / boxes.length;
-        for (BasicModelPart box : boxes) {
+        for (AdvancedModelBox box : boxes) {
             box.rotateAngleZ -= rotateAmount * 0.5F;
         }
     }
 
-    public void applyChainSwingBufferReverse(BasicModelPart... boxes) {
+    public void applyChainSwingBufferReverse(AdvancedModelBox... boxes) {
         float rotateAmount = 0.01745329251F * Mth.lerp(getPartialTicks(), this.prevYawVariation, this.yawVariation) / boxes.length;
-        for (BasicModelPart box : boxes) {
+        for (AdvancedModelBox box : boxes) {
             box.rotateAngleY -= rotateAmount;
         }
     }
 
-    public void applyChainWaveBufferReverse(BasicModelPart... boxes) {
+    public void applyChainWaveBufferReverse(AdvancedModelBox... boxes) {
         float rotateAmount = 0.01745329251F * Mth.lerp(getPartialTicks(), this.prevYawVariation, this.yawVariation) / boxes.length;
-        for (BasicModelPart box : boxes) {
+        for (AdvancedModelBox box : boxes) {
             box.rotateAngleX -= rotateAmount;
         }
     }

@@ -45,7 +45,7 @@ public class RenderMobSkull extends EntityRenderer<EntityMobSkull> {
         this.hydraModel = new ModelHydraHead(0);
     }
 
-    private static void setRotationAngles(BasicModelPart cube, float rotX, float rotY, float rotZ) {
+    private static void setRotationAngles(AdvancedModelBox cube, float rotX, float rotY, float rotZ) {
         cube.rotateAngleX = rotX;
         cube.rotateAngleY = rotY;
         cube.rotateAngleZ = rotZ;
