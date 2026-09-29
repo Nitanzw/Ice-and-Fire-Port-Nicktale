@@ -8,19 +8,18 @@ import com.github.alexthe666.iceandfire.enums.EnumSeaSerpent;
 import com.github.alexthe666.iceandfire.enums.EnumTroll;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.item.ItemDragonArmor;
-import net.minecraft.data.PackOutput;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.common.Tags;
-import net.minecraft.data.recipes.RecipeOutput;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -54,7 +53,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void createShaped(@NotNull final RecipeOutput consumer) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, IafItemRegistry.AMPHITHERE_ARROW.get(), 4)
+        this.shaped(RecipeCategory.COMBAT, IafItemRegistry.AMPHITHERE_ARROW.get(), 4)
                 .pattern("X")
                 .pattern("#")
                 .pattern("Y")
@@ -64,7 +63,7 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafItemRegistry.AMPHITHERE_FEATHER.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, IafItemRegistry.AMPHITHERE_MACUAHUITL.get())
+        this.shaped(RecipeCategory.COMBAT, IafItemRegistry.AMPHITHERE_MACUAHUITL.get())
                 .pattern("OXO")
                 .pattern("FXF")
                 .pattern("OSO")
@@ -75,7 +74,7 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafItemRegistry.AMPHITHERE_FEATHER.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.CHARCOAL)
+        this.shaped(RecipeCategory.MISC, Items.CHARCOAL)
                 .pattern("BBB")
                 .pattern("BBB")
                 .pattern("BBB")
@@ -83,14 +82,14 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafBlockRegistry.ASH.get()))
                 .save(consumer, location("ash_to_charcoal"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafItemRegistry.BLINDFOLD.get())
+        this.shaped(RecipeCategory.MISC, IafItemRegistry.BLINDFOLD.get())
                 .pattern("SLS")
                 .define('L', Tags.Items.LEATHER)
                 .define('S', Tags.Items.STRING)
                 .unlockedBy("has_item", has(Tags.Items.LEATHER))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafItemRegistry.CHAIN.get())
+        this.shaped(RecipeCategory.MISC, IafItemRegistry.CHAIN.get())
                 .pattern("S")
                 .pattern("S")
                 .pattern("S")
@@ -106,7 +105,7 @@ public class IafRecipes extends RecipeProvider {
                 Items.CHAINMAIL_BOOTS
         );
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, IafItemRegistry.ITEM_COCKATRICE_SCEPTER.get())
+        this.shaped(RecipeCategory.COMBAT, IafItemRegistry.ITEM_COCKATRICE_SCEPTER.get())
                 .pattern("S")
                 .pattern("E")
                 .pattern("W")
@@ -131,7 +130,7 @@ public class IafRecipes extends RecipeProvider {
                 IafItemRegistry.COPPER_HOE.get()
         );
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, IafItemRegistry.DEATHWORM_GAUNTLET_RED.get())
+        this.shaped(RecipeCategory.COMBAT, IafItemRegistry.DEATHWORM_GAUNTLET_RED.get())
                 .pattern(" T ")
                 .pattern("CHC")
                 .pattern("CCC")
@@ -141,7 +140,7 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafItemRegistry.DEATHWORM_TOUNGE.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, IafItemRegistry.DEATHWORM_GAUNTLET_WHITE.get())
+        this.shaped(RecipeCategory.COMBAT, IafItemRegistry.DEATHWORM_GAUNTLET_WHITE.get())
                 .pattern(" T ")
                 .pattern("CHC")
                 .pattern("CCC")
@@ -151,7 +150,7 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafItemRegistry.DEATHWORM_TOUNGE.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, IafItemRegistry.DEATHWORM_GAUNTLET_YELLOW.get())
+        this.shaped(RecipeCategory.COMBAT, IafItemRegistry.DEATHWORM_GAUNTLET_YELLOW.get())
                 .pattern(" T ")
                 .pattern("CHC")
                 .pattern("CCC")
@@ -210,21 +209,21 @@ public class IafRecipes extends RecipeProvider {
                 IafItemRegistry.DRAGONARMOR_DIAMOND_3.get()
         );
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT,IafItemRegistry.IRON_HIPPOGRYPH_ARMOR.get())
+        this.shaped(RecipeCategory.COMBAT,IafItemRegistry.IRON_HIPPOGRYPH_ARMOR.get())
                 .pattern("FDF")
                 .define('F', Tags.Items.FEATHERS)
                 .define('D', Items.IRON_HORSE_ARMOR)
                 .unlockedBy("has_item", has(Items.IRON_HORSE_ARMOR))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT,IafItemRegistry.GOLD_HIPPOGRYPH_ARMOR.get())
+        this.shaped(RecipeCategory.COMBAT,IafItemRegistry.GOLD_HIPPOGRYPH_ARMOR.get())
                 .pattern("FDF")
                 .define('F', Tags.Items.FEATHERS)
                 .define('D', Items.GOLDEN_HORSE_ARMOR)
                 .unlockedBy("has_item", has(Items.GOLDEN_HORSE_ARMOR))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT,IafItemRegistry.DIAMOND_HIPPOGRYPH_ARMOR.get())
+        this.shaped(RecipeCategory.COMBAT,IafItemRegistry.DIAMOND_HIPPOGRYPH_ARMOR.get())
                 .pattern("FDF")
                 .define('F', Tags.Items.FEATHERS)
                 .define('D', Items.DIAMOND_HORSE_ARMOR)
@@ -235,14 +234,14 @@ public class IafRecipes extends RecipeProvider {
                 , locationString("dragon_bone_block"), null
                 , locationString("dragonbone"), null);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafBlockRegistry.DRAGON_BONE_BLOCK_WALL.get())
+        this.shaped(RecipeCategory.MISC, IafBlockRegistry.DRAGON_BONE_BLOCK_WALL.get())
                 .pattern("BBB")
                 .pattern("BBB")
                 .define('B', IafItemRegistry.DRAGON_BONE.get())
                 .unlockedBy("has_item", has(IafItemRegistry.DRAGON_BONE.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafItemRegistry.DRAGON_FLUTE.get())
+        this.shaped(RecipeCategory.MISC, IafItemRegistry.DRAGON_FLUTE.get())
                 .pattern("B  ")
                 .pattern(" B ")
                 .pattern("  I")
@@ -251,7 +250,7 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafItemRegistry.DRAGON_BONE.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafItemRegistry.DRAGON_HORN.get())
+        this.shaped(RecipeCategory.MISC, IafItemRegistry.DRAGON_HORN.get())
                 .pattern("  B")
                 .pattern(" BB")
                 .pattern("IB ")
@@ -260,14 +259,14 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafItemRegistry.DRAGON_BONE.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafBlockRegistry.DRAGON_ICE_SPIKES.get(), 4)
+        this.shaped(RecipeCategory.MISC, IafBlockRegistry.DRAGON_ICE_SPIKES.get(), 4)
                 .pattern("I I")
                 .pattern("I I")
                 .define('I', IafBlockRegistry.DRAGON_ICE.get())
                 .unlockedBy("has_item", has(IafBlockRegistry.DRAGON_ICE.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafBlockRegistry.NEST.get(), 8)
+        this.shaped(RecipeCategory.MISC, IafBlockRegistry.NEST.get(), 8)
                 .pattern("HHH")
                 .pattern("HBH")
                 .pattern("HHH")
@@ -276,7 +275,7 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafItemRegistry.DRAGON_BONE.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafItemRegistry.DRAGON_STAFF.get())
+        this.shaped(RecipeCategory.MISC, IafItemRegistry.DRAGON_STAFF.get())
                 .pattern("S")
                 .pattern("T")
                 .pattern("T")
@@ -293,7 +292,7 @@ public class IafRecipes extends RecipeProvider {
                 IafItemRegistry.DRAGONBONE_HOE.get()
         );
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, IafItemRegistry.DRAGON_BOW.get())
+        this.shaped(RecipeCategory.COMBAT, IafItemRegistry.DRAGON_BOW.get())
                 .pattern(" DS")
                 .pattern("W S")
                 .pattern(" DS")
@@ -326,7 +325,7 @@ public class IafRecipes extends RecipeProvider {
         podium(consumer, Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_SLAB, IafBlockRegistry.PODIUM_MANGROVE.get());
         podium(consumer, Blocks.CHERRY_PLANKS, Blocks.CHERRY_SLAB, IafBlockRegistry.PODIUM_CHERRY.get());
         
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafItemRegistry.DRAGON_MEAL.get())
+        this.shaped(RecipeCategory.MISC, IafItemRegistry.DRAGON_MEAL.get())
                 .pattern("BMB")
                 .pattern("MBM")
                 .pattern("BMB")
@@ -442,7 +441,7 @@ public class IafRecipes extends RecipeProvider {
                 IafItemRegistry.DRAGONARMOR_DRAGONSTEEL_LIGHTNING_3.get()
         );
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE.get(), 8)
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE.get(), 8)
                 .pattern("DDD")
                 .pattern("DSD")
                 .pattern("DDD")
@@ -451,21 +450,21 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafItemRegistry.DREAD_SHARD.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_BRICKS.get(), 4)
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_BRICKS.get(), 4)
                 .pattern("DD")
                 .pattern("DD")
                 .define('D', IafBlockRegistry.DREAD_STONE.get())
                 .unlockedBy("has_item", has(IafBlockRegistry.DREAD_STONE.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_BRICKS_CHISELED.get())
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_BRICKS_CHISELED.get())
                 .pattern("D")
                 .pattern("D")
                 .define('D', IafBlockRegistry.DREAD_STONE_BRICKS_SLAB.get())
                 .unlockedBy("has_item", has(IafBlockRegistry.DREAD_STONE_BRICKS_SLAB.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_FACE.get(), 8)
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_FACE.get(), 8)
                 .pattern("DDD")
                 .pattern("DSD")
                 .pattern("DDD")
@@ -474,13 +473,13 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafBlockRegistry.DREAD_STONE_BRICKS.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_BRICKS_SLAB.get(), 6)
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_BRICKS_SLAB.get(), 6)
                 .pattern("DDD")
                 .define('D', IafBlockRegistry.DREAD_STONE_BRICKS.get())
                 .unlockedBy("has_item", has(IafBlockRegistry.DREAD_STONE_BRICKS.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_BRICKS_STAIRS.get(), 4)
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_BRICKS_STAIRS.get(), 4)
                 .pattern("D  ")
                 .pattern("DD ")
                 .pattern("DDD")
@@ -488,7 +487,7 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafBlockRegistry.DREAD_STONE_BRICKS.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_TILE.get(), 8)
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_TILE.get(), 8)
                 .pattern("DDD")
                 .pattern("D D")
                 .pattern("DDD")
@@ -496,7 +495,7 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafBlockRegistry.DREAD_STONE_BRICKS.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_TORCH.get(), 4)
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_TORCH.get(), 4)
                 .pattern("D")
                 .pattern("S")
                 .define('S', Tags.Items.RODS_WOODEN)
@@ -504,7 +503,7 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafItemRegistry.DREAD_SHARD.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafItemRegistry.EARPLUGS.get())
+        this.shaped(RecipeCategory.MISC, IafItemRegistry.EARPLUGS.get())
                 .pattern("B B")
                 .define('B', ItemTags.PLANKS)
                 .unlockedBy("has_item", has(ItemTags.PLANKS))
@@ -517,7 +516,7 @@ public class IafRecipes extends RecipeProvider {
                     type.boots.get()
             );
 
-            ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, type.helmet.get())
+            this.shaped(RecipeCategory.COMBAT, type.helmet.get())
                     .pattern("TTT")
                     .pattern("U U")
                     .define('T', type.leather.get())
@@ -526,7 +525,7 @@ public class IafRecipes extends RecipeProvider {
                     .save(consumer);
         }
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafBlockRegistry.GHOST_CHEST.get())
+        this.shaped(RecipeCategory.MISC, IafBlockRegistry.GHOST_CHEST.get())
                 .pattern(" E ")
                 .pattern("ECE")
                 .pattern(" E ")
@@ -542,7 +541,7 @@ public class IafRecipes extends RecipeProvider {
                 IafItemRegistry.DRAGONARMOR_GOLD_3.get()
         );
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.GRAVEYARD_SOIL.get())
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.GRAVEYARD_SOIL.get())
                 .pattern(" E ")
                 .pattern("ECE")
                 .pattern(" E ")
@@ -551,21 +550,21 @@ public class IafRecipes extends RecipeProvider {
                 .unlockedBy("has_item", has(IafItemRegistry.ECTOPLASM.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafBlockRegistry.MYRMEX_DESERT_RESIN.get())
+        this.shaped(RecipeCategory.MISC, IafBlockRegistry.MYRMEX_DESERT_RESIN.get())
                 .pattern("RR")
                 .pattern("RR")
                 .define('R', IafItemRegistry.MYRMEX_DESERT_RESIN.get())
                 .unlockedBy("has_item", has(IafItemRegistry.MYRMEX_DESERT_RESIN.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, IafBlockRegistry.MYRMEX_JUNGLE_RESIN.get())
+        this.shaped(RecipeCategory.MISC, IafBlockRegistry.MYRMEX_JUNGLE_RESIN.get())
                 .pattern("RR")
                 .pattern("RR")
                 .define('R', IafItemRegistry.MYRMEX_JUNGLE_RESIN.get())
                 .unlockedBy("has_item", has(IafItemRegistry.MYRMEX_JUNGLE_RESIN.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, IafItemRegistry.SEA_SERPENT_ARROW.get(), 4)
+        this.shaped(RecipeCategory.COMBAT, IafItemRegistry.SEA_SERPENT_ARROW.get(), 4)
                 .pattern("X")
                 .pattern("#")
                 .pattern("Y")
@@ -605,10 +604,10 @@ public class IafRecipes extends RecipeProvider {
                 IafItemRegistry.MYRMEX_JUNGLE_HOE.get()
         );
 
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(IafItemRegistry.RAW_SILVER.get()), RecipeCategory.TOOLS, IafItemRegistry.SILVER_INGOT.get(), 0.7f, 200)
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(IafItemRegistry.RAW_SILVER.get()), RecipeCategory.TOOLS, CookingBookCategory.MISC, IafItemRegistry.SILVER_INGOT.get(), 0.7f, 200)
                 .group("raw_silver")
                 .unlockedBy(getHasName(IafItemRegistry.RAW_SILVER.get()), has(IafItemRegistry.RAW_SILVER.get())).save(consumer, location(getItemName(IafItemRegistry.SILVER_INGOT.get())) + "_from_smelting_" + getItemName(IafItemRegistry.RAW_SILVER.get()));
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(IafItemRegistry.RAW_SILVER.get()), RecipeCategory.TOOLS, IafItemRegistry.SILVER_INGOT.get(), 0.7f, 100)
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(IafItemRegistry.RAW_SILVER.get()), RecipeCategory.TOOLS, CookingBookCategory.MISC, IafItemRegistry.SILVER_INGOT.get(), 0.7f, 100)
                 .group("raw_silver")
                 .unlockedBy(getHasName(IafItemRegistry.RAW_SILVER.get()), has(IafItemRegistry.RAW_SILVER.get())).save(consumer, location(getItemName(IafItemRegistry.SILVER_INGOT.get())) + "_from_blasting_" + getItemName(IafItemRegistry.RAW_SILVER.get()));
         compact(consumer, IafItemRegistry.SILVER_INGOT.get(), IafBlockRegistry.SILVER_BLOCK.get());
@@ -632,7 +631,7 @@ public class IafRecipes extends RecipeProvider {
 
         compact(consumer, IafItemRegistry.SAPPHIRE_GEM.get(), IafBlockRegistry.SAPPHIRE_BLOCK.get());
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, IafItemRegistry.TIDE_TRIDENT.get())
+        this.shaped(RecipeCategory.COMBAT, IafItemRegistry.TIDE_TRIDENT.get())
                 .pattern("TTT")
                 .pattern("SDS")
                 .pattern(" B ")
@@ -645,113 +644,113 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void createShapeless(@NotNull final RecipeOutput consumer) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, IafItemRegistry.AMBROSIA.get())
+        this.shapeless(RecipeCategory.FOOD, IafItemRegistry.AMBROSIA.get())
                 .requires(IafItemRegistry.PIXIE_DUST.get())
                 .requires(Items.BOWL)
                 .unlockedBy("has_item", has(IafItemRegistry.PIXIE_DUST.get()))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.ASH.get())
-                .requires(Ingredient.of(IafItemTags.CHARRED_BLOCKS), 9)
+        this.shapeless(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.ASH.get())
+                .requires(this.tag(IafItemTags.CHARRED_BLOCKS), 9)
                 .unlockedBy("has_item", has(IafItemTags.CHARRED_BLOCKS))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, IafItemRegistry.BESTIARY.get())
+        this.shapeless(RecipeCategory.MISC, IafItemRegistry.BESTIARY.get())
                 .requires(IafItemRegistry.MANUSCRIPT.get(), 3)
                 .unlockedBy("has_item", has(IafItemRegistry.MANUSCRIPT.get()))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, IafItemRegistry.CHAIN_STICKY.get())
+        this.shapeless(RecipeCategory.MISC, IafItemRegistry.CHAIN_STICKY.get())
                 .requires(Tags.Items.SLIMEBALLS)
                 .requires(IafItemRegistry.CHAIN.get())
                 .unlockedBy("has_item", has(IafItemRegistry.CHAIN.get()))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.COPPER_INGOT)
-                .requires(Ingredient.of(IafItemTags.NUGGETS_COPPER), 9)
+        this.shapeless(RecipeCategory.MISC, Items.COPPER_INGOT)
+                .requires(this.tag(IafItemTags.NUGGETS_COPPER), 9)
                 .unlockedBy("has_item", has(IafItemTags.NUGGETS_COPPER))
                 .save(consumer, location("copper_nuggets_to_ingot"));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, IafItemRegistry.COPPER_NUGGET.get(), 9)
+        this.shapeless(RecipeCategory.MISC, IafItemRegistry.COPPER_NUGGET.get(), 9)
                 .requires(Tags.Items.INGOTS_COPPER)
                 .unlockedBy("has_item", has(Tags.Items.INGOTS_COPPER))
                 .save(consumer, location("copper_ingot_to_nuggets"));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.DECORATIONS, IafBlockRegistry.COPPER_PILE.get())
-                .requires(Ingredient.of(IafItemTags.NUGGETS_COPPER), 2)
+        this.shapeless(RecipeCategory.DECORATIONS, IafBlockRegistry.COPPER_PILE.get())
+                .requires(this.tag(IafItemTags.NUGGETS_COPPER), 2)
                 .unlockedBy("has_item", has(IafItemTags.NUGGETS_COPPER))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, IafBlockRegistry.DRAGON_ICE.get())
-                .requires(Ingredient.of(IafItemTags.FROZEN_BLOCKS), 9)
+        this.shapeless(RecipeCategory.MISC, IafBlockRegistry.DRAGON_ICE.get())
+                .requires(this.tag(IafItemTags.FROZEN_BLOCKS), 9)
                 .unlockedBy("has_item", has(IafItemTags.FROZEN_BLOCKS))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.BONE_MEAL, 5)
+        this.shapeless(RecipeCategory.MISC, Items.BONE_MEAL, 5)
                 .requires(IafItemTags.MOB_SKULLS)
                 .unlockedBy("has_item", has(IafItemTags.MOB_SKULLS))
                 .save(consumer, location("skull_to_bone_meal"));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, IafItemRegistry.DRAGONBONE_ARROW.get(), 5)
+        this.shapeless(RecipeCategory.COMBAT, IafItemRegistry.DRAGONBONE_ARROW.get(), 5)
                 .requires(IafItemRegistry.DRAGON_BONE.get())
                 .requires(IafItemRegistry.WITHER_SHARD.get())
                 .unlockedBy("has_item", has(IafItemRegistry.WITHER_SHARD.get()))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_BRICKS_MOSSY.get())
+        this.shapeless(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREAD_STONE_BRICKS_MOSSY.get())
                 .requires(Items.VINE)
                 .requires(IafBlockRegistry.DREAD_STONE_BRICKS.get())
                 .unlockedBy("has_item", has(IafBlockRegistry.DREAD_STONE_BRICKS.get()))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREADWOOD_PLANKS.get(), 4)
+        this.shapeless(RecipeCategory.BUILDING_BLOCKS, IafBlockRegistry.DREADWOOD_PLANKS.get(), 4)
                 .requires(IafBlockRegistry.DREADWOOD_LOG.get())
                 .unlockedBy("has_item", has(IafBlockRegistry.DREADWOOD_LOG.get()))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, IafItemRegistry.FIRE_STEW.get())
+        this.shapeless(RecipeCategory.FOOD, IafItemRegistry.FIRE_STEW.get())
                 .requires(Items.BOWL)
                 .requires(Items.BLAZE_ROD)
                 .requires(IafBlockRegistry.FIRE_LILY.get())
                 .unlockedBy("has_item", has(IafBlockRegistry.FIRE_LILY.get()))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, IafItemRegistry.FROST_STEW.get())
+        this.shapeless(RecipeCategory.FOOD, IafItemRegistry.FROST_STEW.get())
                 .requires(Items.BOWL)
                 .requires(Items.PRISMARINE_CRYSTALS)
                 .requires(IafBlockRegistry.FROST_LILY.get())
                 .unlockedBy("has_item", has(IafBlockRegistry.FROST_LILY.get()))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, IafBlockRegistry.GOLD_PILE.get())
-                .requires(Ingredient.of(Tags.Items.NUGGETS_GOLD), 2)
+        this.shapeless(RecipeCategory.FOOD, IafBlockRegistry.GOLD_PILE.get())
+                .requires(this.tag(Tags.Items.NUGGETS_GOLD), 2)
                 .unlockedBy("has_item", has(Tags.Items.NUGGETS_GOLD))
                 .save(consumer);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, Items.GRAVEL)
-                .requires(Ingredient.of(IafItemTags.CRACKLED_BLOCKS), 9)
+        this.shapeless(RecipeCategory.BUILDING_BLOCKS, Items.GRAVEL)
+                .requires(this.tag(IafItemTags.CRACKLED_BLOCKS), 9)
                 .unlockedBy("has_item", has(IafItemTags.CRACKLED_BLOCKS))
                 .save(consumer, location("crackled_to_gravel"));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, IafItemRegistry.DRAGONBONE_SWORD_FIRE.get())
+        this.shapeless(RecipeCategory.COMBAT, IafItemRegistry.DRAGONBONE_SWORD_FIRE.get())
                 .requires(IafItemRegistry.DRAGONBONE_SWORD.get())
                 .requires(IafItemRegistry.FIRE_DRAGON_BLOOD.get())
                 .unlockedBy("has_item", has(IafItemRegistry.FIRE_DRAGON_BLOOD.get()))
                 .save(consumer, location("dragonbone_sword_fire"));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, IafItemRegistry.DRAGONBONE_SWORD_ICE.get())
+        this.shapeless(RecipeCategory.COMBAT, IafItemRegistry.DRAGONBONE_SWORD_ICE.get())
                 .requires(IafItemRegistry.DRAGONBONE_SWORD.get())
                 .requires(IafItemRegistry.ICE_DRAGON_BLOOD.get())
                 .unlockedBy("has_item", has(IafItemRegistry.ICE_DRAGON_BLOOD.get()))
                 .save(consumer, location("dragonbone_sword_ice"));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, IafItemRegistry.DRAGONBONE_SWORD_LIGHTNING.get())
+        this.shapeless(RecipeCategory.COMBAT, IafItemRegistry.DRAGONBONE_SWORD_LIGHTNING.get())
                 .requires(IafItemRegistry.DRAGONBONE_SWORD.get())
                 .requires(IafItemRegistry.LIGHTNING_DRAGON_BLOOD.get())
                 .unlockedBy("has_item", has(IafItemRegistry.LIGHTNING_DRAGON_BLOOD.get()))
                 .save(consumer, location("dragonbone_sword_lightning"));
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, IafItemRegistry.GHOST_SWORD.get())
+        this.shapeless(RecipeCategory.COMBAT, IafItemRegistry.GHOST_SWORD.get())
                 .requires(IafItemRegistry.DRAGONBONE_SWORD.get())
                 .requires(IafItemRegistry.GHOST_INGOT.get())
                 .unlockedBy("has_item", has(IafItemRegistry.GHOST_INGOT.get()))
@@ -769,15 +768,15 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void toolSet(@NotNull final RecipeOutput consumer, final TagKey<Item> material, final TagKey<Item> handle, final ItemLike... items) {
-        toolSet(consumer, Ingredient.of(material), Ingredient.of(handle), items);
+        toolSet(consumer, this.tag(material), this.tag(handle), items);
     }
 
     private void toolSet(@NotNull final RecipeOutput consumer, final ItemLike material, final TagKey<Item> handle, final ItemLike... items) {
-        toolSet(consumer, Ingredient.of(material), Ingredient.of(handle), items);
+        toolSet(consumer, Ingredient.of(material), this.tag(handle), items);
     }
 
     private void toolSet(@NotNull final RecipeOutput consumer, final TagKey<Item> material, final ItemLike handle, final ItemLike... items) {
-        toolSet(consumer, Ingredient.of(material), Ingredient.of(handle), items);
+        toolSet(consumer, this.tag(material), Ingredient.of(handle), items);
     }
 
     private void toolSet(@NotNull final RecipeOutput consumer, final ItemLike material, final ItemLike handle, final ItemLike... items) {
@@ -805,7 +804,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void armorSet(@NotNull final RecipeOutput consumer, final TagKey<Item> tag, final ItemLike... results) {
-        armorSet(consumer, Ingredient.of(tag), results);
+        armorSet(consumer, this.tag(tag), results);
     }
 
     private void armorSet(@NotNull final RecipeOutput consumer, final ItemLike item, final ItemLike... results) {
@@ -829,7 +828,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void helmet(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
+        this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("###")
                 .pattern("# #")
                 .define('#', ingredient)
@@ -838,7 +837,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void chestPlate(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
+        this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("# #")
                 .pattern("###")
                 .pattern("###")
@@ -848,7 +847,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void leggings(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
+        this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("###")
                 .pattern("# #")
                 .pattern("# #")
@@ -858,7 +857,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void boots(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
+        this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("# #")
                 .pattern("# #")
                 .define('#', ingredient)
@@ -867,7 +866,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void sword(@NotNull final RecipeOutput consumer, final Ingredient material, final Ingredient handle, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, result)
+        this.shaped(RecipeCategory.TOOLS, result)
                 .pattern("M")
                 .pattern("M")
                 .pattern("H")
@@ -878,7 +877,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void pickaxe(@NotNull final RecipeOutput consumer, final Ingredient material, final Ingredient handle, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, result)
+        this.shaped(RecipeCategory.TOOLS, result)
                 .pattern("MMM")
                 .pattern(" H ")
                 .pattern(" H ")
@@ -889,7 +888,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void axe(@NotNull final RecipeOutput consumer, final Ingredient material, final Ingredient handle, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, result)
+        this.shaped(RecipeCategory.TOOLS, result)
                 .pattern("MM")
                 .pattern("MH")
                 .pattern(" H")
@@ -900,7 +899,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void shovel(@NotNull final RecipeOutput consumer, final Ingredient material, final Ingredient handle, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, result)
+        this.shaped(RecipeCategory.TOOLS, result)
                 .pattern("M")
                 .pattern("H")
                 .pattern("H")
@@ -911,7 +910,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void hoe(@NotNull final RecipeOutput consumer, final Ingredient material, final Ingredient handle, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, result)
+        this.shaped(RecipeCategory.TOOLS, result)
                 .pattern("MM")
                 .pattern(" H")
                 .pattern(" H")
@@ -926,7 +925,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void dragonArmorSet(@NotNull final RecipeOutput consumer, final TagKey<Item> tag, final ItemLike... results) {
-        dragonArmorSet(consumer, Ingredient.of(tag), results);
+        dragonArmorSet(consumer, this.tag(tag), results);
     }
 
     private void dragonArmorSet(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike... results) {
@@ -947,7 +946,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void dragonHead(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
+        this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("   ")
                 .pattern(" ##")
                 .pattern("###")
@@ -957,7 +956,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void dragonNeck(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
+        this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("   ")
                 .pattern("###")
                 .pattern(" ##")
@@ -967,7 +966,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void dragonBody(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
+        this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("###")
                 .pattern("###")
                 .pattern("# #")
@@ -977,7 +976,7 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void dragonTail(@NotNull final RecipeOutput consumer, final Ingredient ingredient, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
+        this.shaped(RecipeCategory.COMBAT, result)
                 .pattern("   ")
                 .pattern("  #")
                 .pattern("## ")
@@ -987,18 +986,18 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void forgeBrick(@NotNull final RecipeOutput consumer, final ItemLike brick, final TagKey<Item> scales, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result, 4)
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, result, 4)
                 .pattern("SBS")
                 .pattern("BSB")
                 .pattern("SBS")
-                .define('S', Ingredient.of(scales))
+                .define('S', this.tag(scales))
                 .define('B', brick)
                 .unlockedBy("has_item", has(brick.asItem()))
                 .save(consumer);
     }
 
     private void forgeCore(@NotNull final RecipeOutput consumer, final ItemLike brick, final ItemLike heart, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, result)
                 .pattern("BBB")
                 .pattern("BHB")
                 .pattern("BBB")
@@ -1009,18 +1008,18 @@ public class IafRecipes extends RecipeProvider {
     }
 
     private void forgeInput(@NotNull final RecipeOutput consumer, final ItemLike brick, final TagKey<Item> material, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, result)
                 .pattern("BIB")
                 .pattern("I I")
                 .pattern("BIB")
-                .define('I', Ingredient.of(material))
+                .define('I', this.tag(material))
                 .define('B', brick)
                 .unlockedBy("has_item", has(brick.asItem()))
                 .save(consumer);
     }
 
     private void podium(@NotNull final RecipeOutput consumer, final ItemLike planks, final ItemLike slab, final ItemLike result) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
+        this.shaped(RecipeCategory.BUILDING_BLOCKS, result)
                 .pattern("SPS")
                 .pattern(" P ")
                 .pattern("SPS")
