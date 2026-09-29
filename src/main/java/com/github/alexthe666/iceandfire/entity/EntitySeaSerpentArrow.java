@@ -25,7 +25,7 @@ public class EntitySeaSerpentArrow extends AbstractArrow {
 
 
 public EntitySeaSerpentArrow(EntityType t, Level worldIn, LivingEntity shooter) {
-        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.SEA_SERPENT_ARROW.get()), null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
+        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.SEA_SERPENT_ARROW.get()), null);
         this.setBaseDamage(3F);
     }
 

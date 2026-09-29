@@ -25,9 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class EntityHydraBreath extends Fireball implements IDragonProjectile {
 
-    protected double xPower;
-    protected double yPower;
-    protected double zPower;
     private double xPower;
     private double yPower;
     private double zPower;
@@ -38,7 +35,7 @@ public class EntityHydraBreath extends Fireball implements IDragonProjectile {
 
     public EntityHydraBreath(EntityType<? extends Fireball> t, Level worldIn, double posX, double posY,
                              double posZ, double accelX, double accelY, double accelZ) {
-        super(t, posX, new Vec3(posY, posZ, new Vec3(accelX, accelY, accelZ)), worldIn);
+        super(t, posX, posY, posZ, new Vec3(accelX, accelY, accelZ), worldIn);
     }
 
 

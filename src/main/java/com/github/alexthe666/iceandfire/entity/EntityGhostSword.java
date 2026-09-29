@@ -51,7 +51,7 @@ public class EntityGhostSword extends AbstractArrow {
 
     public EntityGhostSword(EntityType<? extends AbstractArrow> type, Level worldIn, LivingEntity shooter,
                             double dmg) {
-        super(type, shooter, worldIn, ItemStack.EMPTY, null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
+        super(type, shooter, worldIn, ItemStack.EMPTY, null);
         this.setBaseDamage(dmg);
     }
 

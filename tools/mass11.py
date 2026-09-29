@@ -56,7 +56,7 @@ def fix(s):
         parts = [p.strip() for p in split_top(s[m.end():end - 1])]
         if len(parts) == 8 and 'Vec3' not in parts[4]:
             new = ', '.join(parts[:4] + ['new Vec3(%s, %s, %s)' % (parts[4], parts[5], parts[6]), parts[7]])
-        elif len(parts) == 6 and 'Vec3' not in parts[2] and 'Vec3' not in parts[1]:
+        elif len(parts) == 6 and 'Vec3' not in ' '.join(parts) and not parts[2].strip().lstrip('-').replace('.','').isdigit() and 'posX' not in parts[1]:
             new = ', '.join([parts[0], parts[1], 'new Vec3(%s, %s, %s)' % (parts[2], parts[3], parts[4]), parts[5]])
         else:
             continue

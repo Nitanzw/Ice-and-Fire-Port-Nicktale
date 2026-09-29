@@ -26,7 +26,7 @@ public class EntityStymphalianFeather extends AbstractArrow {
     }
 
     public EntityStymphalianFeather(EntityType<? extends AbstractArrow> t, Level worldIn, LivingEntity shooter) {
-        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.STYMPHALIAN_BIRD_FEATHER.get()), null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
+        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.STYMPHALIAN_BIRD_FEATHER.get()), null);
         this.setBaseDamage(IafConfig.stymphalianBirdFeatherAttackStength);
     }
 

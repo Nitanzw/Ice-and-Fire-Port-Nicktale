@@ -53,7 +53,7 @@ def fix_arrow(s):
             continue
         end = call_end(s, cm.end() - 1)
         parts = [p.strip() for p in split_top(s[cm.end():end - 1])]
-        if len(parts) == 5:       # (type, x, y, z, level)
+        if len(parts) == 5 and parts[4] != 'null':       # (type, x, y, z, level)
             new = ', '.join(parts + [stack_expr, 'null'])
         elif len(parts) == 3 and parts[2].lower().endswith(('worldin', 'world', 'level')) and 'hooter' in parts[1].lower() or (len(parts) == 3 and parts[1].lower().startswith('shooter')):
             new = ', '.join([parts[0], parts[1], parts[2], stack_expr, 'null'])

@@ -33,7 +33,7 @@ public class EntitySeaSerpentBubbles extends Fireball implements IDragonProjecti
 
     public EntitySeaSerpentBubbles(EntityType<? extends Fireball> t, Level worldIn, double posX,
                                    double posY, double posZ, double accelX, double accelY, double accelZ) {
-        super(t, posX, new Vec3(posY, posZ, new Vec3(accelX, accelY, accelZ)), worldIn);
+        super(t, posX, posY, posZ, new Vec3(accelX, accelY, accelZ), worldIn);
     }
 
 public EntitySeaSerpentBubbles(EntityType<? extends Fireball> t, Level worldIn,

@@ -26,7 +26,7 @@ public class EntityAmphithereArrow extends AbstractArrow {
     }
 
 public EntityAmphithereArrow(EntityType type, LivingEntity shooter, Level worldIn) {
-        super(type, shooter, worldIn, new ItemStack(IafItemRegistry.AMPHITHERE_ARROW.get()), null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
+        super(type, shooter, worldIn, new ItemStack(IafItemRegistry.AMPHITHERE_ARROW.get()), null);
         this.setBaseDamage(2.5F);
     }
 

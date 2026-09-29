@@ -47,13 +47,13 @@ public class EntityDreadLichSkull extends AbstractArrow {
 
     public EntityDreadLichSkull(EntityType<? extends AbstractArrow> type, Level worldIn, LivingEntity shooter,
                                 double x, double y, double z) {
-        super(type, shooter, worldIn, ItemStack.EMPTY, null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
+        super(type, shooter, worldIn, ItemStack.EMPTY, null);
         this.setBaseDamage(6);
     }
 
     public EntityDreadLichSkull(EntityType<? extends AbstractArrow> type, Level worldIn, LivingEntity shooter,
                                 double dmg) {
-        super(type, shooter, worldIn, ItemStack.EMPTY, null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
+        super(type, shooter, worldIn, ItemStack.EMPTY, null);
         this.setBaseDamage(dmg);
     }
 
