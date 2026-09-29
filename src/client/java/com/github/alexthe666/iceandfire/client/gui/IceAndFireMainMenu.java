@@ -159,7 +159,7 @@ public class IceAndFireMainMenu extends TitleScreen {
     public void extractRenderState(GuiGraphicsExtractor ms, int mouseX, int mouseY, float partialTicks) {
         super.extractRenderState(ms, mouseX, mouseY, partialTicks);
         String version = "Ice and Fire " + ChatFormatting.YELLOW + IceAndFire.VERSION;
-        ms.text(this.getMinecraft().font, version, 2, this.height - 10, 0xFFFFFFFF, false);
+        ms.text(this.getMinecraft().font, version, 2, this.height - 10, 0xFFFFFFFF);
     }
 
     private class Picture {

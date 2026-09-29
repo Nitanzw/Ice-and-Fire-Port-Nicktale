@@ -17,7 +17,6 @@ import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -52,7 +51,7 @@ public class GuiBestiary extends Screen {
     public int indexPagesTotal = 1;
     protected ItemStack book;
     protected boolean index;
-    protected Font font = getFont();
+    protected Font font = resolveBestiaryFont();
 
     public GuiBestiary(ItemStack book) {
         super(Component.translatable("bestiary_gui"));
@@ -66,7 +65,7 @@ public class GuiBestiary extends Screen {
         index = true;
     }
 
-    private static Font getFont() {
+    private static Font resolveBestiaryFont() {
         if (IafConfig.useVanillaFont || !Minecraft.getInstance().options.languageCode.equalsIgnoreCase("en_us")) {
             return Minecraft.getInstance().font;
         } else {
@@ -75,7 +74,7 @@ public class GuiBestiary extends Screen {
     }
 
     private static Item getItemByRegistryName(String registryName) {
-        return BuiltInRegistries.ITEM.getValue(Identifier.parse(registryName));
+        return BuiltInRegistries.ITEM.getOptional(Identifier.parse(registryName)).orElse(Items.AIR);
     }
 
     @Override
@@ -115,11 +114,12 @@ public class GuiBestiary extends Screen {
         this.addRenderableWidget(this.nextPage);
         if (!allPageTypes.isEmpty()) {
             for (int i = 0; i < allPageTypes.size(); i++) {
-                int xIndex = i % -2;
-                int yIndex = i % 10;
+                int pageIndex = i % 10;
+                int xIndex = pageIndex % 2;
+                int yIndex = pageIndex / 2;
                 int id = 2 + i;
                 IndexPageButton button = new IndexPageButton(centerX + 15 + (xIndex * 200),
-                        centerY + 10 + (yIndex * 20) - (xIndex == 1 ? 20 : 0),
+                        centerY + 10 + (yIndex * 40),
                         Component.translatable("bestiary."
                                 + EnumBestiaryPages.values()[allPageTypes.get(i).ordinal()].toString().toLowerCase()),
                         (p_214132_1_) -> {
@@ -146,16 +146,24 @@ public class GuiBestiary extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor ms, int mouseX, int mouseY, float partialTicks) {
-        for (Renderable widget : this.renderables) {
-            if (widget instanceof IndexPageButton) {
-                IndexPageButton button = (IndexPageButton) widget;
-                button.active = index;
-                button.visible = index;
-            }
-
-        }
         for (int i = 0; i < this.indexButtons.size(); i++) {
-            this.indexButtons.get(i).active = i < 10 * (this.indexPages + 1) && i >= 10 * (this.indexPages) && this.index;
+            IndexPageButton button = this.indexButtons.get(i);
+            boolean currentIndexPage = i >= 10 * this.indexPages && i < 10 * (this.indexPages + 1);
+            button.active = currentIndexPage && this.index;
+            button.visible = currentIndexPage && this.index;
+            int pageIndex = i % 10;
+            int xIndex = pageIndex % 2;
+            int yIndex = pageIndex / 2;
+            button.setX((this.width - X) / 2 + 15 + xIndex * 200);
+            button.setY((this.height - Y) / 2 + 10 + yIndex * 40);
+        }
+        if (this.previousPage != null) {
+            this.previousPage.active = this.index ? this.indexPages > 0 : this.pageType != null;
+        }
+        if (this.nextPage != null) {
+            this.nextPage.active = this.index
+                    ? this.indexPages < this.indexPagesTotal - 1
+                    : this.pageType != null && this.bookPages < this.pageType.pages;
         }
         int cornerX = (width - X) / 2;
         int cornerY = (height - Y) / 2;
@@ -173,6 +181,9 @@ public class GuiBestiary extends Screen {
     }
 
     public void drawPerPage(GuiGraphicsExtractor ms, int bookPages) {
+        if (this.pageType == null) {
+            return;
+        }
         imageFromTxt(ms);
         switch (this.pageType) {
             case INTRODUCTION:
