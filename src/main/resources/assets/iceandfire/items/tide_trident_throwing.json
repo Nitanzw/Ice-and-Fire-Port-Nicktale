@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "iceandfire:item/tide_trident_throwing",
+    "model": {
+      "type": "iceandfire:tide_trident"
+    }
+  }
+}
