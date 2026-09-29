@@ -63,9 +63,9 @@ public class ItemSummoningCrystal extends Item {
     private static CompoundTag getDragonTag(ItemStack stack) {
         if (stack.getItem() instanceof ItemSummoningCrystal && ItemStackData.has(stack)) {
             CompoundTag data = ItemStackData.get(stack);
-            for (String tagInfo : data.getAllKeys()) {
+            for (String tagInfo : data.keySet()) {
                 if (tagInfo.contains("Dragon")) {
-                    return data.getCompound(tagInfo);
+                    return data.getCompoundOrEmpty(tagInfo);
                 }
             }
         }
@@ -99,9 +99,9 @@ public class ItemSummoningCrystal extends Item {
         }
         if (ItemStackData.has(stack)) {
             CompoundTag data = ItemStackData.get(stack);
-            for (String tagInfo : data.getAllKeys()) {
+            for (String tagInfo : data.keySet()) {
                 if (tagInfo.contains("Dragon")) {
-                    CompoundTag dragonTag = data.getCompound(tagInfo);
+                    CompoundTag dragonTag = data.getCompoundOrEmpty(tagInfo);
                     Component dragonName = Component.translatable(desc);
                     if (!dragonTag.getString("CustomName").isEmpty()) {
                         dragonName = Component.literal(dragonTag.getStringOr("CustomName", ""));
@@ -144,7 +144,7 @@ public class ItemSummoningCrystal extends Item {
             return InteractionResult.PASS;
         }
 
-        this.dragonUuid = dragonTag.getUUID("DragonUUID");
+        this.dragonUuid = dragonTag.read("DragonUUID", net.minecraft.core.UUIDUtil.CODEC).orElseThrow();
 
         IceAndFire.LOGGER.info("Trying to summon dragon {} {}", this.dragonUuid, dragonTag.getString("CustomName"));
         Entity entity = serverWorld.getEntity(this.dragonUuid);
@@ -176,11 +176,11 @@ public class ItemSummoningCrystal extends Item {
             return InteractionResult.PASS;
         }
 
-        ChunkPos pos = new ChunkPos(this.dragonOriginPosition);
+        ChunkPos pos = ChunkPos.containing(this.dragonOriginPosition);
         IceAndFire.LOGGER.info("Dragon entity not loaded, loading chunk {}", pos);
 
         // try to load the chunk, and mark the entity to be summoned as soon as it gets added to the world
-        if (SUMMONING_TICKETS.forceChunk(serverWorld, this.summoningPlayer, pos.x, pos.z, true, false)) {
+        if (SUMMONING_TICKETS.forceChunk(serverWorld, this.summoningPlayer, pos.x(), pos.z(), true, false)) {
             this.summoningTime = serverWorld.getGameTime();
             DELAYED_SUMMONS.put(this.dragonUuid, this);
         } else {
@@ -210,7 +210,7 @@ public class ItemSummoningCrystal extends Item {
 
     public void delayedSummon() {
         DELAYED_SUMMONS.remove(this.dragonUuid);
-        ChunkPos pos = new ChunkPos(this.dragonOriginPosition);
+        ChunkPos pos = ChunkPos.containing(this.dragonOriginPosition);
 
         // make delayed summons expire if for some reason the chunk loading, or entity loading takes too long
         // wouldn't want the dragon to summon minutes later at the original position
@@ -229,7 +229,7 @@ public class ItemSummoningCrystal extends Item {
             }
         }
 
-        SUMMONING_TICKETS.forceChunk(this.serverWorld, this.summoningPlayer, pos.x, pos.z, false, false);
+        SUMMONING_TICKETS.forceChunk(this.serverWorld, this.summoningPlayer, pos.x(), pos.z(), false, false);
 
         this.dragonUuid = null;
         this.summoningPlayer = null;
