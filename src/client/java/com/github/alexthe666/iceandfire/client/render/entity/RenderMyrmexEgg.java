@@ -1,14 +1,13 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
-import com.nicktale.api.client.model.AdvancedEntityModel;
+import com.github.alexthe666.iceandfire.client.model.DragonEggRenderState;
 import com.github.alexthe666.iceandfire.client.model.ModelDragonEgg;
 import com.github.alexthe666.iceandfire.entity.EntityMyrmexEgg;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class RenderMyrmexEgg extends LivingEntityRenderer<EntityMyrmexEgg, AdvancedEntityModel<EntityMyrmexEgg>> {
+public class RenderMyrmexEgg extends IafLivingRenderer<EntityMyrmexEgg, DragonEggRenderState, ModelDragonEgg> {
 
     public static final Identifier EGG_JUNGLE = Identifier.parse("iceandfire:textures/models/myrmex/myrmex_jungle_egg.png");
     public static final Identifier EGG_DESERT = Identifier.parse("iceandfire:textures/models/myrmex/myrmex_desert_egg.png");
@@ -18,12 +17,17 @@ public class RenderMyrmexEgg extends LivingEntityRenderer<EntityMyrmexEgg, Advan
     }
 
     @Override
-    protected boolean shouldShowName(EntityMyrmexEgg entity) {
-        return entity.shouldShowName() && entity.hasCustomName();
+    public @NotNull DragonEggRenderState createRenderState() {
+        return new DragonEggRenderState();
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(EntityMyrmexEgg entity) {
+    protected boolean shouldShowName(EntityMyrmexEgg entity, double distanceToCamera) {
+        return entity.shouldShowName() && entity.hasCustomName() && super.shouldShowName(entity, distanceToCamera);
+    }
+
+    @Override
+    protected @NotNull Identifier textureFor(EntityMyrmexEgg entity) {
         return entity.isJungle() ? EGG_JUNGLE : EGG_DESERT;
     }
 

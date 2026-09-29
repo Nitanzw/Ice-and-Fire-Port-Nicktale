@@ -1,22 +1,20 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
 import com.github.alexthe666.iceandfire.client.model.ModelDreadLichSkull;
+import com.github.alexthe666.iceandfire.client.model.SimpleEntityRenderState;
 import com.github.alexthe666.iceandfire.entity.EntityDreadLichSkull;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-
-public class RenderDreadLichSkull extends EntityRenderer<EntityDreadLichSkull> {
+public class RenderDreadLichSkull extends EntityRenderer<EntityDreadLichSkull, SimpleEntityRenderState> {
 
     public static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/models/dread/dread_lich_skull.png");
     private static final ModelDreadLichSkull MODEL_SPIRIT = new ModelDreadLichSkull();
@@ -26,29 +24,28 @@ public class RenderDreadLichSkull extends EntityRenderer<EntityDreadLichSkull> {
     }
 
     @Override
-    public void render(EntityDreadLichSkull entity, float entityYaw, float partialTicks, @NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn) {
-        float f = 0.0625F;
-        if (entity.tickCount > 3) {
-            matrixStackIn.pushPose();
-            matrixStackIn.scale(1.5F, -1.5F, 1.5F);
-            float yaw = entity.yRotO + (entity.getYRot() - entity.yRotO) * partialTicks;
-            matrixStackIn.translate(0F, 0F, 0F);
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees(yaw - 180.0F));
-            VertexConsumer ivertexbuilder = ItemRenderer.getFoilBuffer(bufferIn, RenderType.eyes(TEXTURE), false, false);
-            MODEL_SPIRIT.renderToBuffer(matrixStackIn, ivertexbuilder, 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-            matrixStackIn.popPose();
-        }
-
-        super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+    public @NotNull SimpleEntityRenderState createRenderState() {
+        return new SimpleEntityRenderState();
     }
 
-    private float interpolateValue(float start, float end, float pct) {
-        return start + (end - start) * pct;
-    }
-
-    @Nullable
     @Override
-    public Identifier getTextureLocation(@NotNull EntityDreadLichSkull entity) {
-        return TEXTURE;
+    public void extractRenderState(@NotNull EntityDreadLichSkull entity, @NotNull SimpleEntityRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.entity = entity;
+        state.partialTick = partialTick;
+        state.yRot = entity.yRotO + (entity.getYRot() - entity.yRotO) * partialTick;
+    }
+
+    @Override
+    public void submit(@NotNull SimpleEntityRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState camera) {
+        if (state.entity != null && state.entity.tickCount > 3) {
+            poseStack.pushPose();
+            poseStack.scale(1.5F, -1.5F, 1.5F);
+            poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot - 180.0F));
+            collector.submitModel(MODEL_SPIRIT, state, poseStack, RenderTypes.eyes(TEXTURE), 240,
+                OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor, null);
+            poseStack.popPose();
+        }
+        super.submit(state, poseStack, collector, camera);
     }
 }

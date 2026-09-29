@@ -1,12 +1,13 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
+import com.github.alexthe666.iceandfire.entity.EntityStymphalianFeather;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.ArrowRenderState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public class RenderStymphalianFeather extends ArrowRenderer {
+public class RenderStymphalianFeather extends ArrowRenderer<EntityStymphalianFeather, ArrowRenderState> {
     private static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/models/stymphalianbird/feather.png");
 
     public RenderStymphalianFeather(EntityRendererProvider.Context context) {
@@ -14,7 +15,12 @@ public class RenderStymphalianFeather extends ArrowRenderer {
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(@NotNull Entity entity) {
+    public @NotNull ArrowRenderState createRenderState() {
+        return new ArrowRenderState();
+    }
+
+    @Override
+    protected @NotNull Identifier getTextureLocation(@NotNull ArrowRenderState state) {
         return TEXTURE;
     }
 }

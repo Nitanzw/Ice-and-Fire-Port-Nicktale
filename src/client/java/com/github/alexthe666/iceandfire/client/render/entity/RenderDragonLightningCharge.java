@@ -1,21 +1,20 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
 import com.github.alexthe666.iceandfire.client.model.ModelDreadLichSkull;
+import com.github.alexthe666.iceandfire.client.model.SimpleEntityRenderState;
 import com.github.alexthe666.iceandfire.entity.EntityDragonLightningCharge;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-
-public class RenderDragonLightningCharge extends EntityRenderer<EntityDragonLightningCharge> {
+public class RenderDragonLightningCharge extends EntityRenderer<EntityDragonLightningCharge, SimpleEntityRenderState> {
 
     public static final Identifier TEXTURE = Identifier.parse("iceandfire:textures/models/lightningdragon/charge.png");
     public static final Identifier TEXTURE_CORE = Identifier.parse("iceandfire:textures/models/lightningdragon/charge_core.png");
@@ -25,53 +24,57 @@ public class RenderDragonLightningCharge extends EntityRenderer<EntityDragonLigh
         super(context);
     }
 
-
     @Override
-    public void render(EntityDragonLightningCharge entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        float f = (float) entity.tickCount + partialTicks;
-        float yaw = entity.yRotO + (entity.getYRot() - entity.yRotO) * partialTicks;
-        VertexConsumer ivertexbuilder2 = bufferIn.getBuffer(RenderType.eyes(TEXTURE_CORE));
-        VertexConsumer ivertexbuilder = bufferIn.getBuffer(RenderType.energySwirl(TEXTURE, f * 0.01F, f * 0.01F));
-
-        matrixStackIn.pushPose();
-        matrixStackIn.translate(0F, 0.5F, 0F);
-        matrixStackIn.translate(0F, -0.25F, 0F);
-        matrixStackIn.mulPose(Axis.YP.rotationDegrees(yaw - 180.0F));
-        matrixStackIn.mulPose(Axis.XP.rotationDegrees(f * 20.0F));
-        matrixStackIn.translate(0F, 0.25F, 0F);
-        MODEL_SPIRIT.renderToBuffer(matrixStackIn, ivertexbuilder2, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        matrixStackIn.popPose();
-
-        matrixStackIn.pushPose();
-        matrixStackIn.translate(0F, 0.5F, 0F);
-        matrixStackIn.translate(0F, -0.25F, 0F);
-        matrixStackIn.mulPose(Axis.YP.rotationDegrees(yaw - 180.0F));
-        matrixStackIn.mulPose(Axis.XP.rotationDegrees(f * 15.0F));
-        matrixStackIn.translate(0F, 0.25F, 0F);
-        matrixStackIn.scale(1.5F, 1.5F, 1.5F);
-        MODEL_SPIRIT.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        matrixStackIn.popPose();
-
-        matrixStackIn.pushPose();
-        matrixStackIn.translate(0F, 0.75F, 0F);
-        matrixStackIn.translate(0F, -0.25F, 0F);
-        matrixStackIn.mulPose(Axis.YP.rotationDegrees(yaw - 180.0F));
-        matrixStackIn.mulPose(Axis.XP.rotationDegrees(f * 10.0F));
-        matrixStackIn.translate(0F, 0.75F, 0F);
-        matrixStackIn.scale(2.5F, 2.5F, 2.5F);
-        MODEL_SPIRIT.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        matrixStackIn.popPose();
-
-        super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+    public @NotNull SimpleEntityRenderState createRenderState() {
+        return new SimpleEntityRenderState();
     }
 
-    private float interpolateValue(float start, float end, float pct) {
-        return start + (end - start) * pct;
+    @Override
+    public void extractRenderState(@NotNull EntityDragonLightningCharge entity, @NotNull SimpleEntityRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.entity = entity;
+        state.partialTick = partialTick;
+        state.yRot = entity.yRotO + (entity.getYRot() - entity.yRotO) * partialTick;
     }
 
-    @Nullable
     @Override
-    public Identifier getTextureLocation(@NotNull EntityDragonLightningCharge entity) {
-        return TEXTURE;
+    public void submit(@NotNull SimpleEntityRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState camera) {
+        float f = (float) state.entity.tickCount + state.partialTick;
+        float yaw = state.yRot;
+        int light = state.lightCoords;
+
+        poseStack.pushPose();
+        poseStack.translate(0F, 0.5F, 0F);
+        poseStack.translate(0F, -0.25F, 0F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(yaw - 180.0F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(f * 20.0F));
+        poseStack.translate(0F, 0.25F, 0F);
+        collector.submitModel(MODEL_SPIRIT, state, poseStack, RenderTypes.eyes(TEXTURE_CORE), light,
+            OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor, null);
+        poseStack.popPose();
+
+        poseStack.pushPose();
+        poseStack.translate(0F, 0.5F, 0F);
+        poseStack.translate(0F, -0.25F, 0F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(yaw - 180.0F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(f * 15.0F));
+        poseStack.translate(0F, 0.25F, 0F);
+        poseStack.scale(1.5F, 1.5F, 1.5F);
+        collector.submitModel(MODEL_SPIRIT, state, poseStack, RenderTypes.energySwirl(TEXTURE, f * 0.01F, f * 0.01F), light,
+            OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor, null);
+        poseStack.popPose();
+
+        poseStack.pushPose();
+        poseStack.translate(0F, 0.75F, 0F);
+        poseStack.translate(0F, -0.25F, 0F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(yaw - 180.0F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(f * 10.0F));
+        poseStack.translate(0F, 0.75F, 0F);
+        poseStack.scale(2.5F, 2.5F, 2.5F);
+        collector.submitModel(MODEL_SPIRIT, state, poseStack, RenderTypes.energySwirl(TEXTURE, f * 0.01F, f * 0.01F), light,
+            OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor, null);
+        poseStack.popPose();
+
+        super.submit(state, poseStack, collector, camera);
     }
 }

@@ -22,7 +22,7 @@ public class RenderChainTie extends EntityRenderer<EntityChainTie, ChainTieRende
     }
 
     @Override
-    protected ChainTieRenderState createRenderState() {
+    public ChainTieRenderState createRenderState() {
         return new ChainTieRenderState();
     }
 
@@ -40,13 +40,9 @@ public class RenderChainTie extends EntityRenderer<EntityChainTie, ChainTieRende
         poseStack.translate(0.0F, 0.5F, 0.0F);
         poseStack.scale(-1.0F, -1.0F, 1.0F);
         collector.submitModel(this.leashKnotModel, state, poseStack,
-                RenderTypes.entityCutoutNoCull(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY,
+                RenderTypes.entityCutout(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY,
                 -1, null, state.outlineColor, null);
         poseStack.popPose();
     }
 
-    @Override
-    public @NotNull Identifier getTextureLocation(@NotNull ChainTieRenderState state) {
-        return TEXTURE;
-    }
 }
