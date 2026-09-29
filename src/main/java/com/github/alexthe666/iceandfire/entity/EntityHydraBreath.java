@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.neoforged.neoforge.event.EventHooks;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import net.minecraft.server.level.ServerLevel;
@@ -23,6 +24,10 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityHydraBreath extends Fireball implements IDragonProjectile {
+
+    protected double xPower;
+    protected double yPower;
+    protected double zPower;
     private double xPower;
     private double yPower;
     private double zPower;
@@ -33,7 +38,7 @@ public class EntityHydraBreath extends Fireball implements IDragonProjectile {
 
     public EntityHydraBreath(EntityType<? extends Fireball> t, Level worldIn, double posX, double posY,
                              double posZ, double accelX, double accelY, double accelZ) {
-        super(t, posX, posY, posZ, new Vec3(accelX, accelY, accelZ), worldIn);
+        super(t, posX, new Vec3(posY, posZ, new Vec3(accelX, accelY, accelZ)), worldIn);
     }
 
 

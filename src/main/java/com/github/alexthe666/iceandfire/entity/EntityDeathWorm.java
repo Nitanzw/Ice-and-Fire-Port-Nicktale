@@ -209,7 +209,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     }
 
     @Override
-    public int getExperienceReward() {
+    protected int getBaseExperienceReward(ServerLevel level) {
         return this.getWormScale() > 3 ? 20 : 10;
     }
 
@@ -248,7 +248,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
             this.setAnimation(ANIMATION_BITE);
             this.playSound(this.getWormScale() > 3 ? IafSoundRegistry.DEATHWORM_GIANT_ATTACK : IafSoundRegistry.DEATHWORM_ATTACK, 1, 1);
         }
-        if (this.getRandom().nextInt(3) == 0 && this.getWormScale() > 1 && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+        if (this.getRandom().nextInt(3) == 0 && this.getWormScale() > 1 && IafEntityUtil.gameRule(this.level(), GameRules.MOB_GRIEFING)) {
             GenericGriefEvent griefEvent = NeoForge.EVENT_BUS.post(new GenericGriefEvent(this, entityIn.getX(), entityIn.getY(), entityIn.getZ()));
             if (!griefEvent.isCanceled()) {
                 BlockLaunchExplosion explosion = new BlockLaunchExplosion(level(), this, entityIn.getX(), entityIn.getY(), entityIn.getZ(), this.getWormScale());

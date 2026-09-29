@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;

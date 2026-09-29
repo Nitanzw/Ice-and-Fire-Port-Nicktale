@@ -1,5 +1,9 @@
 package com.github.alexthe666.iceandfire.item;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
+import com.github.alexthe666.iceandfire.util.IafDamage;
+import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityFireDragon;
 import com.github.alexthe666.iceandfire.entity.EntityIceDragon;
@@ -30,20 +34,20 @@ public class ItemAlchemySword extends Item {
     public void hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         if (this == IafItemRegistry.DRAGONBONE_SWORD_FIRE.get() && IafConfig.dragonWeaponFireAbility) {
             if (target instanceof EntityIceDragon) {
-                target.hurt(attacker.level().damageSources().inFire(), 13.5F);
+                IafDamage.hurt(target, attacker.level().damageSources().inFire(), 13.5F);
             }
-            target.setSecondsOnFire(5);
-            target.knockback(1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            target.igniteForSeconds(5);
+            IafEntityUtil.knockback(target, 1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (this == IafItemRegistry.DRAGONBONE_SWORD_ICE.get() && IafConfig.dragonWeaponIceAbility) {
             if (target instanceof EntityFireDragon) {
-                target.hurt(attacker.level().damageSources().drown(), 13.5F);
+                IafDamage.hurt(target, attacker.level().damageSources().drown(), 13.5F);
             }
 
             EntityDataProvider.getCapability(target).ifPresent(data -> data.frozenData.setFrozen(target, 200));
-            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));
-            target.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 100, 2));
-            target.knockback(1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 2));
+            target.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 100, 2));
+            IafEntityUtil.knockback(target, 1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (this == IafItemRegistry.DRAGONBONE_SWORD_LIGHTNING.get() && IafConfig.dragonWeaponLightningAbility) {
             boolean flag = true;
@@ -53,7 +57,7 @@ public class ItemAlchemySword extends Item {
                 }
             }
             if (!attacker.level().isClientSide() && flag) {
-                LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(target.level());
+                LightningBolt lightningboltentity = EntityTypes.LIGHTNING_BOLT.create(target.level(), EntitySpawnReason.EVENT);
                 if (lightningboltentity != null) {
                     lightningboltentity.setCause(attacker instanceof ServerPlayer player ? player : null);
                     lightningboltentity.setPos(target.position());
@@ -61,9 +65,9 @@ public class ItemAlchemySword extends Item {
                 }
             }
             if (target instanceof EntityFireDragon || target instanceof EntityIceDragon) {
-                target.hurt(attacker.level().damageSources().lightningBolt(), 9.5F);
+                IafDamage.hurt(target, attacker.level().damageSources().lightningBolt(), 9.5F);
             }
-            target.knockback(1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            IafEntityUtil.knockback(target, 1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         super.hurtEnemy(stack, target, attacker);
     }

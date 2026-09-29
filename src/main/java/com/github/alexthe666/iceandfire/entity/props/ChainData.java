@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.props;
 
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;

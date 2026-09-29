@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -15,7 +16,7 @@ public class DragonAITargetNonTamed<T extends LivingEntity> extends NearestAttac
     private final EntityDragonBase dragon;
 
     public DragonAITargetNonTamed(EntityDragonBase entityIn, Class<T> classTarget, boolean checkSight, TargetingConditions.Selector targetSelector) {
-        super(entityIn, classTarget, 5, checkSight, false, targetSelector);
+        super(entityIn, classTarget, 5, checkSight, false, IafEntityUtil.selector(targetSelector));
         this.setFlags(EnumSet.of(Flag.TARGET));
         this.dragon = entityIn;
     }
