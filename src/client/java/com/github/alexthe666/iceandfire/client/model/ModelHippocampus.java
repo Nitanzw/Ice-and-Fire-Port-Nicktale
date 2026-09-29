@@ -299,7 +299,7 @@ public class ModelHippocampus extends ModelDragonBase<HippocampusRenderState> {
         }
         this.chainWave(NECK, speed_idle, degree_idle * 0.15F, -2, f2, 1);
         if(entity.tail_buffer != null){
-            entity.tail_buffer.applyChainSwingBuffer(TAIL);
+            applyChainYawToY(entity.tail_buffer, TAIL);
         }
     }
 

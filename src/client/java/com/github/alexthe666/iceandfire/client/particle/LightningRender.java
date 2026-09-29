@@ -5,7 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.joml.Matrix4f;
@@ -27,9 +28,11 @@ public class LightningRender {
 
     private final Map<Object, BoltOwnerData> boltOwners = new Object2ObjectOpenHashMap<>();
 
-    public void render(float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn) {
-        VertexConsumer buffer = bufferIn.getBuffer(RenderType.lightning());
-        Matrix4f matrix = matrixStackIn.last().pose();
+    public void render(float partialTicks, PoseStack matrixStackIn, SubmitNodeCollector collector) {
+        collector.submitCustomGeometry(matrixStackIn, RenderTypes.lightning(), (pose, buffer) -> renderBolts(partialTicks, pose.pose(), buffer));
+    }
+
+    private void renderBolts(float partialTicks, Matrix4f matrix, VertexConsumer buffer) {
         Timestamp timestamp = new Timestamp(minecraft.level.getGameTime(), partialTicks);
         boolean refresh = timestamp.isPassed(refreshTimestamp, (1 / REFRESH_TIME));
         if (refresh) {
@@ -97,9 +100,8 @@ public class LightningRender {
             float lifeScale = timestamp.subtract(createdTimestamp).value() / bolt.getLifespan();
             Pair<Integer, Integer> bounds = bolt.getFadeFunction().getRenderBounds(renderQuads.size(), lifeScale);
             for (int i = bounds.getLeft(); i < bounds.getRight(); i++) {
-                renderQuads.get(i).getVecs().forEach(v -> buffer.vertex(matrix, (float) v.x, (float) v.y, (float) v.z)
-                    .color(bolt.getColor().x(), bolt.getColor().y(), bolt.getColor().z(), bolt.getColor().w())
-                    .endVertex());
+                renderQuads.get(i).getVecs().forEach(v -> buffer.addVertex(matrix, (float) v.x, (float) v.y, (float) v.z)
+                    .setColor(bolt.getColor().x(), bolt.getColor().y(), bolt.getColor().z(), bolt.getColor().w()));
             }
         }
 

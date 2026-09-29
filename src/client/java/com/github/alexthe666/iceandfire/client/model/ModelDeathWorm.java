@@ -288,7 +288,7 @@ public class ModelDeathWorm extends ModelDragonBase<DeathWormRenderState> {
         this.progressRotation(Tail3, jumpProgress, (float) Math.toRadians(-21), 0.0F, 0.0F);
         this.progressRotation(Tail4, jumpProgress, (float) Math.toRadians(-21), 0.0F, 0.0F);
         if(entity.tail_buffer != null)
-            entity.tail_buffer.applyChainSwingBuffer(WORM);
+            applyChainYawToY(entity.tail_buffer, WORM);
 
         if(entity.getWormJumping > 0){
             this.Body.rotateAngleX += f4 * ((float) Math.PI / 180F);

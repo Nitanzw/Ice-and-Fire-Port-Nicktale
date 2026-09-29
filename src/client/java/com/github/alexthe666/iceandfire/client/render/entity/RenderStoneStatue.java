@@ -1,45 +1,49 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
-import net.minecraft.world.entity.EntityTypes;
-import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.github.alexthe666.iceandfire.IceAndFire;
-import com.github.alexthe666.iceandfire.client.model.ICustomStatueModel;
-import com.github.alexthe666.iceandfire.client.model.ModelHydraBody;
 import com.github.alexthe666.iceandfire.client.model.ModelStonePlayer;
+import com.github.alexthe666.iceandfire.client.model.SimpleEntityRenderState;
 import com.github.alexthe666.iceandfire.client.render.IafRenderType;
-import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerHydraHead;
-import com.github.alexthe666.iceandfire.entity.EntityHydra;
 import com.github.alexthe666.iceandfire.entity.EntityStoneStatue;
 import com.github.alexthe666.iceandfire.entity.EntityTroll;
+import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.animal.pig.PigModel;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RenderStoneStatue extends EntityRenderer<EntityStoneStatue> {
+/**
+ * Draws a petrified copy of another entity by reusing that entity's own renderer model and render state,
+ * with a stone texture instead of the original one.
+ */
+public class RenderStoneStatue extends EntityRenderer<EntityStoneStatue, RenderStoneStatue.StatueRenderState> {
 
     protected static final Identifier[] DESTROY_STAGES = new Identifier[]{Identifier.parse("textures/block/destroy_stage_0.png"), Identifier.parse("textures/block/destroy_stage_1.png"), Identifier.parse("textures/block/destroy_stage_2.png"), Identifier.parse("textures/block/destroy_stage_3.png"), Identifier.parse("textures/block/destroy_stage_4.png"), Identifier.parse("textures/block/destroy_stage_5.png"), Identifier.parse("textures/block/destroy_stage_6.png"), Identifier.parse("textures/block/destroy_stage_7.png"), Identifier.parse("textures/block/destroy_stage_8.png"), Identifier.parse("textures/block/destroy_stage_9.png")};
-    private final Map<String, EntityModel> modelMap = new HashMap();
-    private final Map<String, Entity> hollowEntityMap = new HashMap();
+    private final Map<String, Entity> hollowEntityMap = new HashMap<>();
     private final EntityRendererProvider.Context context;
+    private ModelStonePlayer playerModel;
 
     public RenderStoneStatue(EntityRendererProvider.Context context) {
         super(context);
@@ -47,101 +51,91 @@ public class RenderStoneStatue extends EntityRenderer<EntityStoneStatue> {
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(@NotNull EntityStoneStatue entity) {
-        return TextureAtlas.LOCATION_BLOCKS;
+    public @NotNull StatueRenderState createRenderState() {
+        return new StatueRenderState();
     }
 
-    protected void preRenderCallback(EntityStoneStatue entity, PoseStack matrixStackIn, float partialTickTime) {
-        float scale = entity.getScale() < 0.01F ? 1F : entity.getScale();
-        matrixStackIn.scale(scale, scale, scale);
+    private Entity getFakeEntity(EntityStoneStatue statue) {
+        String key = statue.getTrappedEntityTypeString();
+        Entity cached = this.hollowEntityMap.get(key);
+        if (cached != null) {
+            return cached;
+        }
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level == null) {
+            return null;
+        }
+        EntityType<?> type = statue.getTrappedEntityType();
+        Entity build = type.create(minecraft.level, EntitySpawnReason.LOAD);
+        if (build != null) {
+            try {
+                build.load(EntityDataIO.input(minecraft.level.registryAccess(), statue.getTrappedTag()));
+            } catch (Exception e) {
+                IceAndFire.LOGGER.warn("Mob " + key + " could not build statue NBT");
+            }
+            this.hollowEntityMap.put(key, build);
+        }
+        return build;
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public void render(EntityStoneStatue entityIn, float entityYaw, float partialTicks, @NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn) {
-        EntityModel model = new PigModel(context.bakeLayer(ModelLayers.PIG));
-
-        // Get the correct model
-        if (modelMap.get(entityIn.getTrappedEntityTypeString()) != null) {
-            model = modelMap.get(entityIn.getTrappedEntityTypeString());
-        } else {
-            EntityRenderer renderer = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(entityIn.getTrappedEntityType());
-
-            if (renderer instanceof RenderLayerParent) {
-                model = ((RenderLayerParent<?, ?>) renderer).getModel();
-            } else if (entityIn.getTrappedEntityType() == EntityTypes.PLAYER) {
-                model = new ModelStonePlayer(context.bakeLayer(ModelLayers.PLAYER));
+    public void extractRenderState(@NotNull EntityStoneStatue entity, @NotNull StatueRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.entity = entity;
+        state.partialTick = partialTick;
+        state.yRot = entity.yRotO + (entity.getYRot() - entity.yRotO) * partialTick;
+        state.statueScale = entity.getScale() < 0.01F ? 1F : entity.getScale();
+        state.crackAmount = entity.getCrackAmount();
+        state.model = null;
+        state.modelState = null;
+        state.texture = null;
+        Entity fake = getFakeEntity(entity);
+        if (fake != null) {
+            EntityRenderer renderer = this.context.getEntityRenderDispatcher().getRenderer(fake);
+            if (renderer instanceof LivingEntityRenderer livingRenderer) {
+                state.model = livingRenderer.getModel();
+                state.modelState = renderer.createRenderState(fake, partialTick);
             }
-            modelMap.put(entityIn.getTrappedEntityTypeString(), model);
+            if (fake instanceof EntityTroll troll) {
+                state.texture = troll.getTrollType().TEXTURE_STONE;
+            }
+        } else if (entity.getTrappedEntityType() == EntityTypes.PLAYER) {
+            if (this.playerModel == null) {
+                this.playerModel = new ModelStonePlayer(this.context.bakeLayer(ModelLayers.PLAYER));
+            }
+            state.model = this.playerModel;
+            state.modelState = new HumanoidRenderState();
         }
-        if (model == null)
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public void submit(@NotNull StatueRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, @NotNull CameraRenderState camera) {
+        if (state.model == null || state.modelState == null) {
             return;
-
-        Entity fakeEntity = null;
-        if (this.hollowEntityMap.get(entityIn.getTrappedEntityTypeString()) == null) {
-            Entity build = entityIn.getTrappedEntityType().create(Minecraft.getInstance().level);
-            if (build != null) {
-                try {
-                    build.load(entityIn.getTrappedTag());
-                } catch (Exception e) {
-                    IceAndFire.LOGGER.warn("Mob " + entityIn.getTrappedEntityTypeString() + " could not build statue NBT");
-                }
-                fakeEntity = this.hollowEntityMap.putIfAbsent(entityIn.getTrappedEntityTypeString(), build);
-            }
-        } else {
-            fakeEntity = this.hollowEntityMap.get(entityIn.getTrappedEntityTypeString());
         }
-        RenderType tex = IafRenderType.getStoneMobRenderType(200, 200);
-        if (fakeEntity instanceof EntityTroll) {
-            tex = RenderType.entityCutout(((EntityTroll) fakeEntity).getTrollType().TEXTURE_STONE);
-        }
-
-        VertexConsumer ivertexbuilder = bufferIn.getBuffer(tex);
-
-
-        matrixStackIn.pushPose();
-        float yaw = entityIn.yRotO + (entityIn.getYRot() - entityIn.yRotO) * partialTicks;
-        boolean shouldSit = entityIn.isPassenger() && (entityIn.getVehicle() != null && entityIn.getVehicle().shouldRiderSit());
-        model.young = entityIn.isBaby();
-        model.riding = shouldSit;
-        model.attackTime = entityIn.getAttackAnim(partialTicks);
-        if (model instanceof AdvancedEntityModel) {
-            ((AdvancedEntityModel) model).resetToDefaultPose();
-        } else if (fakeEntity != null) {
-            model.setupAnim(fakeEntity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F);
-        }
-        preRenderCallback(entityIn, matrixStackIn, partialTicks);
-        matrixStackIn.translate(0, 1.5F, 0);
-        matrixStackIn.mulPose(Axis.XP.rotationDegrees(180.0F));
-        matrixStackIn.mulPose(Axis.YP.rotationDegrees(yaw));
-        if (model instanceof ICustomStatueModel && fakeEntity != null) {
-            ((ICustomStatueModel) model).renderStatue(matrixStackIn, ivertexbuilder, packedLightIn, fakeEntity);
-            if (model instanceof ModelHydraBody && fakeEntity instanceof EntityHydra) {
-                LayerHydraHead.renderHydraHeads((ModelHydraBody) model, true, matrixStackIn, bufferIn, packedLightIn, (EntityHydra) fakeEntity, 0, 0, partialTicks, 0, 0, 0);
-            }
-        } else {
-            model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        }
-
-        matrixStackIn.popPose();
-
-        if (entityIn.getCrackAmount() >= 1) {
-            int i = Mth.clamp(entityIn.getCrackAmount() - 1, 0, DESTROY_STAGES.length - 1);
+        Model model = state.model;
+        RenderType tex = state.texture != null ? RenderTypes.entityCutout(state.texture) : IafRenderType.getStoneMobRenderType(200, 200);
+        poseStack.pushPose();
+        poseStack.scale(state.statueScale, state.statueScale, state.statueScale);
+        poseStack.translate(0, 1.5F, 0);
+        poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
+        collector.submitModel(model, state.modelState, poseStack, tex, state.lightCoords, OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor, null);
+        if (state.crackAmount >= 1) {
+            int i = Mth.clamp(state.crackAmount - 1, 0, DESTROY_STAGES.length - 1);
             RenderType crackTex = IafRenderType.getStoneCrackRenderType(DESTROY_STAGES[i]);
-            VertexConsumer ivertexbuilder2 = bufferIn.getBuffer(crackTex);
-            matrixStackIn.pushPose();
-            matrixStackIn.pushPose();
-            preRenderCallback(entityIn, matrixStackIn, partialTicks);
-            matrixStackIn.translate(0, 1.5F, 0);
-            matrixStackIn.mulPose(Axis.XP.rotationDegrees(180.0F));
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees(yaw));
-            if (model instanceof ICustomStatueModel) {
-                ((ICustomStatueModel) model).renderStatue(matrixStackIn, ivertexbuilder2, packedLightIn, fakeEntity);
-            } else {
-                model.renderToBuffer(matrixStackIn, ivertexbuilder2, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-            }
-            matrixStackIn.popPose();
-            matrixStackIn.popPose();
+            collector.submitModel(model, state.modelState, poseStack, crackTex, state.lightCoords, OverlayTexture.NO_OVERLAY, -1, null, state.outlineColor, null);
         }
-        //super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        poseStack.popPose();
+    }
+
+    public static class StatueRenderState extends SimpleEntityRenderState {
+        public EntityModel<?> model;
+        public EntityRenderState modelState;
+        public float statueScale = 1F;
+        public int crackAmount;
+        public Identifier texture;
     }
 }

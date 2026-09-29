@@ -43,7 +43,7 @@ public class PathfindingDebugRenderer {
                 debugDrawNode(node, node.isReachedByWorker() ? 0xffff6600 : 0xff00ff00, collector, poseStack, cameraBlockPos);
             }
         } catch (ConcurrentModificationException exception) {
-            IceAndFire.LOGGER.catching(exception);
+            IceAndFire.LOGGER.error("Pathfinding debug error", exception);
         } finally {
             poseStack.popPose();
         }

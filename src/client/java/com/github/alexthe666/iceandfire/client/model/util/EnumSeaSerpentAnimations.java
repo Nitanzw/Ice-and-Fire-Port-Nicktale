@@ -33,7 +33,7 @@ public enum EnumSeaSerpentAnimations {
 
 
     public static void initializeSerpentModels() {
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
             for (EnumSeaSerpentAnimations animation : values()) {
                 try {
                     animation.seaserpent_model = new TabulaModel(TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/seaserpent/seaserpent_" + animation.fileSuffix));
