@@ -3,6 +3,7 @@ package com.github.alexthe666.iceandfire.datagen.tags;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -12,7 +13,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -33,8 +33,13 @@ public class IafBlockTags extends BlockTagsProvider {
     public static TagKey<Block> DRAGON_BLOCK_BREAK_BLACKLIST = createKey("dragon_block_break_blacklist");
     public static TagKey<Block> DRAGON_BLOCK_BREAK_NO_DROPS = createKey("dragon_block_break_no_drops");
 
-    public IafBlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> future, ExistingFileHelper helper) {
-        super(output, future, IceAndFire.MODID, helper);
+    public IafBlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> future) {
+        super(output, future, IceAndFire.MODID);
+    }
+
+    @Override
+    protected RegistryTagAppender<Block> tag(TagKey<Block> tag) {
+        return RegistryTagAppender.wrap(super.tag(tag), block -> BuiltInRegistries.BLOCK.getResourceKey(block).orElseThrow());
     }
 
     @Override
