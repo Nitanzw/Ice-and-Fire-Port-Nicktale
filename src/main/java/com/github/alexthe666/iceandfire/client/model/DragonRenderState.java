@@ -2,8 +2,15 @@ package com.github.alexthe666.iceandfire.client.model;
 
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.IAnimatedEntity;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /** Per-frame snapshot used by the dragon model and renderer. */
 public class DragonRenderState extends LivingEntityRenderState implements IAnimatedEntity {
@@ -35,6 +42,10 @@ public class DragonRenderState extends LivingEntityRenderState implements IAnima
     public boolean vehicle;
     public boolean passenger;
     public boolean eyesVisible;
+    public boolean hasLightningTarget;
+    public Vec3 lightningStart = Vec3.ZERO;
+    public Vec3 lightningEnd = Vec3.ZERO;
+    public float lightningScale;
 
     public int walkCycle;
     public int flightCycle;
@@ -59,6 +70,13 @@ public class DragonRenderState extends LivingEntityRenderState implements IAnima
     public Identifier emptyOverlay;
     public Identifier eyeTexture;
     public Identifier[] armorLayerTextures = new Identifier[4];
+    public final ItemStackRenderState bannerItem = new ItemStackRenderState();
+    public final List<Rider> riders = new ArrayList<>();
+
+    /** Render-only passenger snapshot; it deliberately contains no live entity reference. */
+    public record Rider(EntityRenderState renderState, UUID uuid, boolean prey, boolean dreadQueen, float yaw,
+                        boolean humanoidModel, boolean quadrupedModel, boolean horseModel) {
+    }
 
     @Override
     public int getAnimationTick() {

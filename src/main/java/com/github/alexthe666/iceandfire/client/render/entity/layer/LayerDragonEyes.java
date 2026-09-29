@@ -48,7 +48,7 @@ public class LayerDragonEyes extends RenderLayer<DragonRenderState, TabulaModel>
         };
         copyPositions(head, getParentModel());
         collector.submitModel(head, state, poseStack, RenderTypes.eyes(state.eyeTexture), lightCoords,
-                LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, null, state.outlineColor);
+                LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, null, state.outlineColor, null);
     }
 
     private static TabulaModel onlyKeepCubes(TabulaModelAccessor model) {

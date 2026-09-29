@@ -49,6 +49,6 @@ public class LayerDragonArmor extends RenderLayer<DragonRenderState, com.nicktal
             LAYERED_ARMOR_CACHE.put(key, texture);
         }
         collector.submitModel(getParentModel(), state, poseStack, RenderTypes.entityCutoutCull(texture), lightCoords,
-                LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, null, state.outlineColor);
+                LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, null, state.outlineColor, null);
     }
 }

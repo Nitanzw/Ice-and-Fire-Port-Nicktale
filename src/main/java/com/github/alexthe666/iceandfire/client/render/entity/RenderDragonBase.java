@@ -1,10 +1,14 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
 import com.github.alexthe666.iceandfire.client.model.DragonRenderState;
+import com.github.alexthe666.iceandfire.client.ClientProxy;
+import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerDragonBanner;
+import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerDragonRider;
 import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerDragonArmor;
 import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerDragonEyes;
 import com.github.alexthe666.iceandfire.client.texture.ArrayLayeredTexture;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
+import com.github.alexthe666.iceandfire.entity.EntityDreadQueen;
 import com.github.alexthe666.iceandfire.enums.EnumDragonTextures;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -12,9 +16,19 @@ import com.mojang.math.Axis;
 import com.nicktale.api.client.model.TabulaModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.animal.equine.HorseModel;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.BannerItem;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -30,6 +44,8 @@ public class RenderDragonBase extends MobRenderer<EntityDragonBase, DragonRender
         super(context, model, 0.15F);
         this.dragonType = dragonType;
         this.addLayer(new LayerDragonEyes(this));
+        this.addLayer(new LayerDragonRider(this, false));
+        this.addLayer(new LayerDragonBanner(this));
         this.addLayer(new LayerDragonArmor(this));
     }
 
@@ -67,6 +83,32 @@ public class RenderDragonBase extends MobRenderer<EntityDragonBase, DragonRender
         state.vehicle = entity.isVehicle();
         state.passenger = entity.isPassenger();
         state.eyesVisible = entity.shouldRenderEyes();
+        state.riders.clear();
+        EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        Entity controllingPassenger = entity.getControllingPassenger();
+        for (Entity passenger : entity.getPassengers()) {
+            EntityRenderState passengerState = dispatcher.extractEntity(passenger, partialTicks);
+            EntityRenderer<?, ?> passengerRenderer = dispatcher.getRenderer(passengerState);
+            EntityModel<?> passengerModel = passengerRenderer instanceof MobRenderer<?, ?, ?> mobRenderer
+                    ? mobRenderer.getModel()
+                    : null;
+            state.riders.add(new DragonRenderState.Rider(
+                    passengerState,
+                    passenger.getUUID(),
+                    controllingPassenger == null || controllingPassenger.getId() != passenger.getId(),
+                    passenger instanceof EntityDreadQueen,
+                    passenger.yRotO + (passenger.getYRot() - passenger.yRotO) * partialTicks,
+                    passengerModel instanceof net.minecraft.client.model.HumanoidModel<?>,
+                    passengerModel instanceof net.minecraft.client.model.QuadrupedModel<?>,
+                    passengerModel instanceof HorseModel);
+            ClientProxy.currentDragonRiders.add(passenger.getUUID());
+        }
+        ItemStack banner = entity.getItemInHand(InteractionHand.OFF_HAND);
+        state.bannerItem.clear();
+        if (!banner.isEmpty() && banner.getItem() instanceof BannerItem) {
+            Minecraft.getInstance().getItemModelResolver().updateForLiving(
+                    state.bannerItem, banner, ItemDisplayContext.NONE, entity);
+        }
         state.walkCycle = entity.walkCycle;
         state.flightCycle = entity.flightCycle;
         state.swimCycle = entity.swimCycle;
