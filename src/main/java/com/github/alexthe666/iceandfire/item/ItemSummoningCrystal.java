@@ -5,7 +5,6 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import com.github.alexthe666.iceandfire.world.DragonPosWorldData;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -45,14 +44,15 @@ public class ItemSummoningCrystal extends Item {
     private long summoningTime = 0;
 
     public ItemSummoningCrystal() {
-        super(new Item.Properties()/*.tab(IceAndFire.TAB_ITEMS)*/.stacksTo(1));
+        super(IafItemRegistry.itemProperties()/*.tab(IceAndFire.TAB_ITEMS)*/.stacksTo(1));
     }
 
     private static CompoundTag getDragonTag(ItemStack stack) {
-        if (stack.getItem() instanceof ItemSummoningCrystal && stack.getTag() != null) {
-            for (String tagInfo : stack.getTag().getAllKeys()) {
+        if (stack.getItem() instanceof ItemSummoningCrystal && ItemStackData.has(stack)) {
+            CompoundTag data = ItemStackData.get(stack);
+            for (String tagInfo : data.getAllKeys()) {
                 if (tagInfo.contains("Dragon")) {
-                    return stack.getTag().getCompound(tagInfo);
+                    return data.getCompound(tagInfo);
                 }
             }
         }
@@ -64,16 +64,17 @@ public class ItemSummoningCrystal extends Item {
     }
 
     @Override
-    public void onCraftedBy(ItemStack itemStack, @NotNull Level world, @NotNull Player player) {
-        itemStack.setTag(new CompoundTag());
+    public void onCraftedBy(ItemStack itemStack, @NotNull Player player) {
+        super.onCraftedBy(itemStack, player);
     }
 
-    public ItemStack onItemUseFinish(Level worldIn, LivingEntity LivingEntity) {
+    @Override
+    public ItemStack finishUsingItem(ItemStack itemStack, Level level, LivingEntity entity) {
         return new ItemStack(this);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, @NotNull TooltipFlag flagIn) {
 
         boolean flag = false;
         String desc = "entity.iceandfire.fire_dragon";
@@ -83,22 +84,23 @@ public class ItemSummoningCrystal extends Item {
         if (stack.getItem() == IafItemRegistry.SUMMONING_CRYSTAL_LIGHTNING.get()) {
             desc = "entity.iceandfire.lightning_dragon";
         }
-        if (stack.getTag() != null) {
-            for (String tagInfo : stack.getTag().getAllKeys()) {
+        if (ItemStackData.has(stack)) {
+            CompoundTag data = ItemStackData.get(stack);
+            for (String tagInfo : data.getAllKeys()) {
                 if (tagInfo.contains("Dragon")) {
-                    CompoundTag dragonTag = stack.getTag().getCompound(tagInfo);
-                    String dragonName = I18n.get(desc);
+                    CompoundTag dragonTag = data.getCompound(tagInfo);
+                    Component dragonName = Component.translatable(desc);
                     if (!dragonTag.getString("CustomName").isEmpty()) {
-                        dragonName = dragonTag.getString("CustomName");
+                        dragonName = Component.literal(dragonTag.getString("CustomName"));
                     }
-                    tooltip.add(Component.translatable("item.iceandfire.summoning_crystal.bound", dragonName).withStyle(ChatFormatting.GRAY));
+                    tooltip.accept(Component.translatable("item.iceandfire.summoning_crystal.bound", dragonName).withStyle(ChatFormatting.GRAY));
                     flag = true;
                 }
             }
         }
         if (!flag) {
-            tooltip.add(Component.translatable("item.iceandfire.summoning_crystal.desc_0").withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.translatable("item.iceandfire.summoning_crystal.desc_1").withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable("item.iceandfire.summoning_crystal.desc_0").withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable("item.iceandfire.summoning_crystal.desc_1").withStyle(ChatFormatting.GRAY));
 
         }
 
@@ -190,7 +192,7 @@ public class ItemSummoningCrystal extends Item {
         this.summoningPlayer.playSound(SoundEvents.GLASS_BREAK, 1, 1);
         this.summoningPlayer.swing(this.summoningHand);
         this.summoningPlayer.displayClientMessage(Component.translatable("message.iceandfire.dragonTeleport"), true);
-        stack.setTag(new CompoundTag());
+        ItemStackData.set(stack, new CompoundTag());
     }
 
     public void delayedSummon() {

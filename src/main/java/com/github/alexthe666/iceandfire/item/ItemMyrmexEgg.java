@@ -22,7 +22,7 @@ public class ItemMyrmexEgg extends Item {
     boolean isJungle;
 
     public ItemMyrmexEgg(boolean isJungle) {
-        super(new Item.Properties()/*.tab(IceAndFire.TAB_ITEMS)*/.stacksTo(1));
+        super(IafItemRegistry.itemProperties()/*.tab(IceAndFire.TAB_ITEMS)*/.stacksTo(1));
         this.isJungle = isJungle;
     }
 
@@ -41,13 +41,9 @@ public class ItemMyrmexEgg extends Item {
     }*/
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, @NotNull TooltipFlag flagIn) {
         String caste;
-        CompoundTag tag = stack.getTag();
-        int eggOrdinal = 0;
-        if (tag != null) {
-            eggOrdinal = tag.getInt("EggOrdinal");
-        }
+        int eggOrdinal = ItemStackData.get(stack).getInt("EggOrdinal");
         switch (eggOrdinal) {
             default:
                 caste = "worker";
@@ -65,9 +61,9 @@ public class ItemMyrmexEgg extends Item {
                 caste = "queen";
         }
         if (eggOrdinal == 4) {
-            tooltip.add(Component.translatable("myrmex.caste_" + caste + ".name").withStyle(ChatFormatting.LIGHT_PURPLE));
+            tooltip.accept(Component.translatable("myrmex.caste_" + caste + ".name").withStyle(ChatFormatting.LIGHT_PURPLE));
         } else {
-            tooltip.add(Component.translatable("myrmex.caste_" + caste + ".name").withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable("myrmex.caste_" + caste + ".name").withStyle(ChatFormatting.GRAY));
         }
     }
 
@@ -76,11 +72,7 @@ public class ItemMyrmexEgg extends Item {
         ItemStack itemstack = context.getPlayer().getItemInHand(context.getHand());
         BlockPos offset = context.getClickedPos().relative(context.getClickedFace());
         EntityMyrmexEgg egg = new EntityMyrmexEgg(IafEntityRegistry.MYRMEX_EGG.get(), context.getLevel());
-        CompoundTag tag = itemstack.getTag();
-        int eggOrdinal = 0;
-        if (tag != null) {
-            eggOrdinal = tag.getInt("EggOrdinal");
-        }
+        int eggOrdinal = ItemStackData.get(itemstack).getInt("EggOrdinal");
         egg.setJungle(isJungle);
         egg.setMyrmexCaste(eggOrdinal);
         egg.moveTo(offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5, 0, 0);
@@ -97,11 +89,7 @@ public class ItemMyrmexEgg extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        int eggOrdinal = 0;
-        if (tag != null) {
-            eggOrdinal = tag.getInt("EggOrdinal");
-        }
+        int eggOrdinal = ItemStackData.get(stack).getInt("EggOrdinal");
         return super.isFoil(stack) || eggOrdinal == 4;
     }
 }

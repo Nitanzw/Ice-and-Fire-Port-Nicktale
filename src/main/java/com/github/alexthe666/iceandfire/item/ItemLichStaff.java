@@ -5,7 +5,6 @@ import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemLichStaff extends Item {
 
     public ItemLichStaff() {
-        super(new Item.Properties().durability(100));
+        super(IafItemRegistry.itemProperties().durability(100));
     }
 
     @Override
@@ -24,10 +23,9 @@ public class ItemLichStaff extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
         ItemStack itemStackIn = playerIn.getItemInHand(hand);
         if (!worldIn.isClientSide()) {
-            playerIn.startUsingItem(hand);
             playerIn.swing(hand);
             double d2 = playerIn.getLookAngle().x;
             double d3 = playerIn.getLookAngle().y;
@@ -43,11 +41,9 @@ public class ItemLichStaff extends Item {
             worldIn.addFreshEntity(charge);
             charge.shoot(d2, d3, d4, 1, 1);
             playerIn.playSound(SoundEvents.ZOMBIE_INFECT, 1F, 0.75F + 0.5F * playerIn.getRandom().nextFloat());
-            itemStackIn.hurtAndBreak(1, playerIn, (player) -> {
-                player.broadcastBreakEvent(hand);
-            });
+            itemStackIn.hurtAndBreak(1, playerIn, hand);
             playerIn.getCooldowns().addCooldown(this, 4);
         }
-        return new InteractionResultHolder<ItemStack>(InteractionResult.SUCCESS, itemStackIn);
+        return InteractionResult.SUCCESS;
     }
 }

@@ -23,7 +23,7 @@ public class ItemSeaSerpentScales extends ItemGeneric {
 
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("sea_serpent." + colorName).withStyle(color));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.accept(Component.translatable("sea_serpent." + colorName).withStyle(color));
     }
 }

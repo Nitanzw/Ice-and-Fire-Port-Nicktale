@@ -24,7 +24,7 @@ public class ItemDragonSkull extends Item {
     private final int dragonType;
 
     public ItemDragonSkull(int dragonType) {
-        super(new Item.Properties()/*.tab(IceAndFire.TAB_ITEMS)*/.stacksTo(1));
+        super(IafItemRegistry.itemProperties()/*.tab(IceAndFire.TAB_ITEMS)*/.stacksTo(1));
         this.dragonType = dragonType;
     }
 
@@ -43,25 +43,26 @@ public class ItemDragonSkull extends Item {
     }
 
     @Override
-    public void onCraftedBy(ItemStack itemStack, @NotNull Level world, @NotNull Player player) {
-        itemStack.setTag(new CompoundTag());
+    public void onCraftedBy(ItemStack itemStack, @NotNull Player player) {
+        super.onCraftedBy(itemStack, player);
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, @NotNull Level worldIn, @NotNull Entity entityIn, int itemSlot, boolean isSelected) {
-        if (stack.getTag() == null) {
-            stack.setTag(new CompoundTag());
-            stack.getTag().putInt("Stage", 4);
-            stack.getTag().putInt("DragonAge", 75);
+    public void inventoryTick(ItemStack stack, @NotNull net.minecraft.server.level.ServerLevel worldIn, @NotNull Entity entityIn, net.minecraft.world.entity.EquipmentSlot slot) {
+        if (!ItemStackData.has(stack)) {
+            ItemStackData.update(stack, tag -> {
+                tag.putInt("Stage", 4);
+                tag.putInt("DragonAge", 75);
+            });
         }
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, @NotNull TooltipFlag flagIn) {
         String iceorfire = "dragon." + getType(dragonType);
-        tooltip.add(Component.translatable(iceorfire).withStyle(ChatFormatting.GRAY));
-        if (stack.getTag() != null) {
-            tooltip.add(Component.translatable("dragon.stage").withStyle(ChatFormatting.GRAY).append(Component.literal(" " + stack.getTag().getInt("Stage"))));
+        tooltip.accept(Component.translatable(iceorfire).withStyle(ChatFormatting.GRAY));
+        if (ItemStackData.has(stack)) {
+            tooltip.accept(Component.translatable("dragon.stage").withStyle(ChatFormatting.GRAY).append(Component.literal(" " + ItemStackData.get(stack).getInt("Stage"))));
         }
     }
 
@@ -73,11 +74,12 @@ public class ItemDragonSkull extends Item {
          * egg.setPosition(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() +
          * 0.5); if(!worldIn.isRemote){ worldIn.spawnEntityInWorld(egg); }
          */
-        if (stack.getTag() != null) {
+        if (ItemStackData.has(stack)) {
+            CompoundTag data = ItemStackData.get(stack);
             EntityDragonSkull skull = new EntityDragonSkull(IafEntityRegistry.DRAGON_SKULL.get(), context.getLevel());
             skull.setDragonType(dragonType);
-            skull.setStage(stack.getTag().getInt("Stage"));
-            skull.setDragonAge(stack.getTag().getInt("DragonAge"));
+            skull.setStage(data.getInt("Stage"));
+            skull.setDragonAge(data.getInt("DragonAge"));
             BlockPos offset = context.getClickedPos().relative(context.getClickedFace(), 1);
             skull.moveTo(offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5, 0, 0);
             float yaw = context.getPlayer().getYRot();

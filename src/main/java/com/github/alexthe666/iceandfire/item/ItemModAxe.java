@@ -1,70 +1,43 @@
 package com.github.alexthe666.iceandfire.item;
 
-import com.github.alexthe666.iceandfire.IafConfig;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
+import com.nicktale.api.server.item.CustomToolMaterial;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.*;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-import javax.annotation.Nullable;
-import java.util.List;
+import java.util.function.Consumer;
 
-public class ItemModAxe extends AxeItem implements DragonSteelOverrides<ItemModAxe> {
+public class ItemModAxe extends Item implements DragonSteelOverrides<ItemModAxe> {
+    private final CustomToolMaterial toolMaterial;
 
-    private final Tier tier;
-    private Multimap<Attribute, AttributeModifier> dragonsteelModifiers;
-
-    public ItemModAxe(Tier toolmaterial) {
-        super(toolmaterial, 5.0F, -3.0F, (new Item.Properties()));
-        this.tier = toolmaterial;
+    public ItemModAxe(CustomToolMaterial toolMaterial) {
+        super(ItemProperties.axe(toolMaterial, 5.0F, -3.0F));
+        this.toolMaterial = toolMaterial;
     }
 
     @Override
-    @Deprecated
-    public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot equipmentSlot) {
-        return equipmentSlot == EquipmentSlot.MAINHAND && isDragonsteel(getTier()) ? this.bakeDragonsteel() : super.getDefaultAttributeModifiers(equipmentSlot);
+    public CustomToolMaterial getToolMaterial() {
+        return toolMaterial;
     }
 
     @Override
-    @Deprecated
-    public Multimap<Attribute, AttributeModifier> bakeDragonsteel() {
-        if (tier.getAttackDamageBonus() != IafConfig.dragonsteelBaseDamage || dragonsteelModifiers == null) {
-            ImmutableMultimap.Builder<Attribute, AttributeModifier> lvt_5_1_ = ImmutableMultimap.builder();
-            lvt_5_1_.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", IafConfig.dragonsteelBaseDamage - 1F + 5F, AttributeModifier.Operation.ADDITION));
-            lvt_5_1_.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -3.0F, AttributeModifier.Operation.ADDITION));
-            this.dragonsteelModifiers = lvt_5_1_.build();
-            return this.dragonsteelModifiers;
-        } else {
-            return dragonsteelModifiers;
-        }
+    public float getBaseAttackDamage() {
+        return 5.0F;
     }
 
     @Override
-    public int getMaxDamage(ItemStack stack) {
-        return isDragonsteel(getTier()) ? IafConfig.dragonsteelBaseDurability : getTier().getUses();
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        applyMaterialHit(this, stack, target, attacker);
+        super.hurtEnemy(stack, target, attacker);
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
-        hurtEnemy(this, stack, target, attacker);
-        return super.hurtEnemy(stack, target, attacker);
-    }
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        appendHoverText(tier, stack, worldIn, tooltip, flagIn);
-    }
-
-    @Override
-    public boolean canDisableShield(ItemStack stack, ItemStack shield, LivingEntity entity, LivingEntity attacker) {
-        return true;
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display,
+                                Consumer<Component> tooltip, TooltipFlag flag) {
+        super.appendHoverText(stack, context, display, tooltip, flag);
+        appendMaterialTooltip(toolMaterial, stack, context, display, tooltip, flag);
     }
 }

@@ -22,30 +22,30 @@ import java.util.UUID;
 public class ItemMyrmexStaff extends Item {
 
     public ItemMyrmexStaff(boolean jungle) {
-        super(new Item.Properties().stacksTo(1));
+        super(IafItemRegistry.itemProperties().stacksTo(1));
     }
 
     @Override
-    public void onCraftedBy(ItemStack itemStack, @NotNull Level world, @NotNull Player player) {
-        itemStack.setTag(new CompoundTag());
+    public void onCraftedBy(ItemStack itemStack, @NotNull Player player) {
+        super.onCraftedBy(itemStack, player);
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, @NotNull Level world, @NotNull Entity entity, int itemSlot, boolean isSelected) {
-        if (stack.getTag() == null) {
-            stack.setTag(new CompoundTag());
-            stack.getTag().putUUID("HiveUUID", new UUID(0, 0));
+    public void inventoryTick(ItemStack stack, @NotNull net.minecraft.server.level.ServerLevel world, @NotNull Entity entity, net.minecraft.world.entity.EquipmentSlot slot) {
+        if (!ItemStackData.contains(stack, "HiveUUID")) {
+            ItemStackData.update(stack, tag -> tag.putUUID("HiveUUID", new UUID(0, 0)));
         }
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
         ItemStack itemStackIn = playerIn.getItemInHand(hand);
         if (playerIn.isShiftKeyDown()) {
             return super.use(worldIn, playerIn, hand);
         }
-        if (itemStackIn.getTag() != null && itemStackIn.getTag().hasUUID("HiveUUID")) {
-            UUID id = itemStackIn.getTag().getUUID("HiveUUID");
+        CompoundTag data = ItemStackData.get(itemStackIn);
+        if (data.hasUUID("HiveUUID")) {
+            UUID id = data.getUUID("HiveUUID");
             if (!worldIn.isClientSide()) {
                 MyrmexHive hive = MyrmexWorldData.get(worldIn).getHiveFromUUID(id);
                 MyrmexWorldData.addHive(worldIn, new MyrmexHive());
@@ -59,7 +59,7 @@ public class ItemMyrmexStaff extends Item {
             }
         }
         playerIn.swing(hand);
-        return new InteractionResultHolder<ItemStack>(InteractionResult.PASS, itemStackIn);
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -67,9 +67,9 @@ public class ItemMyrmexStaff extends Item {
         if (!context.getPlayer().isShiftKeyDown()) {
             return super.useOn(context);
         } else {
-            CompoundTag tag = context.getPlayer().getItemInHand(context.getHand()).getTag();
-            if (tag != null && tag.hasUUID("HiveUUID")) {
-                UUID id = tag.getUUID("HiveUUID");
+            CompoundTag data = ItemStackData.get(context.getPlayer().getItemInHand(context.getHand()));
+            if (data.hasUUID("HiveUUID")) {
+                UUID id = data.getUUID("HiveUUID");
                 if (!context.getLevel().isClientSide()) {
                     MyrmexHive hive = MyrmexWorldData.get(context.getLevel()).getHiveFromUUID(id);
                     if (hive != null) {

@@ -1,34 +1,26 @@
 package com.github.alexthe666.iceandfire.item;
 
-import com.github.alexthe666.iceandfire.IceAndFire;
+import com.nicktale.api.server.item.CustomToolMaterial;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.ForgeTier;
-import net.neoforged.neoforge.common.TierSortingRegistry;
 
-import java.util.List;
-import java.util.function.Supplier;
-
-public class DragonSteelTier {
-
+/** Custom tool-material values replacing Forge's tier sorting registry on Minecraft 26.2. */
+public final class DragonSteelTier {
     public static final TagKey<Block> DRAGONSTEEL_TIER_TAG = BlockTags.create(Identifier.parse("iceandfire:needs_dragonsteel"));
-    public static final Tier DRAGONSTEEL_TIER_FIRE = createTierWithRepairItem(() -> Ingredient.of(IafItemRegistry.DRAGONSTEEL_FIRE_INGOT.get()), "dragonsteel_tier_fire");
-    public static final Tier DRAGONSTEEL_TIER_ICE = createTierWithRepairItem(() -> Ingredient.of(IafItemRegistry.DRAGONSTEEL_ICE_INGOT.get()), "dragonsteel_tier_ice");
-    public static final Tier DRAGONSTEEL_TIER_LIGHTNING = createTierWithRepairItem(() -> Ingredient.of(IafItemRegistry.DRAGONSTEEL_LIGHTNING_INGOT.get()), "dragonsteel_tier_lightning");
-    //FIXME: Probably shouldn't be called dragonsteel
-    public static final Tier DRAGONSTEEL_TIER_DREAD_QUEEN = createTierWithRepairItem(() -> Ingredient.of(), "dragonsteel_tier_dread_queen");
 
-    private static Tier createTierWithRepairItem(Supplier<Ingredient> ingredient, String name) {
-        return TierSortingRegistry.registerTier(
-            new ForgeTier(4, 8000, 10, 21, 10, DRAGONSTEEL_TIER_TAG, ingredient),
-            Identifier.fromNamespaceAndPath(IceAndFire.MODID, name),
-            List.of(Tiers.NETHERITE), List.of());
+    public static final CustomToolMaterial DRAGONSTEEL_TIER_FIRE = createMaterial("dragonsteel_tier_fire");
+    public static final CustomToolMaterial DRAGONSTEEL_TIER_ICE = createMaterial("dragonsteel_tier_ice");
+    public static final CustomToolMaterial DRAGONSTEEL_TIER_LIGHTNING = createMaterial("dragonsteel_tier_lightning");
+    // FIXME: Retained legacy name until callers are ported to the material abstraction.
+    public static final CustomToolMaterial DRAGONSTEEL_TIER_DREAD_QUEEN = createMaterial("dragonsteel_tier_dread_queen");
+
+    private DragonSteelTier() {
     }
 
-
+    private static CustomToolMaterial createMaterial(String name) {
+        // These are the values of the former ForgeTier used by every dragonsteel variant.
+        return new CustomToolMaterial(name, 4, 8000, 10.0F, 21.0F, 10);
+    }
 }
