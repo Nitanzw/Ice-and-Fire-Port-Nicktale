@@ -38,10 +38,11 @@ public class DevSmokeTest {
         for (int w = 0; w < 60; w++) {
             commands.add("#wait");
         }
+        int sz = 0;
         for (String st : new String[]{"gorgon_temple", "graveyard", "mausoleum"}) {
-            int x = 300 * ++i;
-            loads.add("execute in minecraft:overworld run forceload add " + x + " 0");
-            commands.add("execute in minecraft:overworld run place structure iceandfire:" + st + " " + x + " @Y@ 0");
+            int z = 300 * sz++;
+            loads.add("execute in minecraft:overworld run forceload add 8100 " + z);
+            commands.add("execute in minecraft:overworld run place structure iceandfire:" + st + " 8100 @Y@ " + z);
         }
         java.util.List<String> retry = new java.util.ArrayList<>();
         for (String c : commands) {
@@ -81,8 +82,10 @@ public class DevSmokeTest {
             return;
         }
         if (cmd.contains("@Y@")) {
-            int px = Integer.parseInt(cmd.split(" ")[cmd.split(" ").length - 3]);
-            int py = server.overworld().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE_WG, px, 0);
+            String[] tk = cmd.split(" ");
+            int px = Integer.parseInt(tk[tk.length - 3]);
+            int pz = Integer.parseInt(tk[tk.length - 1]);
+            int py = server.overworld().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE_WG, px, pz);
             cmd = cmd.replace("@Y@", String.valueOf(py));
         }
         IceAndFire.LOGGER.info("SMOKETEST cmd [{}]", cmd);
