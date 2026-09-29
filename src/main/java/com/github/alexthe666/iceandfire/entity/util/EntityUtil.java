@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class EntityUtil {
     public static void updatePart(@Nullable final EntityMutlipartPart part, @NotNull final LivingEntity parent) {
-        if (part == null || !(parent.level() instanceof ServerLevel serverLevel) || parent.isRemoved()) {
+        if (part == null || part.isRemoved() || !(parent.level() instanceof ServerLevel serverLevel) || parent.isRemoved()) {
             return;
         }
 
