@@ -1,6 +1,5 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
-import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.api.FoodUtils;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import com.github.alexthe666.iceandfire.entity.util.DragonUtils;
@@ -8,18 +7,17 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
-import java.util.function.Predicate;
-
 public class DragonAITarget<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
     private final EntityDragonBase dragon;
 
-    public DragonAITarget(EntityDragonBase entityIn, Class<T> classTarget, boolean checkSight, Predicate<LivingEntity> targetSelector) {
-        super(entityIn, classTarget, 3, checkSight, false, IafEntityUtil.selector(targetSelector));
+    public DragonAITarget(EntityDragonBase entityIn, Class<T> classTarget, boolean checkSight, TargetingConditions.Selector targetSelector) {
+        super(entityIn, classTarget, 3, checkSight, false, targetSelector);
         this.setFlags(EnumSet.of(Flag.TARGET));
         this.dragon = entityIn;
     }

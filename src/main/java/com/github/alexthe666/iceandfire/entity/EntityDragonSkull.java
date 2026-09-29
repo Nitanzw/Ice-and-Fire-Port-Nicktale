@@ -149,7 +149,7 @@ public class EntityDragonSkull extends Animal implements IBlacklistedFromStatues
         skullData.putInt("DragonAge", this.getDragonAge());
         CustomData.set(DataComponents.CUSTOM_DATA, stack, skullData);
         if (!this.level().isClientSide())
-            IafEntityUtil.drop(this, level, stack, 0.0F);
+            IafEntityUtil.drop(this, stack, 0.0F);
 
     }
 

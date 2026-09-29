@@ -27,6 +27,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -190,8 +191,11 @@ public class EntityDragonEgg extends LivingEntity implements IBlacklistedFromSta
                 dragon.setCustomName(getCustomName());
             }
 
-            dragon.setTame(true);
-            dragon.setOwnerUUID(getOwnerId());
+            dragon.setTame(true, false);
+            UUID ownerId = getOwnerId();
+            if (ownerId != null) {
+                dragon.setOwnerReference(EntityReference.of(ownerId));
+            }
 
             if (dragonType == DragonType.LIGHTNING) {
                 LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level(), EntitySpawnReason.EVENT);
@@ -217,7 +221,6 @@ public class EntityDragonEgg extends LivingEntity implements IBlacklistedFromSta
         return null;
     }
 
-    @Override
     public @NotNull Iterable<ItemStack> getArmorSlots() {
         return ImmutableList.of();
     }
@@ -237,7 +240,7 @@ public class EntityDragonEgg extends LivingEntity implements IBlacklistedFromSta
         if (var1.is(DamageTypeTags.IS_FIRE) && getEggType().dragonType == DragonType.FIRE)
             return false;
         if (!this.level().isClientSide() && !var1.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !isRemoved()) {
-            IafEntityUtil.drop(this, this.getItem().getItem(), 1);
+            IafEntityUtil.drop(this, this.getItem());
         }
         this.remove(RemovalReason.KILLED);
         return true;

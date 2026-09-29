@@ -1,6 +1,5 @@
 package com.github.alexthe666.iceandfire.entity;
 
-import net.neoforged.neoforge.event.EventHooks;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
@@ -11,42 +10,33 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.ItemAbilities;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityHydraArrow extends AbstractArrow {
-
-    protected double iafBaseDamage = 2.0D;
-
-    @Override
-    public void setBaseDamage(double baseDamage) {
-        super.setBaseDamage(baseDamage);
-        this.iafBaseDamage = baseDamage;
-    }
+    private static final float DAMAGE = 5.0F;
 
     public EntityHydraArrow(EntityType<? extends AbstractArrow> t, Level worldIn) {
         super(t, worldIn);
-        this.setBaseDamage(5F);
+        this.setBaseDamage(DAMAGE);
     }
 
     public EntityHydraArrow(EntityType<? extends AbstractArrow> t, Level worldIn, double x, double y, double z) {
         this(t, worldIn);
         this.setPos(x, y, z);
-        this.setBaseDamage(5F);
+        this.setBaseDamage(DAMAGE);
     }
 
 
 
 
     public EntityHydraArrow(EntityType t, Level worldIn, LivingEntity shooter) {
-        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.HYDRA_ARROW.get()), null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
-        this.setBaseDamage(5F);
+        super(t, shooter, worldIn, ItemStack.EMPTY, ItemStack.EMPTY);
+        this.setBaseDamage(DAMAGE);
     }
 
     @Override
@@ -65,20 +55,17 @@ public class EntityHydraArrow extends AbstractArrow {
     }
 
     protected void damageShield(Player player, float damage) {
-        if (damage >= 3.0F && player.getUseItem().has(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS)) {
+        if (damage >= 3.0F && player.isBlocking()) {
             ItemStack copyBeforeUse = player.getUseItem().copy();
             int i = 1 + Mth.floor(damage);
-            player.getUseItem().hurtAndBreak(i, player, player.getUsedItemHand());
+            InteractionHand hand = player.getUsedItemHand();
+            player.getUseItem().hurtAndBreak(i, player, hand);
 
             if (player.getUseItem().isEmpty()) {
                 InteractionHand Hand = player.getUsedItemHand();
                 net.neoforged.neoforge.event.EventHooks.onPlayerDestroyItem(player, copyBeforeUse, Hand);
 
-                if (Hand == net.minecraft.world.InteractionHand.MAIN_HAND) {
-                    this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
-                } else {
-                    this.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
-                }
+                player.setItemInHand(Hand, ItemStack.EMPTY);
                 player.stopUsingItem();
                 this.playSound(SoundEvents.SHIELD_BREAK.value(), 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
             }
@@ -88,17 +75,17 @@ public class EntityHydraArrow extends AbstractArrow {
     @Override
     protected void doPostHurtEffects(@NotNull LivingEntity living) {
         if (living instanceof Player) {
-            this.damageShield((Player) living, (float) this.iafBaseDamage);
+            this.damageShield((Player) living, DAMAGE);
         }
         living.addEffect(new MobEffectInstance(MobEffects.POISON, 300, 0));
         Entity shootingEntity = this.getOwner();
         if (shootingEntity instanceof LivingEntity) {
-            ((LivingEntity) shootingEntity).heal((float) this.iafBaseDamage);
+            ((LivingEntity) shootingEntity).heal(DAMAGE);
         }
     }
 
     @Override
-    protected ItemStack getDefaultPickupItem() {
+    protected @NotNull ItemStack getDefaultPickupItem() {
         return new ItemStack(IafItemRegistry.HYDRA_ARROW.get());
     }
 }

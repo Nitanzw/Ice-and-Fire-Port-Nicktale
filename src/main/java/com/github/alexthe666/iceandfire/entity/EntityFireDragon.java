@@ -51,7 +51,8 @@ public class EntityFireDragon extends EntityDragonBase {
 
     public EntityFireDragon(EntityType<?> t, Level worldIn) {
         super(t, worldIn, DragonType.FIRE, 1, 1 + IafConfig.dragonAttackDamage, IafConfig.dragonHealth * 0.04, IafConfig.dragonHealth, 0.15F, 0.4F);
-        this.setPathfindingMalus(PathType.DAMAGE_FIRE, 0.0F);
+        this.setPathfindingMalus(PathType.FIRE, 0.0F);
+        this.setPathfindingMalus(PathType.FIRE_IN_NEIGHBOR, 0.0F);
         this.setPathfindingMalus(PathType.LAVA, 8.0F);
         ANIMATION_SPEAK = Animation.create(20);
         ANIMATION_BITE = Animation.create(35);
@@ -206,7 +207,7 @@ public class EntityFireDragon extends EntityDragonBase {
 
     @Override
     public void riderShootFire(Entity controller) {
-        if (this.getRandom().nextInt(5) == 0 && !this.isBaby()) {
+        if (this.getRandom().nextInt(5) == 0 && !this.isDragonBaby()) {
             if (this.getAnimation() != ANIMATION_FIRECHARGE) {
                 this.setAnimation(ANIMATION_FIRECHARGE);
             } else if (this.getAnimationTick() == 20) {
@@ -249,7 +250,7 @@ public class EntityFireDragon extends EntityDragonBase {
     @Override
     protected float getBlockSpeedFactor() {
         // Disable soul sand slow down
-        if (this.onSoulSpeedBlock()) {
+        if (this.getBlockStateOn().is(net.minecraft.tags.BlockTags.SOUL_SPEED_BLOCKS)) {
             return this.getDragonStage() >= 2 ? 1.0f : 0.8f;
         }
         return super.getBlockSpeedFactor();

@@ -1,6 +1,5 @@
 package com.github.alexthe666.iceandfire.entity;
 
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
@@ -17,7 +16,7 @@ import com.github.alexthe666.iceandfire.event.ServerEvents;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.github.alexthe666.iceandfire.misc.IafTagRegistry;
 import com.github.alexthe666.iceandfire.pathfinding.PathNavigateCyclops;
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -127,7 +126,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
-            public boolean apply(@Nullable LivingEntity entity) {
+            public boolean test(@Nullable LivingEntity entity) {
                 if (EntityGorgon.isStoneMob(entity))
                     return false;
                 if (!DragonUtils.isAlive(entity))
@@ -150,10 +149,10 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
             }
         })));
 
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, 10, true, true, IafEntityUtil.selector(new Predicate<Player>() {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, true, IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
-            public boolean apply(@Nullable Player entity) {
-                return entity != null && !(entity.isCreative() || entity.isSpectator());
+            public boolean test(@Nullable LivingEntity entity) {
+                return entity instanceof Player player && !(player.isCreative() || player.isSpectator());
             }
         })));
         this.targetSelector.addGoal(3, new CyclopsAITargetSheepPlayers(this, Player.class, true));
@@ -179,7 +178,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
                 && !entityIn.getType().builtInRegistryHolder().is(CYCLOPS_UNLIFTABLES)) {
                 this.setAnimation(ANIMATION_EATPLAYER);
                 entityIn.stopRiding();
-                entityIn.startRiding(this, true);
+                entityIn.startRiding(this);
             } else {
                 this.setAnimation(ANIMATION_STOMP);
             }
@@ -295,7 +294,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
         if (this.getAnimation() == ANIMATION_KICK && this.getTarget() != null && this.distanceToSqr(this.getTarget()) < 14D && this.getAnimationTick() == 12) {
             IafDamage.hurt(this.getTarget(), this.level().damageSources().mobAttack(this), (float) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue());
             if (this.getTarget() != null)
-                this.getTarget().knockback(2, this.getX() - this.getTarget().getX(), this.getZ() - this.getTarget().getZ());
+                IafEntityUtil.knockback(this.getTarget(), 2.0F, this.getX() - this.getTarget().getX(), this.getZ() - this.getTarget().getZ());
 
         }
         if (this.getAnimation() != ANIMATION_EATPLAYER && this.getTarget() != null && !this.getPassengers().isEmpty() && this.getPassengers().contains(this.getTarget())) {

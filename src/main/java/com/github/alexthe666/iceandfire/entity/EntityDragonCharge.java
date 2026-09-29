@@ -84,7 +84,8 @@ public abstract class EntityDragonCharge extends Fireball implements IDragonProj
                         }
                     }
                     if (shootingEntity instanceof LivingEntity) {
-                        this.doEnchantDamageEffects((LivingEntity) shootingEntity, entity);
+                        net.minecraft.world.item.enchantment.EnchantmentHelper.doPostAttackEffects(
+                            (ServerLevel) this.level(), entity, this.causeDamage(shootingEntity));
                     }
                     this.remove(RemovalReason.DISCARDED);
                 }
