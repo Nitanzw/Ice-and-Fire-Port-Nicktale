@@ -73,12 +73,12 @@ public class EntityLightningDragon extends EntityDragonBase {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(HAS_LIGHTNING_TARGET, false);
-        this.entityData.define(LIGHTNING_TARGET_X, 0.0F);
-        this.entityData.define(LIGHTNING_TARGET_Y, 0.0F);
-        this.entityData.define(LIGHTNING_TARGET_Z, 0.0F);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HAS_LIGHTNING_TARGET, false);
+        builder.define(LIGHTNING_TARGET_X, 0.0F);
+        builder.define(LIGHTNING_TARGET_Y, 0.0F);
+        builder.define(LIGHTNING_TARGET_Z, 0.0F);
     }
 
     @Override

@@ -88,11 +88,11 @@ public abstract class EntityMutlipartPart extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(PARENT_UUID, Optional.empty());
-        this.entityData.define(SCALE_WIDTH, 0.5F);
-        this.entityData.define(SCALE_HEIGHT, 0.5F);
-        this.entityData.define(PART_YAW, 0F);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(PARENT_UUID, Optional.empty());
+        builder.define(SCALE_WIDTH, 0.5F);
+        builder.define(SCALE_HEIGHT, 0.5F);
+        builder.define(PART_YAW, 0F);
     }
 
     @Nullable
