@@ -6,7 +6,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PlayMessages;
 
 public class EntityHydraHead extends EntityMutlipartPart {
     public int headIndex;
@@ -17,9 +16,6 @@ public class EntityHydraHead extends EntityMutlipartPart {
         super(t, world);
     }
 
-    public EntityHydraHead(PlayMessages.SpawnEntity spawnEntity, Level worldIn) {
-        this(IafEntityRegistry.HYDRA_MULTIPART.get(), worldIn);
-    }
 
     public EntityHydraHead(EntityHydra entity, float radius, float angle, float y, float width, float height, float damageMulti, int headIndex, boolean neck) {
         super(IafEntityRegistry.HYDRA_MULTIPART.get(), entity, radius, angle, y, width, height, damageMulti);

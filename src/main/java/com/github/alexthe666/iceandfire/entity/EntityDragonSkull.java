@@ -4,6 +4,8 @@ import com.github.alexthe666.iceandfire.entity.util.IBlacklistedFromStatues;
 import com.github.alexthe666.iceandfire.entity.util.IDeadMob;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -175,21 +177,21 @@ public class EntityDragonSkull extends Animal implements IBlacklistedFromStatues
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        this.setDragonType(compound.getInt("Type"));
-        this.setStage(compound.getInt("Stage"));
-        this.setDragonAge(compound.getInt("DragonAge"));
-        this.setYaw(compound.getFloat("DragonYaw"));
-        super.readAdditionalSaveData(compound);
+    protected void readAdditionalSaveData(ValueInput input) {
+        this.setDragonType(input.getIntOr("Type", 0));
+        this.setStage(input.getIntOr("Stage", 0));
+        this.setDragonAge(input.getIntOr("DragonAge", 0));
+        this.setYaw(input.getFloatOr("DragonYaw", 0.0F));
+        super.readAdditionalSaveData(input);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        compound.putInt("Type", this.getDragonType());
-        compound.putInt("Stage", this.getStage());
-        compound.putInt("DragonAge", this.getDragonAge());
-        compound.putFloat("DragonYaw", this.getYaw());
-        super.addAdditionalSaveData(compound);
+    protected void addAdditionalSaveData(ValueOutput output) {
+        output.putInt("Type", this.getDragonType());
+        output.putInt("Stage", this.getStage());
+        output.putInt("DragonAge", this.getDragonAge());
+        output.putFloat("DragonYaw", this.getYaw());
+        super.addAdditionalSaveData(output);
     }
 
     public float getDragonSize() {

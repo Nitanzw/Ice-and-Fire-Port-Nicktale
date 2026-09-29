@@ -16,17 +16,18 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.MinecraftForge;
-import net.neoforged.neoforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.EventHooks;
 
 public class IafDragonDestructionManager {
     public static void destroyAreaBreath(final Level level, final BlockPos center, final EntityDragonBase dragon) {
-        if (MinecraftForge.EVENT_BUS.post(new DragonFireDamageWorldEvent(dragon, center.getX(), center.getY(), center.getZ()))) {
+        if (NeoForge.EVENT_BUS.post(new DragonFireDamageWorldEvent(dragon, center.getX(), center.getY(), center.getZ())).isCanceled()) {
             return;
         }
 
@@ -47,7 +48,7 @@ public class IafDragonDestructionManager {
         }
 
         double damageRadius = 3.5;
-        boolean canBreakBlocks = ForgeEventFactory.getMobGriefingEvent(level, dragon);
+        boolean canBreakBlocks = canEntityGrief(level, dragon);
 
         if (dragon.getDragonStage() <= 3) {
             BlockPos.betweenClosedStream(center.offset(-1, -1, -1), center.offset(1, 1, 1)).forEach(position -> {
@@ -110,7 +111,7 @@ public class IafDragonDestructionManager {
             return;
         }
 
-        if (MinecraftForge.EVENT_BUS.post(new DragonFireDamageWorldEvent(dragon, center.getX(), center.getY(), center.getZ()))) {
+        if (NeoForge.EVENT_BUS.post(new DragonFireDamageWorldEvent(dragon, center.getX(), center.getY(), center.getZ())).isCanceled()) {
             return;
         }
 
@@ -118,7 +119,7 @@ public class IafDragonDestructionManager {
         int y = 2;
         int z = 2;
 
-        boolean canBreakBlocks = DragonUtils.canGrief(dragon) && ForgeEventFactory.getMobGriefingEvent(level, dragon);
+        boolean canBreakBlocks = DragonUtils.canGrief(dragon) && canEntityGrief(level, dragon);
 
         if (canBreakBlocks) {
             if (dragon.getDragonStage() <= 3) {
@@ -210,6 +211,10 @@ public class IafDragonDestructionManager {
         }
     }
 
+    private static boolean canEntityGrief(Level level, Entity entity) {
+        return level instanceof ServerLevel serverLevel && EventHooks.canEntityGrief(serverLevel, entity);
+    }
+
     private static void attackBlock(final Level level, final EntityDragonBase dragon, final BlockPos position, final BlockState state) {
         if (state.getBlock() instanceof IDragonProof || !DragonUtils.canDragonBreak(state, dragon)) {
             return;
@@ -268,7 +273,7 @@ public class IafDragonDestructionManager {
     }
 
     private static void causeExplosion(Level world, BlockPos center, EntityDragonBase destroyer, DamageSource source, int stage) {
-        Explosion.BlockInteraction mode = ForgeEventFactory.getMobGriefingEvent(world, destroyer) ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
+        Explosion.BlockInteraction mode = canEntityGrief(world, destroyer) ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
         BlockLaunchExplosion explosion = new BlockLaunchExplosion(world, destroyer, source, center.getX(), center.getY(), center.getZ(), Math.min(2, stage - 2), mode);
         explosion.explode();
         explosion.finalizeExplosion(true);

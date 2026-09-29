@@ -11,7 +11,8 @@ import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -53,37 +54,31 @@ public class EntityDragonEgg extends LivingEntity implements IBlacklistedFromSta
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putInt("Color", (byte) this.getEggType().ordinal());
-        tag.putInt("DragonAge", this.getDragonAge());
-        try {
-            if (this.getOwnerId() == null) {
-                tag.putString("OwnerUUID", "");
-            } else {
-                tag.putString("OwnerUUID", this.getOwnerId().toString());
-            }
-        } catch (Exception e) {
-            IceAndFire.LOGGER.error("An error occurred while trying to read the NBT data of a dragon egg", e);
-        }
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("Color", this.getEggType().ordinal());
+        output.putInt("DragonAge", this.getDragonAge());
+        output.putString("OwnerUUID", this.getOwnerId() == null ? "" : this.getOwnerId().toString());
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        this.setEggType(EnumDragonEgg.values()[tag.getInt("Color")]);
-        this.setDragonAge(tag.getInt("DragonAge"));
-        String s;
-
-        if (tag.contains("OwnerUUID", 8)) {
-            s = tag.getString("OwnerUUID");
-        } else {
-            String s1 = tag.getString("Owner");
-            UUID converedUUID = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s1);
-            s = converedUUID == null ? s1 : converedUUID.toString();
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        int eggType = input.getIntOr("Color", 0);
+        this.setEggType(EnumDragonEgg.values()[Math.floorMod(eggType, EnumDragonEgg.values().length)]);
+        this.setDragonAge(input.getIntOr("DragonAge", 0));
+        String owner = input.getStringOr("OwnerUUID", "");
+        if (owner.isEmpty()) {
+            String oldOwner = input.getStringOr("Owner", "");
+            UUID converted = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), oldOwner);
+            owner = converted == null ? oldOwner : converted.toString();
         }
-        if (!s.isEmpty()) {
-            this.setOwnerId(UUID.fromString(s));
+        if (!owner.isEmpty()) {
+            try {
+                this.setOwnerId(UUID.fromString(owner));
+            } catch (IllegalArgumentException ignored) {
+                IceAndFire.LOGGER.warn("Ignoring invalid dragon egg owner UUID: {}", owner);
+            }
         }
     }
 
