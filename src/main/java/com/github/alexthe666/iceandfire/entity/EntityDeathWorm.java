@@ -486,9 +486,6 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         super.move(typeIn, pos);
     }
 
-    public @NotNull Vec3 collide(@NotNull Vec3 vec) {
-        return ICustomCollisions.getAllowedMovementForEntity(this, vec);
-    }
 
     @Override
     public boolean isInWall() {
