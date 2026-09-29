@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import net.minecraft.world.entity.EntitySpawnReason;
 
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
@@ -37,8 +38,8 @@ public class ItemDragonHorn extends Item {
     public static int getDragonType(ItemStack stack) {
         if (ItemStackData.has(stack)) {
             String id = ItemStackData.get(stack).getStringOr("DragonHornEntityID", "");
-            if (EntityType.byString(id).isPresent()) {
-                EntityType entityType = EntityType.byString(id).get();
+            if (IafEntityUtil.entityTypeByString(id).isPresent()) {
+                EntityType entityType = IafEntityUtil.entityTypeByString(id).get();
                 if (entityType == IafEntityRegistry.FIRE_DRAGON.get())
                     return 1;
 
@@ -93,7 +94,7 @@ public class ItemDragonHorn extends Item {
         if (!data.getString("DragonHornEntityID").isEmpty()) {
             Level world = context.getLevel();
             String id = data.getStringOr("DragonHornEntityID", "");
-            EntityType type = EntityType.byString(id).orElse(null);
+            EntityType type = IafEntityUtil.entityTypeByString(id).orElse(null);
             if (type != null) {
                 Entity entity = type.create(world, EntitySpawnReason.EVENT);
                 if (entity instanceof EntityDragonBase) {
@@ -123,8 +124,8 @@ public class ItemDragonHorn extends Item {
             CompoundTag entityTag = data.getCompound("EntityTag");
             if (!entityTag.isEmpty()) {
                 String id = data.getStringOr("DragonHornEntityID", "");
-                if (EntityType.byString(id).isPresent()) {
-                    EntityType type = EntityType.byString(id).get();
+                if (IafEntityUtil.entityTypeByString(id).isPresent()) {
+                    EntityType type = IafEntityUtil.entityTypeByString(id).get();
                     tooltip.accept((Component.translatable(type.getDescriptionId())).withStyle(getTextColorForEntityType(type)));
                     String name = (Component.translatable("dragon.unnamed")).getString();
                     if (!entityTag.getString("CustomName").isEmpty()) {

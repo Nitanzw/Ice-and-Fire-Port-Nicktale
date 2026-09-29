@@ -162,12 +162,12 @@ public class EntityMyrmexWorker extends EntityMyrmexBase {
         this.targetSelector.addGoal(3, new MyrmexAIPickupBabies(this));
         this.targetSelector.addGoal(4, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(4, new MyrmexAIAttackPlayers(this));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<LivingEntity>() {
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
             public boolean apply(@Nullable LivingEntity entity) {
                 return EntityMyrmexWorker.this.getMainHandItem().isEmpty() && entity != null && !EntityMyrmexBase.haveSameHive(EntityMyrmexWorker.this, entity) && DragonUtils.isAlive(entity) && !(entity instanceof Enemy);
             }
-        }))));
+        })));
 
 
     }

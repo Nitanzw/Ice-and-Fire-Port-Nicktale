@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityGorgon;
 import com.github.alexthe666.iceandfire.entity.EntityStymphalianBird;
@@ -19,12 +20,12 @@ public class StymphalianBirdAITarget extends NearestAttackableTargetGoal<LivingE
     private final EntityStymphalianBird bird;
 
     public StymphalianBirdAITarget(EntityStymphalianBird entityIn, Class<LivingEntity> classTarget, boolean checkSight) {
-        super(entityIn, classTarget, 0, checkSight, false, new Predicate<LivingEntity>() {
+        super(entityIn, classTarget, 0, checkSight, false, IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
             public boolean apply(@Nullable LivingEntity entity) {
                 return !EntityGorgon.isStoneMob(entity) && (entity instanceof Player && !((Player) entity).isCreative() || entity instanceof AbstractVillager || entity instanceof AbstractGolem || entity instanceof Animal && IafConfig.stympahlianBirdAttackAnimals);
             }
-        });
+        }));
         this.bird = entityIn;
     }
 

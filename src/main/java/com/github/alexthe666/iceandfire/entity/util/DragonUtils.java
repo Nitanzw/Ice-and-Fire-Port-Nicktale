@@ -298,7 +298,7 @@ public class DragonUtils {
     }
 
     public static boolean isVillager(Entity entity) {
-        return entity.getType().is(TagKey.create(Registries.ENTITY_TYPE, IafTagRegistry.VILLAGERS));
+        return entity.getType().builtInRegistryHolder().is(TagKey.create(Registries.ENTITY_TYPE, IafTagRegistry.VILLAGERS));
     }
 
     public static boolean isAnimaniaMob(Entity entity) {
@@ -306,7 +306,7 @@ public class DragonUtils {
     }
 
     public static boolean isDragonTargetable(Entity entity, Identifier tag) {
-        return entity.getType().is(TagKey.create(Registries.ENTITY_TYPE, tag));
+        return entity.getType().builtInRegistryHolder().is(TagKey.create(Registries.ENTITY_TYPE, tag));
     }
 
     public static String getDimensionName(Level world) {

@@ -406,11 +406,11 @@ public class IafItemRegistry {
      * Preferred registration entry point for Minecraft 26.2. The registry injects the item's resource key into
      * {@code properties} before the item constructor runs, as required by the data component initializer system.
      */
-    public static <I extends Item> DeferredItem<I> registerItem(String name, Function<Item.Properties, ? extends I> factory) {
-        return registerItem(name, factory, true);
+    public static <I extends Item> DeferredItem<I> registerItemProps(String name, Function<Item.Properties, ? extends I> factory) {
+        return registerItemProps(name, factory, true);
     }
 
-    public static <I extends Item> DeferredItem<I> registerItem(String name, Function<Item.Properties, ? extends I> factory, boolean putInTab) {
+    public static <I extends Item> DeferredItem<I> registerItemProps(String name, Function<Item.Properties, ? extends I> factory, boolean putInTab) {
         DeferredItem<I> itemRegistryObject = ITEMS.registerItem(name, factory);
         if (putInTab) {
             IafTabRegistry.TAB_ITEMS_LIST.add(itemRegistryObject);
@@ -424,7 +424,7 @@ public class IafItemRegistry {
      * New registrations should use the Function overload and pass the properties directly.
      */
     public static <I extends Item> DeferredItem<I> registerItem(String name, Supplier<I> factory, boolean putInTab) {
-        return registerItem(name, properties -> {
+        return registerItemProps(name, properties -> {
             Item.Properties previous = ACTIVE_ITEM_PROPERTIES.get();
             ACTIVE_ITEM_PROPERTIES.set(properties);
             try {

@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.tile;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityGhost;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import net.minecraft.core.BlockPos;
@@ -29,7 +30,7 @@ public class TileEntityGhostChest extends ChestBlockEntity {
             if (ghost != null && this.level instanceof ServerLevel serverLevel) {
                 ghost.setPos(this.worldPosition.getX() + 0.5F, this.worldPosition.getY() + 0.5F, this.worldPosition.getZ() + 0.5F);
                 ghost.setYRot(ThreadLocalRandom.current().nextFloat() * 360F);
-                ghost.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(this.worldPosition), EntitySpawnReason.SPAWNER, null);
+                ghost.finalizeSpawn(serverLevel, IafEntityUtil.difficulty(serverLevel, this.worldPosition), EntitySpawnReason.SPAWNER, null);
                 if (user.getLivingEntity() instanceof Player player && !player.isCreative()) {
                     ghost.setTarget(player);
                 }

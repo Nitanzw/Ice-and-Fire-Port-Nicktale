@@ -81,12 +81,12 @@ public class EntityDreadLich extends EntityDreadMob implements IAnimatedEntity, 
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this, IDreadMob.class));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<LivingEntity>() {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
             public boolean apply(@Nullable LivingEntity entity) {
                 return DragonUtils.canHostilesTarget(entity);
             }
-        }))));
+        })));
         this.targetSelector.addGoal(3, new DreadAITargetNonDread(this, LivingEntity.class, false, new Predicate<LivingEntity>() {
             @Override
             public boolean apply(LivingEntity entity) {
@@ -283,7 +283,7 @@ public class EntityDreadLich extends EntityDreadMob implements IAnimatedEntity, 
             minion.setTarget(target);
             Level currentLevel = level();
             if (currentLevel instanceof ServerLevelAccessor) {
-                minion.finalizeSpawn((ServerLevelAccessor) currentLevel, currentLevel.getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+                minion.finalizeSpawn((ServerLevelAccessor) currentLevel, IafEntityUtil.difficulty(currentLevel, this.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
             }
             if (minion instanceof EntityDreadMob) {
                 ((EntityDreadMob) minion).setCommanderId(this.getUUID());

@@ -26,17 +26,17 @@ public class EntityAmphithereArrow extends AbstractArrow {
     }
 
 public EntityAmphithereArrow(EntityType type, LivingEntity shooter, Level worldIn) {
-        super(type, shooter, worldIn);
+        super(type, shooter, worldIn, new ItemStack(IafItemRegistry.AMPHITHERE_ARROW.get()), null);
         this.setBaseDamage(2.5F);
     }
 
 @Override
     public void tick() {
         super.tick();
-        if ((tickCount == 1 || this.tickCount % 70 == 0) && !this.inGround && !this.onGround()) {
+        if ((tickCount == 1 || this.tickCount % 70 == 0) && !this.isInGround() && !this.onGround()) {
             this.playSound(IafSoundRegistry.AMPHITHERE_GUST, 1, 1);
         }
-        if (level().isClientSide() && !this.inGround) {
+        if (level().isClientSide() && !this.isInGround()) {
             double d0 = this.random.nextGaussian() * 0.02D;
             double d1 = this.random.nextGaussian() * 0.02D;
             double d2 = this.random.nextGaussian() * 0.02D;
@@ -87,7 +87,7 @@ public EntityAmphithereArrow(EntityType type, LivingEntity shooter, Level worldI
     }
 
     @Override
-    protected @NotNull ItemStack getPickupItem() {
+    protected ItemStack getDefaultPickupItem() {
         return new ItemStack(IafItemRegistry.AMPHITHERE_ARROW.get());
     }
 }

@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityCockatrice;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,7 +14,7 @@ public class CockatriceAITarget<T extends LivingEntity> extends NearestAttackabl
     private final EntityCockatrice cockatrice;
 
     public CockatriceAITarget(EntityCockatrice entityIn, Class<T> classTarget, boolean checkSight, Predicate<LivingEntity> targetSelector) {
-        super(entityIn, classTarget, 0, checkSight, false, targetSelector);
+        super(entityIn, classTarget, 0, checkSight, false, IafEntityUtil.selector(targetSelector));
         this.cockatrice = entityIn;
         this.setFlags(EnumSet.of(Flag.TARGET));
     }

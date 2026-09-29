@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.misc.IafDataSerializers;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.entity.util.IDreadMob;
@@ -36,11 +37,11 @@ public class EntityDreadMob extends Monster implements IDreadMob {
 
     public static Entity necromancyEntity(LivingEntity entity) {
         Entity lichSummoned = null;
-        if (entity.getType().is(EntityTypeTags.ARTHROPOD)) {
+        if (entity.getType().builtInRegistryHolder().is(EntityTypeTags.ARTHROPOD)) {
             lichSummoned = new EntityDreadScuttler(IafEntityRegistry.DREAD_SCUTTLER.get(), entity.level());
             float readInScale = (entity.getBbWidth() / 1.5F);
             if (entity.level()instanceof ServerLevelAccessor) {
-                ((EntityDreadScuttler) lichSummoned).finalizeSpawn((ServerLevelAccessor) entity.level(), entity.level().getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+                ((EntityDreadScuttler) lichSummoned).finalizeSpawn((ServerLevelAccessor) entity.level(), IafEntityUtil.difficulty(entity.level(), entity.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
             }
             ((EntityDreadScuttler) lichSummoned).setSize(readInScale);
             return lichSummoned;
@@ -49,16 +50,16 @@ public class EntityDreadMob extends Monster implements IDreadMob {
             lichSummoned = new EntityDreadGhoul(IafEntityRegistry.DREAD_GHOUL.get(), entity.level());
             float readInScale = (entity.getBbWidth() / 0.6F);
             if (entity.level()instanceof ServerLevelAccessor) {
-                ((EntityDreadGhoul) lichSummoned).finalizeSpawn((ServerLevelAccessor) entity.level(), entity.level().getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+                ((EntityDreadGhoul) lichSummoned).finalizeSpawn((ServerLevelAccessor) entity.level(), IafEntityUtil.difficulty(entity.level(), entity.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
             }
             ((EntityDreadGhoul) lichSummoned).setSize(readInScale);
             return lichSummoned;
         }
-        if (entity.getType().is(EntityTypeTags.UNDEAD) || entity instanceof AbstractSkeleton || entity instanceof Player) {
+        if (entity.getType().builtInRegistryHolder().is(EntityTypeTags.UNDEAD) || entity instanceof AbstractSkeleton || entity instanceof Player) {
             lichSummoned = new EntityDreadThrall(IafEntityRegistry.DREAD_THRALL.get(), entity.level());
             EntityDreadThrall thrall = (EntityDreadThrall) lichSummoned;
             if (entity.level()instanceof ServerLevelAccessor) {
-                thrall.finalizeSpawn((ServerLevelAccessor) entity.level(), entity.level().getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+                thrall.finalizeSpawn((ServerLevelAccessor) entity.level(), IafEntityUtil.difficulty(entity.level(), entity.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
             }
             thrall.setCustomArmorHead(false);
             thrall.setCustomArmorChest(false);
@@ -77,7 +78,7 @@ public class EntityDreadMob extends Monster implements IDreadMob {
             lichSummoned = new EntityDreadBeast(IafEntityRegistry.DREAD_BEAST.get(), entity.level());
             float readInScale = (entity.getBbWidth() / 1.2F);
             if (entity.level()instanceof ServerLevelAccessor) {
-                ((EntityDreadBeast) lichSummoned).finalizeSpawn((ServerLevelAccessor) entity.level(), entity.level().getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+                ((EntityDreadBeast) lichSummoned).finalizeSpawn((ServerLevelAccessor) entity.level(), IafEntityUtil.difficulty(entity.level(), entity.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
             }
             ((EntityDreadBeast) lichSummoned).setSize(readInScale);
             return lichSummoned;

@@ -56,12 +56,12 @@ public interface DragonSteelOverrides<T extends Item> {
 
     default void applyMaterialHit(T item, ItemStack stack, LivingEntity target, LivingEntity attacker) {
         CustomToolMaterial material = getToolMaterial();
-        if (material == IafItemRegistry.SILVER_TOOL_MATERIAL && target.getType().is(EntityTypeTags.UNDEAD)) {
+        if (material == IafItemRegistry.SILVER_TOOL_MATERIAL && target.getType().builtInRegistryHolder().is(EntityTypeTags.UNDEAD)) {
             IafDamage.hurt(target, attacker.level().damageSources().magic(), getAttackDamage(item) + 3.0F);
         }
 
         if (material == IafItemRegistry.MYRMEX_CHITIN_TOOL_MATERIAL) {
-            if (!target.getType().is(EntityTypeTags.ARTHROPOD) || target instanceof EntityDeathWorm) {
+            if (!target.getType().builtInRegistryHolder().is(EntityTypeTags.ARTHROPOD) || target instanceof EntityDeathWorm) {
                 IafDamage.hurt(target, attacker.level().damageSources().generic(), getAttackDamage(item) + 5.0F);
             }
         }

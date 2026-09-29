@@ -23,6 +23,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class EntityPixieCharge extends Fireball {
 
+    protected double xPower;
+    protected double yPower;
+    protected double zPower;
+
     public int ticksInAir;
     private final float[] rgb;
 
@@ -33,7 +37,7 @@ public class EntityPixieCharge extends Fireball {
 
 public EntityPixieCharge(EntityType<? extends Fireball> t, Level worldIn, double posX, double posY,
                              double posZ, double accelX, double accelY, double accelZ) {
-        super(t, posX, posY, posZ, accelX, accelY, accelZ, worldIn);
+        super(t, posX, posY, posZ, new Vec3(accelX, accelY, accelZ), worldIn);
         double d0 = Math.sqrt(accelX * accelX + accelY * accelY + accelZ * accelZ);
         this.xPower = accelX / d0 * 0.07D;
         this.yPower = accelY / d0 * 0.07D;
@@ -43,7 +47,7 @@ public EntityPixieCharge(EntityType<? extends Fireball> t, Level worldIn, double
 
     public EntityPixieCharge(EntityType<? extends Fireball> t, Level worldIn, Player shooter,
                              double accelX, double accelY, double accelZ) {
-        super(t, shooter, accelX, accelY, accelZ, worldIn);
+        super(t, shooter, new Vec3(accelX, accelY, accelZ), worldIn);
         double d0 = Math.sqrt(accelX * accelX + accelY * accelY + accelZ * accelZ);
         this.xPower = accelX / d0 * 0.07D;
         this.yPower = accelY / d0 * 0.07D;

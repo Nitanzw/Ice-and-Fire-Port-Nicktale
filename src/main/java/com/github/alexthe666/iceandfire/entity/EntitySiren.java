@@ -112,18 +112,18 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
         this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F, 1.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, Player.class, 10, true, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<Player>() {
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, Player.class, 10, true, false, IafEntityUtil.selector(new Predicate<Player>() {
             @Override
             public boolean apply(@Nullable Player entity) {
                 return EntitySiren.this.isAgressive() && !(entity.isCreative() || entity.isSpectator());
             }
-        }))));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, AbstractVillager.class, 10, true, false, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<AbstractVillager>() {
+        })));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, AbstractVillager.class, 10, true, false, IafEntityUtil.selector(new Predicate<AbstractVillager>() {
             @Override
             public boolean apply(@Nullable AbstractVillager entity) {
                 return EntitySiren.this.isAgressive();
             }
-        }))));
+        })));
     }
 
     public static boolean isWearingEarplugs(LivingEntity entity) {

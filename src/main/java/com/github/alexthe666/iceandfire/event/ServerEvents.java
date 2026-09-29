@@ -443,7 +443,7 @@ public class ServerEvents {
                     EntityGhost ghost = IafEntityRegistry.GHOST.get().create(world, EntitySpawnReason.EVENT);
                     ghost.copyPosition(event.getEntity());
                     if (!world.isClientSide()) {
-                        ghost.finalizeSpawn((ServerLevelAccessor) world, world.getCurrentDifficultyAt(event.getEntity().blockPosition()), EntitySpawnReason.SPAWNER, null, null);
+                        ghost.finalizeSpawn((ServerLevelAccessor) world, IafEntityUtil.difficulty(world, event.getEntity().blockPosition()), EntitySpawnReason.SPAWNER, null, null);
                         world.addFreshEntity(ghost);
                     }
                     ghost.setDaytimeMode(true);

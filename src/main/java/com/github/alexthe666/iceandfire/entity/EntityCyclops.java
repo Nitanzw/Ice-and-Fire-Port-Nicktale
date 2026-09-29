@@ -124,7 +124,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F, 1.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<LivingEntity>() {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
             public boolean apply(@Nullable LivingEntity entity) {
                 if (EntityGorgon.isStoneMob(entity))
@@ -147,14 +147,14 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
                 }
                 return !ServerEvents.isSheep(entity);
             }
-        }))));
+        })));
 
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, 10, true, true, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<Player>() {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, 10, true, true, IafEntityUtil.selector(new Predicate<Player>() {
             @Override
             public boolean apply(@Nullable Player entity) {
                 return entity != null && !(entity.isCreative() || entity.isSpectator());
             }
-        }))));
+        })));
         this.targetSelector.addGoal(3, new CyclopsAITargetSheepPlayers(this, Player.class, true));
     }
 
@@ -175,7 +175,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
             if (!entityIn.hasPassenger(this)
                 && entityIn.getBbWidth() < 1.95F
                 && !(entityIn instanceof EntityDragonBase)
-                && !entityIn.getType().is(CYCLOPS_UNLIFTABLES)) {
+                && !entityIn.getType().builtInRegistryHolder().is(CYCLOPS_UNLIFTABLES)) {
                 this.setAnimation(ANIMATION_EATPLAYER);
                 entityIn.stopRiding();
                 entityIn.startRiding(this, true);

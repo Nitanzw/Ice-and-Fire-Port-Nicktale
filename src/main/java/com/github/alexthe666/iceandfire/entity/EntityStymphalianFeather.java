@@ -25,7 +25,7 @@ public class EntityStymphalianFeather extends AbstractArrow {
     }
 
     public EntityStymphalianFeather(EntityType<? extends AbstractArrow> t, Level worldIn, LivingEntity shooter) {
-        super(t, shooter, worldIn);
+        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.STYMPHALIAN_BIRD_FEATHER.get()), null);
         this.setBaseDamage(IafConfig.stymphalianBirdFeatherAttackStength);
     }
 
@@ -60,7 +60,7 @@ public class EntityStymphalianFeather extends AbstractArrow {
                 LivingEntity LivingEntity = (LivingEntity) entityHit.getEntity();
                 LivingEntity.setArrowCount(LivingEntity.getArrowCount() - 1);
                 ItemStack itemstack1 = LivingEntity.isUsingItem() ? LivingEntity.getUseItem() : ItemStack.EMPTY;
-                if (itemstack1.getItem().canPerformAction(itemstack1, ItemAbilities.SHIELD_BLOCK)) {
+                if (itemstack1.has(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS)) {
                     damageShield(LivingEntity, 1.0F);
                 }
             }
@@ -69,13 +69,11 @@ public class EntityStymphalianFeather extends AbstractArrow {
     }
 
     protected void damageShield(LivingEntity entity, float damage) {
-        if (damage >= 3.0F && entity.getUseItem().getItem().canPerformAction(entity.getUseItem(), ItemAbilities.SHIELD_BLOCK)) {
+        if (damage >= 3.0F && entity.getUseItem().has(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS)) {
             ItemStack copyBeforeUse = entity.getUseItem().copy();
             int i = 1 + Mth.floor(damage);
             InteractionHand Hand = entity.getUsedItemHand();
-            copyBeforeUse.hurtAndBreak(i, entity, (player1) -> {
-                player1.broadcastBreakEvent(Hand);
-            });
+            copyBeforeUse.hurtAndBreak(i, entity, entity.getUsedItemHand());
             if (entity.getUseItem().isEmpty()) {
                 if (entity instanceof Player) {
                     net.neoforged.neoforge.event.EventHooks.onPlayerDestroyItem((Player) entity, copyBeforeUse, Hand);
@@ -92,7 +90,7 @@ public class EntityStymphalianFeather extends AbstractArrow {
     }
 
     @Override
-    protected @NotNull ItemStack getPickupItem() {
+    protected ItemStack getDefaultPickupItem() {
         return new ItemStack(IafItemRegistry.STYMPHALIAN_BIRD_FEATHER.get());
     }
 }

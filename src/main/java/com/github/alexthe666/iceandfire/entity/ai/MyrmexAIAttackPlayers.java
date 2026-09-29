@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityMyrmexBase;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
@@ -12,14 +13,14 @@ public class MyrmexAIAttackPlayers extends NearestAttackableTargetGoal {
 
     @SuppressWarnings("unchecked")
     public MyrmexAIAttackPlayers(EntityMyrmexBase myrmex) {
-        super(myrmex, Player.class, 10, true, true, new Predicate<Player>() {
+        super(myrmex, Player.class, 10, true, true, IafEntityUtil.selector(new Predicate<Player>() {
 
             @Override
             public boolean test(Player entity) {
                 return entity != null && (myrmex.getHive() == null
                     || myrmex.getHive().isPlayerReputationLowEnoughToFight(entity.getUUID()));
             }
-        });
+        }));
         this.myrmex = myrmex;
     }
 

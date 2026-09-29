@@ -25,14 +25,14 @@ public class EntitySeaSerpentArrow extends AbstractArrow {
 
 
 public EntitySeaSerpentArrow(EntityType t, Level worldIn, LivingEntity shooter) {
-        super(t, shooter, worldIn);
+        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.SEA_SERPENT_ARROW.get()), null);
         this.setBaseDamage(3F);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide() && !this.inGround) {
+        if (level().isClientSide() && !this.isInGround()) {
             double d0 = this.random.nextGaussian() * 0.02D;
             double d1 = this.random.nextGaussian() * 0.02D;
             double d2 = this.random.nextGaussian() * 0.02D;
@@ -51,7 +51,7 @@ public EntitySeaSerpentArrow(EntityType t, Level worldIn, LivingEntity shooter) 
     }
 
     @Override
-    protected @NotNull ItemStack getPickupItem() {
+    protected ItemStack getDefaultPickupItem() {
         return new ItemStack(IafItemRegistry.SEA_SERPENT_ARROW.get());
     }
 }

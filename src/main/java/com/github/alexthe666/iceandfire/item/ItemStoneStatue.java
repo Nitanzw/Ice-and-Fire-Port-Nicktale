@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityStoneStatue;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import net.minecraft.ChatFormatting;
@@ -33,8 +34,8 @@ public class ItemStoneStatue extends Item {
             CompoundTag data = ItemStackData.get(stack);
             boolean isPlayer = data.getBooleanOr("IAFStoneStatuePlayerEntity", false);
             String id = data.getStringOr("IAFStoneStatueEntityID", "");
-            if (EntityType.byString(id).orElse(null) != null) {
-                EntityType type = EntityType.byString(id).orElse(null);
+            if (IafEntityUtil.entityTypeByString(id).orElse(null) != null) {
+                EntityType type = IafEntityUtil.entityTypeByString(id).orElse(null);
                 MutableComponent untranslated = isPlayer ? Component.translatable("entity.minecraft.player") : Component.translatable(type.getDescriptionId());
                 tooltip.accept(untranslated.withStyle(ChatFormatting.GRAY));
             }

@@ -62,7 +62,7 @@ def wrap_selector_args(s):
     s = out
     out, pos = '', 0
     for m in re.finditer(r'\.selector\(', s):
-        if m.start() < pos:
+        if m.start() < pos or s[max(0, m.start() - 13):m.start()] == 'IafEntityUtil':
             continue
         end = call_args_end(s, m.end() - 1)
         arg = s[m.end():end - 1].strip()

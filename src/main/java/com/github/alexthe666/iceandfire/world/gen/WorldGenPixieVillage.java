@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.world.gen;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.block.BlockPixieHouse;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
@@ -63,7 +64,7 @@ public class WorldGenPixieVillage extends Feature<NoneFeatureConfiguration> impl
                         default -> houseState;
                     };
                     EntityPixie pixie = IafEntityRegistry.PIXIE.get().create(worldIn.getLevel(), EntitySpawnReason.EVENT);
-                    pixie.finalizeSpawn(worldIn, worldIn.getCurrentDifficultyAt(buildPosition2.above()), EntitySpawnReason.SPAWNER, null);
+                    pixie.finalizeSpawn(worldIn, IafEntityUtil.difficulty(worldIn, buildPosition2.above()), EntitySpawnReason.SPAWNER, null);
                     pixie.setPos(buildPosition2.getX(), buildPosition2.getY() + 2, buildPosition2.getZ());
                     pixie.setPersistenceRequired();
                     worldIn.addFreshEntity(pixie);

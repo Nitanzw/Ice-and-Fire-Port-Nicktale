@@ -81,4 +81,16 @@ public final class IafEntityUtil {
     public static net.minecraft.world.entity.ai.targeting.TargetingConditions.Selector selector(java.util.function.Predicate<? super LivingEntity> predicate) {
         return (target, level) -> predicate.test(target);
     }
+
+    public static net.minecraft.world.DifficultyInstance difficulty(Level level, net.minecraft.core.BlockPos pos) {
+        if (level instanceof ServerLevel serverLevel) {
+            return IafEntityUtil.difficulty(serverLevel, pos);
+        }
+        return new net.minecraft.world.DifficultyInstance(level.getDifficulty(), 0L, 0L, 0.0F);
+    }
+
+    public static java.util.Optional<net.minecraft.world.entity.EntityType<?>> entityTypeByString(String id) {
+        net.minecraft.resources.Identifier location = net.minecraft.resources.Identifier.tryParse(id);
+        return location == null ? java.util.Optional.empty() : BuiltInRegistries.ENTITY_TYPE.getOptional(location);
+    }
 }

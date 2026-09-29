@@ -19,14 +19,14 @@ public class EntityDragonArrow extends AbstractArrow {
 
     public EntityDragonArrow(EntityType<? extends AbstractArrow> typeIn, double x, double y, double z,
                              Level world) {
-        super(typeIn, x, y, z, world);
+        super(typeIn, x, y, z, world, new ItemStack(IafItemRegistry.DRAGONBONE_ARROW.get()), null);
         this.setBaseDamage(10);
     }
 
 
 
     public EntityDragonArrow(EntityType<? extends AbstractArrow> typeIn, LivingEntity shooter, Level worldIn) {
-        super(typeIn, shooter, worldIn);
+        super(typeIn, shooter, worldIn, new ItemStack(IafItemRegistry.DRAGONBONE_ARROW.get()), null);
         this.setBaseDamage(10.0F);
     }
 
@@ -43,7 +43,7 @@ public class EntityDragonArrow extends AbstractArrow {
     }
 
     @Override
-    protected @NotNull ItemStack getPickupItem() {
+    protected ItemStack getDefaultPickupItem() {
         return new ItemStack(IafItemRegistry.DRAGONBONE_ARROW.get());
     }
 

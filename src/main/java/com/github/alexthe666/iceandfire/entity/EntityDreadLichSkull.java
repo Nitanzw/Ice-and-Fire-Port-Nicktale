@@ -23,6 +23,14 @@ import java.util.List;
 
 public class EntityDreadLichSkull extends AbstractArrow {
 
+    protected double iafBaseDamage = 2.0D;
+
+    @Override
+    public void setBaseDamage(double baseDamage) {
+        super.setBaseDamage(baseDamage);
+        this.iafBaseDamage = baseDamage;
+    }
+
 
     public EntityDreadLichSkull(EntityType<? extends AbstractArrow> type, Level worldIn) {
         super(type, worldIn);
@@ -38,13 +46,13 @@ public class EntityDreadLichSkull extends AbstractArrow {
 
     public EntityDreadLichSkull(EntityType<? extends AbstractArrow> type, Level worldIn, LivingEntity shooter,
                                 double x, double y, double z) {
-        super(type, shooter, worldIn);
+        super(type, shooter, worldIn, ItemStack.EMPTY, null);
         this.setBaseDamage(6);
     }
 
     public EntityDreadLichSkull(EntityType<? extends AbstractArrow> type, Level worldIn, LivingEntity shooter,
                                 double dmg) {
-        super(type, shooter, worldIn);
+        super(type, shooter, worldIn, ItemStack.EMPTY, null);
         this.setBaseDamage(dmg);
     }
 
@@ -99,7 +107,7 @@ public class EntityDreadLichSkull extends AbstractArrow {
                 flag = false;
             }
         }
-        if ((sqrt < 0.1F || this.horizontalCollision || this.verticalCollision || this.inGround) && this.tickCount > 5 && flag) {
+        if ((sqrt < 0.1F || this.horizontalCollision || this.verticalCollision || this.isInGround()) && this.tickCount > 5 && flag) {
             this.remove(RemovalReason.DISCARDED);
         }
         double d0 = 0;
@@ -149,18 +157,16 @@ public class EntityDreadLichSkull extends AbstractArrow {
         Entity shootingEntity = this.getOwner();
         if (living != null && (shootingEntity == null || !living.is(shootingEntity))) {
             if (living instanceof Player) {
-                this.damageShield((Player) living, (float) this.getBaseDamage());
+                this.damageShield((Player) living, (float) this.iafBaseDamage);
             }
         }
     }
 
     protected void damageShield(Player player, float damage) {
-        if (damage >= 3.0F && player.getUseItem().getItem().canPerformAction(player.getUseItem(), ItemAbilities.SHIELD_BLOCK)) {
+        if (damage >= 3.0F && player.getUseItem().has(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS)) {
             ItemStack copyBeforeUse = player.getUseItem().copy();
             int i = 1 + Mth.floor(damage);
-            player.getUseItem().hurtAndBreak(i, player, (playerSheild) -> {
-                playerSheild.broadcastBreakEvent(playerSheild.getUsedItemHand());
-            });
+            player.getUseItem().hurtAndBreak(i, player, player.getUsedItemHand());
 
             if (player.getUseItem().isEmpty()) {
                 InteractionHand Hand = player.getUsedItemHand();
@@ -192,7 +198,7 @@ public class EntityDreadLichSkull extends AbstractArrow {
     }
 
     @Override
-    protected @NotNull ItemStack getPickupItem() {
+    protected ItemStack getDefaultPickupItem() {
         return ItemStack.EMPTY;
     }
 

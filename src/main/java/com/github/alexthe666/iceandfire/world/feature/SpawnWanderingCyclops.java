@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.world.feature;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityCyclops;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
@@ -34,7 +35,7 @@ public class SpawnWanderingCyclops extends Feature<NoneFeatureConfiguration> {
             if (rand.nextInt(IafConfig.spawnWanderingCyclopsChance + 1) == 0 && rand.nextInt(12) == 0) {
                 EntityCyclops cyclops = IafEntityRegistry.CYCLOPS.get().create(worldIn.getLevel(), EntitySpawnReason.EVENT);
                 cyclops.setPos(position.getX() + 0.5F, position.getY() + 1, position.getZ() + 0.5F);
-                cyclops.finalizeSpawn(worldIn, worldIn.getCurrentDifficultyAt(position), EntitySpawnReason.SPAWNER, null);
+                cyclops.finalizeSpawn(worldIn, IafEntityUtil.difficulty(worldIn, position), EntitySpawnReason.SPAWNER, null);
                 worldIn.addFreshEntity(cyclops);
                 for (int i = 0; i < 3 + rand.nextInt(3); i++) {
                     Sheep sheep = EntityType.SHEEP.create(worldIn.getLevel());

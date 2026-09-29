@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity.ai;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityHippogryph;
 import com.github.alexthe666.iceandfire.entity.util.DragonUtils;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,12 +15,12 @@ public class HippogryphAITarget<T extends LivingEntity> extends NearestAttackabl
     private final EntityHippogryph hippogryph;
 
     public HippogryphAITarget(EntityHippogryph entityIn, Class<T> classTarget, boolean checkSight, @Nullable Predicate<LivingEntity> targetPredicate) {
-        super(entityIn, classTarget, 20, checkSight, false, targetPredicate);
+        super(entityIn, classTarget, 20, checkSight, false, IafEntityUtil.selector(targetPredicate));
         this.hippogryph = entityIn;
     }
 
     public HippogryphAITarget(EntityHippogryph entityIn, Class<T> classTarget, int i, boolean checkSight, @Nullable Predicate<LivingEntity> targetPredicate) {
-        super(entityIn, classTarget, i, checkSight, false, targetPredicate);
+        super(entityIn, classTarget, i, checkSight, false, IafEntityUtil.selector(targetPredicate));
         this.hippogryph = entityIn;
     }
 

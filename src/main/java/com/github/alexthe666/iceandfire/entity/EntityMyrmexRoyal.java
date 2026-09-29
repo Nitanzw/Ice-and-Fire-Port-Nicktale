@@ -266,7 +266,7 @@ public class EntityMyrmexRoyal extends EntityMyrmexBase {
         this.targetSelector.addGoal(2, new MyrmexAIFindMate(this));
         this.targetSelector.addGoal(3, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(4, new MyrmexAIAttackPlayers(this));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, IafEntityUtil.selector(IafEntityUtil.selector(new Predicate<LivingEntity>() {
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true, IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
             public boolean apply(@Nullable LivingEntity entity) {
                 if (entity instanceof EntityMyrmexBase && EntityMyrmexRoyal.this.isBreedingSeason() || entity instanceof EntityMyrmexRoyal) {
@@ -274,7 +274,7 @@ public class EntityMyrmexRoyal extends EntityMyrmexBase {
                 }
                 return entity != null && !EntityMyrmexBase.haveSameHive(EntityMyrmexRoyal.this, entity) && DragonUtils.isAlive(entity) && !(entity instanceof Enemy);
             }
-        }))));
+        })));
 
     }
 

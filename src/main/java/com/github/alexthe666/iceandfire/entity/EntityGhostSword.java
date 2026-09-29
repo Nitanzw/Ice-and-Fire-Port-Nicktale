@@ -28,6 +28,14 @@ import java.util.List;
 
 public class EntityGhostSword extends AbstractArrow {
 
+    protected double iafBaseDamage = 2.0D;
+
+    @Override
+    public void setBaseDamage(double baseDamage) {
+        super.setBaseDamage(baseDamage);
+        this.iafBaseDamage = baseDamage;
+    }
+
     public EntityGhostSword(EntityType<? extends AbstractArrow> type, Level worldIn) {
         super(type, worldIn);
         this.setBaseDamage(9F);
@@ -42,7 +50,7 @@ public class EntityGhostSword extends AbstractArrow {
 
     public EntityGhostSword(EntityType<? extends AbstractArrow> type, Level worldIn, LivingEntity shooter,
                             double dmg) {
-        super(type, shooter, worldIn);
+        super(type, shooter, worldIn, ItemStack.EMPTY, null);
         this.setBaseDamage(dmg);
     }
 
@@ -138,7 +146,7 @@ public class EntityGhostSword extends AbstractArrow {
     }
 
     @Override
-    protected @NotNull ItemStack getPickupItem() {
+    protected ItemStack getDefaultPickupItem() {
         return ItemStack.EMPTY;
     }
 
@@ -155,7 +163,7 @@ private IntOpenHashSet piercedEntities;
     protected void onHitEntity(EntityHitResult result) {
         Entity entity = result.getEntity();
         float f = (float) this.getDeltaMovement().length();
-        int i = Mth.ceil(Math.max(f * this.getBaseDamage(), 0.0D));
+        int i = Mth.ceil(Math.max(f * this.iafBaseDamage, 0.0D));
         if (this.getPierceLevel() > 0) {
             if (this.piercedEntities == null) {
                 this.piercedEntities = new IntOpenHashSet(5);

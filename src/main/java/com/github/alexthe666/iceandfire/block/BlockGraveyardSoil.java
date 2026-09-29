@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.block;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.entity.EntityGhost;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import net.minecraft.core.BlockPos;
@@ -45,7 +46,7 @@ public class BlockGraveyardSoil extends Block {
                     if (ghost != null) {
                         ghost.setPos(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
                         ghost.setYRot(ThreadLocalRandom.current().nextFloat() * 360F);
-                        ghost.finalizeSpawn(worldIn, worldIn.getCurrentDifficultyAt(pos), EntitySpawnReason.SPAWNER, null);
+                        ghost.finalizeSpawn(worldIn, IafEntityUtil.difficulty(worldIn, pos), EntitySpawnReason.SPAWNER, null);
                         worldIn.addFreshEntity(ghost);
                         ghost.setAnimation(EntityGhost.ANIMATION_SCARE);
                     }
