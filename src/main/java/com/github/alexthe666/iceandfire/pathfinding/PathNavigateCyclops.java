@@ -1,17 +1,16 @@
 package com.github.alexthe666.iceandfire.pathfinding;
 
 import com.github.alexthe666.iceandfire.entity.EntityCyclops;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import com.nicktale.api.server.entity.collision.CustomCollisionsNavigator;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 
 /**
- * Ground navigation for cyclopes. Vanilla's walk evaluator accounts for the
- * mob's full bounding box, so this keeps their wide collision footprint in
- * pathfinding without relying on an external collision-navigation library.
+ * Ground navigation for cyclopes using Nicktale API's collision-aware navigator
+ * base and vanilla's full-bounding-box walk evaluator.
  */
-public class PathNavigateCyclops extends GroundPathNavigation {
+public class PathNavigateCyclops extends CustomCollisionsNavigator {
 
     public PathNavigateCyclops(EntityCyclops cyclops, Level level) {
         super(cyclops, level);
