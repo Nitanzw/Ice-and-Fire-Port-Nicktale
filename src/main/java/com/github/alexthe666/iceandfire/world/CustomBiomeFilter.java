@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 */
 public class CustomBiomeFilter extends PlacementFilter {
     private static final CustomBiomeFilter INSTANCE = new CustomBiomeFilter();
-    public static Codec<CustomBiomeFilter> CODEC = Codec.unit(() -> INSTANCE);
+    public static com.mojang.serialization.MapCodec<CustomBiomeFilter> CODEC = com.mojang.serialization.MapCodec.unit(() -> INSTANCE);
 
     private CustomBiomeFilter() { /* Nothing to do */ }
 

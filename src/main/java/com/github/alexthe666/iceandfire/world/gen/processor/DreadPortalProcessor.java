@@ -53,7 +53,7 @@ public class DreadPortalProcessor implements StructureProcessor {
 
     @Override
     public @NotNull com.mojang.serialization.MapCodec<? extends StructureProcessor> codec() {
-        return net.minecraft.world.level.levelgen.structure.templatesystem.BlockRotProcessor.CODEC;
+        return com.mojang.serialization.MapCodec.unit(() -> this);
     }
 
 }

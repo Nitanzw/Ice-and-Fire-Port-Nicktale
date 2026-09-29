@@ -63,8 +63,8 @@ public class IafWorldRegistry {
     }
 
     public static boolean isFarEnoughFromSpawn(final LevelAccessor level, final BlockPos position) {
-        LevelData spawnPoint = level.getLevelData();
-        BlockPos spawnRelative = new BlockPos(spawnPoint.getXSpawn(), position.getY(), spawnPoint.getYSpawn());
+        BlockPos spawnPoint = level.getRespawnData().pos();
+        BlockPos spawnRelative = new BlockPos(spawnPoint.getX(), position.getY(), spawnPoint.getZ());
         return !spawnRelative.closerThan(position, IafConfig.dangerousWorldGenDistanceLimit);
     }
 
@@ -203,7 +203,7 @@ public class IafWorldRegistry {
                 featureList.append("\n").append("\t- ").append(feature);
             }
 
-            IceAndFire.LOGGER.debug("Added the following features to the biome [{}]: {}", biome.unwrapKey().get().location(), featureList);
+            IceAndFire.LOGGER.debug("Added the following features to the biome [{}]: {}", biome.unwrapKey().get().identifier(), featureList);
         }
 
         ADDED_FEATURES.clear();
@@ -215,7 +215,7 @@ public class IafWorldRegistry {
     }
 
     private static void addFeatureToBiome(ResourceKey<PlacedFeature> featureResource, HashMap<String, Holder<PlacedFeature>> features, ModifiableBiomeInfo.BiomeInfo.Builder builder, GenerationStep.Decoration step) {
-        String identifier = featureResource.location().toString();
+        String identifier = featureResource.identifier().toString();
         Holder<PlacedFeature> feature = features.get(identifier);
 
         if (feature != null) {

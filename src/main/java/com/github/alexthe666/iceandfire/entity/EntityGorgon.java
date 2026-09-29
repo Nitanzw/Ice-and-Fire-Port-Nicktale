@@ -196,14 +196,8 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
             }
         }
         if (this.deathTime >= 200) {
-            if (!this.level().isClientSide() && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayerTime > 0 && this.shouldDropExperience() && IafEntityUtil.gameRule(this.level(), GameRules.ENTITY_DROPS))) {
-                int i = this.getExperienceReward();
-                i = net.neoforged.neoforge.event.EventHooks.getExperienceDrop(this, this.lastHurtByPlayer, i);
-                while (i > 0) {
-                    int j = ExperienceOrb.getExperienceValue(i);
-                    i -= j;
-                    this.level().addFreshEntity(new ExperienceOrb(this.level(), this.getX(), this.getY(), this.getZ(), j));
-                }
+            if (this.level() instanceof ServerLevel serverLevel && (this.isAlwaysExperienceDropper() || this.lastHurtByPlayer != null && this.shouldDropExperience() && IafEntityUtil.gameRule(this.level(), GameRules.ENTITY_DROPS))) {
+                this.dropExperience(serverLevel, this.getLastHurtByMob());
             }
             this.remove(RemovalReason.KILLED);
 

@@ -206,7 +206,7 @@ public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
             }
         }
         if (this.getTicksAlive() > 1800) {
-            this.kill();
+            this.kill((net.minecraft.server.level.ServerLevel) this.level());
         }
         if (this.getAnimation() == ANIMATION_BITE && this.getTarget() != null && this.getAnimationTick() == 6) {
             this.playBiteSound();

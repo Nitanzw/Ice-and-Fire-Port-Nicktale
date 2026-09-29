@@ -353,7 +353,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
                 double extraY = 0.8F;
                 double extraZ = radius * Mth.cos(angle);
                 if (level().isClientSide()) {
-                    level().addParticle(type, true, this.getX() + extraX, this.getY() + extraY, this.getZ() + extraZ, motionX, motionY, motionZ);
+                    level().addParticle(type, true, false, this.getX() + extraX, this.getY() + extraY, this.getZ() + extraZ, motionX, motionY, motionZ);
                 }
             }
         }
@@ -413,10 +413,6 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
 
     private float getAncientModifier() {
         return this.isAncient() ? 1.5F : 1.0F;
-    }
-
-    public float getSeaSerpentScale() {
-        return this.entityData.get(SCALE).floatValue();
     }
 
     private void setSeaSerpentScale(float scale) {

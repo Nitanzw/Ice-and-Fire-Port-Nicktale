@@ -113,7 +113,7 @@ public class EntityHydra extends Monster implements IAnimatedEntity, IMultipartE
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false, IafEntityUtil.selector(new Predicate<LivingEntity>() {
             @Override
             public boolean test(@Nullable LivingEntity entity) {
-                return entity != null && DragonUtils.isAlive(entity) && !(entity instanceof EntityMutlipartPart) && !(entity instanceof Enemy) || (entity instanceof IBlacklistedFromStatues && ((IBlacklistedFromStatues) entity).canBeTurnedToStone());
+                return entity != null && DragonUtils.isAlive(entity) && !(entity instanceof Enemy) || (entity instanceof IBlacklistedFromStatues && ((IBlacklistedFromStatues) entity).canBeTurnedToStone());
             }
         })));
     }

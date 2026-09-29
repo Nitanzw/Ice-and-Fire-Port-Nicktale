@@ -84,7 +84,8 @@ public final class IafEntityUtil {
     }
 
     public static net.minecraft.world.DifficultyInstance difficulty(net.minecraft.world.level.LevelAccessor level, net.minecraft.core.BlockPos pos) {
-        return level.getCurrentDifficultyAt(pos);
+        return level instanceof net.minecraft.world.level.ServerLevelAccessor accessor ? accessor.getCurrentDifficultyAt(pos)
+            : new net.minecraft.world.DifficultyInstance(level.getDifficulty(), 0L, 0L, 0.0F);
     }
 
     public static net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> lootKey(net.minecraft.resources.Identifier id) {

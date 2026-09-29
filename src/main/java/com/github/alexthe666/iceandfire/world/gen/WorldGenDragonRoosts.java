@@ -230,7 +230,7 @@ public abstract class WorldGenDragonRoosts extends Feature<NoneFeatureConfigurat
     }
 
     private void spawnDragon(@NotNull final FeaturePlaceContext<NoneFeatureConfiguration> context, int ageOffset, boolean isMale) {
-        EntityDragonBase dragon = getDragonType().create(context.level().getLevel());
+        EntityDragonBase dragon = getDragonType().create(context.level().getLevel(), net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);
         dragon.setGender(isMale);
         dragon.growDragon(40 + ageOffset);
         dragon.setAgingDisabled(true);

@@ -268,7 +268,7 @@ public class EntityTroll extends Monster implements IAnimatedEntity, IVillagerFe
             if (IafConfig.trollsDropWeapon) {
                 if (this.getRandom().nextInt(3) == 0) {
                     ItemStack weaponStack = new ItemStack(this.getWeaponType().item.get(), 1);
-                    IafDamage.hurt(weaponStack, this.getRandom().nextInt(250), this.getRandom(), null);
+                    weaponStack.setDamageValue(this.getRandom().nextInt(250));
                     dropItemAt(weaponStack, this.getX(), this.getY(), this.getZ());
                 } else {
                     ItemStack brokenDrop = new ItemStack(Blocks.STONE_BRICKS, this.getRandom().nextInt(2) + 1);

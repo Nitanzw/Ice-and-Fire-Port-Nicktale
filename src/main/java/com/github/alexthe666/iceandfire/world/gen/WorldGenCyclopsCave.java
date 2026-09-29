@@ -111,7 +111,7 @@ public class WorldGenCyclopsCave extends Feature<NoneFeatureConfiguration> imple
             }
         }
 
-        EntityCyclops cyclops = IafEntityRegistry.CYCLOPS.get().create(context.level().getLevel());
+        EntityCyclops cyclops = IafEntityRegistry.CYCLOPS.get().create(context.level().getLevel(), net.minecraft.world.entity.EntitySpawnReason.STRUCTURE);
         cyclops.snapTo(context.origin().getX() + 0.5, context.origin().getY() + 1.5, context.origin().getZ() + 0.5, context.random().nextFloat() * 360, 0);
         // TODO :: Finalize spawn?
         context.level().addFreshEntity(cyclops);

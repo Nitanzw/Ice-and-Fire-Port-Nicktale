@@ -88,6 +88,11 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     protected int growthTicks = 1;
     @Nullable
     protected MerchantOffers offers;
+
+    @Override
+    public boolean stillValid(@NotNull Player player) {
+        return this.isAlive() && this.getTradingPlayer() == player && player.distanceToSqr(this) <= 64.0D;
+    }
     private int waitTicks = 0;
     private int animationTick;
     private Animation currentAnimation;
@@ -235,7 +240,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     @Override
     public void tick() {
         super.tick();
-        this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(1.0D);
+        this.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.STEP_HEIGHT).setBaseValue(1.0D);
         if (level().getDifficulty() == Difficulty.PEACEFUL && this.getTarget() instanceof Player) {
             this.setTarget(null);
         }

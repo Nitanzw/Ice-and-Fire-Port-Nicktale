@@ -310,7 +310,7 @@ public class DragonUtils {
     }
 
     public static String getDimensionName(Level world) {
-        return world.dimension().location().toString();
+        return world.dimension().identifier().toString();
     }
 
     public static boolean isInHomeDimension(EntityDragonBase dragonBase) {

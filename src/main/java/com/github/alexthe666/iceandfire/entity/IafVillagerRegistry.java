@@ -49,35 +49,43 @@ public class IafVillagerRegistry {
         return ResourceKey.create(Registries.TRADE_SET, Identifier.fromNamespaceAndPath(IceAndFire.MODID, "scribe/level_" + level));
     }
 
-    public static void addBuildingToPool(Registry<StructureTemplatePool> templatePoolRegistry,
-                                         Registry<StructureProcessorList> processorListRegistry,
+    public static void addBuildingToPool(net.minecraft.core.HolderLookup.RegistryLookup<StructureTemplatePool> templatePoolRegistry,
+                                         net.minecraft.core.HolderLookup.RegistryLookup<StructureProcessorList> processorListRegistry,
                                          Identifier poolRL,
                                          String nbtPieceRL,
                                          int weight) {
 
-        Holder<StructureProcessorList> villageHouseProcessorList = processorListRegistry.getHolderOrThrow(IafProcessorLists.HOUSE_PROCESSOR);
+        Holder<StructureProcessorList> villageHouseProcessorList = processorListRegistry.getOrThrow(IafProcessorLists.HOUSE_PROCESSOR);
 
         // Grab the pool we want to add to
-        StructureTemplatePool pool = templatePoolRegistry.get(poolRL);
+        StructureTemplatePool pool = templatePoolRegistry.get(ResourceKey.create(Registries.TEMPLATE_POOL, poolRL))
+            .map(net.minecraft.core.Holder::value).orElse(null);
         if (pool == null) return;
 
         // Grabs the nbt piece and creates a SinglePoolElement of it that we can add to a structure's pool.
         // Use .legacy( for villages/outposts and .single( for everything else
         SinglePoolElement piece = SinglePoolElement.legacy(nbtPieceRL, villageHouseProcessorList).apply(StructureTemplatePool.Projection.RIGID);
 
-        // Use AccessTransformer or Accessor Mixin to make StructureTemplatePool's templates field public for us to see.
-        // Weight is handled by how many times the entry appears in this list.
-        // We do not need to worry about immutability as this field is created using Lists.newArrayList(); which makes a mutable list.
-        for (int i = 0; i < weight; i++) {
-            pool.templates.add(piece);
-        }
+        // StructureTemplatePool keeps its template lists private; reflection is the least invasive way to append.
+        try {
+            java.lang.reflect.Field templatesField = StructureTemplatePool.class.getDeclaredField("templates");
+            templatesField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            List<StructurePoolElement> templates = (List<StructurePoolElement>) templatesField.get(pool);
+            for (int i = 0; i < weight; i++) {
+                templates.add(piece);
+            }
 
-        // Use AccessTransformer or Accessor Mixin to make StructureTemplatePool's rawTemplates field public for us to see.
-        // This list of pairs of pieces and weights is not used by vanilla by default but another mod may need it for efficiency.
-        // So lets add to this list for completeness. We need to make a copy of the array as it can be an immutable list.
-        List<Pair<StructurePoolElement, Integer>> listOfPieceEntries = new ArrayList<>(pool.rawTemplates);
-        listOfPieceEntries.add(new Pair<>(piece, weight));
-        pool.rawTemplates = listOfPieceEntries;
+            java.lang.reflect.Field rawField = StructureTemplatePool.class.getDeclaredField("rawTemplates");
+            rawField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            List<Pair<StructurePoolElement, Integer>> raw = (List<Pair<StructurePoolElement, Integer>>) rawField.get(pool);
+            List<Pair<StructurePoolElement, Integer>> listOfPieceEntries = new ArrayList<>(raw);
+            listOfPieceEntries.add(new Pair<>(piece, weight));
+            rawField.set(pool, listOfPieceEntries);
+        } catch (ReflectiveOperationException e) {
+            IceAndFire.LOGGER.error("Could not add {} to village pool {}", nbtPieceRL, poolRL, e);
+        }
     }
 
 

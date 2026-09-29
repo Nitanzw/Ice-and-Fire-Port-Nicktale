@@ -28,7 +28,7 @@ public class ItemHippogryphSword extends Item {
     @Override
     public void hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity targetEntity, LivingEntity attacker) {
         float f = (float) attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
-        float f3 = 1.0F + EnchantmentHelper.getSweepingDamageRatio(attacker) * f;
+        float f3 = 1.0F + (float) attacker.getAttributeValue(Attributes.SWEEPING_DAMAGE_RATIO) * f;
         if (attacker instanceof Player) {
             Player player = (Player) attacker;
             for (LivingEntity LivingEntity : attacker.level().getEntitiesOfClass(LivingEntity.class, targetEntity.getBoundingBox().inflate(1.0D, 0.25D, 1.0D))) {
@@ -38,7 +38,9 @@ public class ItemHippogryphSword extends Item {
                 }
             }
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, player.getSoundSource(), 1.0F, 1.0F);
-            player.sweepAttack();
+            if (player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.SWEEP_ATTACK, player.getX() - Mth.sin(player.getYRot() * 0.017453292F), player.getY(0.5D), player.getZ() + Mth.cos(player.getYRot() * 0.017453292F), 0, 0.0D, 0.0D, 0.0D, 0.0D);
+            }
         }
         super.hurtEnemy(stack, targetEntity, attacker);
     }

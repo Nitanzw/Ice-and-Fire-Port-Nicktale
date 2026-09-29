@@ -24,7 +24,7 @@ import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.message.MessageSirenSong;
 import com.github.alexthe666.iceandfire.message.IafNetwork;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.storage.ValueInput;
@@ -69,7 +69,7 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
     public static final int SEARCH_RANGE = 32;
     public static final Predicate<Entity> SIREN_PREY = new Predicate<Entity>() {
         @Override
-        public boolean apply(@Nullable Entity p_apply_1_) {
+        public boolean test(@Nullable Entity p_apply_1_) {
             return (p_apply_1_ instanceof Player && !((Player) p_apply_1_).isCreative() && !p_apply_1_.isSpectator()) || p_apply_1_ instanceof AbstractVillager || p_apply_1_ instanceof IHearsSiren;
         }
     };
@@ -115,13 +115,13 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, Player.class, 10, true, false, IafEntityUtil.selector(new Predicate<Player>() {
             @Override
-            public boolean apply(@Nullable Player entity) {
+            public boolean test(@Nullable Player entity) {
                 return EntitySiren.this.isAgressive() && !(entity.isCreative() || entity.isSpectator());
             }
         })));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal(this, AbstractVillager.class, 10, true, false, IafEntityUtil.selector(new Predicate<AbstractVillager>() {
             @Override
-            public boolean apply(@Nullable AbstractVillager entity) {
+            public boolean test(@Nullable AbstractVillager entity) {
                 return EntitySiren.this.isAgressive();
             }
         })));

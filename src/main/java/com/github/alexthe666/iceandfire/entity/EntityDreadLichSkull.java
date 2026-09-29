@@ -173,11 +173,7 @@ public class EntityDreadLichSkull extends AbstractArrow {
                 InteractionHand Hand = player.getUsedItemHand();
                 net.neoforged.neoforge.event.EventHooks.onPlayerDestroyItem(player, copyBeforeUse, Hand);
 
-                if (Hand == net.minecraft.world.InteractionHand.MAIN_HAND) {
-                    this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
-                } else {
-                    this.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
-                }
+                player.setItemInHand(Hand, ItemStack.EMPTY);
                 player.stopUsingItem();
                 this.playSound(SoundEvents.SHIELD_BREAK.value(), 0.8F, 0.8F + this.level().getRandom().nextFloat() * 0.4F);
             }
