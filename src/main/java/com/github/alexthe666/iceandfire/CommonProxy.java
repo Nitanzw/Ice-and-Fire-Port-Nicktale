@@ -20,7 +20,14 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 public class CommonProxy {
 
     public static void onModConfigEvent(final ModConfigEvent.Loading event) {
-        final ModConfig config = event.getConfig();
+        bakeConfig(event.getConfig());
+    }
+
+    public static void onModConfigReloading(final ModConfigEvent.Reloading event) {
+        bakeConfig(event.getConfig());
+    }
+
+    private static void bakeConfig(final ModConfig config) {
         // Rebake the configs when they change
         if (config.getSpec() == ConfigHolder.CLIENT_SPEC) {
             IafConfig.bakeClient(config);

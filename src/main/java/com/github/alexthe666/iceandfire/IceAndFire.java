@@ -63,6 +63,7 @@ public class IceAndFire {
         biomeModifiers.register("iaf_features", IafFeatureBiomeModifier::makeCodec);
 
         modBus.addListener(CommonProxy::onModConfigEvent);
+        modBus.addListener(CommonProxy::onModConfigReloading);
         modBus.addListener(IafSoundRegistry::registerSoundEvents);
         modBus.addListener(IafDamageRegistry::gatherData);
         modBus.addListener(IafItemRegistry::setRepairMaterials);
