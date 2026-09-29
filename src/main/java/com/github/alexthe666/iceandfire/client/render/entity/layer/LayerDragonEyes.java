@@ -1,135 +1,80 @@
 package com.github.alexthe666.iceandfire.client.render.entity.layer;
 
-import com.nicktale.api.client.model.AdvancedEntityModel;
-import com.nicktale.api.client.model.AdvancedModelBox;
-import com.nicktale.api.client.model.TabulaModel;
+import com.github.alexthe666.iceandfire.client.model.DragonRenderState;
 import com.github.alexthe666.iceandfire.client.model.util.TabulaModelHandlerHelper;
 import com.github.alexthe666.iceandfire.client.render.TabulaModelAccessor;
-import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
-import com.github.alexthe666.iceandfire.entity.EntityIceDragon;
-import com.github.alexthe666.iceandfire.entity.EntityLightningDragon;
-import com.github.alexthe666.iceandfire.enums.EnumDragonTextures;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import com.nicktale.api.client.model.AdvancedModelBox;
+import com.nicktale.api.client.model.TabulaModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-public class LayerDragonEyes extends RenderLayer<EntityDragonBase, AdvancedEntityModel<EntityDragonBase>> {
-    private final MobRenderer render;
-    private TabulaModel fireHead;
-    private TabulaModel iceHead;
-    private TabulaModel lightningHead;
+public class LayerDragonEyes extends RenderLayer<DragonRenderState, TabulaModel> {
+    private final TabulaModel fireHead;
+    private final TabulaModel iceHead;
+    private final TabulaModel lightningHead;
 
-    public LayerDragonEyes(MobRenderer renderIn) {
-        super(renderIn);
-        this.render = renderIn;
+    public LayerDragonEyes(RenderLayerParent<DragonRenderState, TabulaModel> renderer) {
+        super(renderer);
         try {
-            fireHead = onlyKeepCubes(new TabulaModelAccessor(TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/firedragon/firedragon_Ground"), null),
-                Collections.singletonList("HeadFront"));
-            iceHead = onlyKeepCubes(new TabulaModelAccessor(TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/icedragon/icedragon_Ground"), null),
-                Collections.singletonList("HeadFront"));
-            lightningHead = onlyKeepCubes(new TabulaModelAccessor(TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/lightningdragon/lightningdragon_Ground"), null),
-                Collections.singletonList("HeadFront"));
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            fireHead = onlyKeepCubes(new TabulaModelAccessor(
+                    TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/firedragon/firedragon_Ground")));
+            iceHead = onlyKeepCubes(new TabulaModelAccessor(
+                    TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/icedragon/icedragon_Ground")));
+            lightningHead = onlyKeepCubes(new TabulaModelAccessor(
+                    TabulaModelHandlerHelper.loadTabulaModel("/assets/iceandfire/models/tabula/lightningdragon/lightningdragon_Ground")));
+        } catch (Exception exception) {
+            throw new IllegalStateException("Could not load dragon eye models", exception);
         }
     }
 
     @Override
-    public void render(@NotNull PoseStack matrixStackIn, @NotNull MultiBufferSource bufferIn, int packedLightIn, EntityDragonBase dragon, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (dragon.shouldRenderEyes()) {
-            RenderType eyes = RenderType.eyes(EnumDragonTextures.getEyeTextureFromDragon(dragon));
-            VertexConsumer ivertexbuilder = bufferIn.getBuffer(eyes);
-            if (dragon instanceof EntityLightningDragon && lightningHead != null) {
-                copyPositions(lightningHead, (TabulaModel) this.getParentModel());
-                lightningHead.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-            } else if (dragon instanceof EntityIceDragon && iceHead != null) {
-                copyPositions(iceHead, (TabulaModel) this.getParentModel());
-                iceHead.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-            } else if (fireHead != null) {
-                copyPositions(fireHead, (TabulaModel) this.getParentModel());
-                fireHead.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-            }
-            //Fallback method
-            else {
-                this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-            }
+    public void submit(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int lightCoords,
+                       DragonRenderState state, float yRot, float xRot) {
+        if (!state.eyesVisible || state.eyeTexture == null) {
+            return;
         }
+        TabulaModel head = switch (state.dragonType) {
+            case 1 -> iceHead;
+            case 2 -> lightningHead;
+            default -> fireHead;
+        };
+        copyPositions(head, getParentModel());
+        collector.submitModel(head, state, poseStack, RenderTypes.eyes(state.eyeTexture), lightCoords,
+                LivingEntityRenderer.getOverlayCoords(state, 0.0F), -1, null, state.outlineColor);
     }
 
-    @Override
-    protected @NotNull Identifier getTextureLocation(@NotNull EntityDragonBase entityIn) {
-        return null;
-    }
-
-    //TODO: do this with hideable/visble/showModel stuff instead
-    //Removes all cubes except the cube names specified by the string list and their parents
-    //We need to keep the parents to correctly render the head position
-    private TabulaModel onlyKeepCubes(TabulaModelAccessor model, List<String> strings){
-        List<AdvancedModelBox> keepCubes = new ArrayList<>();
-        for (String str : strings){
-            AdvancedModelBox cube = model.getCube(str);
-            keepCubes.add(cube);
-            while (cube.getParent() != null){
-                keepCubes.add(cube.getParent());
-                cube = cube.getParent();
-            }
+    private static TabulaModel onlyKeepCubes(TabulaModelAccessor model) {
+        Set<AdvancedModelBox> keep = new HashSet<>();
+        AdvancedModelBox head = model.getCube("HeadFront");
+        while (head != null && keep.add(head)) {
+            head = head.getParent();
         }
-        removeChildren(model,keepCubes);
-        model.getCubes().values().removeIf(advancedModelBox -> !keepCubes.contains(advancedModelBox));
+        model.getCubes().values().forEach(box -> box.showModel = keep.contains(box));
         return model;
     }
 
-    private void removeChildren(TabulaModelAccessor model, List<AdvancedModelBox> keepCubes){
-        model.getRootBox().forEach(modelRenderer -> {
-            modelRenderer.childModels.removeIf(child -> !keepCubes.contains(child));
-            modelRenderer.childModels.forEach(childModel ->{
-                removeChildren((AdvancedModelBox) childModel,keepCubes);
-            });
-        });
-    }
-
-    private void removeChildren(AdvancedModelBox modelBox, List<AdvancedModelBox> keepCubes){
-        modelBox.childModels.removeIf(modelRenderer -> !keepCubes.contains(modelRenderer));
-        modelBox.childModels.forEach(modelRenderer -> {
-            removeChildren((AdvancedModelBox)modelRenderer,keepCubes);
-        });
-    }
-
-    public boolean isAngleEqual(AdvancedModelBox original, AdvancedModelBox pose) {
-        return pose != null && pose.rotateAngleX == original.rotateAngleX && pose.rotateAngleY == original.rotateAngleY && pose.rotateAngleZ == original.rotateAngleZ;
-    }
-    public boolean isPositionEqual(AdvancedModelBox original, AdvancedModelBox pose) {
-        return pose.rotationPointX == original.rotationPointX && pose.rotationPointY == original.rotationPointY && pose.rotationPointZ == original.rotationPointZ;
-    }
-
-    public void copyPositions(TabulaModel model, TabulaModel modelTo) {
+    private static void copyPositions(TabulaModel model, TabulaModel modelTo) {
+        model.resetToDefaultPose();
         for (AdvancedModelBox cube : model.getCubes().values()) {
-            AdvancedModelBox modelToCube = modelTo.getCube(cube.boxName);
-            if (!isAngleEqual(cube,modelToCube)) {
-                cube.rotateAngleX = modelToCube.rotateAngleX;
-                cube.rotateAngleY = modelToCube.rotateAngleY;
-                cube.rotateAngleZ = modelToCube.rotateAngleZ;
+            AdvancedModelBox target = modelTo.getCube(cube.boxName);
+            if (target == null) {
+                continue;
             }
-            if (!isPositionEqual(cube,modelToCube)) {
-                cube.rotationPointX = modelToCube.rotationPointX;
-                cube.rotationPointY = modelToCube.rotationPointY;
-                cube.rotationPointZ = modelToCube.rotationPointZ;
-            }
-
+            cube.rotateAngleX = target.rotateAngleX;
+            cube.rotateAngleY = target.rotateAngleY;
+            cube.rotateAngleZ = target.rotateAngleZ;
+            cube.rotationPointX = target.rotationPointX;
+            cube.rotationPointY = target.rotationPointY;
+            cube.rotationPointZ = target.rotationPointZ;
         }
-    }
-
-    public boolean shouldCombineTextures() {
-        return true;
+        model.updateDefaultPose();
     }
 }

@@ -4,9 +4,7 @@ import com.nicktale.api.client.model.TabulaModel;
 import com.github.alexthe666.iceandfire.client.model.util.DragonAnimationsLibrary;
 import com.github.alexthe666.iceandfire.client.model.util.EnumDragonModelTypes;
 import com.github.alexthe666.iceandfire.client.model.util.EnumDragonPoses;
-import com.github.alexthe666.iceandfire.entity.EntityLightningDragon;
-
-public class LightningTabulaDragonAnimator extends DragonTabulaModelAnimator<EntityLightningDragon> {
+public class LightningTabulaDragonAnimator extends DragonTabulaModelAnimator {
 
     public LightningTabulaDragonAnimator() {
         super(DragonAnimationsLibrary.getModel(EnumDragonPoses.GROUND_POSE, EnumDragonModelTypes.LIGHTNING_DRAGON_MODEL));

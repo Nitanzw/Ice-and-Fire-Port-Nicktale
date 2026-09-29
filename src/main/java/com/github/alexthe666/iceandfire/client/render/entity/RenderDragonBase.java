@@ -1,82 +1,133 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
-import com.nicktale.api.client.model.AdvancedEntityModel;
+import com.github.alexthe666.iceandfire.client.model.DragonRenderState;
 import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerDragonArmor;
-import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerDragonBanner;
 import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerDragonEyes;
-import com.github.alexthe666.iceandfire.client.render.entity.layer.LayerDragonRider;
 import com.github.alexthe666.iceandfire.client.texture.ArrayLayeredTexture;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import com.github.alexthe666.iceandfire.enums.EnumDragonTextures;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.nicktale.api.client.model.TabulaModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.entity.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class RenderDragonBase extends MobRenderer<EntityDragonBase, AdvancedEntityModel<EntityDragonBase>> {
+public class RenderDragonBase extends MobRenderer<EntityDragonBase, DragonRenderState, TabulaModel> {
 
-    private final Map<String, Identifier> LAYERED_TEXTURE_CACHE = Maps.newHashMap();
+    private final Map<String, Identifier> layeredTextureCache = Maps.newHashMap();
     private final int dragonType;
 
-    public RenderDragonBase(EntityRendererProvider.Context context, AdvancedEntityModel<EntityDragonBase> model, int dragonType) {
+    public RenderDragonBase(EntityRendererProvider.Context context, TabulaModel model, int dragonType) {
         super(context, model, 0.15F);
-        this.addLayer(new LayerDragonEyes(this));
-        this.addLayer(new LayerDragonRider(this, false));
-        this.addLayer(new LayerDragonBanner(this));
-        this.addLayer(new LayerDragonArmor(this, dragonType));
         this.dragonType = dragonType;
-    }
-
-    private Vec3 getPosition(LivingEntity LivingEntityIn, double p_177110_2_, float p_177110_4_) {
-        double d0 = LivingEntityIn.xOld + (LivingEntityIn.getX() - LivingEntityIn.xOld) * (double) p_177110_4_;
-        double d1 = p_177110_2_ + LivingEntityIn.yOld + (LivingEntityIn.getY() - LivingEntityIn.yOld) * (double) p_177110_4_;
-        double d2 = LivingEntityIn.zOld + (LivingEntityIn.getZ() - LivingEntityIn.zOld) * (double) p_177110_4_;
-        return new Vec3(d0, d1, d2);
+        this.addLayer(new LayerDragonEyes(this));
+        this.addLayer(new LayerDragonArmor(this));
     }
 
     @Override
-    protected void scale(EntityDragonBase entity, PoseStack matrixStackIn, float partialTickTime) {
-        this.shadowRadius = entity.getRenderSize() / 3;
-        float f7 = entity.prevDragonPitch + (entity.getDragonPitch() - entity.prevDragonPitch) * partialTickTime;
-        matrixStackIn.mulPose(Axis.XP.rotationDegrees(f7));
-        matrixStackIn.scale(shadowRadius, shadowRadius, shadowRadius);
+    protected DragonRenderState createRenderState() {
+        return new DragonRenderState();
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(EntityDragonBase entity) {
-        String baseTexture = entity.getVariantName(entity.getVariant()) + entity.getDragonStage() + entity.isModelDead() + entity.isMale() + entity.isSkeletal() + entity.isSleeping() + entity.isBlinking();
-        Identifier resourcelocation = LAYERED_TEXTURE_CACHE.get(baseTexture);
-        if (resourcelocation == null) {
-            resourcelocation = Identifier.parse("iceandfire:" + "dragon_texture_" + baseTexture);
-            List<String> tex = new ArrayList<String>();
-            tex.add(EnumDragonTextures.getTextureFromDragon(entity).toString());
-            if (entity.isMale() && !entity.isSkeletal()) {
-                if (dragonType == 0) {
-                    tex.add(EnumDragonTextures.getDragonEnum(entity).FIRE_MALE_OVERLAY.toString());
-                } else if (dragonType == 1) {
-                    tex.add(EnumDragonTextures.getDragonEnum(entity).ICE_MALE_OVERLAY.toString());
-                } else if (dragonType == 2) {
-                    tex.add(EnumDragonTextures.getDragonEnum(entity).LIGHTNING_MALE_OVERLAY.toString());
-                }
-            } else {
-                tex.add(EnumDragonTextures.Armor.EMPTY.FIRETEXTURE.toString());
-
-            }
-            ArrayLayeredTexture layeredBase = new ArrayLayeredTexture(tex);
-            Minecraft.getInstance().getTextureManager().register(resourcelocation, layeredBase);
-            LAYERED_TEXTURE_CACHE.put(baseTexture, resourcelocation);
+    public void extractRenderState(EntityDragonBase entity, DragonRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.animation = entity.getAnimation();
+        state.animationTick = entity.getAnimationTick();
+        state.dragonType = entity.dragonType.getIntFromType();
+        state.variant = entity.getVariant();
+        state.dragonStage = entity.getDragonStage();
+        state.armorHead = entity.getArmorOrdinal(entity.getItemBySlot(EquipmentSlot.HEAD));
+        state.armorNeck = entity.getArmorOrdinal(entity.getItemBySlot(EquipmentSlot.CHEST));
+        state.armorLegs = entity.getArmorOrdinal(entity.getItemBySlot(EquipmentSlot.LEGS));
+        state.armorFeet = entity.getArmorOrdinal(entity.getItemBySlot(EquipmentSlot.FEET));
+        state.renderSize = entity.getRenderSize();
+        state.previousDragonPitch = entity.prevDragonPitch;
+        state.dragonPitch = entity.getDragonPitch();
+        state.male = entity.isMale();
+        state.skeletal = entity.isSkeletal();
+        state.sleeping = entity.isSleeping();
+        state.blinking = entity.isBlinking();
+        state.modelDead = entity.isModelDead();
+        state.aiDisabled = entity.isAiDisabled();
+        state.hovering = entity.isHovering();
+        state.flying = entity.isFlying();
+        state.swimming = entity.isInWater();
+        state.breathingFire = entity.isBreathingFire();
+        state.actuallyBreathingFire = entity.isActuallyBreathingFire();
+        state.vehicle = entity.isVehicle();
+        state.passenger = entity.isPassenger();
+        state.eyesVisible = entity.shouldRenderEyes();
+        state.walkCycle = entity.walkCycle;
+        state.flightCycle = entity.flightCycle;
+        state.swimCycle = entity.swimCycle;
+        state.swimProgress = entity.swimProgress;
+        state.sitProgress = entity.sitProgress;
+        state.sleepProgress = entity.sleepProgress;
+        state.hoverProgress = entity.hoverProgress;
+        state.flyProgress = entity.flyProgress;
+        state.tackleProgress = entity.tackleProgress;
+        state.ridingProgress = entity.ridingProgress;
+        state.diveProgress = entity.diveProgress;
+        state.previousDiveProgress = entity.prevDiveProgress;
+        state.fireBreathProgress = entity.fireBreathProgress;
+        state.previousFireBreathProgress = entity.prevFireBreathProgress;
+        state.modelDeadProgress = entity.modelDeadProgress;
+        state.previousModelDeadProgress = entity.prevModelDeadProgress;
+        state.previousAnimationProgresses = entity.prevAnimationProgresses.clone();
+        state.baseTexture = EnumDragonTextures.getTextureFromDragon(entity);
+        state.emptyOverlay = EnumDragonTextures.Armor.EMPTY.FIRETEXTURE;
+        state.maleOverlay = switch (dragonType) {
+            case 0 -> EnumDragonTextures.getDragonEnum(entity).FIRE_MALE_OVERLAY;
+            case 1 -> EnumDragonTextures.getDragonEnum(entity).ICE_MALE_OVERLAY;
+            case 2 -> EnumDragonTextures.getDragonEnum(entity).LIGHTNING_MALE_OVERLAY;
+            default -> null;
+        };
+        state.eyeTexture = EnumDragonTextures.getEyeTextureFromDragon(entity);
+        EquipmentSlot[] slots = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+        for (int i = 0; i < slots.length; i++) {
+            EnumDragonTextures.Armor armor = EnumDragonTextures.Armor.getArmorForDragon(entity, slots[i]);
+            state.armorLayerTextures[i] = switch (dragonType) {
+                case 0 -> armor.FIRETEXTURE;
+                case 1 -> armor.ICETEXTURE;
+                default -> armor.LIGHTNINGTEXTURE;
+            };
         }
-        return resourcelocation;
     }
 
+    @Override
+    protected void scale(DragonRenderState state, PoseStack poseStack) {
+        float scale = state.renderSize / 3.0F;
+        this.shadowRadius = scale;
+        float pitch = state.previousDragonPitch + (state.dragonPitch - state.previousDragonPitch) * state.partialTick;
+        poseStack.mulPose(Axis.XP.rotationDegrees(pitch));
+        poseStack.scale(scale, scale, scale);
+    }
+
+    @Override
+    public @NotNull Identifier getTextureLocation(DragonRenderState state) {
+        String baseTexture = state.dragonType + "_" + state.variant + "_" + state.dragonStage + "_"
+                + state.modelDead + "_" + state.male + "_" + state.skeletal + "_" + state.sleeping + "_" + state.blinking;
+        Identifier texture = layeredTextureCache.get(baseTexture);
+        if (texture == null) {
+            texture = Identifier.fromNamespaceAndPath("iceandfire", "dragon_texture_" + baseTexture);
+            List<String> layers = new ArrayList<>(2);
+            layers.add(state.baseTexture.toString());
+            layers.add(state.male && !state.skeletal && state.maleOverlay != null
+                    ? state.maleOverlay.toString()
+                    : state.emptyOverlay.toString());
+            Minecraft.getInstance().getTextureManager().register(texture, new ArrayLayeredTexture(layers));
+            layeredTextureCache.put(baseTexture, texture);
+        }
+        return texture;
+    }
 }
