@@ -172,7 +172,7 @@ public class RenderDragonBase extends MobRenderer<EntityDragonBase, DragonRender
             layers.add(state.male && !state.skeletal && state.maleOverlay != null
                     ? state.maleOverlay.toString()
                     : state.emptyOverlay.toString());
-            Minecraft.getInstance().getTextureManager().register(texture, new ArrayLayeredTexture(texture, layers));
+            Minecraft.getInstance().getTextureManager().registerAndLoad(texture, new ArrayLayeredTexture(texture, layers));
             layeredTextureCache.put(baseTexture, texture);
         }
         return texture;
