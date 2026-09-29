@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.api.event.DragonFireDamageWorldEvent;
@@ -269,7 +270,7 @@ public class IafDragonDestructionManager {
         } else if (dragon.dragonType == DragonType.LIGHTNING) {
             double x = dragon.getX() - target.getX();
             double y = dragon.getZ() - target.getZ();
-            target.knockback((double) statusDuration / 10, x, y);
+            IafEntityUtil.knockback(target, (double) statusDuration / 10, x, y);
         }
     }
 

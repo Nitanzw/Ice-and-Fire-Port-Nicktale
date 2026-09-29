@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.neoforged.neoforge.event.EventHooks;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.IceAndFire;
@@ -37,7 +38,7 @@ public class EntityPixieCharge extends Fireball {
 
 public EntityPixieCharge(EntityType<? extends Fireball> t, Level worldIn, double posX, double posY,
                              double posZ, double accelX, double accelY, double accelZ) {
-        super(t, posX, posY, posZ, new Vec3(accelX, accelY, accelZ), worldIn);
+        super(t, posX, new Vec3(posY, posZ, new Vec3(accelX, accelY, accelZ)), worldIn);
         double d0 = Math.sqrt(accelX * accelX + accelY * accelY + accelZ * accelZ);
         this.xPower = accelX / d0 * 0.07D;
         this.yPower = accelY / d0 * 0.07D;

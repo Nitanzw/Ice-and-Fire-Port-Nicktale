@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.world.feature;
 
+import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityCyclops;
@@ -10,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -38,7 +39,7 @@ public class SpawnWanderingCyclops extends Feature<NoneFeatureConfiguration> {
                 cyclops.finalizeSpawn(worldIn, IafEntityUtil.difficulty(worldIn, position), EntitySpawnReason.SPAWNER, null);
                 worldIn.addFreshEntity(cyclops);
                 for (int i = 0; i < 3 + rand.nextInt(3); i++) {
-                    Sheep sheep = EntityType.SHEEP.create(worldIn.getLevel());
+                    Sheep sheep = EntityTypes.SHEEP.create(worldIn.getLevel(), EntitySpawnReason.EVENT);
                     sheep.setPos(position.getX() + 0.5F, position.getY() + 1, position.getZ() + 0.5F);
                     sheep.setColor(Sheep.getRandomSheepColor(rand));
                     worldIn.addFreshEntity(sheep);

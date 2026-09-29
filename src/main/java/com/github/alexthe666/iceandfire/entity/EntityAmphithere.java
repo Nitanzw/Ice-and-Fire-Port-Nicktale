@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.world.entity.EntitySpawnReason;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
@@ -662,7 +663,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
         if (target != null && this.getAnimation() == ANIMATION_BITE && this.getAnimationTick() == 7) {
             double dist = this.distanceToSqr(target);
             if (dist < 10) {
-                target.knockback(0.6F, Mth.sin(this.getYRot() * 0.017453292F), -Mth.cos(this.getYRot() * 0.017453292F));
+                IafEntityUtil.knockback(target, 0.6F, Mth.sin(this.getYRot() * 0.017453292F), -Mth.cos(this.getYRot() * 0.017453292F));
                 IafDamage.hurt(target, this.level().damageSources().mobAttack(this), ((int) this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
             }
         }

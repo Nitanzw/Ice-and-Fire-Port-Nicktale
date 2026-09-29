@@ -25,7 +25,7 @@ public class EntityStymphalianArrow extends AbstractArrow {
 
 
 public EntityStymphalianArrow(EntityType t, Level worldIn, LivingEntity shooter) {
-        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.STYMPHALIAN_ARROW.get()), null);
+        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.STYMPHALIAN_ARROW.get()), null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
         this.setBaseDamage(3.5F);
     }
 

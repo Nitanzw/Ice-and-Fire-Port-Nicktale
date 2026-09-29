@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.neoforged.neoforge.event.EventHooks;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.github.alexthe666.iceandfire.IceAndFire;
@@ -32,7 +33,7 @@ public class EntitySeaSerpentBubbles extends Fireball implements IDragonProjecti
 
     public EntitySeaSerpentBubbles(EntityType<? extends Fireball> t, Level worldIn, double posX,
                                    double posY, double posZ, double accelX, double accelY, double accelZ) {
-        super(t, posX, posY, posZ, new Vec3(accelX, accelY, accelZ), worldIn);
+        super(t, posX, new Vec3(posY, posZ, new Vec3(accelX, accelY, accelZ)), worldIn);
     }
 
 public EntitySeaSerpentBubbles(EntityType<? extends Fireball> t, Level worldIn,

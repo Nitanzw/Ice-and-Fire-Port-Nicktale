@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.neoforged.neoforge.event.EventHooks;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
@@ -25,7 +26,7 @@ public class EntityStymphalianFeather extends AbstractArrow {
     }
 
     public EntityStymphalianFeather(EntityType<? extends AbstractArrow> t, Level worldIn, LivingEntity shooter) {
-        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.STYMPHALIAN_BIRD_FEATHER.get()), null);
+        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.STYMPHALIAN_BIRD_FEATHER.get()), null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
         this.setBaseDamage(IafConfig.stymphalianBirdFeatherAttackStength);
     }
 

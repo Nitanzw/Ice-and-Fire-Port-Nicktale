@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.neoforged.neoforge.event.EventHooks;
 import net.minecraft.network.syncher.SynchedEntityData;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
@@ -46,13 +47,13 @@ public class EntityDreadLichSkull extends AbstractArrow {
 
     public EntityDreadLichSkull(EntityType<? extends AbstractArrow> type, Level worldIn, LivingEntity shooter,
                                 double x, double y, double z) {
-        super(type, shooter, worldIn, ItemStack.EMPTY, null);
+        super(type, shooter, worldIn, ItemStack.EMPTY, null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
         this.setBaseDamage(6);
     }
 
     public EntityDreadLichSkull(EntityType<? extends AbstractArrow> type, Level worldIn, LivingEntity shooter,
                                 double dmg) {
-        super(type, shooter, worldIn, ItemStack.EMPTY, null);
+        super(type, shooter, worldIn, ItemStack.EMPTY, null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
         this.setBaseDamage(dmg);
     }
 

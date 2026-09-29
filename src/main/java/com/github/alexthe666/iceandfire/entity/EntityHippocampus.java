@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.neoforged.neoforge.common.CommonHooks;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.item.ItemStackTemplate;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.nicktale.api.animation.Animation;

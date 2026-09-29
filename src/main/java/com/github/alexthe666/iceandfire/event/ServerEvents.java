@@ -1,5 +1,10 @@
 package com.github.alexthe666.iceandfire.event;
 
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.minecraft.world.entity.EntitySpawnReason;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
@@ -72,14 +77,13 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@Mod.EventBusSubscriber(modid = IceAndFire.MODID)
+@EventBusSubscriber(modid = IceAndFire.MODID)
 public class ServerEvents {
 
     public static final UUID ALEX_UUID = UUID.fromString("71363abe-fd03-49c9-940d-aae8b8209b7c");
@@ -243,7 +247,7 @@ public class ServerEvents {
 
 
     @SubscribeEvent
-    public void onEntityDamage(LivingHurtEvent event) {
+    public void onEntityDamage(LivingDamageEvent.Pre event) {
         if (event.getSource().is(DamageTypeTags.IS_PROJECTILE)) {
             float multi = 1;
             if (event.getEntity().getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof ItemTrollArmor) {
@@ -258,7 +262,7 @@ public class ServerEvents {
             if (event.getEntity().getItemBySlot(EquipmentSlot.FEET).getItem() instanceof ItemTrollArmor) {
                 multi -= 0.1f;
             }
-            event.setAmount(event.getAmount() * multi);
+            event.setNewDamage(event.getNewDamage() * multi);
         }
         if (event.getSource().is(IafDamageRegistry.DRAGON_FIRE_TYPE) || event.getSource().is(IafDamageRegistry.DRAGON_ICE_TYPE) || event.getSource().is(IafDamageRegistry.DRAGON_LIGHTNING_TYPE)) {
             float multi = 1;
@@ -278,7 +282,7 @@ public class ServerEvents {
                     event.getEntity().getItemBySlot(EquipmentSlot.FEET).getItem() instanceof ItemDragonsteelArmor) {
                 multi -= 0.1f;
             }
-            event.setAmount(event.getAmount() * multi);
+            event.setNewDamage(event.getNewDamage() * multi);
         }
     }
 
@@ -314,7 +318,7 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public void onLivingAttacked(final LivingAttackEvent event) {
+    public void onLivingAttacked(final LivingIncomingDamageEvent event) {
         if (event.getSource() != null && event.getSource().getEntity() != null) {
             Entity attacker = event.getSource().getEntity();
 
@@ -337,7 +341,7 @@ public class ServerEvents {
 
     @SubscribeEvent
     public void onLivingSetTarget(LivingChangeTargetEvent event) {
-        final LivingEntity target = event.getOriginalTarget();
+        final LivingEntity target = event.getOriginalAboutToBeSetTarget();
         if (target != null) {
             final LivingEntity attacker = event.getEntity();
             if (isChicken(target)) {
@@ -471,8 +475,11 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public void onEntityUpdate(LivingEvent.LivingTickEvent event) {
-        if (AiDebug.isEnabled() && event.getEntity() instanceof Mob && AiDebug.contains((Mob) event.getEntity())) {
+    public void onEntityUpdate(EntityTickEvent.Pre event) {
+        if (!(event.getEntity() instanceof net.minecraft.world.entity.LivingEntity iafLiving)) {
+            return;
+        }
+        if (AiDebug.isEnabled() && iafLiving instanceof Mob && AiDebug.contains((Mob) iafLiving)) {
             AiDebug.logData();
         }
     }
@@ -613,7 +620,7 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public void onEntityJoinWorld(MobSpawnEvent.FinalizeSpawn event) {
+    public void onEntityJoinWorld(FinalizeSpawnEvent event) {
         Mob mob = event.getEntity();
         try {
             if (isSheep(mob) && mob instanceof Animal animal) {

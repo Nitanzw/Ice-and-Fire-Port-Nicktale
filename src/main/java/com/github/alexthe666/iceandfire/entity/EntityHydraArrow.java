@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.neoforged.neoforge.event.EventHooks;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
@@ -44,7 +45,7 @@ public class EntityHydraArrow extends AbstractArrow {
 
 
     public EntityHydraArrow(EntityType t, Level worldIn, LivingEntity shooter) {
-        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.HYDRA_ARROW.get()), null);
+        super(t, shooter, worldIn, new ItemStack(IafItemRegistry.HYDRA_ARROW.get()), null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
         this.setBaseDamage(5F);
     }
 

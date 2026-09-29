@@ -91,7 +91,7 @@ def r_create(line, msg, block):
 
 
 def r_knockback(line, msg, block):
-    if 'no suitable method found for knockback(float,double,double)' not in msg:
+    if not re.search(r'no suitable method found for knockback\((float|double),(float|double),(float|double)\)', msg):
         return None
     return re.sub(r'([\w.()]+?)\.knockback\(([^;]*)\);', lambda mm: 'IafEntityUtil.knockback(%s, %s);' % (mm.group(1), mm.group(2)), line)
 

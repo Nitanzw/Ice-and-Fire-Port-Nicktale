@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.event;
 
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.client.ClientProxy;
@@ -31,12 +33,11 @@ import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
 
 import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(modid = IceAndFire.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = IceAndFire.MODID, value = Dist.CLIENT)
 public class ClientEvents {
 
     private static final Identifier SIREN_SHADER = Identifier.parse("iceandfire:shaders/post/siren.json");
@@ -85,11 +86,14 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public void onLivingUpdate(LivingEvent.LivingTickEvent event) {
+    public void onLivingUpdate(EntityTickEvent.Pre event) {
+        if (!(event.getEntity() instanceof net.minecraft.world.entity.LivingEntity iafLiving)) {
+            return;
+        }
         Minecraft mc = Minecraft.getInstance();
-        if (event.getEntity() instanceof ICustomMoveController) {
-            Entity entity = event.getEntity();
-            ICustomMoveController moveController = ((Entity & ICustomMoveController) event.getEntity());
+        if (iafLiving instanceof ICustomMoveController) {
+            Entity entity = iafLiving;
+            ICustomMoveController moveController = ((Entity & ICustomMoveController) iafLiving);
             if (entity.getVehicle() != null && entity.getVehicle() == mc.player) {
                 byte previousState = moveController.getControlState();
                 moveController.dismount(mc.options.keyShift.isDown());
@@ -99,7 +103,7 @@ public class ClientEvents {
                 }
             }
         }
-        if (event.getEntity() instanceof Player player) {
+        if (iafLiving instanceof Player player) {
             if (player.level().isClientSide()) {
 
                 if (player.getVehicle() instanceof ICustomMoveController) {

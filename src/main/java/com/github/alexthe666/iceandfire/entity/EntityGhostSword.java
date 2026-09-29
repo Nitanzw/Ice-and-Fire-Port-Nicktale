@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.neoforged.neoforge.event.EventHooks;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
 import com.google.common.collect.Lists;
@@ -50,7 +51,7 @@ public class EntityGhostSword extends AbstractArrow {
 
     public EntityGhostSword(EntityType<? extends AbstractArrow> type, Level worldIn, LivingEntity shooter,
                             double dmg) {
-        super(type, shooter, worldIn, ItemStack.EMPTY, null);
+        super(type, shooter, worldIn, ItemStack.EMPTY, null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
         this.setBaseDamage(dmg);
     }
 

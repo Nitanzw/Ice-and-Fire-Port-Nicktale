@@ -4,7 +4,7 @@ import com.github.alexthe666.iceandfire.client.model.ChainTieRenderState;
 import com.github.alexthe666.iceandfire.client.model.ModelChainTie;
 import com.github.alexthe666.iceandfire.entity.EntityChainTie;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

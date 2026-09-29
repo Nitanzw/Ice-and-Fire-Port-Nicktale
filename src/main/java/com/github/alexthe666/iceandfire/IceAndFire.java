@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire;
 
+import com.github.alexthe666.iceandfire.misc.IafDataSerializers;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import com.github.alexthe666.iceandfire.config.ConfigHolder;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;

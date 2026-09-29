@@ -63,15 +63,15 @@ public abstract class ModelDragonBase<S extends EntityRenderState> extends Advan
     }
 
     protected static void applyChainYawToY(ChainBuffer buffer, AdvancedModelBox... boxes) {
-        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getFrameTime()), boxes, RotationAxis.Y);
+        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false)), boxes, RotationAxis.Y);
     }
 
     protected static void applyChainYawToZ(ChainBuffer buffer, AdvancedModelBox... boxes) {
-        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getFrameTime()), boxes, RotationAxis.Z);
+        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedYawVariation(Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false)), boxes, RotationAxis.Z);
     }
 
     protected static void applyChainPitchToX(ChainBuffer buffer, AdvancedModelBox... boxes) {
-        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedPitchVariation(Minecraft.getInstance().getFrameTime()), boxes, RotationAxis.X);
+        applyChainRotation(buffer == null ? 0.0F : buffer.getInterpolatedPitchVariation(Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false)), boxes, RotationAxis.X);
     }
 
     private static void applyChainRotation(float degrees, AdvancedModelBox[] boxes, RotationAxis axis) {

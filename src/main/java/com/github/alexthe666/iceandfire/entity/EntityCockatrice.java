@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.world.entity.EntitySpawnReason;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;

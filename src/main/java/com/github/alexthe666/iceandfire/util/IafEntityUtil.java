@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.util;
 
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;

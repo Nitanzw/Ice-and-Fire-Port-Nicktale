@@ -26,7 +26,7 @@ public class EntityDragonArrow extends AbstractArrow {
 
 
     public EntityDragonArrow(EntityType<? extends AbstractArrow> typeIn, LivingEntity shooter, Level worldIn) {
-        super(typeIn, shooter, worldIn, new ItemStack(IafItemRegistry.DRAGONBONE_ARROW.get()), null);
+        super(typeIn, shooter, worldIn, new ItemStack(IafItemRegistry.DRAGONBONE_ARROW.get()), null, new ItemStack(net.minecraft.world.item.Items.ARROW), null);
         this.setBaseDamage(10.0F);
     }
 

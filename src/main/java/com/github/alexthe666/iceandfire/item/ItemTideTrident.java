@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.entity.EntityTideTrident;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;

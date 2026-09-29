@@ -80,7 +80,7 @@ def fix_file(s):
             continue
         start = receiver_start(s, dot)
         recv = s[start:dot].strip()
-        if not recv or recv == 'super' or recv.endswith('super'):
+        if not recv or recv == 'super' or recv.endswith('super') or recv == 'IafDamage':
             continue
         # skip declarations like "public boolean hurt(" (no dot) and matching only real calls
         res += s[pos:start] + 'IafDamage.hurt(' + recv + ', '

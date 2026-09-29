@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.client;
 
+import net.neoforged.fml.common.EventBusSubscriber;
 
 import com.nicktale.api.client.model.TabulaModel;
 import com.github.alexthe666.iceandfire.IceAndFire;
@@ -34,12 +35,11 @@ import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.io.IOException;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD, modid = IceAndFire.MODID)
+@EventBusSubscriber(value = Dist.CLIENT, modid = IceAndFire.MODID)
 public class IafClientSetup {
 
     public static TabulaModel FIRE_DRAGON_BASE_MODEL;
