@@ -86,7 +86,7 @@ public class EntityHydra extends Monster implements IAnimatedEntity, IMultipartE
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
-        return Mob.createMobAttributes()
+        return Mob.createMobAttributes().add(net.minecraft.world.entity.ai.attributes.Attributes.TEMPT_RANGE, 10.0D)
             //HEALTH
             .add(Attributes.MAX_HEALTH, IafConfig.hydraMaxHealth)
             //SPEED

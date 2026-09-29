@@ -138,7 +138,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
-        return Mob.createMobAttributes()
+        return Mob.createMobAttributes().add(net.minecraft.world.entity.ai.attributes.Attributes.TEMPT_RANGE, 10.0D)
                 .add(Attributes.MAX_HEALTH, 40.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.3D)
                 .add(Attributes.FLYING_SPEED, IafConfig.hippogryphFlightSpeedMod)

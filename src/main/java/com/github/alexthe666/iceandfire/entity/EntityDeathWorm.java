@@ -152,7 +152,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     }
 
     public static AttributeSupplier.Builder bakeAttributes() {
-        return Mob.createMobAttributes()
+        return Mob.createMobAttributes().add(net.minecraft.world.entity.ai.attributes.Attributes.TEMPT_RANGE, 10.0D)
                 //HEALTH
                 .add(Attributes.MAX_HEALTH, IafConfig.deathWormMaxHealth)
                 //SPEED
