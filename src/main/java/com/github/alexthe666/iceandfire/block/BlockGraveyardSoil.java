@@ -35,13 +35,13 @@ public class BlockGraveyardSoil extends Block {
         if (!worldIn.isClientSide()) {
             if (!worldIn.isAreaLoaded(pos, 3))
                 return;
-            long timeOfDay = worldIn.getDayTime() % 24000L;
+            long timeOfDay = worldIn.getDefaultClockTime() % 24000L;
             boolean night = timeOfDay >= 13000L && timeOfDay < 23000L;
             if (night && !worldIn.getBlockState(pos.above()).canOcclude() && rand.nextInt(9) == 0 && worldIn.getDifficulty() != Difficulty.PEACEFUL) {
                 int checkRange = 32;
                 int k = worldIn.getEntitiesOfClass(EntityGhost.class, (new AABB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1)).inflate(checkRange)).size();
                 if (k < 10) {
-                    EntityGhost ghost = IafEntityRegistry.GHOST.get().create(worldIn);
+                    EntityGhost ghost = IafEntityRegistry.GHOST.get().create(worldIn, EntitySpawnReason.SPAWNER);
                     if (ghost != null) {
                         ghost.setPos(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
                         ghost.setYRot(ThreadLocalRandom.current().nextFloat() * 360F);

@@ -6,9 +6,10 @@ import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.item.ItemMobSkull;
 import com.github.alexthe666.iceandfire.item.ItemSeaSerpentScales;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
+import net.neoforged.neoforge.common.data.BlockTagCopyingItemTagProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
@@ -16,11 +17,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
 
-public class IafItemTags extends ItemTagsProvider {
+public class IafItemTags extends BlockTagCopyingItemTagProvider {
     private final static String STORAGE_BLOCK_PATH = Tags.Items.STORAGE_BLOCKS.location().getPath();
     private final static String INGOTS_PATH = Tags.Items.INGOTS.location().getPath();
     private final static String NUGGETS_PATH = Tags.Items.NUGGETS.location().getPath();
@@ -71,8 +71,13 @@ public class IafItemTags extends ItemTagsProvider {
     public static TagKey<Item> TEMPT_HIPPOCAMPUS = createKey("tempt_hippocampus");
     public static TagKey<Item> TEMPT_HIPPOGRYPH = createKey("tempt_hippogryph");
 
-    public IafItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagsProvider.TagLookup<Block>> blockTags, ExistingFileHelper helper) {
-        super(output, lookupProvider, blockTags, IceAndFire.MODID, helper);
+    public IafItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagsProvider.TagLookup<Block>> blockTags) {
+        super(output, lookupProvider, blockTags, IceAndFire.MODID);
+    }
+
+    @Override
+    protected RegistryTagAppender<Item> tag(TagKey<Item> tag) {
+        return RegistryTagAppender.wrap(super.tag(tag), item -> BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow());
     }
 
     @Override
@@ -194,15 +199,15 @@ public class IafItemTags extends ItemTagsProvider {
                 .add(Items.PORKCHOP, Items.COOKED_PORKCHOP)
                 // Farmer's Delight
 //                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "raw_fishes"))
-                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "raw_mutton"))
-                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "raw_pork"))
-                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "raw_chicken"))
-                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "raw_beef"))
+                .addOptionalTag(createForgeKey("raw_mutton"))
+                .addOptionalTag(createForgeKey("raw_pork"))
+                .addOptionalTag(createForgeKey("raw_chicken"))
+                .addOptionalTag(createForgeKey("raw_beef"))
 //                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "cooked_fishes"))
-                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "cooked_mutton"))
-                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "cooked_pork"))
-                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "cooked_chicken"))
-                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "cooked_beef"));
+                .addOptionalTag(createForgeKey("cooked_mutton"))
+                .addOptionalTag(createForgeKey("cooked_pork"))
+                .addOptionalTag(createForgeKey("cooked_chicken"))
+                .addOptionalTag(createForgeKey("cooked_beef"));
 
 
         tag(BREED_AMPITHERE)

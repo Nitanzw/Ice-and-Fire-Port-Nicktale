@@ -47,7 +47,7 @@ public class BlockGoldPile extends Block {
     }
 
     @Override
-    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, PathComputationType type) {
+    protected boolean isPathfindable(@NotNull BlockState state, PathComputationType type) {
         switch (type) {
             case LAND:
                 return state.getValue(LAYERS) < 5;

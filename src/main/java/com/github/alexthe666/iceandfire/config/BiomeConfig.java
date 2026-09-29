@@ -61,7 +61,7 @@ public class BiomeConfig {
     public static final Map.Entry<String, SpawnBiomeData> darkBrownHippogryphBiomes = Map.entry("iceandfire:hippogryph_dark_brown_biomes", DefaultBiomes.HIPPOGRYPH_DARK_BROWN);
     public static final Map.Entry<String, SpawnBiomeData> whiteHippogryphBiomes = Map.entry("iceandfire:hippogryph_white_biomes", DefaultBiomes.HIPPOGRYPH_WHITE);
     private static boolean init = false;
-    private static final Map<String, SpawnBiomeData> biomeConfigValues = new HashMap<>();
+    private static final Map<String, SpawnBiomeConfig> biomeConfigValues = new HashMap<>();
     public static void init() {
         try {
             for (Field f : BiomeConfig.class.getFields()) {
@@ -79,12 +79,12 @@ public class BiomeConfig {
         init = true;
     }
 
-    private static Map<String, SpawnBiomeData> getBiomeConfigValues() {
+    private static Map<String, SpawnBiomeConfig> getBiomeConfigValues() {
         final class LazyInit {
             private LazyInit() {}
-            private static final Map<String, SpawnBiomeData> BIOME_CONFIG_VALUES;
+            private static final Map<String, SpawnBiomeConfig> BIOME_CONFIG_VALUES;
             static {
-                var entries = new ArrayList<Map.Entry<String, SpawnBiomeData>>();
+                var entries = new ArrayList<Map.Entry<String, SpawnBiomeConfig>>();
                 try {
                     for (Field f : BiomeConfig.class.getFields()) {
                         Object obj = f.get(null);

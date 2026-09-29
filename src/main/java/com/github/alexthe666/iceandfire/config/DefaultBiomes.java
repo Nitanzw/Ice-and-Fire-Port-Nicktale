@@ -4,7 +4,6 @@ import com.nicktale.api.config.biome.BiomeEntryType;
 import com.nicktale.api.config.biome.SpawnBiomeData;
 import net.neoforged.neoforge.common.Tags;
 
-import static net.minecraft.tags.BiomeTags.*;
 import static net.neoforged.neoforge.common.Tags.Biomes.*;
 
 public class DefaultBiomes {
@@ -72,7 +71,7 @@ public class DefaultBiomes {
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_OVERWORLD.location().toString(), 0)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_SNOWY.location().toString(), 0)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, true, IS_WET_OVERWORLD.location().toString(), 0)
-            .addBiomeEntry(BiomeEntryType.BIOME_TAG, true, IS_WATER.location().toString(), 0)
+            .addBiomeEntry(BiomeEntryType.BIOME_TAG, true, IS_AQUATIC.location().toString(), 0)
             .addBiomeEntry(BiomeEntryType.REGISTRY_NAME, false, "terralith:wintry_forest", 1)
             .addBiomeEntry(BiomeEntryType.REGISTRY_NAME, false, "terralith:wintry_lowlands", 2);
 
@@ -136,7 +135,7 @@ public class DefaultBiomes {
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_RARE.location().toString(), 0)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_MAGICAL.location().toString(), 0)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_OVERWORLD.location().toString(), 1)
-            .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_DENSE.location().toString(), 1)
+            .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_DENSE_VEGETATION.location().toString(), 1)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_FOREST.location().toString(), 1)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, true, Tags.Biomes.IS_MOUNTAIN.location().toString(), 1)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, true, IS_HILL.location().toString(), 1)
@@ -178,7 +177,7 @@ public class DefaultBiomes {
 
     public static final SpawnBiomeData GRAVEYARD = new SpawnBiomeData()
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_OVERWORLD.location().toString(), 0)
-            .addBiomeEntry(BiomeEntryType.BIOME_TAG, true, IS_WATER.location().toString(), 0)
+            .addBiomeEntry(BiomeEntryType.BIOME_TAG, true, IS_AQUATIC.location().toString(), 0)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, true, IS_BEACH.location().toString(), 0)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, true, IS_UNDERGROUND.location().toString(), 0);
 
@@ -199,15 +198,15 @@ public class DefaultBiomes {
 
     public static final SpawnBiomeData HIPPOGRYPH_WHITE = new SpawnBiomeData()
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_OVERWORLD.location().toString(), 0)
-            .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_SPARSE.location().toString(), 0)
+            .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_SPARSE_VEGETATION.location().toString(), 0)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_SNOWY.location().toString(), 0)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, Tags.Biomes.IS_MOUNTAIN.location().toString(), 0)
-            .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_PEAK.location().toString(), 0)
+            .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_MOUNTAIN_PEAK.location().toString(), 0)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_OVERWORLD.location().toString(), 1)
-            .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_SPARSE.location().toString(), 1)
+            .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_SPARSE_VEGETATION.location().toString(), 1)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_SNOWY.location().toString(), 1)
             .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, Tags.Biomes.IS_MOUNTAIN.location().toString(), 1)
-            .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_SLOPE.location().toString(), 1)
+            .addBiomeEntry(BiomeEntryType.BIOME_TAG, false, IS_MOUNTAIN_SLOPE.location().toString(), 1)
             .addBiomeEntry(BiomeEntryType.REGISTRY_NAME, false, "terralith:rocky_mountains", 2);
 
     public static final SpawnBiomeData HIPPOGRYPH_GRAY = new SpawnBiomeData()

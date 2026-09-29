@@ -25,7 +25,7 @@ public class TileEntityGhostChest extends ChestBlockEntity {
     public void startOpen(ContainerUser user) {
         super.startOpen(user);
         if (this.level != null && this.level.getDifficulty() != Difficulty.PEACEFUL) {
-            EntityGhost ghost = IafEntityRegistry.GHOST.get().create(level);
+            EntityGhost ghost = IafEntityRegistry.GHOST.get().create(level, EntitySpawnReason.SPAWNER);
             if (ghost != null && this.level instanceof ServerLevel serverLevel) {
                 ghost.setPos(this.worldPosition.getX() + 0.5F, this.worldPosition.getY() + 0.5F, this.worldPosition.getZ() + 0.5F);
                 ghost.setYRot(ThreadLocalRandom.current().nextFloat() * 360F);

@@ -5,23 +5,21 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
 public class IafBiomeTagGenerator extends BiomeTagsProvider {
-    public static final TagKey<Biome> HAS_GORGON_TEMPLE = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), Identifier.fromNamespaceAndPath(IceAndFire.MODID, "has_structure/gorgon_temple"));
-    public static final TagKey<Biome> HAS_MAUSOLEUM = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), Identifier.fromNamespaceAndPath(IceAndFire.MODID, "has_structure/mausoleum"));
-    public static final TagKey<Biome> HAS_GRAVEYARD = TagKey.create(ForgeRegistries.BIOMES.getRegistryKey(), Identifier.fromNamespaceAndPath(IceAndFire.MODID, "has_structure/graveyard"));
+    public static final TagKey<Biome> HAS_GORGON_TEMPLE = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(IceAndFire.MODID, "has_structure/gorgon_temple"));
+    public static final TagKey<Biome> HAS_MAUSOLEUM = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(IceAndFire.MODID, "has_structure/mausoleum"));
+    public static final TagKey<Biome> HAS_GRAVEYARD = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(IceAndFire.MODID, "has_structure/graveyard"));
 
 
-    public IafBiomeTagGenerator(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(pOutput, pProvider, IceAndFire.MODID, existingFileHelper);
+    public IafBiomeTagGenerator(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pProvider) {
+        super(pOutput, pProvider, IceAndFire.MODID);
     }
 
     @Override

@@ -51,11 +51,6 @@ public class BlockIceSpikes extends Block {
         return this.isValidGround(worldIn.getBlockState(blockpos), worldIn, blockpos);
     }
 
-    @Override
-    public boolean propagatesSkylightDown(@NotNull BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos) {
-        return true;
-    }
-
     private boolean isValidGround(BlockState blockState, LevelReader worldIn, BlockPos blockpos) {
         return blockState.canOcclude();
     }

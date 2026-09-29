@@ -307,8 +307,6 @@ public class IafDragonLogic {
         if (dragon.getAnimation() == EntityDragonBase.ANIMATION_WINGBLAST && (dragon.getAnimationTick() == 17 || dragon.getAnimationTick() == 22 || dragon.getAnimationTick() == 28)) {
             dragon.spawnGroundEffects();
         }
-        dragon.legSolver.update(dragon, dragon.getRenderSize() / 3F);
-
         if (dragon.flightCycle == 11) {
             dragon.spawnGroundEffects();
         }
