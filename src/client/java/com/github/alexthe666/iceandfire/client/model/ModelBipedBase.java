@@ -91,19 +91,12 @@ public abstract class ModelBipedBase<S extends BipedRenderState> extends Advance
     }
 
     public void setVisible(boolean visible) {
-        this.head.invisible = !visible;
         this.head.showSelf = visible;
-        this.headware.invisible = !visible;
         this.headware.showSelf = visible;
-        this.body.invisible = !visible;
         this.body.showSelf = visible;
-        this.armRight.invisible = !visible;
         this.armRight.showSelf = visible;
-        this.armLeft.invisible = !visible;
         this.armLeft.showSelf = visible;
-        this.legRight.invisible = !visible;
         this.legRight.showSelf = visible;
-        this.legLeft.invisible = !visible;
         this.legLeft.showSelf = visible;
     }
 
