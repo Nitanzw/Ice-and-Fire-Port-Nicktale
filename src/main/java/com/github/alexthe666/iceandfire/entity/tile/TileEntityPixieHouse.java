@@ -9,7 +9,8 @@ import com.github.alexthe666.iceandfire.message.MessageUpdatePixieHouse;
 import com.github.alexthe666.iceandfire.message.MessageUpdatePixieHouseModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.ContainerHelper;
@@ -19,6 +20,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -70,15 +73,16 @@ public class TileEntityPixieHouse extends BlockEntity {
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
-        compound.putInt("HouseType", houseType);
-        compound.putBoolean("HasPixie", hasPixie);
-        compound.putInt("PixieType", pixieType);
-        compound.putBoolean("TamedPixie", tamedPixie);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("HouseType", houseType);
+        output.putBoolean("HasPixie", hasPixie);
+        output.putInt("PixieType", pixieType);
+        output.putBoolean("TamedPixie", tamedPixie);
         if (pixieOwnerUUID != null) {
-            compound.putUUID("PixieOwnerUUID", pixieOwnerUUID);
+            output.store("PixieOwnerUUID", UUIDUtil.CODEC, pixieOwnerUUID);
         }
-        ContainerHelper.saveAllItems(compound, this.pixieItems);
+        ContainerHelper.saveAllItems(output, this.pixieItems);
     }
 
     @Override
@@ -87,31 +91,39 @@ public class TileEntityPixieHouse extends BlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-        load(packet.getTag());
-        if (!level.isClientSide()) {
-            IceAndFire.sendMSGToAll(
-                new MessageUpdatePixieHouseModel(worldPosition.asLong(), packet.getTag().getInt("HouseType")));
+    public void onDataPacket(Connection net, ValueInput input) {
+        super.onDataPacket(net, input);
+        if (level != null && !level.isClientSide()) {
+            IceAndFire.sendMSGToAll(new MessageUpdatePixieHouseModel(worldPosition.asLong(), input.getIntOr("HouseType", 0)));
         }
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+    public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithFullMetadata(registries);
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        houseType = compound.getInt("HouseType");
-        hasPixie = compound.getBoolean("HasPixie");
-        pixieType = compound.getInt("PixieType");
-        tamedPixie = compound.getBoolean("TamedPixie");
-        if (compound.hasUUID("PixieOwnerUUID")) {
-            pixieOwnerUUID = compound.getUUID("PixieOwnerUUID");
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        houseType = input.getIntOr("HouseType", 0);
+        hasPixie = input.getBooleanOr("HasPixie", false);
+        pixieType = input.getIntOr("PixieType", 0);
+        tamedPixie = input.getBooleanOr("TamedPixie", false);
+        pixieOwnerUUID = input.read("PixieOwnerUUID", UUIDUtil.LENIENT_CODEC).orElse(null);
+        if (pixieOwnerUUID == null) {
+            input.getString("PixieOwnerUUID").ifPresent(ownerName -> {
+                try {
+                    if (this.level != null && this.level.getServer() != null) {
+                        this.pixieOwnerUUID = net.minecraft.server.players.OldUsersConverter.convertMobOwnerIfNecessary(
+                            this.level.getServer(), ownerName);
+                    }
+                } catch (Exception ignored) {
+                }
+            });
         }
         this.pixieItems = NonNullList.withSize(1, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(compound, pixieItems);
-        super.load(compound);
+        ContainerHelper.loadAllItems(input, pixieItems);
     }
 
     public void releasePixie() {

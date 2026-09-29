@@ -5,9 +5,6 @@ import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,12 +12,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 
 public class TileEntityDragonforgeInput extends BlockEntity {
     private static final int LURE_DISTANCE = 50;
@@ -59,21 +52,6 @@ public class TileEntityDragonforgeInput extends BlockEntity {
         if (forgeInput.isAssembled()) {
             forgeInput.lureDragons();
         }
-    }
-
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-        load(packet.getTag());
-    }
-
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
     }
 
     protected void lureDragons() {
@@ -162,12 +140,4 @@ public class TileEntityDragonforgeInput extends BlockEntity {
         return null;
     }
 
-    @Override
-    public <T> @NotNull LazyOptional<T> getCapability(@NotNull final Capability<T> capability, @Nullable final Direction facing) {
-        if (core != null && capability == ForgeCapabilities.ITEM_HANDLER) {
-            return core.getCapability(capability, facing);
-        }
-
-        return super.getCapability(capability, facing);
-    }
 }

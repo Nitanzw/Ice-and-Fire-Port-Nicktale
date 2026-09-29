@@ -8,7 +8,7 @@ import com.github.alexthe666.iceandfire.message.MessageUpdatePodium;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -22,22 +22,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 
 public class TileEntityPodium extends BaseContainerBlockEntity implements WorldlyContainer {
 
     private static final int[] slotsTop = new int[]{0};
     public int ticksExisted;
     public int prevTicksExisted;
-    IItemHandler handlerUp = new SidedInvWrapper(this, net.minecraft.core.Direction.UP);
-    IItemHandler handlerDown = new SidedInvWrapper(this, Direction.DOWN);
-    net.neoforged.neoforge.common.util.LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper
-        .create(this, Direction.UP, Direction.DOWN);
     private NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
 
     public TileEntityPodium(BlockPos pos, BlockState state) {
@@ -105,22 +99,23 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
         if (!stack.isEmpty() && stack.getCount() > this.getMaxStackSize()) {
             stack.setCount(this.getMaxStackSize());
         }
-        this.saveAdditional(this.getUpdateTag());
+        this.setChanged();
         if (!level.isClientSide()) {
             IceAndFire.sendMSGToAll(new MessageUpdatePodium(this.getBlockPos().asLong(), stacks.get(0)));
         }
     }
 
     @Override
-    public void load(@NotNull CompoundTag compound) {
-        super.load(compound);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(compound, this.stacks);
+        ContainerHelper.loadAllItems(input, this.stacks);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag compound) {
-        ContainerHelper.saveAllItems(compound, this.stacks);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        ContainerHelper.saveAllItems(output, this.stacks);
     }
 
     @Override
@@ -177,13 +172,13 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-        load(packet.getTag());
+    public void onDataPacket(Connection net, ValueInput input) {
+        super.onDataPacket(net, input);
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+    public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithFullMetadata(registries);
     }
 
     @Override
@@ -216,18 +211,6 @@ public class TileEntityPodium extends BaseContainerBlockEntity implements Worldl
     }
 
     @Override
-    public <T> net.neoforged.neoforge.common.util.@NotNull LazyOptional<T> getCapability(
-        net.neoforged.neoforge.common.capabilities.@NotNull Capability<T> capability, @Nullable Direction facing) {
-        if (!this.remove && facing != null
-            && capability == ForgeCapabilities.ITEM_HANDLER) {
-            if (facing == Direction.DOWN)
-                return handlers[1].cast();
-            else
-                return handlers[0].cast();
-        }
-        return super.getCapability(capability, facing);
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player) {

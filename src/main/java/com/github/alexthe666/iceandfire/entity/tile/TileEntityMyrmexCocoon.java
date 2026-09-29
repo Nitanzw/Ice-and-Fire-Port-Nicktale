@@ -1,8 +1,8 @@
 package com.github.alexthe666.iceandfire.entity.tile;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -17,6 +17,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -46,19 +48,20 @@ public class TileEntityMyrmexCocoon extends RandomizableContainerBlockEntity {
 
 
     @Override
-    public void load(@NotNull CompoundTag compound) {
-        super.load(compound);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         this.chestContents = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
 
-        if (!this.tryLoadLootTable(compound)) {
-            ContainerHelper.loadAllItems(compound, this.chestContents);
+        if (!this.tryLoadLootTable(input)) {
+            ContainerHelper.loadAllItems(input, this.chestContents);
         }
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag compound) {
-        if (!this.trySaveLootTable(compound)) {
-            ContainerHelper.saveAllItems(compound, this.chestContents);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        if (!this.trySaveLootTable(output)) {
+            ContainerHelper.saveAllItems(output, this.chestContents);
         }
     }
 
@@ -92,7 +95,7 @@ public class TileEntityMyrmexCocoon extends RandomizableContainerBlockEntity {
 
     @Override
     protected void setItems(@NotNull NonNullList<ItemStack> itemsIn) {
-
+        this.chestContents = itemsIn;
     }
 
     @Override
@@ -113,13 +116,13 @@ public class TileEntityMyrmexCocoon extends RandomizableContainerBlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-        load(packet.getTag());
+    public void onDataPacket(Connection net, ValueInput input) {
+        super.onDataPacket(net, input);
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+    public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithFullMetadata(registries);
     }
 
     public boolean isFull(ItemStack heldStack) {

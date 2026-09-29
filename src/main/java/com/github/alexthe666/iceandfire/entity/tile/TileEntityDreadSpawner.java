@@ -1,7 +1,7 @@
 package com.github.alexthe666.iceandfire.entity.tile;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BaseSpawner;
@@ -11,6 +11,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -46,15 +48,15 @@ public class TileEntityDreadSpawner extends SpawnerBlockEntity {
     }
 
     @Override
-    public void load(@NotNull CompoundTag p_155760_) {
-        super.load(p_155760_);
-        this.spawner.load(this.level, this.worldPosition, p_155760_);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.spawner.load(this.level, this.worldPosition, input);
     }
 
-    public CompoundTag save(CompoundTag p_59795_) {
-        super.saveAdditional(p_59795_);
-        this.spawner.save(p_59795_);
-        return p_59795_;
+    @Override
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        this.spawner.save(output);
     }
 
     public static void clientTick(Level p_155755_, BlockPos p_155756_, BlockState p_155757_, TileEntityDreadSpawner p_155758_) {
@@ -72,8 +74,8 @@ public class TileEntityDreadSpawner extends SpawnerBlockEntity {
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag compoundtag = this.save(new CompoundTag());
+    public @NotNull net.minecraft.nbt.CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        net.minecraft.nbt.CompoundTag compoundtag = this.saveCustomOnly(registries);
         compoundtag.remove("SpawnPotentials");
         return compoundtag;
     }
@@ -84,11 +86,6 @@ public class TileEntityDreadSpawner extends SpawnerBlockEntity {
     }
 
     @Override
-    public boolean onlyOpCanSetNbt() {
-        return true;
-    }
-
-    @Override
     public @NotNull BaseSpawner getSpawner() {
         return this.spawner;
     }
@@ -96,6 +93,11 @@ public class TileEntityDreadSpawner extends SpawnerBlockEntity {
     @Override
     public @NotNull BlockEntityType<?> getType() {
         return this.type != null ? this.type : super.getType();
+    }
+
+    @Override
+    public boolean isValidBlockState(BlockState state) {
+        return state.getBlock() == com.github.alexthe666.iceandfire.block.IafBlockRegistry.DREAD_SPAWNER.get();
     }
 
 }
