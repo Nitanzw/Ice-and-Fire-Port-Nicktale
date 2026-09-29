@@ -1,9 +1,9 @@
 package com.github.alexthe666.iceandfire.api.event;
 
 import com.github.alexthe666.iceandfire.entity.EntityDragonBase;
-import net.neoforged.neoforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
-import net.neoforged.bus.api.Cancelable;
+import net.neoforged.bus.api.ICancellableEvent;
 
 /**
  * DragonFireDamageWorldEvent is fired right before a Dragon damages/changes terrain fire, lightning or ice. <br>
@@ -12,7 +12,7 @@ import net.neoforged.bus.api.Cancelable;
  * {@link #targetY} y coordinate being targeted for burning/freezing. <br>
  * {@link #targetZ} z coordinate being targeted for burning/freezing. <br>
  * <br>
- * This event is {@link Cancelable}.<br>
+ * This event implements {@link ICancellableEvent}.<br>
  * If this event is canceled, no blocks will be modified by the dragons breath.<br>
  * <br>
  * This event does not have a result. {@link HasResult}<br>
@@ -20,10 +20,9 @@ import net.neoforged.bus.api.Cancelable;
  * <br>
  * If you want to cancel all aspects of dragon fire, see {@link DragonFireEvent} <br>
  * <br>
- * This event is fired on the {@link MinecraftForge#EVENT_BUS}.
+ * This event is fired on the {@link NeoForge#EVENT_BUS}.
  **/
-@Cancelable
-public class DragonFireDamageWorldEvent extends LivingEvent {
+public class DragonFireDamageWorldEvent extends LivingEvent implements ICancellableEvent {
     private EntityDragonBase dragonBase;
     private double targetX;
     private double targetY;

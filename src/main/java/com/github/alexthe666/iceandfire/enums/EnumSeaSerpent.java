@@ -1,6 +1,6 @@
 package com.github.alexthe666.iceandfire.enums;
 
-import com.github.alexthe666.citadel.server.item.CustomArmorMaterial;
+import com.nicktale.api.server.item.CustomArmorMaterial;
 import com.github.alexthe666.iceandfire.block.BlockSeaSerpentScales;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import com.github.alexthe666.iceandfire.item.IafArmorMaterial;
@@ -9,10 +9,11 @@ import com.github.alexthe666.iceandfire.item.ItemSeaSerpentArmor;
 import com.github.alexthe666.iceandfire.item.ItemSeaSerpentScales;
 import net.minecraft.ChatFormatting;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.Locale;
 
@@ -28,12 +29,12 @@ public enum EnumSeaSerpent {
     public String resourceName;
     public ChatFormatting color;
     public CustomArmorMaterial armorMaterial;
-    public RegistryObject<Item> scale;
-    public RegistryObject<Item> helmet;
-    public RegistryObject<Item> chestplate;
-    public RegistryObject<Item> leggings;
-    public RegistryObject<Item> boots;
-    public RegistryObject<Block> scaleBlock;
+    public DeferredItem<Item> scale;
+    public DeferredItem<Item> helmet;
+    public DeferredItem<Item> chestplate;
+    public DeferredItem<Item> leggings;
+    public DeferredItem<Item> boots;
+    public DeferredHolder<Block, BlockSeaSerpentScales> scaleBlock;
 
     EnumSeaSerpent(ChatFormatting color) {
         this.resourceName = this.name().toLowerCase(Locale.ROOT);
@@ -48,13 +49,13 @@ public enum EnumSeaSerpent {
             color.scale = IafItemRegistry.registerItem("sea_serpent_scales_" + color.resourceName, () ->
                 new ItemSeaSerpentScales(color.resourceName, color.color));
             color.helmet = IafItemRegistry.registerItem("tide_" + color.resourceName + "_helmet", () ->
-                new ItemSeaSerpentArmor(color, color.armorMaterial, ArmorItem.Type.HELMET));
+                new ItemSeaSerpentArmor(color, color.armorMaterial, ArmorType.HELMET));
             color.chestplate = IafItemRegistry.registerItem("tide_" + color.resourceName + "_chestplate", () ->
-                new ItemSeaSerpentArmor(color, color.armorMaterial, ArmorItem.Type.CHESTPLATE));
+                new ItemSeaSerpentArmor(color, color.armorMaterial, ArmorType.CHESTPLATE));
             color.leggings = IafItemRegistry.registerItem("tide_" + color.resourceName + "_leggings", () ->
-                new ItemSeaSerpentArmor(color, color.armorMaterial, ArmorItem.Type.LEGGINGS));
+                new ItemSeaSerpentArmor(color, color.armorMaterial, ArmorType.LEGGINGS));
             color.boots = IafItemRegistry.registerItem("tide_" + color.resourceName + "_boots", () ->
-                new ItemSeaSerpentArmor(color, color.armorMaterial, ArmorItem.Type.BOOTS));
+                new ItemSeaSerpentArmor(color, color.armorMaterial, ArmorType.BOOTS));
         }
     }
 }

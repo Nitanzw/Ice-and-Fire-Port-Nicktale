@@ -14,10 +14,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -25,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.github.alexthe666.iceandfire.IceAndFire.MODID;
 
-@Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class IafDamageRegistry {
     public static final ResourceKey<DamageType> GORGON_DMG_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.parse("iceandfire:gorgon"));
     public static final ResourceKey<DamageType> DRAGON_FIRE_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.parse("iceandfire:dragon_fire"));
@@ -100,24 +96,22 @@ public class IafDamageRegistry {
         return new CustomIndirectEntityDamageSource(holder, source, indirectEntityIn);
     }
 
-    @SubscribeEvent
-    public void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent event) {
         event.getGenerator().addProvider(
                 // Tell generator to run only when server data are generating
                 event.includeServer(),
                 (DataProvider.Factory<IafDamageTypeTagsProvider>) output -> new IafDamageTypeTagsProvider(
                         event.getGenerator().getPackOutput(),
                         event.getLookupProvider(),
-                        MODID,
-                        event.getExistingFileHelper()
+                        MODID
                 )
         );
     }
 
     public static class IafDamageTypeTagsProvider extends DamageTypeTagsProvider {
 
-        public IafDamageTypeTagsProvider(PackOutput p_270719_, CompletableFuture<HolderLookup.Provider> p_270256_, String modId, @org.jetbrains.annotations.Nullable ExistingFileHelper existingFileHelper) {
-            super(p_270719_, p_270256_, modId, existingFileHelper);
+        public IafDamageTypeTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modId) {
+            super(output, lookupProvider, modId);
         }
 
         @Override

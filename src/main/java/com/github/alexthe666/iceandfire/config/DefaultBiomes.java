@@ -1,7 +1,7 @@
 package com.github.alexthe666.iceandfire.config;
 
-import com.github.alexthe666.citadel.config.biome.BiomeEntryType;
-import com.github.alexthe666.citadel.config.biome.SpawnBiomeData;
+import com.nicktale.api.config.biome.BiomeEntryType;
+import com.nicktale.api.config.biome.SpawnBiomeData;
 import net.neoforged.neoforge.common.Tags;
 
 import static net.minecraft.tags.BiomeTags.*;

@@ -1,6 +1,6 @@
 package com.github.alexthe666.iceandfire.enums;
 
-import com.github.alexthe666.citadel.server.item.CustomArmorMaterial;
+import com.nicktale.api.server.item.CustomArmorMaterial;
 import com.github.alexthe666.iceandfire.config.BiomeConfig;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.item.ItemTrollArmor;
@@ -9,7 +9,7 @@ import com.github.alexthe666.iceandfire.item.ItemTrollWeapon;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 
@@ -42,15 +42,15 @@ public enum EnumTroll {
         TEXTURE_STONE = Identifier.parse("iceandfire:textures/models/troll/troll_" + this.name().toLowerCase(Locale.ROOT) + "_stone.png");
         TEXTURE_EYES = Identifier.parse("iceandfire:textures/models/troll/troll_" + this.name().toLowerCase(Locale.ROOT) + "_eyes.png");
         leather = () ->new ItemTrollLeather(this);
-        helmet = () -> new ItemTrollArmor(this, material, ArmorItem.Type.HELMET);
-        chestplate = () -> new ItemTrollArmor(this, material, ArmorItem.Type.CHESTPLATE);
-        leggings = () -> new ItemTrollArmor(this, material, ArmorItem.Type.LEGGINGS);
-        boots = () -> new ItemTrollArmor(this, material, ArmorItem.Type.BOOTS);
+        helmet = () -> new ItemTrollArmor(this, material, ArmorType.HELMET);
+        chestplate = () -> new ItemTrollArmor(this, material, ArmorType.CHESTPLATE);
+        leggings = () -> new ItemTrollArmor(this, material, ArmorType.LEGGINGS);
+        boots = () -> new ItemTrollArmor(this, material, ArmorType.BOOTS);
 
 
         //leather = IafItemRegistry.deferredRegister.register("troll_leather_" + name().toLowerCase(Locale.ROOT), () -> new ItemTrollLeather(this));
 
-        //Function<EquipmentSlot, RegistryObject<Item>> genArmor = (slot) ->
+        //Function<EquipmentSlot, DeferredItem<Item>> genArmor = (slot) ->
         //        IafItemRegistry.deferredRegister.register(ItemTrollArmor.getName(this, slot), () -> new ItemTrollArmor(this, material, slot));
         //helmet = genArmor.apply(EquipmentSlot.HEAD);
         //chestplate = genArmor.apply(EquipmentSlot.CHEST);
@@ -86,10 +86,10 @@ public enum EnumTroll {
     public static void initArmors() {
         for (EnumTroll troll: EnumTroll.values()) {
             troll.leather = IafItemRegistry.registerItem("troll_leather_%s".formatted(troll.name().toLowerCase(Locale.ROOT)), () -> new ItemTrollLeather(troll));
-            troll.helmet = IafItemRegistry.registerItem(ItemTrollArmor.getName(troll, EquipmentSlot.HEAD), () -> new ItemTrollArmor(troll, troll.material, ArmorItem.Type.HELMET));
-            troll.chestplate = IafItemRegistry.registerItem(ItemTrollArmor.getName(troll, EquipmentSlot.CHEST), () -> new ItemTrollArmor(troll, troll.material, ArmorItem.Type.CHESTPLATE));
-            troll.leggings = IafItemRegistry.registerItem(ItemTrollArmor.getName(troll, EquipmentSlot.LEGS), () -> new ItemTrollArmor(troll, troll.material, ArmorItem.Type.LEGGINGS));
-            troll.boots = IafItemRegistry.registerItem(ItemTrollArmor.getName(troll, EquipmentSlot.FEET), () -> new ItemTrollArmor(troll, troll.material, ArmorItem.Type.BOOTS));
+            troll.helmet = IafItemRegistry.registerItem(ItemTrollArmor.getName(troll, EquipmentSlot.HEAD), () -> new ItemTrollArmor(troll, troll.material, ArmorType.HELMET));
+            troll.chestplate = IafItemRegistry.registerItem(ItemTrollArmor.getName(troll, EquipmentSlot.CHEST), () -> new ItemTrollArmor(troll, troll.material, ArmorType.CHESTPLATE));
+            troll.leggings = IafItemRegistry.registerItem(ItemTrollArmor.getName(troll, EquipmentSlot.LEGS), () -> new ItemTrollArmor(troll, troll.material, ArmorType.LEGGINGS));
+            troll.boots = IafItemRegistry.registerItem(ItemTrollArmor.getName(troll, EquipmentSlot.FEET), () -> new ItemTrollArmor(troll, troll.material, ArmorType.BOOTS));
         }
     }
 

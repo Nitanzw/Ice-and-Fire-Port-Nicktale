@@ -2,8 +2,6 @@ package com.github.alexthe666.iceandfire.enums;
 
 import com.github.alexthe666.iceandfire.item.ItemBestiary;
 import com.google.common.collect.ImmutableList;
-import com.google.common.primitives.Ints;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -57,7 +55,7 @@ public enum EnumBestiaryPages {
     }
 
     public static boolean hasAllPages(ItemStack book) {
-        return Ints.asList(book.getTag().getIntArray("Pages")).containsAll(ALL_INDEXES);
+        return ItemBestiary.getPageIds(book).containsAll(ALL_INDEXES);
     }
 
     public static List<Integer> enumToInt(List<EnumBestiaryPages> pages) {
@@ -80,8 +78,7 @@ public enum EnumBestiaryPages {
 
     public static List<EnumBestiaryPages> possiblePages(ItemStack book) {
         if (book.getItem() instanceof ItemBestiary) {
-            CompoundTag tag = book.getTag();
-            Collection<EnumBestiaryPages> containedPages = containedPages(Ints.asList(tag.getIntArray("Pages")));
+            Collection<EnumBestiaryPages> containedPages = containedPages(ItemBestiary.getPageIds(book));
             List<EnumBestiaryPages> possiblePages = new ArrayList<>(ALL_PAGES);
             possiblePages.removeAll(containedPages);
             return possiblePages;
@@ -93,13 +90,12 @@ public enum EnumBestiaryPages {
     public static boolean addPage(EnumBestiaryPages page, ItemStack book) {
         boolean flag = false;
         if (book.getItem() instanceof ItemBestiary) {
-            CompoundTag tag = book.getTag();
-            final List<Integer> already = new ArrayList<>(Ints.asList(tag.getIntArray("Pages")));
+            final List<Integer> already = new ArrayList<>(ItemBestiary.getPageIds(book));
             if (!already.contains(page.ordinal())) {
                 already.add(page.ordinal());
                 flag = true;
             }
-            tag.putIntArray("Pages", Ints.toArray(already));
+            ItemBestiary.setPageIds(book, already);
         }
         return flag;
     }

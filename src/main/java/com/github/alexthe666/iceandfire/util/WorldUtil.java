@@ -14,7 +14,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.AABB;
@@ -175,7 +175,7 @@ public class WorldUtil {
         Identifier loc = dynRegistries.registry(Registries.DIMENSION_TYPE).get().getKey(world.dimensionType());
         if (loc == null) {
             if (world.isClientSide()) {
-                return world.dimensionType().effectsLocation().equals(type.location());
+                return world.dimensionType().effectsLocation().equals(type.identifier());
             }
             return false;
         }

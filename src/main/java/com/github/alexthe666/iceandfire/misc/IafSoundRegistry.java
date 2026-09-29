@@ -2,18 +2,15 @@ package com.github.alexthe666.iceandfire.misc;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
 import net.minecraft.resources.Identifier;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 import java.lang.reflect.Field;
 
 import static com.github.alexthe666.iceandfire.IceAndFire.MODID;
 
 @SuppressWarnings("WeakerAccess")
-@Mod.EventBusSubscriber(modid = IceAndFire.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class IafSoundRegistry {
 
     public static final SoundEvent BESTIARY_PAGE = createSoundEvent("bestiary_page");
@@ -273,16 +270,16 @@ public final class IafSoundRegistry {
         return SoundEvent.createVariableRangeEvent(soundID);
     }
 
-    @SubscribeEvent
-    public static void registerSoundEvents(final NewRegistryEvent event) {
+    public static void registerSoundEvents(final RegisterEvent event) {
         try {
             for (Field f : IafSoundRegistry.class.getFields()) {
                 Object obj = f.get(null);
                 if (obj instanceof SoundEvent) {
-                    ForgeRegistries.SOUND_EVENTS.register(((SoundEvent) obj).getLocation(), (SoundEvent) obj);
+                    SoundEvent sound = (SoundEvent) obj;
+                    event.register(Registries.SOUND_EVENT, sound.location(), () -> sound);
                 } else if (obj instanceof SoundEvent[]) {
                     for (SoundEvent soundEvent : (SoundEvent[]) obj) {
-                        ForgeRegistries.SOUND_EVENTS.register(soundEvent.getLocation(), soundEvent);
+                        event.register(Registries.SOUND_EVENT, soundEvent.location(), () -> soundEvent);
                     }
                 }
             }

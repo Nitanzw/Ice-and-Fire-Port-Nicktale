@@ -1,7 +1,7 @@
 package com.github.alexthe666.iceandfire.config;
 
-import com.github.alexthe666.citadel.config.biome.SpawnBiomeConfig;
-import com.github.alexthe666.citadel.config.biome.SpawnBiomeData;
+import com.nicktale.api.config.biome.SpawnBiomeConfig;
+import com.nicktale.api.config.biome.SpawnBiomeData;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
@@ -106,7 +106,7 @@ public class BiomeConfig {
     }
 
     private static Identifier getBiomeName(Holder<Biome> biome) {
-        return biome.unwrap().map(ResourceKey::location, (noKey) -> null);
+        return biome.unwrap().map(ResourceKey::identifier, (noKey) -> null);
     }
 
     public static boolean test(Map.Entry<String, SpawnBiomeData> entry, Holder<Biome> biome, Identifier name) {
@@ -120,7 +120,7 @@ public class BiomeConfig {
         return BiomeConfig.test(entry, biome, getBiomeName(biome));
     }
     public static boolean test(Map.Entry<String, SpawnBiomeData> entry, Holder.Reference<Biome> biome) {
-        return test(entry, biome, biome.key().location());
+        return test(entry, biome, biome.key().identifier());
     }
 
 }

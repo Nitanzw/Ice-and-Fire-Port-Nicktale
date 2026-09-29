@@ -1,13 +1,13 @@
 package com.github.alexthe666.iceandfire.enums;
 
-import com.github.alexthe666.citadel.server.item.CustomArmorMaterial;
+import com.nicktale.api.server.item.CustomArmorMaterial;
 import com.github.alexthe666.iceandfire.item.IafArmorMaterial;
 import com.github.alexthe666.iceandfire.item.IafItemRegistry;
 import com.github.alexthe666.iceandfire.item.ItemScaleArmor;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 public enum EnumDragonArmor {
 
@@ -27,10 +27,10 @@ public enum EnumDragonArmor {
     public CustomArmorMaterial material;
     public int armorId;
     public EnumDragonEgg eggType;
-    public RegistryObject<Item> helmet;
-    public RegistryObject<Item> chestplate;
-    public RegistryObject<Item> leggings;
-    public RegistryObject<Item> boots;
+    public DeferredItem<Item> helmet;
+    public DeferredItem<Item> chestplate;
+    public DeferredItem<Item> leggings;
+    public DeferredItem<Item> boots;
     public CustomArmorMaterial armorMaterial;
 
     EnumDragonArmor(int armorId, EnumDragonEgg eggType) {
@@ -45,13 +45,13 @@ public enum EnumDragonArmor {
 
             int finalI = i;
             EnumDragonArmor.values()[finalI].helmet = IafItemRegistry.registerItem(sub + "_helmet", () ->
-                new ItemScaleArmor(EnumDragonArmor.values()[finalI].eggType, EnumDragonArmor.values()[finalI], EnumDragonArmor.values()[finalI].armorMaterial, ArmorItem.Type.HELMET));
+                new ItemScaleArmor(EnumDragonArmor.values()[finalI].eggType, EnumDragonArmor.values()[finalI], EnumDragonArmor.values()[finalI].armorMaterial, ArmorType.HELMET));
             EnumDragonArmor.values()[finalI].chestplate = IafItemRegistry.registerItem(sub + "_chestplate", () ->
-                new ItemScaleArmor(EnumDragonArmor.values()[finalI].eggType, EnumDragonArmor.values()[finalI], EnumDragonArmor.values()[finalI].armorMaterial, ArmorItem.Type.CHESTPLATE));
+                new ItemScaleArmor(EnumDragonArmor.values()[finalI].eggType, EnumDragonArmor.values()[finalI], EnumDragonArmor.values()[finalI].armorMaterial, ArmorType.CHESTPLATE));
             EnumDragonArmor.values()[finalI].leggings = IafItemRegistry.registerItem(sub + "_leggings", () ->
-                new ItemScaleArmor(EnumDragonArmor.values()[finalI].eggType, EnumDragonArmor.values()[finalI], EnumDragonArmor.values()[finalI].armorMaterial, ArmorItem.Type.LEGGINGS));
+                new ItemScaleArmor(EnumDragonArmor.values()[finalI].eggType, EnumDragonArmor.values()[finalI], EnumDragonArmor.values()[finalI].armorMaterial, ArmorType.LEGGINGS));
             EnumDragonArmor.values()[finalI].boots = IafItemRegistry.registerItem(sub + "_boots", () ->
-                new ItemScaleArmor(EnumDragonArmor.values()[finalI].eggType, EnumDragonArmor.values()[finalI], EnumDragonArmor.values()[finalI].armorMaterial, ArmorItem.Type.BOOTS));
+                new ItemScaleArmor(EnumDragonArmor.values()[finalI].eggType, EnumDragonArmor.values()[finalI], EnumDragonArmor.values()[finalI].armorMaterial, ArmorType.BOOTS));
         }
     }
 

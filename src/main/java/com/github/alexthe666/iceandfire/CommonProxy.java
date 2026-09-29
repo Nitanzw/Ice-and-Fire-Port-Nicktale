@@ -12,14 +12,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 
 
-@Mod.EventBusSubscriber(modid = IceAndFire.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonProxy {
 
     @SubscribeEvent
@@ -113,7 +111,7 @@ public class CommonProxy {
     }
 
     public void setup() {
-        MinecraftForge.EVENT_BUS.register(new ServerEvents());
+        NeoForge.EVENT_BUS.register(new ServerEvents());
     }
 
     public void clientInit() {
