@@ -6,14 +6,10 @@
     "SPS"
   ],
   "key": {
-    "S": {
-      "item": "minecraft:cherry_slab"
-    },
-    "P": {
-      "item": "minecraft:cherry_planks"
-    }
+    "S": "minecraft:cherry_slab",
+    "P": "minecraft:cherry_planks"
   },
   "result": {
-    "item": "iceandfire:podium_cherry"
+    "id": "iceandfire:podium_cherry"
   }
 }

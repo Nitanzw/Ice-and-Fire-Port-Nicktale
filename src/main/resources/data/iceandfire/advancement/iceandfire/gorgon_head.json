@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:gorgon_head"
+      "id": "iceandfire:gorgon_head"
     },
     "title": {
       "translate": "advancements.iceandfire.gorgon_head.title"

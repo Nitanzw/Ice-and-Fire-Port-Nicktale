@@ -5,14 +5,10 @@
     "SR"
   ],
   "key": {
-    "S": {
-      "item": "minecraft:sand"
-    },
-    "R": {
-      "item": "iceandfire:myrmex_desert_resin"
-    }
+    "S": "minecraft:sand",
+    "R": "iceandfire:myrmex_desert_resin"
   },
   "result": {
-    "item": "iceandfire:myrmex_resin_desert"
+    "id": "iceandfire:myrmex_resin_desert"
   }
 }

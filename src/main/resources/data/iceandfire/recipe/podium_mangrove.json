@@ -6,14 +6,10 @@
     "SPS"
   ],
   "key": {
-    "S": {
-      "item": "minecraft:mangrove_slab"
-    },
-    "P": {
-      "item": "minecraft:mangrove_planks"
-    }
+    "S": "minecraft:mangrove_slab",
+    "P": "minecraft:mangrove_planks"
   },
   "result": {
-    "item": "iceandfire:podium_mangrove"
+    "id": "iceandfire:podium_mangrove"
   }
 }

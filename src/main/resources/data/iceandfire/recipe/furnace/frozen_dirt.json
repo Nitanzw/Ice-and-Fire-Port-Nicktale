@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "iceandfire:frozen_dirt"
+  "ingredient": "iceandfire:frozen_dirt",
+  "result": {
+    "id": "minecraft:dirt"
   },
-  "result": "minecraft:dirt",
   "experience": 0.1,
   "cookingtime": 200
 }

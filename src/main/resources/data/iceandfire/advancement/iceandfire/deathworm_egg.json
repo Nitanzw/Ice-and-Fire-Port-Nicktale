@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:deathworm_egg"
+      "id": "iceandfire:deathworm_egg"
     },
     "title": {
       "translate": "advancements.iceandfire.deathworm_egg.title"

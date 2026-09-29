@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:rotten_egg"
+      "id": "iceandfire:rotten_egg"
     },
     "title": {
       "translate": "advancements.iceandfire.rotten_egg.title"

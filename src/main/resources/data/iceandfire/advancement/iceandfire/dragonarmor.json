@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:dragonarmor_iron_body"
+      "id": "iceandfire:dragonarmor_iron_body"
     },
     "title": {
       "translate": "advancements.iceandfire.dragonarmor.title"

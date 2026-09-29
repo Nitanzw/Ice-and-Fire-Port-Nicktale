@@ -1,15 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "iceandfire:fire_dragon_heart"
-    },
-    {
-      "item": "minecraft:paper"
-    }
+    "iceandfire:fire_dragon_heart",
+    "minecraft:paper"
   ],
   "result": {
-    "item": "iceandfire:banner_pattern_fire",
-    "count": 1
+    "count": 1,
+    "id": "iceandfire:banner_pattern_fire"
   }
 }

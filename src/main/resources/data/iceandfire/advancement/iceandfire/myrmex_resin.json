@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:myrmex_desert_resin"
+      "id": "iceandfire:myrmex_desert_resin"
     },
     "title": {
       "translate": "advancements.iceandfire.myrmex_resin.title"

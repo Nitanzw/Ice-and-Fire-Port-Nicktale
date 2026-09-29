@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:bestiary"
+      "id": "iceandfire:bestiary"
     },
     "title": {
       "translate": "advancements.iceandfire.bestiary.title"

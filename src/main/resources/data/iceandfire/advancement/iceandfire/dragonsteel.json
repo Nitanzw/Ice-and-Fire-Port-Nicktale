@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:dragonsteel_fire_ingot"
+      "id": "iceandfire:dragonsteel_fire_ingot"
     },
     "title": {
       "translate": "advancements.iceandfire.dragonsteel.title"

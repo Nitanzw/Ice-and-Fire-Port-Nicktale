@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:dragonbone_pickaxe"
+      "id": "iceandfire:dragonbone_pickaxe"
     },
     "title": {
       "translate": "advancements.iceandfire.dragonbone_tool.title"

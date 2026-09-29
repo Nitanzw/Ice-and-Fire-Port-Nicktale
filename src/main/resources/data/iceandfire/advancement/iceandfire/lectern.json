@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:lectern"
+      "id": "iceandfire:lectern"
     },
     "title": {
       "translate": "advancements.iceandfire.lectern.title"

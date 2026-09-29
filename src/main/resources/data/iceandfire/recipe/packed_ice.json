@@ -5,11 +5,9 @@
     "BB"
   ],
   "key": {
-    "B": {
-      "item": "iceandfire:dragon_ice"
-    }
+    "B": "iceandfire:dragon_ice"
   },
   "result": {
-    "item": "minecraft:blue_ice"
+    "id": "minecraft:blue_ice"
   }
 }

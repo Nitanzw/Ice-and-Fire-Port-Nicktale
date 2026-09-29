@@ -1,15 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "iceandfire:sea_serpent_fang"
-    },
-    {
-      "item": "minecraft:paper"
-    }
+    "iceandfire:sea_serpent_fang",
+    "minecraft:paper"
   ],
   "result": {
-    "item": "iceandfire:banner_pattern_sea_serpent",
-    "count": 1
+    "count": 1,
+    "id": "iceandfire:banner_pattern_sea_serpent"
   }
 }

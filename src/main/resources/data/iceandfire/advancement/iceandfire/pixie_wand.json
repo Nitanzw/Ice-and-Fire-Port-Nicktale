@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:pixie_wand"
+      "id": "iceandfire:pixie_wand"
     },
     "title": {
       "translate": "advancements.iceandfire.pixie_wand.title"

@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:stymphalian_arrow"
+      "id": "iceandfire:stymphalian_arrow"
     },
     "title": {
       "translate": "advancements.iceandfire.stymphalian_arrow.title"

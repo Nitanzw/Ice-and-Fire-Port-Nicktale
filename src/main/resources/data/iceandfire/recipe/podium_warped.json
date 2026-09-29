@@ -6,14 +6,10 @@
     "SPS"
   ],
   "key": {
-    "S": {
-      "item": "minecraft:warped_slab"
-    },
-    "P": {
-      "item": "minecraft:warped_planks"
-    }
+    "S": "minecraft:warped_slab",
+    "P": "minecraft:warped_planks"
   },
   "result": {
-    "item": "iceandfire:podium_warped"
+    "id": "iceandfire:podium_warped"
   }
 }

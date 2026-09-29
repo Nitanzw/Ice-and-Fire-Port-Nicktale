@@ -6,14 +6,10 @@
     "WWW"
   ],
   "key": {
-    "L": {
-      "item": "minecraft:leather_chestplate"
-    },
-    "W": {
-      "item": "minecraft:white_wool"
-    }
+    "L": "minecraft:leather_chestplate",
+    "W": "minecraft:white_wool"
   },
   "result": {
-    "item": "iceandfire:sheep_chestplate"
+    "id": "iceandfire:sheep_chestplate"
   }
 }

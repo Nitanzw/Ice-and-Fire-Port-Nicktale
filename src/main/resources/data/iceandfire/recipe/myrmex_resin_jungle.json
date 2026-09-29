@@ -5,14 +5,10 @@
     "DR"
   ],
   "key": {
-    "D": {
-      "item": "minecraft:dirt"
-    },
-    "R": {
-      "item": "iceandfire:myrmex_jungle_resin"
-    }
+    "D": "minecraft:dirt",
+    "R": "iceandfire:myrmex_jungle_resin"
   },
   "result": {
-    "item": "iceandfire:myrmex_resin_jungle"
+    "id": "iceandfire:myrmex_resin_jungle"
   }
 }

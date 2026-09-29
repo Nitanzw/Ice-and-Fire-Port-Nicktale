@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:myrmex_desert_chitin"
+      "id": "iceandfire:myrmex_desert_chitin"
     },
     "title": {
       "translate": "advancements.iceandfire.kill_myrmex.title"

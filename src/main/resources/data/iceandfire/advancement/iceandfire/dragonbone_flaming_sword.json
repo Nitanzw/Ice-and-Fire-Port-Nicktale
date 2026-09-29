@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "iceandfire:dragonbone_sword_fire"
+      "id": "iceandfire:dragonbone_sword_fire"
     },
     "title": {
       "translate": "advancements.iceandfire.dragonbone_sword_fire.title"

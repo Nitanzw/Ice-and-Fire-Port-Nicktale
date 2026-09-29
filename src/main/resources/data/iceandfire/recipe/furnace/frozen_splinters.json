@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "iceandfire:frozen_splinters"
+  "ingredient": "iceandfire:frozen_splinters",
+  "result": {
+    "id": "minecraft:stick"
   },
-  "result": "minecraft:stick",
   "experience": 0.1,
   "cookingtime": 200
 }
