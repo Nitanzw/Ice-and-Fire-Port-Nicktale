@@ -8,7 +8,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -30,11 +29,11 @@ import java.util.function.Predicate;
 public class ItemSirenFlute extends Item {
 
     public ItemSirenFlute() {
-        super(new Item.Properties()/*.tab(IceAndFire.TAB_ITEMS)*/.durability(200));
+        super(IafItemRegistry.itemProperties()/*.tab(IceAndFire.TAB_ITEMS)*/.durability(200));
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(@NotNull Level worldIn, Player player, @NotNull InteractionHand hand) {
         ItemStack itemStackIn = player.getItemInHand(hand);
         player.startUsingItem(hand);
         player.getCooldowns().addCooldown(this, 900);
@@ -83,19 +82,19 @@ public class ItemSirenFlute extends Item {
         if (pointedEntity != null) {
             if (pointedEntity instanceof LivingEntity) {
                 EntityDataProvider.getCapability(pointedEntity).ifPresent(data -> data.miscData.setLoveTicks(600));
-                itemStackIn.hurtAndBreak(2, player, entity -> entity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+                itemStackIn.hurtAndBreak(2, player, hand);
             }
         }
 
         player.playSound(IafSoundRegistry.SIREN_SONG, 1, 1);
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemStackIn);
+        return InteractionResult.CONSUME;
     }
 
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("item.iceandfire.legendary_weapon.desc").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.iceandfire.siren_flute.desc_0").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.iceandfire.siren_flute.desc_1").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.accept(Component.translatable("item.iceandfire.legendary_weapon.desc").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.iceandfire.siren_flute.desc_0").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.iceandfire.siren_flute.desc_1").withStyle(ChatFormatting.GRAY));
     }
 }

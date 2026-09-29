@@ -4,7 +4,7 @@ import com.github.alexthe666.iceandfire.entity.EntityDragonArrow;
 import com.github.alexthe666.iceandfire.entity.IafEntityRegistry;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;

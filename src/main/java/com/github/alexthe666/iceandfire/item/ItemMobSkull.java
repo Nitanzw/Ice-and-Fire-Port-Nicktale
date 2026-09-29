@@ -17,7 +17,7 @@ public class ItemMobSkull extends Item {
     private final EnumSkullType skull;
 
     public ItemMobSkull(EnumSkullType skull) {
-        super(new Item.Properties().stacksTo(1));
+        super(IafItemRegistry.itemProperties().stacksTo(1));
         this.skull = skull;
     }
 

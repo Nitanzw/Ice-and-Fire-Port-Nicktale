@@ -1,63 +1,39 @@
 package com.github.alexthe666.iceandfire.item;
 
+import com.nicktale.api.server.item.CustomArmorMaterial;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.*;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.equipment.ArmorType;
 
-import javax.annotation.Nullable;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.function.Consumer;
 
-public class ItemModArmor extends ArmorItem {
+/** Armor items in 26.2 carry their equip and attribute behavior in item data components. */
+public class ItemModArmor extends Item {
+    protected final CustomArmorMaterial material;
+    protected final ArmorType armorType;
 
-    public ItemModArmor(ArmorMaterial material, ArmorItem.Type slot) {
-        super(material, slot, new Item.Properties()/*.tab(IceAndFire.TAB_ITEMS)*/);
+    public ItemModArmor(CustomArmorMaterial material, ArmorType armorType) {
+        super(ItemProperties.armor(material, armorType));
+        this.material = material;
+        this.armorType = armorType;
     }
 
     @Override
-    public @NotNull String getDescriptionId(@NotNull ItemStack stack) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display,
+                                Consumer<Component> tooltip, TooltipFlag flag) {
         if (this == IafItemRegistry.EARPLUGS.get()) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             if (calendar.get(Calendar.MONTH) + 1 == 4 && calendar.get(Calendar.DATE) == 1) {
-                return "item.iceandfire.air_pods";
+                tooltip.accept(Component.translatable("item.iceandfire.air_pods.desc").withStyle(ChatFormatting.GREEN));
             }
         }
-        return super.getDescriptionId(stack);
-    }
-
-    @Override
-    @Nullable
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        if (this.material == IafItemRegistry.MYRMEX_DESERT_ARMOR_MATERIAL) {
-            return "iceandfire:textures/models/armor/" + (slot == EquipmentSlot.LEGS ? "myrmex_desert_layer_2" : "myrmex_desert_layer_1") + ".png";
-        }
-        if (this.material == IafItemRegistry.MYRMEX_JUNGLE_ARMOR_MATERIAL) {
-            return "iceandfire:textures/models/armor/" + (slot == EquipmentSlot.LEGS ? "myrmex_jungle_layer_2" : "myrmex_jungle_layer_1") + ".png";
-        }
-        if (this.material == IafItemRegistry.SHEEP_ARMOR_MATERIAL) {
-            return "iceandfire:textures/models/armor/" + (slot == EquipmentSlot.LEGS ? "sheep_disguise_layer_2" : "sheep_disguise_layer_1") + ".png";
-        }
-        if (this.material == IafItemRegistry.EARPLUGS_ARMOR_MATERIAL) {
-            return "iceandfire:textures/models/armor/earplugs_layer_1.png";
-        }
-        return null;
-    }
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        if (this == IafItemRegistry.EARPLUGS.get()) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            if (calendar.get(Calendar.MONTH) + 1 == 4 && calendar.get(Calendar.DATE) == 1) {
-                tooltip.add(Component.translatable("item.iceandfire.air_pods.desc").withStyle(ChatFormatting.GREEN));
-            }
-        }
-        super.appendHoverText(stack, worldIn, tooltip, flagIn);
+        super.appendHoverText(stack, context, display, tooltip, flag);
     }
 }

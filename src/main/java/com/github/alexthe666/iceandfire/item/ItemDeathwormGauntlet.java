@@ -1,28 +1,22 @@
 package com.github.alexthe666.iceandfire.item;
 
-import com.github.alexthe666.iceandfire.client.render.tile.RenderDeathWormGauntlet;
 import com.github.alexthe666.iceandfire.entity.props.EntityDataProvider;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.common.util.NonNullLazy;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -31,53 +25,31 @@ import java.util.function.Consumer;
 
 public class ItemDeathwormGauntlet extends Item {
 
-    private boolean deathwormReceded = true;
-    private boolean deathwormLaunched = false;
-    private int specialDamage = 0;
-
     public ItemDeathwormGauntlet() {
-        super(new Item.Properties().durability(500)/*.tab(IceAndFire.TAB_ITEMS)*/);
+        super(IafItemRegistry.itemProperties().durability(500)/*.tab(IceAndFire.TAB_ITEMS)*/);
     }
 
     @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-
-        consumer.accept(new IClientItemExtensions() {
-            static final NonNullLazy<BlockEntityWithoutLevelRenderer> renderer = NonNullLazy.of(() -> new RenderDeathWormGauntlet(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()));
-
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return renderer.get();
-            }
-        });
-    }
-
-    @Override
-    public int getUseDuration(@NotNull ItemStack stack) {
+    public int getUseDuration(@NotNull ItemStack stack, LivingEntity user) {
         return 1;
     }
 
     @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
-        return UseAnim.BOW;
+    public @NotNull ItemUseAnimation getUseAnimation(@NotNull ItemStack stack) {
+        return ItemUseAnimation.BOW;
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
-        ItemStack itemStackIn = playerIn.getItemInHand(hand);
+    public @NotNull InteractionResult use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
         playerIn.startUsingItem(hand);
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemStackIn);
+        return InteractionResult.CONSUME;
     }
 
     @Override
     public void onUseTick(@NotNull Level level, @NotNull LivingEntity entity, @NotNull ItemStack stack, int count) {
         if (!deathwormReceded && !deathwormLaunched) {
             if (entity instanceof Player player) {
-                CompoundTag tag = stack.getOrCreateTag();
-
-                if (tag.getInt("HolderID") != player.getId()) {
-                    tag.putInt("HolderID", player.getId());
-                }
+                ItemStackData.update(stack, tag -> tag.putInt("HolderID", player.getId()));
 
                 if (player.getCooldowns().getCooldownPercent(this, 0.0F) == 0) {
                     player.getCooldowns().addCooldown(this, 10);
@@ -90,33 +62,34 @@ public class ItemDeathwormGauntlet extends Item {
     }
 
     @Override
-    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity LivingEntity, int timeLeft) {
+    public boolean releaseUsing(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity livingEntity, int timeLeft) {
+        int specialDamage = ItemStackData.get(stack).getInt("SpecialDamage");
         if (specialDamage > 0) {
-            stack.hurtAndBreak(specialDamage, LivingEntity, player -> player.broadcastBreakEvent(LivingEntity.getUsedItemHand()));
-            specialDamage = 0;
+            stack.hurtAndBreak(specialDamage, livingEntity, livingEntity.getUsedItemHand());
+            ItemStackData.update(stack, tag -> tag.putInt("SpecialDamage", 0));
         }
 
-        CompoundTag tag = stack.getOrCreateTag();
-
-        if (tag.getInt("HolderID") != -1) {
+        ItemStackData.update(stack, tag -> {
             tag.putInt("HolderID", -1);
-        }
+            tag.putBoolean("DeathwormReceded", true);
+            tag.putBoolean("DeathwormLaunched", false);
+        });
+        return false;
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return !ItemStack.isSameItem(oldStack, newStack);
-    }
-
-    @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level world, @NotNull Entity entity, int itemSlot, boolean isSelected) {
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull net.minecraft.server.level.ServerLevel world, @NotNull Entity entity, net.minecraft.world.entity.EquipmentSlot slot) {
         if (!(entity instanceof LivingEntity)) {
             return;
         }
 
+        CompoundTag stackData = ItemStackData.get(stack);
+
         EntityDataProvider.getCapability(entity).ifPresent(data -> {
             int tempLungeTicks = data.miscData.lungeTicks;
 
+            boolean deathwormReceded = !stackData.contains("DeathwormReceded") || stackData.getBoolean("DeathwormReceded");
+            boolean deathwormLaunched = stackData.getBoolean("DeathwormLaunched");
             if (deathwormReceded) {
                 if (tempLungeTicks > 0) {
                     tempLungeTicks = tempLungeTicks - 4;
@@ -124,14 +97,14 @@ public class ItemDeathwormGauntlet extends Item {
 
                 if (tempLungeTicks <= 0) {
                     tempLungeTicks = 0;
-                    deathwormReceded = false;
-                    deathwormLaunched = false;
+                    stackData.putBoolean("DeathwormReceded", false);
+                    stackData.putBoolean("DeathwormLaunched", false);
                 }
             } else if (deathwormLaunched) {
                 tempLungeTicks = 4 + tempLungeTicks;
 
                 if (tempLungeTicks > 20) {
-                    deathwormReceded = true;
+                    stackData.putBoolean("DeathwormReceded", true);
                 }
             }
 
@@ -153,7 +126,7 @@ public class ItemDeathwormGauntlet extends Item {
                         boolean canSee = d1 > 1.0D - 0.5D / d0 && player.hasLineOfSight(livingEntity);
 
                         if (canSee) {
-                            specialDamage++;
+                            stackData.putInt("SpecialDamage", stackData.getInt("SpecialDamage") + 1);
                             livingEntity.hurt(entity.level().damageSources().playerAttack((Player) entity), 3F);
                             livingEntity.knockback(0.5F, livingEntity.getX() - player.getX(), livingEntity.getZ() - player.getZ());
                         }
@@ -163,12 +136,13 @@ public class ItemDeathwormGauntlet extends Item {
 
             data.miscData.setLungeTicks(tempLungeTicks);
         });
+        ItemStackData.set(stack, stackData);
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("item.iceandfire.legendary_weapon.desc").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.iceandfire.deathworm_gauntlet.desc_0").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.iceandfire.deathworm_gauntlet.desc_1").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.accept(Component.translatable("item.iceandfire.legendary_weapon.desc").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.iceandfire.deathworm_gauntlet.desc_0").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.iceandfire.deathworm_gauntlet.desc_1").withStyle(ChatFormatting.GRAY));
     }
 }

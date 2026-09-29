@@ -7,7 +7,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,12 +22,12 @@ import java.util.List;
 public class ItemPixieWand extends Item {
 
     public ItemPixieWand() {
-        super(new Item.Properties()/*.tab(IceAndFire.TAB_ITEMS)*/.stacksTo(1).durability(500));
+        super(IafItemRegistry.itemProperties()/*.tab(IceAndFire.TAB_ITEMS)*/.stacksTo(1).durability(500));
     }
 
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
         ItemStack itemStackIn = playerIn.getItemInHand(hand);
         boolean flag = playerIn.isCreative() || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, itemStackIn) > 0;
         ItemStack itemstack = this.findAmmo(playerIn);
@@ -56,12 +55,10 @@ public class ItemPixieWand extends Item {
                 worldIn.addFreshEntity(charge);
             }
             playerIn.playSound(IafSoundRegistry.PIXIE_WAND, 1F, 0.75F + 0.5F * playerIn.getRandom().nextFloat());
-            itemstack.hurtAndBreak(1, playerIn, (player) -> {
-                player.broadcastBreakEvent(playerIn.getUsedItemHand());
-            });
+            itemstack.hurtAndBreak(1, playerIn, hand);
             playerIn.getCooldowns().addCooldown(this, 5);
         }
-        return new InteractionResultHolder<ItemStack>(InteractionResult.PASS, itemStackIn);
+        return InteractionResult.CONSUME;
     }
 
     public boolean isInfinite(ItemStack stack, ItemStack bow, net.minecraft.world.entity.player.Player player) {
@@ -93,9 +90,9 @@ public class ItemPixieWand extends Item {
 
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("item.iceandfire.legendary_weapon.desc").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.iceandfire.pixie_wand.desc_0").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.iceandfire.pixie_wand.desc_1").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.accept(Component.translatable("item.iceandfire.legendary_weapon.desc").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.iceandfire.pixie_wand.desc_0").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.iceandfire.pixie_wand.desc_1").withStyle(ChatFormatting.GRAY));
     }
 }

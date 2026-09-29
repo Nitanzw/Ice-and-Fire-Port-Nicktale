@@ -6,7 +6,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,13 +16,13 @@ public class ItemDeathwormEgg extends Item {
     private final boolean gigantic;
 
     public ItemDeathwormEgg(boolean gigantic) {
-        super(new Item.Properties().stacksTo(1));
+        super(IafItemRegistry.itemProperties().stacksTo(1));
         this.gigantic = gigantic;
     }
 
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand handIn) {
+    public @NotNull InteractionResult use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
 
         if (!playerIn.isCreative()) {
@@ -39,6 +38,6 @@ public class ItemDeathwormEgg extends Item {
             worldIn.addFreshEntity(entityegg);
         }
 
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);
+        return InteractionResult.SUCCESS;
     }
 }

@@ -9,7 +9,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -18,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -34,44 +33,43 @@ import java.util.function.Predicate;
 public class ItemCockatriceScepter extends Item {
 
     private final Random rand = new Random();
-    private int specialWeaponDmg;
-
     public ItemCockatriceScepter() {
-        super(new Item.Properties()/*.tab(IceAndFire.TAB_ITEMS)*/.durability(700));
+        super(IafItemRegistry.itemProperties()/*.tab(IceAndFire.TAB_ITEMS)*/.durability(700));
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("item.iceandfire.legendary_weapon.desc").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.iceandfire.cockatrice_scepter.desc_0").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("item.iceandfire.cockatrice_scepter.desc_1").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.accept(Component.translatable("item.iceandfire.legendary_weapon.desc").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.iceandfire.cockatrice_scepter.desc_0").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("item.iceandfire.cockatrice_scepter.desc_1").withStyle(ChatFormatting.GRAY));
     }
 
     @Override
-    public void releaseUsing(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity livingEntity, int timeLeft) {
-        if (specialWeaponDmg > 0) {
-            stack.hurtAndBreak(specialWeaponDmg, livingEntity, player -> player.broadcastBreakEvent(livingEntity.getUsedItemHand()));
-            specialWeaponDmg = 0;
+    public boolean releaseUsing(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity livingEntity, int timeLeft) {
+        int specialWeaponDamage = ItemStackData.get(stack).getInt("SpecialWeaponDamage");
+        if (specialWeaponDamage > 0) {
+            stack.hurtAndBreak(specialWeaponDamage, livingEntity, livingEntity.getUsedItemHand());
+            ItemStackData.update(stack, tag -> tag.putInt("SpecialWeaponDamage", 0));
         }
 
         EntityDataProvider.getCapability(livingEntity).ifPresent(data -> data.miscData.getTargetedByScepter().clear());
+        return false;
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack stack) {
+    public int getUseDuration(@NotNull ItemStack stack, LivingEntity user) {
         return 1;
     }
 
     @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
-        return UseAnim.BOW;
+    public @NotNull ItemUseAnimation getUseAnimation(@NotNull ItemStack stack) {
+        return ItemUseAnimation.BOW;
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
-        ItemStack itemStackIn = playerIn.getItemInHand(hand);
+    public @NotNull InteractionResult use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand hand) {
         playerIn.startUsingItem(hand);
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemStackIn);
+        return InteractionResult.CONSUME;
     }
 
     @Override
@@ -123,11 +121,11 @@ public class ItemCockatriceScepter extends Item {
                 EntityDataProvider.getCapability(player).ifPresent(data -> data.miscData.addScepterTarget(target));
             }
 
-            attackTargets(player);
+            attackTargets(player, stack);
         }
     }
 
-    private void attackTargets(final LivingEntity caster) {
+    private void attackTargets(final LivingEntity caster, ItemStack stack) {
         EntityDataProvider.getCapability(caster).ifPresent(data -> {
             List<LivingEntity> targets = new ArrayList<>(data.miscData.getTargetedByScepter());
 
@@ -140,7 +138,7 @@ public class ItemCockatriceScepter extends Item {
                 target.addEffect(new MobEffectInstance(MobEffects.WITHER, 40, 2));
 
                 if (caster.tickCount % 20 == 0) {
-                    specialWeaponDmg++;
+                    ItemStackData.update(stack, tag -> tag.putInt("SpecialWeaponDamage", tag.getInt("SpecialWeaponDamage") + 1));
                     target.hurt(caster.level().damageSources().wither(), 2);
                 }
 

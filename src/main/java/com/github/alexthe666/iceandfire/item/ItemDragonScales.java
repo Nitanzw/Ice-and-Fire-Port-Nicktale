@@ -15,18 +15,13 @@ public class ItemDragonScales extends Item {
     EnumDragonEgg type;
 
     public ItemDragonScales(EnumDragonEgg type) {
-        super(new Item.Properties()/*.tab(IceAndFire.TAB_ITEMS)*/);
+        super(IafItemRegistry.itemProperties()/*.tab(IceAndFire.TAB_ITEMS)*/);
         this.type = type;
     }
 
     @Override
-    public @NotNull String getDescriptionId() {
-        return "item.iceandfire.dragonscales";
-    }
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        tooltip.add(Component.translatable("dragon." + type.toString().toLowerCase()).withStyle(type.color));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, TooltipFlag flagIn) {
+        tooltip.accept(Component.translatable("dragon." + type.toString().toLowerCase()).withStyle(type.color));
     }
 
 }

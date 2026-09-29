@@ -11,7 +11,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +25,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ItemHippogryphEgg extends Item {
 
     public ItemHippogryphEgg() {
-        super(new Item.Properties()/*.tab(IceAndFire.TAB_ITEMS)*/.stacksTo(1));
+        super(IafItemRegistry.itemProperties()/*.tab(IceAndFire.TAB_ITEMS)*/.stacksTo(1));
     }
 
     public static ItemStack createEggStack(EnumHippogryphTypes parent1, EnumHippogryphTypes parent2) {
@@ -34,7 +33,7 @@ public class ItemHippogryphEgg extends Item {
         ItemStack stack = new ItemStack(IafItemRegistry.HIPPOGRYPH_EGG.get());
         CompoundTag tag = new CompoundTag();
         tag.putInt("EggOrdinal", eggType.ordinal());
-        stack.setTag(tag);
+        ItemStackData.set(stack, tag);
         return stack;
     }
 
@@ -55,7 +54,7 @@ public class ItemHippogryphEgg extends Item {
     }*/
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand handIn) {
+    public @NotNull InteractionResult use(@NotNull Level worldIn, Player playerIn, @NotNull InteractionHand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
 
         if (!playerIn.isCreative()) {
@@ -71,18 +70,14 @@ public class ItemHippogryphEgg extends Item {
             worldIn.addFreshEntity(entityegg);
         }
 
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull TooltipFlag flagIn) {
-        CompoundTag tag = stack.getTag();
-        int eggOrdinal = 0;
-        if (tag != null) {
-            eggOrdinal = tag.getInt("EggOrdinal");
-        }
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltip, @NotNull TooltipFlag flagIn) {
+        int eggOrdinal = ItemStackData.get(stack).getInt("EggOrdinal");
 
         String type = EnumHippogryphTypes.values()[Mth.clamp(eggOrdinal, 0, EnumHippogryphTypes.values().length - 1)].name().toLowerCase();
-        tooltip.add(Component.translatable("entity.iceandfire.hippogryph." + type).withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("entity.iceandfire.hippogryph." + type).withStyle(ChatFormatting.GRAY));
     }
 }
