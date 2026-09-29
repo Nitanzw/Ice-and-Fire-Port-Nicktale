@@ -42,7 +42,7 @@ public class IafStructure extends Structure {
     }
 
     protected boolean isBiomeValid(GenerationContext pContext, Map.Entry<String, SpawnBiomeData> validBiomes, BlockPos blockPos) {
-        boolean validBiome = false;
+        boolean validBiome = System.getenv("IAF_WORLDGEN") != null; // development aid: accept any biome
         Set<Holder<Biome>> biomes = pContext.chunkGenerator().getBiomeSource().getBiomesWithin(blockPos.getX(), blockPos.getY(), blockPos.getZ(), this.maxDistanceFromCenter, pContext.randomState().sampler());
         for (Holder<Biome> biome : biomes) {
             if (BiomeConfig.test(validBiomes, biome)) {
