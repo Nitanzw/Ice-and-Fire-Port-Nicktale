@@ -1,6 +1,5 @@
 package com.github.alexthe666.iceandfire.world.gen;
 
-import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.block.BlockMyrmexBiolight;
 import com.github.alexthe666.iceandfire.block.BlockMyrmexConnectedResin;
@@ -107,36 +106,36 @@ public class WorldGenMyrmexHive extends Feature<NoneFeatureConfiguration> implem
         if (!small) {
             EntityMyrmexQueen queen = new EntityMyrmexQueen(IafEntityRegistry.MYRMEX_QUEEN.get(), world.getLevel());
             BlockPos ground = MyrmexHive.getGroundedPos(world, position);
-            queen.finalizeSpawn(world, IafEntityUtil.difficulty(world, ground), EntitySpawnReason.CHUNK_GENERATION, null);
+            queen.finalizeSpawn(world, world.getCurrentDifficultyAt(ground), EntitySpawnReason.CHUNK_GENERATION, null);
             queen.setHive(hive);
             queen.setJungleVariant(jungle);
-            queen.snapTo(ground.getX() + 0.5D, ground.getY() + 1D, ground.getZ() + 0.5D, 0, 0);
+            queen.absMoveTo(ground.getX() + 0.5D, ground.getY() + 1D, ground.getZ() + 0.5D, 0, 0);
             world.addFreshEntity(queen);
 
             for (int i = 0; i < 4 + rand.nextInt(3); i++) {
                 EntityMyrmexBase myrmex = new EntityMyrmexWorker(IafEntityRegistry.MYRMEX_WORKER.get(),
                     world.getLevel());
-                myrmex.finalizeSpawn(world, IafEntityUtil.difficulty(world, ground), EntitySpawnReason.CHUNK_GENERATION, null);
+                myrmex.finalizeSpawn(world, world.getCurrentDifficultyAt(ground), EntitySpawnReason.CHUNK_GENERATION, null);
                 myrmex.setHive(hive);
-                myrmex.snapTo(ground.getX() + 0.5D, ground.getY() + 1D, ground.getZ() + 0.5D, 0, 0);
+                myrmex.absMoveTo(ground.getX() + 0.5D, ground.getY() + 1D, ground.getZ() + 0.5D, 0, 0);
                 myrmex.setJungleVariant(jungle);
                 world.addFreshEntity(myrmex);
             }
             for (int i = 0; i < 2 + rand.nextInt(2); i++) {
                 EntityMyrmexBase myrmex = new EntityMyrmexSoldier(IafEntityRegistry.MYRMEX_SOLDIER.get(),
                     world.getLevel());
-                myrmex.finalizeSpawn(world, IafEntityUtil.difficulty(world, ground), EntitySpawnReason.CHUNK_GENERATION, null);
+                myrmex.finalizeSpawn(world, world.getCurrentDifficultyAt(ground), EntitySpawnReason.CHUNK_GENERATION, null);
                 myrmex.setHive(hive);
-                myrmex.snapTo(ground.getX() + 0.5D, ground.getY() + 1D, ground.getZ() + 0.5D, 0, 0);
+                myrmex.absMoveTo(ground.getX() + 0.5D, ground.getY() + 1D, ground.getZ() + 0.5D, 0, 0);
                 myrmex.setJungleVariant(jungle);
                 world.addFreshEntity(myrmex);
             }
             for (int i = 0; i < rand.nextInt(2); i++) {
                 EntityMyrmexBase myrmex = new EntityMyrmexSentinel(IafEntityRegistry.MYRMEX_SENTINEL.get(),
                     world.getLevel());
-                myrmex.finalizeSpawn(world, IafEntityUtil.difficulty(world, ground), EntitySpawnReason.CHUNK_GENERATION, null);
+                myrmex.finalizeSpawn(world, world.getCurrentDifficultyAt(ground), EntitySpawnReason.CHUNK_GENERATION, null);
                 myrmex.setHive(hive);
-                myrmex.snapTo(ground.getX() + 0.5D, ground.getY() + 1D, ground.getZ() + 0.5D, 0, 0);
+                myrmex.absMoveTo(ground.getX() + 0.5D, ground.getY() + 1D, ground.getZ() + 0.5D, 0, 0);
                 myrmex.setJungleVariant(jungle);
                 world.addFreshEntity(myrmex);
             }
