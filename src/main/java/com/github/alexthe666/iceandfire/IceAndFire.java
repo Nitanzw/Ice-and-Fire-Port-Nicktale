@@ -57,10 +57,7 @@ public class IceAndFire {
         NeoForge.EVENT_BUS.addListener(IceAndFire::onServerStarted);
 
 
-        final DeferredRegister<MapCodec<? extends BiomeModifier>> biomeModifiers = DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, IceAndFire.MODID);
-        biomeModifiers.register(modBus);
-        biomeModifiers.register("iaf_mob_spawns", IafMobSpawnBiomeModifier::makeCodec);
-        biomeModifiers.register("iaf_features", IafFeatureBiomeModifier::makeCodec);
+        registerBiomeModifierSerializers(modBus);
 
         modBus.addListener(CommonProxy::onModConfigEvent);
         modBus.addListener(CommonProxy::onModConfigReloading);
@@ -108,6 +105,14 @@ public class IceAndFire {
         } catch (ReflectiveOperationException exception) {
             throw new IllegalStateException("Unable to initialize the Ice and Fire client proxy", exception);
         }
+    }
+
+    private static void registerBiomeModifierSerializers(IEventBus modBus) {
+        DeferredRegister<MapCodec<? extends BiomeModifier>> serializers = DeferredRegister.create(
+                NeoForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, MODID);
+        serializers.register("iaf_mob_spawns", IafMobSpawnBiomeModifier::makeCodec);
+        serializers.register("iaf_features", IafFeatureBiomeModifier::makeCodec);
+        serializers.register(modBus);
     }
 
     public static void onServerStarted(ServerStartedEvent event) {
