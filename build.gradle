@@ -14,6 +14,15 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    client {
+        java.setSrcDirs(['src/client/java'])
+        resources.setSrcDirs(['src/client/resources'])
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += output + compileClasspath + sourceSets.main.runtimeClasspath
+    }
+}
+
 neoForge {
     version = neoforge_version
 
@@ -31,6 +40,7 @@ neoForge {
     mods {
         "${mod_id}" {
             sourceSet sourceSets.main
+            sourceSet sourceSets.client
         }
     }
 }
@@ -46,4 +56,8 @@ tasks.withType(JavaCompile).configureEach {
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(25)
+}
+
+tasks.named('jar', Jar).configure {
+    from sourceSets.client.output
 }
