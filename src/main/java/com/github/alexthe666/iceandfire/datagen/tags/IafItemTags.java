@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.Optional;
 
 public class IafItemTags extends BlockTagCopyingItemTagProvider {
     private final static String STORAGE_BLOCK_PATH = Tags.Items.STORAGE_BLOCKS.location().getPath();
@@ -279,46 +280,59 @@ public class IafItemTags extends BlockTagCopyingItemTagProvider {
 
         IafItemRegistry.ITEMS.getEntries().forEach(registryObject -> {
             Item item = registryObject.get();
+            String itemPath = BuiltInRegistries.ITEM.getKey(item).getPath();
+            Optional<String> armorSlot = armorSlot(itemPath);
 
             if (item instanceof ItemSeaSerpentScales) {
                 tag(SCALES_SEA_SERPENT).add(item);
-            } else if (item instanceof ArrowItem) {
+            } else if (hasPathPart(itemPath, "arrow")) {
                 tag(ItemTags.ARROWS).add(item);
-            } else if (item instanceof SwordItem) {
+            } else if (hasPathPart(itemPath, "sword")) {
                 tag(ItemTags.SWORDS).add(item);
-            } else if (item instanceof PickaxeItem) {
+            } else if (hasPathPart(itemPath, "pickaxe")) {
                 tag(ItemTags.PICKAXES).add(item);
-            } else if (item instanceof AxeItem) {
+            } else if (hasPathPart(itemPath, "axe")) {
                 tag(ItemTags.AXES).add(item);
-            } else if (item instanceof ShovelItem) {
+            } else if (hasPathPart(itemPath, "shovel")) {
                 tag(ItemTags.SHOVELS).add(item);
-            } else if (item instanceof HoeItem) {
+            } else if (hasPathPart(itemPath, "hoe")) {
                 tag(ItemTags.HOES).add(item);
-            } else if (item instanceof BowItem) {
-                tag(Tags.Items.TOOLS_BOWS).add(item);
-            } else if (item instanceof TridentItem) {
-                tag(Tags.Items.TOOLS_TRIDENTS).add(item);
-            } else if (item instanceof ArmorItem armorItem) {
+            } else if (hasPathPart(itemPath, "bow")) {
+                tag(Tags.Items.TOOLS_BOW).add(item);
+            } else if (hasPathPart(itemPath, "trident")) {
+                tag(Tags.Items.TOOLS_TRIDENT).add(item);
+            } else if (armorSlot.isPresent()) {
                 tag(Tags.Items.ARMORS).add(item);
 
-                switch (armorItem.getType()) {
-                    case HELMET -> tag(Tags.Items.ARMORS_HELMETS).add(item);
-                    case CHESTPLATE -> tag(Tags.Items.ARMORS_CHESTPLATES).add(item);
-                    case LEGGINGS -> tag(Tags.Items.ARMORS_LEGGINGS).add(item);
-                    case BOOTS -> tag(Tags.Items.ARMORS_BOOTS).add(item);
+                switch (armorSlot.orElseThrow()) {
+                    case "helmet" -> tag(ItemTags.HEAD_ARMOR).add(item);
+                    case "chestplate" -> tag(ItemTags.CHEST_ARMOR).add(item);
+                    case "leggings" -> tag(ItemTags.LEG_ARMOR).add(item);
+                    case "boots" -> tag(ItemTags.FOOT_ARMOR).add(item);
                 }
             } else if (item instanceof ItemMobSkull) {
                 tag(MOB_SKULLS).add(item);
             }
 
-            if (item instanceof TieredItem || item instanceof BowItem || item instanceof TridentItem) {
+            if (hasPathPart(itemPath, "sword") || hasPathPart(itemPath, "pickaxe") || hasPathPart(itemPath, "axe")
+                    || hasPathPart(itemPath, "shovel") || hasPathPart(itemPath, "hoe")
+                    || hasPathPart(itemPath, "bow") || hasPathPart(itemPath, "trident")) {
                 tag(Tags.Items.TOOLS).add(item);
-
-                if (item instanceof TridentItem) {
-                    tag(ItemTags.TOOLS).add(item);
-                }
             }
         });
+    }
+
+    private static boolean hasPathPart(String path, String part) {
+        return java.util.Arrays.asList(path.split("_")).contains(part);
+    }
+
+    private static Optional<String> armorSlot(String path) {
+        for (String slot : java.util.List.of("helmet", "chestplate", "leggings", "boots")) {
+            if (hasPathPart(path, slot)) {
+                return Optional.of(slot);
+            }
+        }
+        return Optional.empty();
     }
 
     private static TagKey<Item> createKey(final String name) {
