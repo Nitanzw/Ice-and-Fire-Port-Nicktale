@@ -16,7 +16,6 @@ import com.github.alexthe666.iceandfire.misc.IafDamageRegistry;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
 import com.github.alexthe666.iceandfire.recipe.IafBannerPatterns;
 import com.github.alexthe666.iceandfire.recipe.IafRecipeRegistry;
-import com.github.alexthe666.iceandfire.recipe.IafRecipeSerializers;
 import com.github.alexthe666.iceandfire.world.*;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -86,7 +85,7 @@ public class IceAndFire {
         IafBannerPatterns.BANNERS.register(modBus);
         IafStructureTypes.STRUCTURE_TYPES.register(modBus);
         IafContainerRegistry.CONTAINERS.register(modBus);
-        IafRecipeSerializers.SERIALIZERS.register(modBus);
+        IafRecipeRegistry.RECIPE_SERIALIZER.register(modBus);
         IafProcessors.PROCESSORS.register(modBus);
 
         IafVillagerRegistry.POI_TYPES.register(modBus);
