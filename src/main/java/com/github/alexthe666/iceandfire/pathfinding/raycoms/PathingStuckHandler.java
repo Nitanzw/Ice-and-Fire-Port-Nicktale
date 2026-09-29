@@ -623,7 +623,7 @@ public class PathingStuckHandler implements IStuckHandler
             y_offset = y_offset > 0 ? y_offset + 1 : y_offset - 1;
             y_offset *= -1;
 
-            if (world.getMaxBuildHeight() <= start.getY() + y) {
+            if ((world.getMaxY() + 1) <= start.getY() + y) {
                 return null;
             }
         }

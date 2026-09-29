@@ -204,7 +204,7 @@ public class ItemSummoningCrystal extends Item {
         this.summoningPlayer.playSound(SoundEvents.ENDERMAN_TELEPORT, 1, 1);
         this.summoningPlayer.playSound(SoundEvents.GLASS_BREAK, 1, 1);
         this.summoningPlayer.swing(this.summoningHand);
-        this.summoningPlayer.displayClientMessage(Component.translatable("message.iceandfire.dragonTeleport"), true);
+        this.summoningPlayer.sendOverlayMessage(Component.translatable("message.iceandfire.dragonTeleport"));
         ItemStackData.set(stack, new CompoundTag());
     }
 
@@ -242,6 +242,6 @@ public class ItemSummoningCrystal extends Item {
     }
 
     private void displayClientError() {
-        summoningPlayer.displayClientMessage(Component.translatable("message.iceandfire.noDragonTeleport"), true);
+        summoningPlayer.sendOverlayMessage(Component.translatable("message.iceandfire.noDragonTeleport"));
     }
 }

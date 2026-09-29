@@ -96,10 +96,10 @@ public class EntityMyrmexSwarmer extends EntityMyrmexRoyal {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SUMMONER_ID, Optional.empty());
-        this.entityData.define(TICKS_ALIVE, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SUMMONER_ID, Optional.empty());
+        builder.define(TICKS_ALIVE, 0);
     }
 
     @Nullable

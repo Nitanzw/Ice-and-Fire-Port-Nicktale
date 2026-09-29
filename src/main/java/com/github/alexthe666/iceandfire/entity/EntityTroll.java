@@ -49,7 +49,7 @@ import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.neoforged.neoforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -150,10 +150,10 @@ public class EntityTroll extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(WEAPON, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, 0);
+        builder.define(WEAPON, 0);
     }
 
     private int getVariant() {
@@ -329,8 +329,8 @@ public class EntityTroll extends Monster implements IAnimatedEntity, IVillagerFe
         if (!stone && this.getHealth() < this.getMaxHealth() && this.tickCount % 30 == 0) {
             this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 30, 1, false, false));
         }
-        setAvoidSun(this.level().isDay());
-        if (this.level().isDay() && !this.level().isClientSide()) {
+        setAvoidSun(this.level().isBrightOutside());
+        if (this.level().isBrightOutside() && !this.level().isClientSide()) {
             float f = this.level().getBrightness(LightLayer.SKY, this.blockPosition());
             BlockPos blockpos = this.getVehicle() instanceof Boat ? (new BlockPos(this.getBlockX(), this.getBlockY(), this.getBlockZ())).above() : new BlockPos(this.getBlockX(), this.getBlockY(), this.getBlockZ());
             if (f > 0.5F && this.level().canSeeSky(blockpos)) {
@@ -400,7 +400,7 @@ public class EntityTroll extends Monster implements IAnimatedEntity, IVillagerFe
                 float weaponZ = (float) (getZ() + 1.9F * Mth.sin((float) ((yBodyRot + 90) * Math.PI / 180)));
                 float weaponY = (float) (getY() + (this.getEyeHeight() / 2));
                 Explosion explosion = new Explosion(level(), this, weaponX, weaponY, weaponZ, 1F + this.getRandom().nextFloat(), new ArrayList<>());
-                if (!MinecraftForge.EVENT_BUS.post(new GenericGriefEvent(this, weaponX, weaponY, weaponZ))) {
+                if (!NeoForge.EVENT_BUS.post(new GenericGriefEvent(this, weaponX, weaponY, weaponZ))) {
                     explosion.explode();
                     explosion.finalizeExplosion(true);
                 }

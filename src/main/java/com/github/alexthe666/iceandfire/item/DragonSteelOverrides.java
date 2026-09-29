@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityDeathWorm;
 import com.github.alexthe666.iceandfire.entity.props.EntityDataProvider;
@@ -63,18 +64,18 @@ public interface DragonSteelOverrides<T extends Item> {
         }
 
         if (isDragonsteelFire(material) && IafConfig.dragonWeaponFireAbility) {
-            target.setSecondsOnFire(15);
+            target.igniteForSeconds(15);
             target.knockback(1.0F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (isDragonsteelIce(material) && IafConfig.dragonWeaponIceAbility) {
             EntityDataProvider.getCapability(target).ifPresent(data -> data.frozenData.setFrozen(target, 300));
-            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 2));
+            target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 300, 2));
             target.knockback(1.0F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (isDragonsteelLightning(material) && IafConfig.dragonWeaponLightningAbility) {
             boolean createLightning = !(attacker instanceof Player) || attacker.attackAnim <= 0.2F;
             if (!attacker.level().isClientSide() && createLightning) {
-                LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(target.level());
+                LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(target.level());
                 if (bolt != null) {
                     bolt.getTags().add(ServerEvents.BOLT_DONT_DESTROY_LOOT);
                     bolt.getTags().add(attacker.getStringUUID());

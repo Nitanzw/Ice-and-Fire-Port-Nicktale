@@ -62,7 +62,7 @@ public abstract class DragonTabulaModelAnimator extends IceAndFireTabulaModelAni
         if (swimming) {
             delta = ((entity.swimCycle) / 10.0F) % 1.0F;
         }
-        float partialTick = Minecraft.getInstance().getFrameTime();
+        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         float deltaTicks = delta + (partialTick / 10.0F);
         if (delta == 0) {
             deltaTicks = 0;
@@ -227,7 +227,7 @@ public abstract class DragonTabulaModelAnimator extends IceAndFireTabulaModelAni
             // TabulaModel customPose = customPose(entity);
             TabulaModel pose = getModel(EnumDragonPoses.DEAD);
             if (!isRotationEqual(cube, pose.getCube(cube.boxName))) {
-                transitionTo(cube, pose.getCube(cube.boxName), entity.previousModelDeadProgress + (entity.modelDeadProgress - entity.previousModelDeadProgress) * Minecraft.getInstance().getFrameTime(), 20, cube.boxName.equals("ThighR") || cube.boxName.equals("ThighL"));
+                transitionTo(cube, pose.getCube(cube.boxName), entity.previousModelDeadProgress + (entity.modelDeadProgress - entity.previousModelDeadProgress) * Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false), 20, cube.boxName.equals("ThighR") || cube.boxName.equals("ThighL"));
             }
             //Ugly hack to make sure ice dragon models are touching the ground when dead
             if (this instanceof IceDragonTabulaModelAnimator){

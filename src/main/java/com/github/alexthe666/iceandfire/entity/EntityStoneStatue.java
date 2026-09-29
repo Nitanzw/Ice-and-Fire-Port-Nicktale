@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.util.IBlacklistedFromStatues;
@@ -72,19 +73,19 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(TRAPPED_ENTITY_TYPE, "minecraft:pig");
-        this.entityData.define(TRAPPED_ENTITY_DATA, new CompoundTag());
-        this.entityData.define(TRAPPED_ENTITY_WIDTH, 0.5F);
-        this.entityData.define(TRAPPED_ENTITY_HEIGHT, 0.5F);
-        this.entityData.define(TRAPPED_ENTITY_SCALE, 1F);
-        this.entityData.define(CRACK_AMOUNT, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(TRAPPED_ENTITY_TYPE, "minecraft:pig");
+        builder.define(TRAPPED_ENTITY_DATA, new CompoundTag());
+        builder.define(TRAPPED_ENTITY_WIDTH, 0.5F);
+        builder.define(TRAPPED_ENTITY_HEIGHT, 0.5F);
+        builder.define(TRAPPED_ENTITY_SCALE, 1F);
+        builder.define(CRACK_AMOUNT, 0);
     }
 
     public EntityType getTrappedEntityType() {
         String str = getTrappedEntityTypeString();
-        return EntityType.byString(str).orElse(EntityType.PIG);
+        return EntityType.byString(str).orElse(EntityTypes.PIG);
     }
 
     public String getTrappedEntityTypeString() {

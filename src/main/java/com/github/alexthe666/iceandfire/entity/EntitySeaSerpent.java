@@ -117,7 +117,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
     private static BlockPos clampBlockPosToWater(Entity entity, Level world, BlockPos pos) {
         BlockPos topY = new BlockPos(pos.getX(), entity.getBlockY(), pos.getZ());
         BlockPos bottomY = new BlockPos(pos.getX(), entity.getBlockY(), pos.getZ());
-        while (isWaterBlock(world, topY) && topY.getY() < world.getMaxBuildHeight()) {
+        while (isWaterBlock(world, topY) && topY.getY() < (world.getMaxY() + 1)) {
             topY = topY.above();
         }
         while (isWaterBlock(world, bottomY) && bottomY.getY() > 0) {
@@ -352,13 +352,13 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(SCALE, 0F);
-        this.entityData.define(JUMPING, false);
-        this.entityData.define(BREATHING, false);
-        this.entityData.define(ANCIENT, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, 0);
+        builder.define(SCALE, 0F);
+        builder.define(JUMPING, false);
+        builder.define(BREATHING, false);
+        builder.define(ANCIENT, false);
     }
 
     @Override

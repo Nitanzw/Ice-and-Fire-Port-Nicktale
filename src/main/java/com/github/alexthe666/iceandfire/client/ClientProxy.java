@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.fml.common.Mod;
 
 import java.util.HashSet;
@@ -52,8 +52,8 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init() {
         IafKeybindRegistry.init();
-        MinecraftForge.EVENT_BUS.register(new PlayerRenderEvents());
-        MinecraftForge.EVENT_BUS.register(new ClientEvents());
+        NeoForge.EVENT_BUS.register(new PlayerRenderEvents());
+        NeoForge.EVENT_BUS.register(new ClientEvents());
     }
 
     @Override

@@ -80,7 +80,7 @@ public class TileEntityEggInIce extends BlockEntity {
         spawned = input.getBooleanOr("Spawned", false);
         ownerUUID = input.read("OwnerUUID", UUIDUtil.LENIENT_CODEC).orElse(null);
         if (ownerUUID == null) {
-            input.getString("OwnerUUID").ifPresent(ownerName -> {
+            input.getStringOr("OwnerUUID", "").ifPresent(ownerName -> {
                 try {
                     if (this.level != null && this.level.getServer() != null) {
                         this.ownerUUID = OldUsersConverter.convertMobOwnerIfNecessary(this.level.getServer(), ownerName);

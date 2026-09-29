@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +36,7 @@ public class RenderDeathWormGauntlet extends BlockEntityWithoutLevelRenderer {
         stackIn.translate(0.5F, 0.5F, 0.5F);
         stackIn.pushPose();
         stackIn.pushPose();
-        MODEL.animate(stack, Minecraft.getInstance().getFrameTime());
+        MODEL.animate(stack, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
         MODEL.renderToBuffer(stackIn, bufferIn.getBuffer(texture), combinedLightIn, combinedOverlayIn, 1.0F, 1.0F, 1.0F, 1.0F);
         stackIn.popPose();
         stackIn.popPose();

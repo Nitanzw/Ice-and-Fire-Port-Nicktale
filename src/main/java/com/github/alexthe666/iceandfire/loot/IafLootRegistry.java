@@ -3,7 +3,7 @@ package com.github.alexthe666.iceandfire.loot;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.storage.loot.Serializer;
+import net.minecraft.network.chat.Style.Serializer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 

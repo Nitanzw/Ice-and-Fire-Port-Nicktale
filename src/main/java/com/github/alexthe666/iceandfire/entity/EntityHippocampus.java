@@ -185,13 +185,13 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(ARMOR, 0);
-        this.entityData.define(SADDLE, Boolean.FALSE);
-        this.entityData.define(CHESTED, Boolean.FALSE);
-        this.entityData.define(CONTROL_STATE, (byte) 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, 0);
+        builder.define(ARMOR, 0);
+        builder.define(SADDLE, Boolean.FALSE);
+        builder.define(CHESTED, Boolean.FALSE);
+        builder.define(CONTROL_STATE, (byte) 0);
     }
 
     @Override

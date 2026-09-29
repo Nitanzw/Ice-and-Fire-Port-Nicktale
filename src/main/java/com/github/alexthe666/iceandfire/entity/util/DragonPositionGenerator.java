@@ -95,7 +95,7 @@ public class DragonPositionGenerator {
         } else {
             BlockPos blockpos;
 
-            for (blockpos = pos.above(); blockpos.getY() < mob.level().getMaxBuildHeight() && mob.level().getBlockState(blockpos).isSolid(); blockpos = blockpos.above()) {
+            for (blockpos = pos.above(); blockpos.getY() < (mob.level().getMaxY() + 1) && mob.level().getBlockState(blockpos).isSolid(); blockpos = blockpos.above()) {
             }
 
             return blockpos;

@@ -268,7 +268,7 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
 
     @Override
     protected boolean isSunBurnTick() {
-        if (this.level().isDay() && !this.level().isClientSide()) {
+        if (this.level().isBrightOutside() && !this.level().isClientSide()) {
             float f = this.level().getBrightness(LightLayer.BLOCK, this.blockPosition());
             BlockPos blockpos = this.getVehicle() instanceof Boat ? (new BlockPos(this.getBlockX(), this.getBlockY(), this.getBlockZ())).above() : new BlockPos(this.getBlockX(), this.getBlockY() + 4, this.getBlockZ());
             return f > 0.5F && this.level().canSeeSky(blockpos);
@@ -320,8 +320,8 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
 
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
         this.getEntityData().define(COLOR, 0);
         this.getEntityData().define(CHARGING, false);
         this.getEntityData().define(IS_DAYTIME_MODE, false);

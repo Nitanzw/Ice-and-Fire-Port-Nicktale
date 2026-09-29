@@ -51,7 +51,7 @@ public class WorldGenFireDragonRoosts extends WorldGenDragonRoosts {
             block = IafBlockRegistry.CHARRED_COBBLESTONE.get();
         } else if (state.is(BlockTags.LOGS) || state.is(BlockTags.PLANKS)) {
             block = IafBlockRegistry.ASH.get();
-        } else if (state.is(Blocks.GRASS) || state.is(BlockTags.LEAVES) || state.is(BlockTags.FLOWERS) || state.is(BlockTags.CROPS)) {
+        } else if (state.is(Blocks.SHORT_GRASS) || state.is(BlockTags.LEAVES) || state.is(BlockTags.FLOWERS) || state.is(BlockTags.CROPS)) {
             block = Blocks.AIR;
         }
 

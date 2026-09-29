@@ -2,12 +2,12 @@ package com.github.alexthe666.iceandfire.client.render;
 
 import com.github.alexthe666.iceandfire.client.IafClientSetup;
 import com.github.alexthe666.iceandfire.client.render.tile.RenderDreadPortal;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 
 public class IafRenderType extends RenderType {

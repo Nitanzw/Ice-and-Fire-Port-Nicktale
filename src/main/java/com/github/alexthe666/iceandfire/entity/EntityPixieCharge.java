@@ -74,12 +74,12 @@ public EntityPixieCharge(EntityType<? extends Fireball> t, Level worldIn, double
         if (this.level().isClientSide() || (shootingEntity == null || shootingEntity.isAlive()) && this.level().hasChunkAt(this.blockPosition())) {
             this.baseTick();
             if (this.shouldBurn()) {
-                this.setSecondsOnFire(1);
+                this.igniteForSeconds(1);
             }
 
             ++this.ticksInAir;
             HitResult raytraceresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-            if (raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+            if (raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.EventHooks.onProjectileImpact(this, raytraceresult)) {
                 this.onHit(raytraceresult);
             }
 

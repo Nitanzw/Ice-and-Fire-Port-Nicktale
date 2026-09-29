@@ -1,5 +1,7 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.network.syncher.SynchedEntityData;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.core.particles.ParticleTypes;
@@ -50,8 +52,8 @@ public class EntityGhostSword extends AbstractArrow {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
     }
 
     @Override
@@ -99,7 +101,7 @@ public class EntityGhostSword extends AbstractArrow {
                 }
             }
 
-            if (raytraceresult != null && raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+            if (raytraceresult != null && raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.EventHooks.onProjectileImpact(this, raytraceresult)) {
                 if (raytraceresult.getType() != HitResult.Type.BLOCK) {
                     this.onHit(raytraceresult);
 
@@ -185,10 +187,10 @@ private IntOpenHashSet piercedEntities;
             }
         }
 
-        boolean flag = entity.getType() == EntityType.ENDERMAN;
+        boolean flag = entity.getType() == EntityTypes.ENDERMAN;
         int j = entity.getRemainingFireTicks();
         if (this.isOnFire() && !flag) {
-            entity.setSecondsOnFire(5);
+            entity.igniteForSeconds(5);
         }
 
         if (entity.hurt(damagesource, i)) {

@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.entity;
 
+import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
@@ -189,7 +190,7 @@ public class EntityDragonEgg extends LivingEntity implements IBlacklistedFromSta
             dragon.setOwnerUUID(getOwnerId());
 
             if (dragonType == DragonType.LIGHTNING) {
-                LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level());
+                LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level());
                 bolt.setPos(getX(), getY(), getZ());
                 bolt.setVisualOnly(true);
 

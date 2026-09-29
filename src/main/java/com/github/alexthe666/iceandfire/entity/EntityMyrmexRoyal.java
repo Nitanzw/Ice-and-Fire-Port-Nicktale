@@ -104,9 +104,9 @@ public class EntityMyrmexRoyal extends EntityMyrmexBase {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(FLYING, Boolean.FALSE);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FLYING, Boolean.FALSE);
     }
 
     protected void switchNavigator(boolean onLand) {

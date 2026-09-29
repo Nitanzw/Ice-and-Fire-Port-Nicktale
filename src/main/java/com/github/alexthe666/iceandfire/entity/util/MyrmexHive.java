@@ -248,25 +248,25 @@ public class MyrmexHive {
         }
         if (player != null) {
             if (j - i != 0) {
-                player.displayClientMessage(Component.translatable(j - i >= 0 ? "myrmex.message.raised_reputation" : "myrmex.message.lowered_reputation", Math.abs(j - i), j), true);
+                player.sendOverlayMessage(Component.translatable(j - i >= 0 ? "myrmex.message.raised_reputation" : "myrmex.message.lowered_reputation", Math.abs(j - i), j));
             }
             if (i < 25 && j >= 25) {
-                player.displayClientMessage(Component.translatable("myrmex.message.peaceful"), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.peaceful"));
             }
             if (i >= 25 && j < 25) {
-                player.displayClientMessage(Component.translatable("myrmex.message.hostile"), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.hostile"));
             }
             if (i < 50 && j >= 50) {
-                player.displayClientMessage(Component.translatable("myrmex.message.trade"), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.trade"));
             }
             if (i >= 50 && j < 50) {
-                player.displayClientMessage(Component.translatable("myrmex.message.no_trade"), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.no_trade"));
             }
             if (i < 75 && j >= 75) {
-                player.displayClientMessage(Component.translatable("myrmex.message.can_use_staff"), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.can_use_staff"));
             }
             if (i >= 75 && j < 75) {
-                player.displayClientMessage(Component.translatable("myrmex.message.cant_use_staff"), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.cant_use_staff"));
             }
         }
 
@@ -472,23 +472,23 @@ public class MyrmexHive {
         if (roomType == WorldGenMyrmexHive.RoomType.FOOD) {
             if (!this.foodRooms.contains(center) && !allCurrentRooms.contains(center)) {
                 this.foodRooms.add(center);
-                player.displayClientMessage(Component.translatable("myrmex.message.added_food_room", center.getX(), center.getY(), center.getZ()), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.added_food_room", center.getX(), center.getY(), center.getZ()));
             } else {
-                player.displayClientMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()));
 
             }
         } else if (roomType == WorldGenMyrmexHive.RoomType.NURSERY) {
             if (!this.babyRooms.contains(center) && !allCurrentRooms.contains(center)) {
                 this.babyRooms.add(center);
-                player.displayClientMessage(Component.translatable("myrmex.message.added_nursery_room", center.getX(), center.getY(), center.getZ()), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.added_nursery_room", center.getX(), center.getY(), center.getZ()));
             } else {
-                player.displayClientMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()));
             }
         } else if (!this.miscRooms.contains(center) && !allCurrentRooms.contains(center)) {
             this.miscRooms.add(center);
-            player.displayClientMessage(Component.translatable("myrmex.message.added_misc_room", center.getX(), center.getY(), center.getZ()), false);
+            player.sendSystemMessage(Component.translatable("myrmex.message.added_misc_room", center.getX(), center.getY(), center.getZ()));
         } else {
-            player.displayClientMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()), false);
+            player.sendSystemMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()));
         }
     }
 
@@ -498,17 +498,17 @@ public class MyrmexHive {
         allCurrentRooms.addAll(this.getEntranceBottoms().keySet());
         if (bottom) {
             if (allCurrentRooms.contains(center)) {
-                player.displayClientMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()));
             } else {
                 this.getEntranceBottoms().put(center, facing);
-                player.displayClientMessage(Component.translatable("myrmex.message.added_enterance_bottom", center.getX(), center.getY(), center.getZ()), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.added_enterance_bottom", center.getX(), center.getY(), center.getZ()));
             }
         } else {
             if (allCurrentRooms.contains(center)) {
-                player.displayClientMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.dupe_room", center.getX(), center.getY(), center.getZ()));
             } else {
                 this.getEntrances().put(center, facing);
-                player.displayClientMessage(Component.translatable("myrmex.message.added_enterance_surface", center.getX(), center.getY(), center.getZ()), false);
+                player.sendSystemMessage(Component.translatable("myrmex.message.added_enterance_surface", center.getX(), center.getY(), center.getZ()));
             }
         }
     }

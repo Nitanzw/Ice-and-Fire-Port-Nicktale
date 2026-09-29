@@ -185,16 +185,16 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(ARMOR, 0);
-        this.entityData.define(SADDLE, Boolean.FALSE);
-        this.entityData.define(CHESTED, Boolean.FALSE);
-        this.entityData.define(HOVERING, Boolean.FALSE);
-        this.entityData.define(FLYING, Boolean.FALSE);
-        this.entityData.define(CONTROL_STATE, (byte) 0);
-        this.entityData.define(COMMAND, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, 0);
+        builder.define(ARMOR, 0);
+        builder.define(SADDLE, Boolean.FALSE);
+        builder.define(CHESTED, Boolean.FALSE);
+        builder.define(HOVERING, Boolean.FALSE);
+        builder.define(FLYING, Boolean.FALSE);
+        builder.define(CONTROL_STATE, (byte) 0);
+        builder.define(COMMAND, 0);
 
     }
 
@@ -298,12 +298,12 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
                 if (player.isShiftKeyDown()) {
                     if (this.hasHomePosition) {
                         this.hasHomePosition = false;
-                        player.displayClientMessage(Component.translatable("hippogryph.command.remove_home"), true);
+                        player.sendOverlayMessage(Component.translatable("hippogryph.command.remove_home"));
                         return InteractionResult.SUCCESS;
                     } else {
                         this.homePos = this.blockPosition();
                         this.hasHomePosition = true;
-                        player.displayClientMessage(Component.translatable("hippogryph.command.new_home", homePos.getX(), homePos.getY(), homePos.getZ()), true);
+                        player.sendOverlayMessage(Component.translatable("hippogryph.command.new_home", homePos.getX(), homePos.getY(), homePos.getZ()));
                         return InteractionResult.SUCCESS;
                     }
                 } else {
@@ -311,7 +311,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
                     if (this.getCommand() > 1) {
                         this.setCommand(0);
                     }
-                    player.displayClientMessage(Component.translatable("hippogryph.command." + (this.getCommand() == 1 ? "sit" : "stand")), true);
+                    player.sendOverlayMessage(Component.translatable("hippogryph.command." + (this.getCommand() == 1 ? "sit" : "stand")));
 
                 }
                 return InteractionResult.SUCCESS;

@@ -217,11 +217,11 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CLIMBING, (byte) 0);
-        this.entityData.define(GROWTH_STAGE, 2);
-        this.entityData.define(VARIANT, Boolean.FALSE);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CLIMBING, (byte) 0);
+        builder.define(GROWTH_STAGE, 2);
+        builder.define(VARIANT, Boolean.FALSE);
     }
 
     @Override
@@ -502,19 +502,19 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
             }
         }
         if (this.getHive() == null) {
-            player.displayClientMessage(Component.translatable("myrmex.message.null_hive"), true);
+            player.sendOverlayMessage(Component.translatable("myrmex.message.null_hive"));
 
         } else {
             if (staffUUID != null && staffUUID.equals(this.getHive().hiveUUID)) {
-                player.displayClientMessage(Component.translatable("myrmex.message.staff_already_set"), true);
+                player.sendOverlayMessage(Component.translatable("myrmex.message.staff_already_set"));
             } else {
                 this.getHive().setWorld(this.level());
                 EntityMyrmexQueen queen = this.getHive().getQueen();
                 BlockPos center = this.getHive().getCenterGround();
                 if (queen != null && queen.hasCustomName()) {
-                    player.displayClientMessage(Component.translatable("myrmex.message.staff_set_named", queen.getName(), center.getX(), center.getY(), center.getZ()), true);
+                    player.sendOverlayMessage(Component.translatable("myrmex.message.staff_set_named", queen.getName(), center.getX(), center.getY(), center.getZ()));
                 } else {
-                    player.displayClientMessage(Component.translatable("myrmex.message.staff_set_unnamed", center.getX(), center.getY(), center.getZ()), true);
+                    player.sendOverlayMessage(Component.translatable("myrmex.message.staff_set_unnamed", center.getX(), center.getY(), center.getZ()));
                 }
                 itemstack.getTag().putUUID("HiveUUID", this.getHive().hiveUUID);
             }

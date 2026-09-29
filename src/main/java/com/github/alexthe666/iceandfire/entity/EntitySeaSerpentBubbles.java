@@ -62,7 +62,7 @@ public EntitySeaSerpentBubbles(EntityType<? extends Fireball> t, Level worldIn,
         if (this.level().isClientSide() || (shootingEntity == null || !shootingEntity.isAlive()) && this.level().hasChunkAt(this.blockPosition())) {
             this.baseTick();
             HitResult raytraceresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-            if (raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+            if (raytraceresult.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.EventHooks.onProjectileImpact(this, raytraceresult)) {
                 this.onHit(raytraceresult);
             }
 

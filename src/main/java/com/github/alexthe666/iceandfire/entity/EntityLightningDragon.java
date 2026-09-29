@@ -96,7 +96,7 @@ public class EntityLightningDragon extends EntityDragonBase {
 
     @Override
     public boolean isTimeToWake() {
-        return !this.level().isDay() || this.getCommand() == 2;
+        return !this.level().isBrightOutside() || this.getCommand() == 2;
     }
 
     @Override

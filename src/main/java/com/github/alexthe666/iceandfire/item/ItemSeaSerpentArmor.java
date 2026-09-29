@@ -39,7 +39,7 @@ public class ItemSeaSerpentArmor extends ItemModArmor {
         player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 50, 0, false, false));
         if (player.isInWaterOrRain()) {
             int pieces = countSeaSerpentArmor(player);
-            player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 50, pieces - 1, false, false));
+            player.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 50, pieces - 1, false, false));
         }
     }
 

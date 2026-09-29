@@ -1268,13 +1268,13 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
                         if (player.isShiftKeyDown()) {
                             if (this.hasHomePosition) {
                                 this.hasHomePosition = false;
-                                player.displayClientMessage(Component.translatable("dragon.command.remove_home"), true);
+                                player.sendOverlayMessage(Component.translatable("dragon.command.remove_home"));
                                 return InteractionResult.SUCCESS;
                             } else {
                                 BlockPos pos = this.blockPosition();
                                 this.homePos = new HomePosition(pos, this.level());
                                 this.hasHomePosition = true;
-                                player.displayClientMessage(Component.translatable("dragon.command.new_home", pos.getX(), pos.getY(), pos.getZ(), homePos.getDimension()), true);
+                                player.sendOverlayMessage(Component.translatable("dragon.command.new_home", pos.getX(), pos.getY(), pos.getZ(), homePos.getDimension()));
                                 return InteractionResult.SUCCESS;
                             }
                         } else {
@@ -1291,7 +1291,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
                             } else if (this.getCommand() == 2) {
                                 commandText = "escort";
                             }
-                            player.displayClientMessage(Component.translatable("dragon.command." + commandText), true);
+                            player.sendOverlayMessage(Component.translatable("dragon.command." + commandText));
                             return InteractionResult.SUCCESS;
                         }
                     }
@@ -1395,7 +1395,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     }
 
     public boolean isTimeToWake() {
-        return this.level().isDay() || this.getCommand() == 2;
+        return this.level().isBrightOutside() || this.getCommand() == 2;
     }
 
     private boolean isStuck() {
@@ -1432,7 +1432,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     }
 
     public boolean isBeyondHeight() {
-        if (this.getY() > this.level().getMaxBuildHeight()) {
+        if (this.getY() > (this.level().getMaxY() + 1)) {
             return true;
         }
         return this.getY() > IafConfig.maxDragonFlight;
@@ -2505,7 +2505,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
                     final boolean isStrongerDragon = entity instanceof EntityDragonBase && ((EntityDragonBase) entity).getDragonStage() >= this.getDragonStage();
                     if (entity instanceof LivingEntity living && !isStrongerDragon) {
                         if (this.isOwnedBy(living) || this.isOwnersPet(living)) {
-                            living.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 50 * size));
+                            living.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 50 * size));
                         } else {
                             if (living.getItemBySlot(EquipmentSlot.HEAD).getItem() != IafItemRegistry.EARPLUGS.get()) {
                                 living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 50 * size));
@@ -2526,7 +2526,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
                     final boolean isStrongerDragon = entity instanceof EntityDragonBase && ((EntityDragonBase) entity).getDragonStage() >= this.getDragonStage();
                     if (entity instanceof LivingEntity living && !isStrongerDragon) {
                         if (this.isOwnedBy(living) || this.isOwnersPet(living)) {
-                            living.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 30 * size));
+                            living.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 30 * size));
                         } else {
                             living.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 30 * size));
                         }

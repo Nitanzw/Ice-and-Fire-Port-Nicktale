@@ -16,8 +16,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
-import net.minecraft.world.entity.animal.AbstractGolem;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.animal.golem.AbstractGolem;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -318,7 +318,7 @@ public class DragonUtils {
     }
 
     public static boolean canDragonBreak(final BlockState state, final Entity entity) {
-        if (!ForgeEventFactory.getMobGriefingEvent(entity.level(), entity)) {
+        if (!EventHooks.getMobGriefingEvent(entity.level(), entity)) {
             return false;
         }
 

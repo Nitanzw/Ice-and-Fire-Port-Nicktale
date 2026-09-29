@@ -259,14 +259,14 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
 
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(HEN, Boolean.FALSE);
-        this.entityData.define(STARING, Boolean.FALSE);
-        this.entityData.define(TARGET_ENTITY, 0);
-        this.entityData.define(TAMING_PLAYER, 0);
-        this.entityData.define(TAMING_LEVEL, 0);
-        this.entityData.define(COMMAND, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HEN, Boolean.FALSE);
+        builder.define(STARING, Boolean.FALSE);
+        builder.define(TARGET_ENTITY, 0);
+        builder.define(TAMING_PLAYER, 0);
+        builder.define(TAMING_LEVEL, 0);
+        builder.define(COMMAND, 0);
     }
 
     public boolean hasTargetedEntity() {
@@ -470,13 +470,13 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
                 if (player.isShiftKeyDown()) {
                     if (this.hasHomePosition) {
                         this.hasHomePosition = false;
-                        player.displayClientMessage(Component.translatable("cockatrice.command.remove_home"), true);
+                        player.sendOverlayMessage(Component.translatable("cockatrice.command.remove_home"));
                         return InteractionResult.SUCCESS;
                     } else {
                         BlockPos pos = this.blockPosition();
                         this.homePos = new HomePosition(pos, this.level());
                         this.hasHomePosition = true;
-                        player.displayClientMessage(Component.translatable("cockatrice.command.new_home", pos.getX(), pos.getY(), pos.getZ(), homePos.getDimension()), true);
+                        player.sendOverlayMessage(Component.translatable("cockatrice.command.new_home", pos.getX(), pos.getY(), pos.getZ(), homePos.getDimension()));
                         return InteractionResult.SUCCESS;
                     }
                 } else {
@@ -484,7 +484,7 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
                     if (this.getCommand() > 3) {
                         this.setCommand(0);
                     }
-                    player.displayClientMessage(Component.translatable("cockatrice.command." + this.getCommand()), true);
+                    player.sendOverlayMessage(Component.translatable("cockatrice.command." + this.getCommand()));
                     this.playSound(SoundEvents.ZOMBIE_INFECT, 1, 1);
                     return InteractionResult.SUCCESS;
                 }
@@ -586,8 +586,8 @@ public class EntityCockatrice extends TamableAnimal implements IAnimatedEntity, 
                         attackStrength++;
                     }
                     attackTarget.addEffect(new MobEffectInstance(MobEffects.WITHER, 10, 2 + Math.min(1, attackStrength)));
-                    attackTarget.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 10, Math.min(4, attackStrength)));
-                    attackTarget.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200, 0));
+                    attackTarget.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 10, Math.min(4, attackStrength)));
+                    attackTarget.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 200, 0));
                     if (attackStrength >= 2 && attackTarget.tickCount % 40 == 0) {
                         attackTarget.hurt(this.level().damageSources().wither(), attackStrength - 1);
                     }

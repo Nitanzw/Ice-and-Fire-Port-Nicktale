@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityFireDragon;
 import com.github.alexthe666.iceandfire.entity.EntityIceDragon;
@@ -32,7 +33,7 @@ public class ItemAlchemySword extends Item {
             if (target instanceof EntityIceDragon) {
                 target.hurt(attacker.level().damageSources().inFire(), 13.5F);
             }
-            target.setSecondsOnFire(5);
+            target.igniteForSeconds(5);
             target.knockback(1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (this == IafItemRegistry.DRAGONBONE_SWORD_ICE.get() && IafConfig.dragonWeaponIceAbility) {
@@ -41,8 +42,8 @@ public class ItemAlchemySword extends Item {
             }
 
             EntityDataProvider.getCapability(target).ifPresent(data -> data.frozenData.setFrozen(target, 200));
-            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));
-            target.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 100, 2));
+            target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 2));
+            target.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 100, 2));
             target.knockback(1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (this == IafItemRegistry.DRAGONBONE_SWORD_LIGHTNING.get() && IafConfig.dragonWeaponLightningAbility) {
@@ -53,7 +54,7 @@ public class ItemAlchemySword extends Item {
                 }
             }
             if (!attacker.level().isClientSide() && flag) {
-                LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(target.level());
+                LightningBolt lightningboltentity = EntityTypes.LIGHTNING_BOLT.create(target.level());
                 lightningboltentity.getTags().add(ServerEvents.BOLT_DONT_DESTROY_LOOT);
                 lightningboltentity.getTags().add(attacker.getStringUUID());
                 lightningboltentity.moveTo(target.position());

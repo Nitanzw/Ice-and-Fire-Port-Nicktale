@@ -55,8 +55,8 @@ public class EntityPixie extends TamableAnimal {
 
     public static final int STEAL_COOLDOWN = 3000;
 
-    public MobEffect[] positivePotions = new MobEffect[]{MobEffects.DAMAGE_BOOST, MobEffects.JUMP, MobEffects.MOVEMENT_SPEED, MobEffects.LUCK, MobEffects.DIG_SPEED};
-    public MobEffect[] negativePotions = new MobEffect[]{MobEffects.WEAKNESS, MobEffects.CONFUSION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.UNLUCK, MobEffects.DIG_SLOWDOWN};
+    public MobEffect[] positivePotions = new MobEffect[]{MobEffects.STRENGTH, MobEffects.JUMP_BOOST, MobEffects.SPEED, MobEffects.LUCK, MobEffects.HASTE};
+    public MobEffect[] negativePotions = new MobEffect[]{MobEffects.WEAKNESS, MobEffects.NAUSEA, MobEffects.SLOWNESS, MobEffects.UNLUCK, MobEffects.MINING_FATIGUE};
     public boolean slowSpeed = false;
     public int ticksUntilHouseAI;
     public int ticksHeldItemFor;
@@ -176,10 +176,10 @@ public class EntityPixie extends TamableAnimal {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(COLOR, 0);
-        this.entityData.define(COMMAND, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(COLOR, 0);
+        builder.define(COMMAND, 0);
     }
 
     @Override
@@ -279,7 +279,7 @@ public class EntityPixie extends TamableAnimal {
     }
 
     private boolean isBeyondHeight() {
-        if (this.getY() > this.level().getMaxBuildHeight()) {
+        if (this.getY() > (this.level().getMaxY() + 1)) {
             return true;
         }
         BlockPos height = this.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, this.blockPosition());

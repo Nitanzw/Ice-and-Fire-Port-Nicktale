@@ -62,7 +62,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -246,7 +246,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
             this.playSound(this.getScale() > 3 ? IafSoundRegistry.DEATHWORM_GIANT_ATTACK : IafSoundRegistry.DEATHWORM_ATTACK, 1, 1);
         }
         if (this.getRandom().nextInt(3) == 0 && this.getScale() > 1 && this.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
-            if (!MinecraftForge.EVENT_BUS.post(new GenericGriefEvent(this, entityIn.getX(), entityIn.getY(), entityIn.getZ()))) {
+            if (!NeoForge.EVENT_BUS.post(new GenericGriefEvent(this, entityIn.getX(), entityIn.getY(), entityIn.getZ()))) {
                 BlockLaunchExplosion explosion = new BlockLaunchExplosion(level(), this, entityIn.getX(), entityIn.getY(), entityIn.getZ(), this.getScale());
                 explosion.explode();
                 explosion.finalizeExplosion(true);
@@ -286,14 +286,14 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(VARIANT, 0);
-        this.entityData.define(SCALE, 1F);
-        this.entityData.define(CONTROL_STATE, (byte) 0);
-        this.entityData.define(WORM_AGE, 10);
-        this.entityData.define(HOME, BlockPos.ZERO);
-        this.entityData.define(JUMP_TICKS, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIANT, 0);
+        builder.define(SCALE, 1F);
+        builder.define(CONTROL_STATE, (byte) 0);
+        builder.define(WORM_AGE, 10);
+        builder.define(HOME, BlockPos.ZERO);
+        builder.define(JUMP_TICKS, 0);
     }
 
     @Override
@@ -583,7 +583,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
         }
         if (this.willExplode) {
             if (this.ticksTillExplosion == 0) {
-                boolean b = !MinecraftForge.EVENT_BUS.post(new GenericGriefEvent(this, this.getX(), this.getY(), this.getZ()));
+                boolean b = !NeoForge.EVENT_BUS.post(new GenericGriefEvent(this, this.getX(), this.getY(), this.getZ()));
                 if (b) {
                     level().explode(this.thrower, this.getX(), this.getY(), this.getZ(), 2.5F * this.getScale(), false, Level.ExplosionInteraction.MOB);
                 }

@@ -7,7 +7,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.projectile.Fireball;
+import net.minecraft.world.entity.projectile.hurtingprojectile.Fireball;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -42,7 +42,7 @@ public class EntityDragonFireCharge extends EntityDragonCharge {
             remove(RemovalReason.DISCARDED);
         }
         if (this.shouldBurn()) {
-            this.setSecondsOnFire(1);
+            this.igniteForSeconds(1);
         }
         super.tick();
     }

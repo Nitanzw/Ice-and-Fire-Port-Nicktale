@@ -76,8 +76,8 @@ public class EntityMyrmexEgg extends LivingEntity implements IBlacklistedFromSta
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
         this.getEntityData().define(MYRMEX_TYPE, false);
         this.getEntityData().define(MYRMEX_AGE, 0);
         this.getEntityData().define(MYRMEX_CASTE, 0);

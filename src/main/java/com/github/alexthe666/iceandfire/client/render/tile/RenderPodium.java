@@ -12,7 +12,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.Mth;
@@ -71,7 +71,7 @@ public class RenderPodium<T extends TileEntityPodium> implements BlockEntityRend
                 matrixStackIn.popPose();
                 matrixStackIn.popPose();
             } else if (!podium.getItem(0).isEmpty()) {
-                //if (net.neoforged.neoforge.common.MinecraftForge.EVENT_BUS.post(new RenderPodiumItemEvent(this, podium, f, x, y, z))) {
+                //if (net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new RenderPodiumItemEvent(this, podium, f, x, y, z))) {
                 matrixStackIn.pushPose();
                 float f2 = ((float) podium.prevTicksExisted + (podium.ticksExisted - podium.prevTicksExisted) * partialTicks);
                 float f3 = Mth.sin(f2 / 10.0F) * 0.1F + 0.1F;

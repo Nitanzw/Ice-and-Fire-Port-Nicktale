@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.item;
 
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -30,12 +31,12 @@ public class ItemDragonFlesh extends ItemGenericFood {
     public void onFoodEaten(ItemStack stack, Level worldIn, LivingEntity livingEntity) {
         if (!worldIn.isClientSide()) {
             if (dragonType == 0) {
-                livingEntity.setSecondsOnFire(5);
+                livingEntity.igniteForSeconds(5);
             } else if (dragonType == 1) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));
+                livingEntity.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 2));
             } else {
                 if (!livingEntity.level().isClientSide()) {
-                    LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(livingEntity.level());
+                    LightningBolt lightningboltentity = EntityTypes.LIGHTNING_BOLT.create(livingEntity.level());
                     lightningboltentity.moveTo(livingEntity.position());
                     if (!livingEntity.level().isClientSide()) {
                         livingEntity.level().addFreshEntity(lightningboltentity);

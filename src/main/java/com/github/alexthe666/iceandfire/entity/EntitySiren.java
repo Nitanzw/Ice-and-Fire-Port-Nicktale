@@ -467,15 +467,15 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(HAIR_COLOR, 0);
-        this.entityData.define(SING_POSE, 0);
-        this.entityData.define(AGGRESSIVE, Boolean.FALSE);
-        this.entityData.define(SINGING, Boolean.FALSE);
-        this.entityData.define(SWIMMING, Boolean.FALSE);
-        this.entityData.define(CHARMED, Boolean.FALSE);
-        this.entityData.define(CLIMBING, (byte) 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HAIR_COLOR, 0);
+        builder.define(SING_POSE, 0);
+        builder.define(AGGRESSIVE, Boolean.FALSE);
+        builder.define(SINGING, Boolean.FALSE);
+        builder.define(SWIMMING, Boolean.FALSE);
+        builder.define(CHARMED, Boolean.FALSE);
+        builder.define(CLIMBING, (byte) 0);
     }
 
     @Override

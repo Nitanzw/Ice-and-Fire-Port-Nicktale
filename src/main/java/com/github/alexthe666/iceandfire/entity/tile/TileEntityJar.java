@@ -92,7 +92,7 @@ public class TileEntityJar extends BlockEntity {
         tamedPixie = input.getBooleanOr("TamedPixie", false);
         pixieOwnerUUID = input.read("PixieOwnerUUID", UUIDUtil.LENIENT_CODEC).orElse(null);
         if (pixieOwnerUUID == null) {
-            input.getString("PixieOwnerUUID").ifPresent(ownerName -> {
+            input.getStringOr("PixieOwnerUUID", "").ifPresent(ownerName -> {
                 try {
                     if (this.level != null && this.level.getServer() != null) {
                         this.pixieOwnerUUID = net.minecraft.server.players.OldUsersConverter.convertMobOwnerIfNecessary(

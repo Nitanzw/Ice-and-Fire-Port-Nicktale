@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.datagen.tags;
 
+import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -25,7 +26,7 @@ public class IafEntityTags extends EntityTypeTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         tag(IMMUNE_TO_GORGON_STONE)
                 .addTag(Tags.EntityTypes.BOSSES)
-                .add(EntityType.WARDEN);
+                .add(EntityTypes.WARDEN);
     }
 
     private static TagKey<EntityType<?>> createKey(final String name) {

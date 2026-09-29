@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.client.render.entity;
 
+import net.minecraft.world.entity.EntityTypes;
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.client.model.ICustomStatueModel;
@@ -15,10 +16,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.PigModel;
+import net.minecraft.client.model.animal.pig.PigModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -67,7 +68,7 @@ public class RenderStoneStatue extends EntityRenderer<EntityStoneStatue> {
 
             if (renderer instanceof RenderLayerParent) {
                 model = ((RenderLayerParent<?, ?>) renderer).getModel();
-            } else if (entityIn.getTrappedEntityType() == EntityType.PLAYER) {
+            } else if (entityIn.getTrappedEntityType() == EntityTypes.PLAYER) {
                 model = new ModelStonePlayer(context.bakeLayer(ModelLayers.PLAYER));
             }
             modelMap.put(entityIn.getTrappedEntityTypeString(), model);
