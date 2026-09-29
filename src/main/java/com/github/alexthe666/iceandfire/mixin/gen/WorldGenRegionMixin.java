@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 @Mixin(WorldGenRegion.class)
 public class WorldGenRegionMixin {
     @WrapOperation(
-        method = {"ensureCanWrite", "getChunk(IILnet/minecraft/world/level/chunk/status/ChunkStatus;Z)Lnet/minecraft/world/level/chunk/ChunkAccess;"},
+        method = {"ensureCanWrite", "warnIfReadOutsideWriteZone"},
         at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;logAndPauseIfInIde(Ljava/lang/String;)V")
     )
     private void iaf$skipLog(final String message, final Operation<Void> original) {
