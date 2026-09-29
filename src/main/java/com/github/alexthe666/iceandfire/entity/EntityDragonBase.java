@@ -2,6 +2,7 @@ package com.github.alexthe666.iceandfire.entity;
 
 import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationHandler;
+import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.IAnimatedEntity;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
@@ -31,6 +32,7 @@ import com.github.alexthe666.iceandfire.pathfinding.raycoms.pathjobs.ICustomSize
 import com.github.alexthe666.iceandfire.world.DragonPosWorldData;
 import com.google.common.base.Predicate;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -69,6 +71,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.Path;
@@ -1113,10 +1116,11 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
             } else if (!level().isClientSide() && stack.isEmpty() && IafConfig.dragonDropSkull) {
                 if (this.getDeathStage() >= lastDeathStage - 1) {
                     ItemStack skull = getSkull().copy();
-                    skull.setTag(new CompoundTag());
-                    skull.getTag().putInt("Stage", this.getDragonStage());
-                    skull.getTag().putInt("DragonType", 0);
-                    skull.getTag().putInt("DragonAge", this.getAgeInDays());
+                    CompoundTag skullData = new CompoundTag();
+                    skullData.putInt("Stage", this.getDragonStage());
+                    skullData.putInt("DragonType", 0);
+                    skullData.putInt("DragonAge", this.getAgeInDays());
+                    CustomData.set(DataComponents.CUSTOM_DATA, skull, skullData);
                     this.setDeathStage(this.getDeathStage() + 1);
                     if (!level().isClientSide()) {
                         this.spawnAtLocation(skull, 1);
@@ -1907,6 +1911,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
             return;
         }
         currentAnimation = animation;
+        AnimationSync.synchronize(this, this);
     }
 
     @Override
