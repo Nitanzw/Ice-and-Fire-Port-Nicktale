@@ -46,7 +46,7 @@ public class WorldGenHydraCave extends Feature<NoneFeatureConfiguration> impleme
         BlockPos position = context.origin();
         ChunkGenerator generator = context.chunkGenerator();
 
-        if (rand.nextInt(IafConfig.generateHydraChance) != 0 || !IafWorldRegistry.isFarEnoughFromSpawn(worldIn, position) || !IafWorldRegistry.isFarEnoughFromDangerousGen(worldIn, position, getId())) {
+        if (rand.nextInt(com.github.alexthe666.iceandfire.util.WorldUtil.forceChance(IafConfig.generateHydraChance)) != 0 || !IafWorldRegistry.isFarEnoughFromSpawn(worldIn, position) || !IafWorldRegistry.isFarEnoughFromDangerousGen(worldIn, position, getId())) {
             return false;
         }
 

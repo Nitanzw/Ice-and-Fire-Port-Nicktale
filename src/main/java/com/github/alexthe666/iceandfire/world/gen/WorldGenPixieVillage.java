@@ -32,7 +32,7 @@ public class WorldGenPixieVillage extends Feature<NoneFeatureConfiguration> impl
         RandomSource rand = context.random();
         BlockPos position = context.origin();
 
-        if (rand.nextInt(IafConfig.spawnPixiesChance) != 0 || !IafWorldRegistry.isFarEnoughFromSpawn(worldIn, position)) {
+        if (rand.nextInt(com.github.alexthe666.iceandfire.util.WorldUtil.forceChance(IafConfig.spawnPixiesChance)) != 0 || !IafWorldRegistry.isFarEnoughFromSpawn(worldIn, position)) {
             return false;
         }
 

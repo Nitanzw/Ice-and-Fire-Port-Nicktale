@@ -217,6 +217,13 @@ public class WorldUtil {
         return yBlock > getDimensionMinHeight(dimensionType) && yBlock < getDimensionMaxHeight(dimensionType);
     }
 
+    /** Development aid: with the IAF_WORLDGEN environment variable set every chance roll succeeds. */
+    private static final boolean FORCE_GEN = System.getenv("IAF_WORLDGEN") != null;
+
+    public static int forceChance(int configChance) {
+        return FORCE_GEN ? 1 : configChance;
+    }
+
     public static boolean canGenerate(int configChance, final WorldGenLevel level, final RandomSource random, final BlockPos origin, final String id, boolean checkFluid) {
         return canGenerate(configChance, level, random, origin, id, IafWorldData.FeatureType.SURFACE, checkFluid);
     }
@@ -225,7 +232,7 @@ public class WorldUtil {
         if (checkFluid && !level.getFluidState(origin).isEmpty())
             return false;
 
-        return random.nextInt(configChance) == 0
+        return random.nextInt(FORCE_GEN ? 1 : configChance) == 0
                 && IafWorldRegistry.isFarEnoughFromSpawn(level, origin)
                 && IafWorldRegistry.isFarEnoughFromDangerousGen(level, origin, id, type);
     }

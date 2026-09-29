@@ -58,7 +58,7 @@ public abstract class WorldGenDragonCave extends Feature<NoneFeatureConfiguratio
         WorldGenLevel worldIn = context.level();
         RandomSource rand = context.random();
         BlockPos position = context.origin();
-        if (rand.nextInt(IafConfig.generateDragonDenChance) != 0 || !IafWorldRegistry.isFarEnoughFromSpawn(worldIn, position) || !IafWorldRegistry.isFarEnoughFromDangerousGen(worldIn, position, getId(), getFeatureType())) {
+        if (rand.nextInt(com.github.alexthe666.iceandfire.util.WorldUtil.forceChance(IafConfig.generateDragonDenChance)) != 0 || !IafWorldRegistry.isFarEnoughFromSpawn(worldIn, position) || !IafWorldRegistry.isFarEnoughFromDangerousGen(worldIn, position, getId(), getFeatureType())) {
             return false;
         }
         isMale = rand.nextBoolean();

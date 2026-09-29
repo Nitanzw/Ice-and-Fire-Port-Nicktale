@@ -117,7 +117,7 @@ public class CommonProxy {
 
     public void setup() {
         NeoForge.EVENT_BUS.register(new ServerEvents());
-        if (Boolean.getBoolean("iaf.smoketest")) {
+        if (Boolean.getBoolean("iaf.smoketest") || System.getenv("IAF_WORLDGEN") != null) {
             NeoForge.EVENT_BUS.register(new com.github.alexthe666.iceandfire.event.DevSmokeTest());
         }
     }
