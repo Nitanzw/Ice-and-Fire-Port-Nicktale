@@ -93,7 +93,7 @@ public class EntityDeathWorm extends TamableAnimal implements ISyncMount, ICusto
     private int animationTick;
     private boolean willExplode = false;
     private int ticksTillExplosion = 60;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private EntityMutlipartPart[] segments = new EntityMutlipartPart[6];
     private boolean isSandNavigator;
     private final float prevScale = 0.0F;

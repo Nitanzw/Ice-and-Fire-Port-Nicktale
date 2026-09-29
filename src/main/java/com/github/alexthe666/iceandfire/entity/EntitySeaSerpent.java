@@ -102,7 +102,7 @@ public class EntitySeaSerpent extends Animal implements IAnimatedEntity, IMultip
     //true  = melee, false = ranged
     public boolean attackDecision = false;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private EntityMutlipartPart[] segments = new EntityMutlipartPart[9];
     private float lastScale;
     private boolean isLandNavigator;

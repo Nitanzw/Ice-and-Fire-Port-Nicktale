@@ -66,7 +66,7 @@ public class EntityGhost extends Monster implements IAnimatedEntity, IVillagerFe
     public static Animation ANIMATION_SCARE;
     public static Animation ANIMATION_HIT;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
 
 
     public EntityGhost(EntityType<EntityGhost> type, Level worldIn) {

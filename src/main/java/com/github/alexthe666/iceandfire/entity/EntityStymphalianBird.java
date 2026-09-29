@@ -71,7 +71,7 @@ public class EntityStymphalianBird extends Monster implements IAnimatedEntity, E
     public BlockPos airTarget;
     public StymphalianBirdFlock flock;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private boolean isFlying;
     private int flyTicks;
     private int launchTicks;

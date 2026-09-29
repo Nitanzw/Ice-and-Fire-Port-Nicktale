@@ -55,7 +55,7 @@ public class EntityDreadGhoul extends EntityDreadMob implements IAnimatedEntity,
     public static Animation ANIMATION_SPAWN = Animation.create(40);
     public static Animation ANIMATION_SLASH = Animation.create(25);
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private int hostileTicks = 0;
     private float firstWidth = 1.0F;
     private float firstHeight = 1.0F;

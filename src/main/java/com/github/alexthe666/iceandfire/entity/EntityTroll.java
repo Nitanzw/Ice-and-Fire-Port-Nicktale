@@ -74,7 +74,7 @@ public class EntityTroll extends Monster implements IAnimatedEntity, IVillagerFe
     private static final EntityDataAccessor<Integer> WEAPON = SynchedEntityData.defineId(EntityTroll.class, EntityDataSerializers.INT);
     public float stoneProgress;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private boolean avoidSun = true;
 
     public EntityTroll(EntityType<EntityTroll> t, Level worldIn) {

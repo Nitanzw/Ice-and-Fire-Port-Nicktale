@@ -72,7 +72,7 @@ public class EntityCyclops extends Monster implements IAnimatedEntity, IBlacklis
     public static Animation ANIMATION_ROAR;
     public EntityCyclopsEye eyeEntity;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
 
     public EntityCyclops(EntityType<EntityCyclops> type, Level worldIn) {
         super(type, worldIn);

@@ -220,7 +220,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     private int prevFlightCycle;
     private boolean isModelDead;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private float lastScale;
 
     private EntityDragonPart headPart;
@@ -601,6 +601,7 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
+        builder.define(SWIMMING, Boolean.FALSE);
         builder.define(HUNGER, 0);
         builder.define(AGE_TICKS, 0);
         builder.define(GENDER, false);

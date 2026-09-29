@@ -53,7 +53,7 @@ public class EntityDreadThrall extends EntityDreadMob implements IAnimatedEntity
     private static final EntityDataAccessor<Integer> CUSTOM_ARMOR_INDEX = SynchedEntityData.defineId(EntityDreadThrall.class, EntityDataSerializers.INT);
     public static Animation ANIMATION_SPAWN = Animation.create(40);
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
 
     public EntityDreadThrall(EntityType type, Level worldIn) {
         super(type, worldIn);

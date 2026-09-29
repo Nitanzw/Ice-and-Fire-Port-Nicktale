@@ -107,7 +107,7 @@ public class EntityHippogryph extends TamableAnimal implements ISyncMount, IAnim
     private boolean isHovering;
     private boolean isFlying;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private int flyTicks;
     private int hoverTicks;
     private boolean hasChestVarChanged = false;

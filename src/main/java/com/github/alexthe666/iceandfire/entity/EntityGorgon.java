@@ -49,7 +49,7 @@ public class EntityGorgon extends Monster implements IAnimatedEntity, IVillagerF
     public static Animation ANIMATION_SCARE;
     public static Animation ANIMATION_HIT;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private GorgonAIStareAttack aiStare;
     private MeleeAttackGoal aiMelee;
     private int playerStatueCooldown;

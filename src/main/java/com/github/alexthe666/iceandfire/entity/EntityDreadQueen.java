@@ -42,7 +42,7 @@ public class EntityDreadQueen extends EntityDreadMob implements IAnimatedEntity,
     public static Animation ANIMATION_SPAWN = Animation.create(40);
     private final ServerBossEvent bossInfo = (new ServerBossEvent(java.util.UUID.randomUUID(), this.getDisplayName(), BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.PROGRESS));
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
 
     public EntityDreadQueen(EntityType t, Level worldIn) {
         super(t, worldIn);

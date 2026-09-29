@@ -58,7 +58,7 @@ public class EntityDreadKnight extends EntityDreadMob implements IAnimatedEntity
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(EntityDreadKnight.class, EntityDataSerializers.INT);
     public static Animation ANIMATION_SPAWN = Animation.create(40);
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
 
     public EntityDreadKnight(EntityType type, Level worldIn) {
         super(type, worldIn);

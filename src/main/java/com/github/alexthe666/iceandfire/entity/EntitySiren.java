@@ -87,7 +87,7 @@ public class EntitySiren extends Monster implements IAnimatedEntity, IVillagerFe
     public float swimProgress;
     public int singCooldown;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private boolean isSinging;
     private boolean isSwimming;
     private boolean isLandNavigator;

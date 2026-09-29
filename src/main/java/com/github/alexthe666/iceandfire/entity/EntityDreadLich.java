@@ -62,7 +62,7 @@ public class EntityDreadLich extends EntityDreadMob implements IAnimatedEntity, 
     private final DreadLichAIStrife aiArrowAttack = new DreadLichAIStrife(this, 1.0D, 20, 15.0F);
     private final MeleeAttackGoal aiAttackOnCollide = new MeleeAttackGoal(this, 1.0D, false);
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private int fireCooldown = 0;
     private int minionCooldown = 0;
 

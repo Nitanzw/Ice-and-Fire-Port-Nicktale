@@ -69,7 +69,7 @@ public class EntityHydra extends Monster implements IAnimatedEntity, IMultipartE
     public int[] breathTicks = new int[HEADS];
     public float[] headDamageTracker = new float[HEADS];
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private EntityHydraHead[] headBoxes = new EntityHydraHead[HEADS * 9];
     private int strikeCooldown = 0;
     private int breathCooldown = 0;

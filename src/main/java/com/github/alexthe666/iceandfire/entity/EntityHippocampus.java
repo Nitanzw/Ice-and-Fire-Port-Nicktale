@@ -91,7 +91,7 @@ public class EntityHippocampus extends TamableAnimal implements ISyncMount, IAni
     public SimpleContainer inventory;
     public float sitProgress;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private ItemStacksResourceHandler itemHandler;
 
     public EntityHippocampus(EntityType<? extends EntityHippocampus> entityType, Level worldIn) {

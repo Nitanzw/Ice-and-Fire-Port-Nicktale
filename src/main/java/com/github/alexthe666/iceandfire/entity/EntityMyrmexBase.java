@@ -95,7 +95,7 @@ public abstract class EntityMyrmexBase extends Animal implements IAnimatedEntity
     }
     private int waitTicks = 0;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private MyrmexHive hive;
     private int timeUntilReset;
     private boolean leveledUp;

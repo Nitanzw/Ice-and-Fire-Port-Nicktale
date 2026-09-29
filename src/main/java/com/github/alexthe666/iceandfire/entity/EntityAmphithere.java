@@ -90,7 +90,7 @@ public class EntityAmphithere extends TamableAnimal implements ISyncMount, IAnim
     protected FlightBehavior flightBehavior = FlightBehavior.WANDER;
     protected int ticksCircling = 0;
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private int flapTicks = 0;
     private int flightCooldown = 0;
     private int ticksFlying = 0;

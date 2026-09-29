@@ -56,7 +56,7 @@ public class EntityDreadScuttler extends EntityDreadMob implements IAnimatedEnti
     public static Animation ANIMATION_SPAWN = Animation.create(40);
     public static Animation ANIMATION_BITE = Animation.create(15);
     private int animationTick;
-    private Animation currentAnimation;
+    private Animation currentAnimation = com.nicktale.api.animation.IAnimatedEntity.NO_ANIMATION;
     private float firstWidth = -1.0F;
     private float firstHeight = -1.0F;
 
