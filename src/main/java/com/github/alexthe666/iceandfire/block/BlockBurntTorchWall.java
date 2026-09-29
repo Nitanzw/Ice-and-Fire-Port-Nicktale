@@ -1,7 +1,7 @@
 package com.github.alexthe666.iceandfire.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
@@ -14,13 +14,13 @@ public class BlockBurntTorchWall extends WallTorchBlock implements IDreadBlock {
 
     public BlockBurntTorchWall() {
         super(
+            ParticleTypes.FLAME,
             Properties.of()
                     .mapColor(MapColor.WOOD)
                     .ignitedByLava()
                     .lightLevel((state) -> 0)
                     .sound(SoundType.WOOD).noOcclusion().dynamicShape()
-                    .noCollision(),
-            DustParticleOptions.REDSTONE
+                    .noCollision()
         );
     }
 

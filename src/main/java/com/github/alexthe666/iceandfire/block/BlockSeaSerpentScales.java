@@ -32,7 +32,6 @@ public class BlockSeaSerpentScales extends Block {
         this.name = name;
     }
 
-    @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
         tooltip.add(Component.translatable("sea_serpent." + name).withStyle(color));
     }

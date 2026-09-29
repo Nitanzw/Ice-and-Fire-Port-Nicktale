@@ -33,7 +33,6 @@ public class BlockDragonScales extends Block implements IDragonProof {
     }
 
 
-    @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable BlockGetter worldIn, List<Component> tooltip, @NotNull TooltipFlag flagIn) {
         tooltip.add(Component.translatable("dragon." + type.toString().toLowerCase()).withStyle(type.color));
     }

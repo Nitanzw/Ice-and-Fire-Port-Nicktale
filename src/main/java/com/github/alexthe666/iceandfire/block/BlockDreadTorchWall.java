@@ -4,7 +4,7 @@ import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.enums.EnumParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
@@ -18,6 +18,7 @@ public class BlockDreadTorchWall extends WallTorchBlock implements IDreadBlock {
 
     public BlockDreadTorchWall() {
         super(
+            ParticleTypes.FLAME,
             Properties
                 .of()
                 .mapColor(MapColor.WOOD)
@@ -28,8 +29,7 @@ public class BlockDreadTorchWall extends WallTorchBlock implements IDreadBlock {
                 .noOcclusion()
                 .dynamicShape()
                 .noCollision()
-                .dropsLike(IafBlockRegistry.DREAD_TORCH.get()),
-            DustParticleOptions.REDSTONE
+                .overrideLootTable(IafBlockRegistry.DREAD_TORCH.get().getLootTable())
         );
     }
 
