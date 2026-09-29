@@ -1,14 +1,9 @@
 package com.github.alexthe666.iceandfire.item;
 
-import net.minecraft.world.entity.EntitySpawnReason;
-import com.github.alexthe666.iceandfire.util.IafEntityUtil;
-import com.github.alexthe666.iceandfire.util.IafDamage;
-import net.minecraft.world.entity.EntityTypes;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.EntityFireDragon;
 import com.github.alexthe666.iceandfire.entity.EntityIceDragon;
 import com.github.alexthe666.iceandfire.entity.props.EntityDataProvider;
-import com.github.alexthe666.iceandfire.event.ServerEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -17,6 +12,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -34,20 +30,20 @@ public class ItemAlchemySword extends Item {
     public void hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         if (this == IafItemRegistry.DRAGONBONE_SWORD_FIRE.get() && IafConfig.dragonWeaponFireAbility) {
             if (target instanceof EntityIceDragon) {
-                IafDamage.hurt(target, attacker.level().damageSources().inFire(), 13.5F);
+                target.hurt(attacker.level().damageSources().inFire(), 13.5F);
             }
-            target.igniteForSeconds(5);
-            IafEntityUtil.knockback(target, 1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            target.setSecondsOnFire(5);
+            target.knockback(1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (this == IafItemRegistry.DRAGONBONE_SWORD_ICE.get() && IafConfig.dragonWeaponIceAbility) {
             if (target instanceof EntityFireDragon) {
-                IafDamage.hurt(target, attacker.level().damageSources().drown(), 13.5F);
+                target.hurt(attacker.level().damageSources().drown(), 13.5F);
             }
 
             EntityDataProvider.getCapability(target).ifPresent(data -> data.frozenData.setFrozen(target, 200));
-            target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 2));
-            target.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 100, 2));
-            IafEntityUtil.knockback(target, 1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));
+            target.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 100, 2));
+            target.knockback(1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         if (this == IafItemRegistry.DRAGONBONE_SWORD_LIGHTNING.get() && IafConfig.dragonWeaponLightningAbility) {
             boolean flag = true;
@@ -57,18 +53,17 @@ public class ItemAlchemySword extends Item {
                 }
             }
             if (!attacker.level().isClientSide() && flag) {
-                LightningBolt lightningboltentity = EntityTypes.LIGHTNING_BOLT.create(target.level(), EntitySpawnReason.EVENT);
-                lightningboltentity.getTags().add(ServerEvents.BOLT_DONT_DESTROY_LOOT);
-                lightningboltentity.getTags().add(attacker.getStringUUID());
-                lightningboltentity.moveTo(target.position());
-                if (!target.level().isClientSide()) {
+                LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(target.level());
+                if (lightningboltentity != null) {
+                    lightningboltentity.setCause(attacker instanceof ServerPlayer player ? player : null);
+                    lightningboltentity.setPos(target.position());
                     target.level().addFreshEntity(lightningboltentity);
                 }
             }
             if (target instanceof EntityFireDragon || target instanceof EntityIceDragon) {
-                IafDamage.hurt(target, attacker.level().damageSources().lightningBolt(), 9.5F);
+                target.hurt(attacker.level().damageSources().lightningBolt(), 9.5F);
             }
-            IafEntityUtil.knockback(target, 1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
+            target.knockback(1F, attacker.getX() - target.getX(), attacker.getZ() - target.getZ());
         }
         super.hurtEnemy(stack, target, attacker);
     }

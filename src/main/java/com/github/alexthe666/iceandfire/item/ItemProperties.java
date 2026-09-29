@@ -40,11 +40,11 @@ public final class ItemProperties {
     }
 
     public static Item.Properties armor(CustomArmorMaterial material, ArmorType type) {
-        return withRepairIngredient(Item.Properties.humanoidArmor(material.toArmorMaterial(), type), material::getRepairIngredient);
+        return withRepairIngredient(IafItemRegistry.itemProperties().humanoidArmor(material.toArmorMaterial(), type), material::getRepairIngredient);
     }
 
     public static Item.Properties sword(CustomToolMaterial material, float attackDamage, float attackSpeed) {
-        float dragonsteelDamage = IafConfig.dragonsteelBaseDamage - 1.0F;
+        float dragonsteelDamage = (float) IafConfig.dragonsteelBaseDamage - 1.0F;
         Item.Properties properties = IafItemRegistry.itemProperties().sword(toVanillaToolMaterial(material),
             attackDamageBaseline(material, attackDamage, dragonsteelDamage), attackSpeed);
         return withRepairIngredient(withMaterialDurability(material, properties), material::getRepairIngredient);
@@ -52,13 +52,13 @@ public final class ItemProperties {
 
     public static Item.Properties pickaxe(CustomToolMaterial material, float attackDamage, float attackSpeed) {
         Item.Properties properties = IafItemRegistry.itemProperties().pickaxe(toVanillaToolMaterial(material),
-            attackDamageBaseline(material, attackDamage, IafConfig.dragonsteelBaseDamage), attackSpeed);
+            attackDamageBaseline(material, attackDamage, (float) IafConfig.dragonsteelBaseDamage), attackSpeed);
         return withRepairIngredient(withMaterialDurability(material, properties), material::getRepairIngredient);
     }
 
     public static Item.Properties axe(CustomToolMaterial material, float attackDamage, float attackSpeed) {
         Item.Properties properties = IafItemRegistry.itemProperties().axe(toVanillaToolMaterial(material),
-            attackDamageBaseline(material, attackDamage, IafConfig.dragonsteelBaseDamage + 4.0F), attackSpeed);
+            attackDamageBaseline(material, attackDamage, (float) IafConfig.dragonsteelBaseDamage + 4.0F), attackSpeed);
         return withRepairIngredient(withMaterialDurability(material, properties), material::getRepairIngredient);
     }
 
@@ -70,7 +70,7 @@ public final class ItemProperties {
 
     public static Item.Properties shovel(CustomToolMaterial material, float attackDamage, float attackSpeed) {
         Item.Properties properties = IafItemRegistry.itemProperties().shovel(toVanillaToolMaterial(material),
-            attackDamageBaseline(material, attackDamage, IafConfig.dragonsteelBaseDamage + 0.5F), attackSpeed);
+            attackDamageBaseline(material, attackDamage, (float) IafConfig.dragonsteelBaseDamage + 0.5F), attackSpeed);
         return withRepairIngredient(withMaterialDurability(material, properties), material::getRepairIngredient);
     }
 
