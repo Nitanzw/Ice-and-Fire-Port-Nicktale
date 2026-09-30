@@ -7,6 +7,7 @@ import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -70,6 +71,17 @@ public final class IafArmorModels {
         return null;
     }
 
+    /** Same part split as the vanilla per-slot armor models. */
+    private static void showOnly(ArmorModelBase model, ArmorType type) {
+        model.head.visible = type == ArmorType.HELMET;
+        model.hat.visible = type == ArmorType.HELMET;
+        model.body.visible = type == ArmorType.CHESTPLATE || type == ArmorType.LEGGINGS;
+        model.rightArm.visible = type == ArmorType.CHESTPLATE;
+        model.leftArm.visible = type == ArmorType.CHESTPLATE;
+        model.rightLeg.visible = type == ArmorType.LEGGINGS || type == ArmorType.BOOTS;
+        model.leftLeg.visible = type == ArmorType.LEGGINGS || type == ArmorType.BOOTS;
+    }
+
     @SubscribeEvent
     public static void register(RegisterClientExtensionsEvent event) {
         for (Item item : BuiltInRegistries.ITEM) {
@@ -85,7 +97,12 @@ public final class IafArmorModels {
                 @Override
                 public Model getHumanoidArmorModel(ItemStack stack, EquipmentClientInfo.LayerType layerType, Model original) {
                     boolean inner = layerType == EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS;
-                    return CACHE.computeIfAbsent(asset + inner, key -> factory.apply(inner));
+                    // One instance per slot: rendering is deferred, so a shared model would show whichever visibility was set last.
+                    return CACHE.computeIfAbsent(asset + inner + armor.getArmorType(), key -> {
+                        ArmorModelBase model = factory.apply(inner);
+                        showOnly(model, armor.getArmorType());
+                        return model;
+                    });
                 }
             }, item);
         }
