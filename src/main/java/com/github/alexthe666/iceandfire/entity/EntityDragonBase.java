@@ -569,6 +569,10 @@ public abstract class EntityDragonBase extends TamableAnimal implements IPassabi
 
     @Override
     public void remove(Entity.@NotNull RemovalReason reason) {
+        if (reason == RemovalReason.KILLED && !level().isClientSide()) {
+            // /kill and the end of the death animation remove the dragon without a death event
+            com.github.alexthe666.iceandfire.event.DragonRespawnEvents.markFreed(this);
+        }
         removeParts();
         super.remove(reason);
     }

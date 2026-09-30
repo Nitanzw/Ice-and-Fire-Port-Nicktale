@@ -20,7 +20,10 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 public class DragonRespawnEvents {
     private static final int CHECK_INTERVAL_TICKS = 1200;
 
-    private static void markFreed(EntityDragonBase dragon) {
+    public static void markFreed(EntityDragonBase dragon) {
+        if (dragon.level().getServer() == null) {
+            return;
+        }
         DragonRespawnData data = DragonRespawnData.get(dragon.level().getServer());
         data.drainPending(); // sites registered by worldgen threads may not be merged yet
         IceAndFire.LOGGER.info("Dragon {} ({}) is gone, checking its site", dragon.getUUID(), dragon.getType());
