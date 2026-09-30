@@ -29,6 +29,16 @@ public class DevSmokeTest {
         }
         commands = new java.util.ArrayDeque<>();
         java.util.List<String> loads = new java.util.ArrayList<>();
+        if ("ores".equals(System.getenv("IAF_WORLDGEN"))) {
+            loads.add("execute in minecraft:overworld run forceload add 12000 12000 12200 12200");
+            commands.add("#orecount 12000 12000 12200 12200");
+            commands = withLoads(loads, commands);
+            for (int w = 0; w < 60; w++) {
+                commands.add("#wait");
+            }
+            commands.add("#orecount 12000 12000 12200 12200");
+            return;
+        }
         if ("respawn1".equals(System.getenv("IAF_WORLDGEN"))) {
             loads.add("execute in minecraft:overworld run forceload add 15952 -48 16048 48");
             commands.add("execute in minecraft:overworld run place feature iceandfire:fire_dragon_roost 16000 @Y@ 0");
@@ -68,9 +78,9 @@ public class DevSmokeTest {
             String[] names = {"minecraft:ore_iron", "silver_ore", "sapphire_ore"};
             int n = 0;
             for (String f : names) {
-                for (int k = 0; k < 2; k++) {
+                for (int k = 0; k < 8; k++) {
                     int x = 12000 + 400 * n++;
-                    loads.add("execute in minecraft:overworld run forceload add " + (x - 32) + " -32 " + (x + 32) + " 32");
+                    loads.add("execute in minecraft:overworld run forceload add " + (x - 16) + " -16 " + (x + 16) + " 16");
                     String y = f.endsWith("_ore") || f.endsWith("ore_iron") ? "20" : "@Y@";
                     commands.add("execute in minecraft:overworld run place feature " + (f.contains(":") ? f : "iceandfire:" + f) + " " + x + " " + y + " 0");
                 }
@@ -128,6 +138,48 @@ public class DevSmokeTest {
         }
         String cmd = commands.poll();
         if (cmd.equals("#wait")) {
+            return;
+        }
+        if (cmd.startsWith("#orecount")) {
+            String[] tk = cmd.split(" ");
+            int x0 = Integer.parseInt(tk[1]) >> 4;
+            int z0 = Integer.parseInt(tk[2]) >> 4;
+            int x1 = Integer.parseInt(tk[3]) >> 4;
+            int z1 = Integer.parseInt(tk[4]) >> 4;
+            var lvl = server.overworld();
+            java.util.Map<String, Integer> counts = new java.util.TreeMap<>();
+            int chunks = 0;
+            for (int cx = x0; cx <= x1; cx++) {
+                for (int cz = z0; cz <= z1; cz++) {
+                    var chunk = lvl.getChunkSource().getChunkNow(cx, cz);
+                    if (chunk == null) {
+                        continue;
+                    }
+                    chunks++;
+                    for (int sy = chunk.getMinSectionY(); sy < chunk.getMaxSectionY(); sy++) {
+                        var section = chunk.getSection(chunk.getSectionIndexFromSectionY(sy));
+                        if (section.hasOnlyAir()) {
+                            continue;
+                        }
+                        for (int x = 0; x < 16; x++) {
+                            for (int y = 0; y < 16; y++) {
+                                for (int z = 0; z < 16; z++) {
+                                    var st = section.getBlockState(x, y, z);
+                                    if (!st.isAir()) {
+                                        var key = BuiltInRegistries.BLOCK.getKey(st.getBlock());
+                                        if (key.getNamespace().equals(IceAndFire.MODID) && key.getPath().contains("ore")) {
+                                            counts.merge(key.getPath(), 1, Integer::sum);
+                                        } else if (key.getPath().equals("iron_ore") || key.getPath().equals("coal_ore")) {
+                                            counts.merge("minecraft:" + key.getPath(), 1, Integer::sum);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            IceAndFire.LOGGER.info("SMOKETEST ores in {} loaded chunks: {}", chunks, counts);
             return;
         }
         if (cmd.startsWith("#count")) {
