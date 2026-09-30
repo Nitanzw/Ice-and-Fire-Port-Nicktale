@@ -241,7 +241,7 @@ public abstract class WorldGenDragonRoosts extends Feature<NoneFeatureConfigurat
         dragon.hasHomePosition = true;
         dragon.setHunger(50);
         context.level().addFreshEntity(dragon);
-        com.github.alexthe666.iceandfire.world.DragonRespawnData.register(getId(), context.level().getLevel().dimension().identifier().toString(), context.origin(), dragon.getUUID());
+        com.github.alexthe666.iceandfire.world.DragonRespawnData.register(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(getDragonType()).withSuffix("_roost").toString(), context.level().getLevel().dimension().identifier().toString(), context.origin(), dragon.getUUID());
     }
 
     protected abstract EntityType<? extends EntityDragonBase> getDragonType();
