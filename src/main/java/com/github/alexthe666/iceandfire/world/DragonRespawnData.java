@@ -84,6 +84,7 @@ public class DragonRespawnData extends SavedData {
             Site site = sites.get(i);
             if (dragon.equals(site.dragon()) && site.freedAt() == 0L) {
                 sites.set(i, new Site(site.featureId(), site.dimension(), site.origin(), site.dragon(), System.currentTimeMillis()));
+                IceAndFire.LOGGER.info("Dragon site {} at {} freed, respawning in {} ms", site.featureId(), site.origin(), RESPAWN_MILLIS);
                 setDirty();
             }
         }

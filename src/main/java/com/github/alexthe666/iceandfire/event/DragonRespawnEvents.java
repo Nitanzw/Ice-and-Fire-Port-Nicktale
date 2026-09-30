@@ -23,6 +23,7 @@ public class DragonRespawnEvents {
     private static void markFreed(EntityDragonBase dragon) {
         DragonRespawnData data = DragonRespawnData.get(dragon.level().getServer());
         data.drainPending(); // sites registered by worldgen threads may not be merged yet
+        IceAndFire.LOGGER.info("Dragon {} ({}) is gone, checking its site", dragon.getUUID(), dragon.getType());
         data.markFreed(dragon.getUUID());
     }
 
