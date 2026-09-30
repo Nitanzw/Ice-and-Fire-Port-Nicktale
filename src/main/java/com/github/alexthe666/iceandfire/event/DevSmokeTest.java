@@ -29,6 +29,25 @@ public class DevSmokeTest {
         }
         commands = new java.util.ArrayDeque<>();
         java.util.List<String> loads = new java.util.ArrayList<>();
+        if ("respawn1".equals(System.getenv("IAF_WORLDGEN"))) {
+            loads.add("execute in minecraft:overworld run forceload add 15952 -48 16048 48");
+            commands.add("execute in minecraft:overworld run place feature iceandfire:fire_dragon_roost 16000 @Y@ 0");
+            commands.add("#count after placing");
+            for (int w = 0; w < 5; w++) {
+                commands.add("#wait");
+            }
+            commands.add("execute in minecraft:overworld run kill @e[type=iceandfire:fire_dragon]");
+            commands.add("#count after kill");
+            commands = withLoads(loads, commands);
+            return;
+        }
+        if ("respawn2".equals(System.getenv("IAF_WORLDGEN"))) {
+            for (int w = 0; w < 130; w++) {
+                commands.add("#wait");
+            }
+            commands.add("#count after restart and respawn window");
+            return;
+        }
         if ("respawn".equals(System.getenv("IAF_WORLDGEN"))) {
             loads.add("execute in minecraft:overworld run forceload add 15952 -48 16048 48");
             commands.add("execute in minecraft:overworld run place feature iceandfire:fire_dragon_roost 16000 @Y@ 0");
