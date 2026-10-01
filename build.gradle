@@ -96,5 +96,12 @@ tasks.named('processResources', ProcessResources) {
     }
 }
 
+// LGPL-3.0: the license text and the modification notice travel inside every jar
+tasks.named('jar', Jar) {
+    from(rootProject.file('LICENSE')) { into 'META-INF' }
+    from(rootProject.file('NOTICE.md')) { into 'META-INF' }
+    from(rootProject.file('COPYING')) { into 'META-INF' }   // GPL-3.0 text, which the LGPL builds on
+}
+
 // Mismo codigo para Minecraft 26.2 y 26.3 (ver gradle/mc-preprocess.gradle)
 apply from: 'gradle/mc-preprocess.gradle'

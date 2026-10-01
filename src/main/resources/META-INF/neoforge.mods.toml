@@ -1,15 +1,17 @@
 modLoader = "javafml"
 loaderVersion = "[4,)"
 license = "LGPL-3.0-only"
-issueTrackerURL = "https://github.com/Alex-the-666/ice-and-fire/issues"
+issueTrackerURL = "https://github.com/Nitanzw/Ice-and-Fire-Port-Nicktale/issues"
 
 [[mods]]
 modId = "iceandfire"
 version = "${mod_version}"
-displayName = "Ice and Fire"
-displayURL = "https://www.curseforge.com/minecraft/mc-mods/ice-and-fire-dragons"
+displayName = "Ice and Fire (Nicktale port)"
+displayURL = "https://github.com/Nitanzw/Ice-and-Fire-Port-Nicktale"
 authors = "Raptorfarian, Alexthe666; Nicktale port by Nicolas"
-description = '''Unofficial NeoForge port of Ice and Fire. Dragons and other mythological creatures in Minecraft.'''
+credits = "Ice and Fire was created by Raptorfarian and Alexthe666 and their contributors. Unofficial port, not affiliated with or endorsed by them."
+description = '''Unofficial NeoForge port of Ice and Fire. Dragons and other mythological creatures in Minecraft.
+Licensed under LGPL-3.0; source code: https://github.com/Nitanzw/Ice-and-Fire-Port-Nicktale'''
 
 [[dependencies.iceandfire]]
 modId = "neoforge"
