@@ -19,7 +19,7 @@ Al terminar, cada agente entrega un reporte en Markdown (formato al final) y la 
 ## 1. Proyecto
 
 - Repo: `/home/user/Ice-and-Fire-Port-Nicktale`, rama `main`.
-- Mod: port no oficial de Ice and Fire a **NeoForge 26.2 (MC 26.2)**. Necesita la **Nicktale API** (`nicktale-api/`, mismo repo).
+- Mod: port no oficial de Ice and Fire a **NeoForge 26.2 (MC 26.2)**. Necesita la **Nicktale API** (submódulo `nicktale-api/` → repo Nitanzw/Nicktale-API; clonar con `--recurse-submodules`).
 - Java 25 (toolchain de Gradle), Gradle wrapper en la raíz. Código: `src/main` (común), `src/client` (cliente).
 - Jars ya construidos en `dist/` (`iceandfire-nicktale-…jar` y `nicktaleapi-…jar`, van los dos en `mods/`).
 

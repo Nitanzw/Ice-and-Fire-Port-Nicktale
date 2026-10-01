@@ -1,0 +1,3 @@
+[submodule "nicktale-api"]
+	path = nicktale-api
+	url = https://github.com/Nitanzw/Nicktale-API.git

@@ -9,7 +9,7 @@
 - **Jars para probar:** carpeta `dist/` del repo (ignorada por git) y los que te mandé por el chat:
   `iceandfire-nicktale-0.1.0-neoforge-26.2.jar` + `nicktaleapi-0.1.0-neoforge-26.2.jar` (van **los dos** en `mods/`).
   Los jars de `dist/` hay que regenerarlos con `./gradlew build` si cambias algo.
-- **Nicktale API:** carpeta `nicktale-api/` dentro del mismo repo (todavía no es un repo aparte, ver "Pendiente").
+- **Nicktale API:** repo propio https://github.com/Nitanzw/Nicktale-API (privado), incluido aquí como submódulo en `nicktale-api/`.
 - **Documentos:** `docs/AGENT_TEST_PLAN.md` (plan para que otras IAs testeen), este archivo, `docs/reports/` (para reportes de QA).
 
 ## Qué se hizo (resumen por bloques)
@@ -57,11 +57,10 @@ En `nicktale-api/src/main/java/com/nicktale/api/`:
 - **Respawn con las 12 h reales** (sólo se probó con 20 s).
 - Render simplificado: portal dread, fantasma, grietas de hielo (funcionan; no son idénticos al original).
 - Mundo: 7 features (cueva del cíclope, cueva de dragón de fuego, flores, etc.) dependen de terreno/bioma; sin evidencia de bug.
-- **Separar la API en su propio repo** y decidir la licencia (ver abajo).
+- **Decidir la licencia** de la API y del código nuevo (ver abajo). La API ya es un repo aparte.
 
 ## Sobre separar la API y la licencia (decisión tuya)
-- Para dos repos hace falta crear uno nuevo en GitHub (nombre y si será público o privado). Hecho eso, la API se puede
-  extraer con su historial (`git subtree split --prefix=nicktale-api`).
+- La API ya está en su propio repo (privado): Nitanzw/Nicktale-API.
 - Hoy la API declara `LGPL-3.0-or-later` (`nicktale-api/gradle.properties`, `mod_license`). **LGPL permite que cualquiera use,
   modifique y redistribuya** el código (incluso comercialmente) con ciertas condiciones, así que no sirve para cobrar.
   Si quieres que se pague por usarlo, hay que cambiar la licencia de la API (y del código nuevo del port) a una propietaria
