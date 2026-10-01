@@ -34,10 +34,12 @@ import javax.annotation.Nullable;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.DRAGONFORGE_CORE;
 
 public class BlockDragonforgeCore extends BaseEntityBlock implements IDragonProof, INoTab {
+    //#if MC < 26.3
     private static final MapCodec<BlockDragonforgeCore> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Codec.INT.fieldOf("dragon_type").forGetter(block -> block.isFire),
         Codec.BOOL.fieldOf("activated").forGetter(block -> block.activated)
     ).apply(instance, BlockDragonforgeCore::new));
+    //#endif
     private static boolean keepInventory;
     private final int isFire;
     private final boolean activated;
@@ -60,10 +62,12 @@ public class BlockDragonforgeCore extends BaseEntityBlock implements IDragonProo
         return "dragonforge_%s_core%s".formatted(DragonType.getNameFromInt(dragonType), activated ? "": "_disabled");
     }
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
+    //#endif
 
     public static boolean keepsInventoryDuringStateChange() {
         return keepInventory;

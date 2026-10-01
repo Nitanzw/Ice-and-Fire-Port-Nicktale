@@ -1,0 +1,226 @@
+# Reglas de fuente 26.2 -> 26.3 aplicadas por mc-preprocess.gradle (literal; prefijo "re:" = regex).
+# Clases de render movidas de com.mojang.blaze3d a com.mojang.renderpearl:
+re:\bcom\.mojang\.blaze3d\.vulkan\.checkpoints\.AbstractCheckpointStorage\b => com.mojang.renderpearl.backend.vulkan.checkpoints.AbstractCheckpointStorage
+re:\bcom\.mojang\.blaze3d\.vulkan\.checkpoints\.NvidiaCheckpointExtension\b => com.mojang.renderpearl.backend.vulkan.checkpoints.NvidiaCheckpointExtension
+re:\bcom\.mojang\.blaze3d\.vulkan\.checkpoints\.NoopCheckpointExtension\b => com.mojang.renderpearl.backend.vulkan.checkpoints.NoopCheckpointExtension
+re:\bcom\.mojang\.blaze3d\.vulkan\.checkpoints\.AmdCheckpointExtension\b => com.mojang.renderpearl.backend.vulkan.checkpoints.AmdCheckpointExtension
+re:\bcom\.mojang\.blaze3d\.vulkan\.checkpoints\.CheckpointExtension\b => com.mojang.renderpearl.backend.vulkan.checkpoints.CheckpointExtension
+re:\bcom\.mojang\.blaze3d\.vulkan\.glsl\.ShaderCompileException\b => com.mojang.renderpearl.util.ShaderCompileException
+re:\bcom\.mojang\.blaze3d\.systems\.BackendCreationException\b => com.mojang.renderpearl.api.device.BackendCreationException
+re:\bcom\.mojang\.blaze3d\.pipeline\.CompiledRenderPipeline\b => com.mojang.renderpearl.api.pipeline.CompiledRenderPipeline
+re:\bcom\.mojang\.blaze3d\.systems\.CommandEncoderBackend\b => com.mojang.renderpearl.backend.api.CommandEncoderBackend
+re:\bcom\.mojang\.blaze3d\.vulkan\.init\.VulkanPNextStruct\b => com.mojang.renderpearl.backend.vulkan.init.VulkanPNextStruct
+re:\bcom\.mojang\.blaze3d\.opengl\.FrameBufferAttachment\b => com.mojang.renderpearl.backend.opengl.FrameBufferAttachment
+re:\bcom\.mojang\.blaze3d\.systems\.RenderPassDescriptor\b => com.mojang.renderpearl.api.commands.RenderPassDescriptor
+re:\bcom\.mojang\.blaze3d\.util\.TransientBlockAllocator\b => com.mojang.renderpearl.backend.util.TransientBlockAllocator
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanTransientMemory\b => com.mojang.renderpearl.backend.vulkan.VulkanTransientMemory
+re:\bcom\.mojang\.blaze3d\.systems\.HintsAndWorkarounds\b => com.mojang.renderpearl.api.device.HintsAndWorkarounds
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanCommandEncoder\b => com.mojang.renderpearl.backend.vulkan.VulkanCommandEncoder
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanGpuTextureView\b => com.mojang.renderpearl.backend.vulkan.VulkanGpuTextureView
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanPhysicalDevice\b => com.mojang.renderpearl.backend.vulkan.VulkanPhysicalDevice
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanRenderPipeline\b => com.mojang.renderpearl.backend.vulkan.VulkanRenderPipeline
+re:\bcom\.mojang\.blaze3d\.pipeline\.DepthStencilState\b => com.mojang.renderpearl.api.pipeline.DepthStencilState
+re:\bcom\.mojang\.blaze3d\.vertex\.VertexFormatElement\b => com.mojang.renderpearl.api.vertex.VertexFormatElement
+re:\bcom\.mojang\.blaze3d\.pipeline\.ColorTargetState\b => com.mojang.renderpearl.api.pipeline.ColorTargetState
+re:\bcom\.mojang\.blaze3d\.systems\.GpuSurfaceBackend\b => com.mojang.renderpearl.backend.api.GpuSurfaceBackend
+re:\bcom\.mojang\.blaze3d\.systems\.RenderPassBackend\b => com.mojang.renderpearl.backend.api.RenderPassBackend
+re:\bcom\.mojang\.blaze3d\.vulkan\.init\.VulkanFeature\b => com.mojang.renderpearl.backend.vulkan.init.VulkanFeature
+re:\bcom\.mojang\.blaze3d\.opengl\.DirectStateAccess\b => com.mojang.renderpearl.backend.opengl.DirectStateAccess
+re:\bcom\.mojang\.blaze3d\.opengl\.GlTransientMemory\b => com.mojang.renderpearl.backend.opengl.GlTransientMemory
+re:\bcom\.mojang\.blaze3d\.pipeline\.BindGroupLayout\b => com.mojang.renderpearl.api.pipeline.BindGroupLayout
+re:\bcom\.mojang\.blaze3d\.systems\.GpuDeviceBackend\b => com.mojang.renderpearl.backend.api.GpuDeviceBackend
+re:\bcom\.mojang\.blaze3d\.systems\.SurfaceException\b => com.mojang.renderpearl.api.device.SurfaceException
+re:\bcom\.mojang\.blaze3d\.systems\.TracyGpuProfiler\b => com.mojang.renderpearl.frontend.TracyGpuProfiler
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanCommandPool\b => com.mojang.renderpearl.backend.vulkan.VulkanCommandPool
+re:\bcom\.mojang\.blaze3d\.vulkan\.glsl\.GlslCompiler\b => com.mojang.renderpearl.frontend.shaders.GlslCompiler
+re:\bcom\.mojang\.blaze3d\.GpuOutOfMemoryException\b => com.mojang.renderpearl.api.device.GpuOutOfMemoryException
+re:\bcom\.mojang\.blaze3d\.opengl\.FrameBufferCache\b => com.mojang.renderpearl.backend.opengl.FrameBufferCache
+re:\bcom\.mojang\.blaze3d\.opengl\.GlCommandEncoder\b => com.mojang.renderpearl.backend.opengl.GlCommandEncoder
+re:\bcom\.mojang\.blaze3d\.opengl\.GlRenderPipeline\b => com.mojang.renderpearl.backend.opengl.GlRenderPipeline
+re:\bcom\.mojang\.blaze3d\.pipeline\.RenderPipeline\b => com.mojang.renderpearl.api.pipeline.RenderPipeline
+re:\bcom\.mojang\.blaze3d\.shaders\.GpuDebugOptions\b => com.mojang.renderpearl.api.device.GpuDebugOptions
+re:\bcom\.mojang\.blaze3d\.systems\.TransientMemory\b => com.mojang.renderpearl.api.buffers.TransientMemory
+re:\bcom\.mojang\.blaze3d\.textures\.GpuTextureView\b => com.mojang.renderpearl.api.textures.GpuTextureView
+re:\bcom\.mojang\.blaze3d\.vulkan\.DestructionQueue\b => com.mojang.renderpearl.backend.vulkan.DestructionQueue
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanGpuSampler\b => com.mojang.renderpearl.backend.vulkan.VulkanGpuSampler
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanGpuSurface\b => com.mojang.renderpearl.backend.vulkan.VulkanGpuSurface
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanGpuTexture\b => com.mojang.renderpearl.backend.vulkan.VulkanGpuTexture
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanRenderPass\b => com.mojang.renderpearl.backend.vulkan.VulkanRenderPass
+re:\bcom\.mojang\.blaze3d\.GpuDeviceLossException\b => com.mojang.renderpearl.api.device.GpuDeviceLossException
+re:\bcom\.mojang\.blaze3d\.buffers\.GpuBufferSlice\b => com.mojang.renderpearl.api.buffers.GpuBufferSlice
+re:\bcom\.mojang\.blaze3d\.pipeline\.BlendEquation\b => com.mojang.renderpearl.api.pipeline.BlendEquation
+re:\bcom\.mojang\.blaze3d\.pipeline\.BlendFunction\b => com.mojang.renderpearl.api.pipeline.BlendFunction
+re:\bcom\.mojang\.blaze3d\.systems\.CommandEncoder\b => com.mojang.renderpearl.api.commands.CommandEncoder
+re:\bcom\.mojang\.blaze3d\.systems\.DeviceFeatures\b => com.mojang.renderpearl.api.device.DeviceFeatures
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanGpuBuffer\b => com.mojang.renderpearl.backend.vulkan.VulkanGpuBuffer
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanQueryPool\b => com.mojang.renderpearl.backend.vulkan.VulkanQueryPool
+re:\bcom\.mojang\.blaze3d\.opengl\.GlShaderModule\b => com.mojang.renderpearl.backend.opengl.GlShaderModule
+re:\bcom\.mojang\.blaze3d\.opengl\.GlStateManager\b => com.mojang.renderpearl.backend.opengl.GlStateManager
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanInstance\b => com.mojang.renderpearl.backend.vulkan.VulkanInstance
+re:\bcom\.mojang\.blaze3d\.opengl\.BufferStorage\b => com.mojang.renderpearl.backend.opengl.BufferStorage
+re:\bcom\.mojang\.blaze3d\.opengl\.GlTextureView\b => com.mojang.renderpearl.backend.opengl.GlTextureView
+re:\bcom\.mojang\.blaze3d\.platform\.BlendFactor\b => com.mojang.renderpearl.api.pipeline.BlendFactor
+re:\bcom\.mojang\.blaze3d\.platform\.PolygonMode\b => com.mojang.renderpearl.api.pipeline.PolygonMode
+re:\bcom\.mojang\.blaze3d\.shaders\.ShaderSource\b => com.mojang.renderpearl.api.pipeline.ShaderSource
+re:\bcom\.mojang\.blaze3d\.systems\.DeviceLimits\b => com.mojang.renderpearl.api.device.DeviceLimits
+re:\bcom\.mojang\.blaze3d\.systems\.GpuQueryPool\b => com.mojang.renderpearl.api.commands.GpuQueryPool
+re:\bcom\.mojang\.blaze3d\.textures\.AddressMode\b => com.mojang.renderpearl.api.textures.AddressMode
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanBackend\b => com.mojang.renderpearl.backend.vulkan.VulkanBackend
+re:\bcom\.mojang\.blaze3d\.opengl\.GlDebugLabel\b => com.mojang.renderpearl.backend.opengl.GlDebugLabel
+re:\bcom\.mojang\.blaze3d\.opengl\.GlHeuristics\b => com.mojang.renderpearl.backend.opengl.GlHeuristics
+re:\bcom\.mojang\.blaze3d\.opengl\.GlRenderPass\b => com.mojang.renderpearl.backend.opengl.GlRenderPass
+re:\bcom\.mojang\.blaze3d\.shaders\.UniformType\b => com.mojang.renderpearl.api.pipeline.UniformType
+re:\bcom\.mojang\.blaze3d\.textures\.FilterMode\b => com.mojang.renderpearl.api.textures.FilterMode
+re:\bcom\.mojang\.blaze3d\.textures\.GpuSampler\b => com.mojang.renderpearl.api.textures.GpuSampler
+re:\bcom\.mojang\.blaze3d\.textures\.GpuTexture\b => com.mojang.renderpearl.api.textures.GpuTexture
+re:\bcom\.mojang\.blaze3d\.vertex\.VertexFormat\b => com.mojang.renderpearl.api.vertex.VertexFormat
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanDevice\b => com.mojang.renderpearl.backend.vulkan.VulkanDevice
+re:\bcom\.mojang\.blaze3d\.opengl\.GlQueryPool\b => com.mojang.renderpearl.backend.opengl.GlQueryPool
+re:\bcom\.mojang\.blaze3d\.platform\.CompareOp\b => com.mojang.renderpearl.api.pipeline.CompareOp
+re:\bcom\.mojang\.blaze3d\.shaders\.ShaderType\b => com.mojang.renderpearl.api.pipeline.ShaderType
+re:\bcom\.mojang\.blaze3d\.systems\.DeviceInfo\b => com.mojang.renderpearl.api.device.DeviceInfo
+re:\bcom\.mojang\.blaze3d\.systems\.DeviceType\b => com.mojang.renderpearl.api.device.DeviceType
+re:\bcom\.mojang\.blaze3d\.systems\.GpuBackend\b => com.mojang.renderpearl.api.device.GpuBackend
+re:\bcom\.mojang\.blaze3d\.systems\.GpuSurface\b => com.mojang.renderpearl.api.device.GpuSurface
+re:\bcom\.mojang\.blaze3d\.systems\.RenderPass\b => com.mojang.renderpearl.api.commands.RenderPass
+re:\bcom\.mojang\.blaze3d\.vulkan\.Destroyable\b => com.mojang.renderpearl.backend.vulkan.Destroyable
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanConst\b => com.mojang.renderpearl.backend.vulkan.VulkanConst
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanDebug\b => com.mojang.renderpearl.backend.vulkan.VulkanDebug
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanQueue\b => com.mojang.renderpearl.backend.vulkan.VulkanQueue
+re:\bcom\.mojang\.blaze3d\.vulkan\.VulkanUtils\b => com.mojang.renderpearl.backend.vulkan.VulkanUtils
+re:\bcom\.mojang\.blaze3d\.PrimitiveTopology\b => com.mojang.renderpearl.api.pipeline.PrimitiveTopology
+re:\bcom\.mojang\.blaze3d\.buffers\.GpuBuffer\b => com.mojang.renderpearl.api.buffers.GpuBuffer
+re:\bcom\.mojang\.blaze3d\.systems\.GpuDevice\b => com.mojang.renderpearl.api.device.GpuDevice
+re:\bcom\.mojang\.blaze3d\.buffers\.GpuFence\b => com.mojang.renderpearl.api.commands.GpuFence
+re:\bcom\.mojang\.blaze3d\.opengl\.GlBackend\b => com.mojang.renderpearl.backend.opengl.GlBackend
+re:\bcom\.mojang\.blaze3d\.opengl\.GlProgram\b => com.mojang.renderpearl.backend.opengl.GlProgram
+re:\bcom\.mojang\.blaze3d\.opengl\.GlSampler\b => com.mojang.renderpearl.backend.opengl.GlSampler
+re:\bcom\.mojang\.blaze3d\.opengl\.GlSurface\b => com.mojang.renderpearl.backend.opengl.GlSurface
+re:\bcom\.mojang\.blaze3d\.opengl\.GlTexture\b => com.mojang.renderpearl.backend.opengl.GlTexture
+re:\bcom\.mojang\.blaze3d\.platform\.BlendOp\b => com.mojang.renderpearl.api.pipeline.BlendOp
+re:\bcom\.mojang\.blaze3d\.systems\.GpuQuery\b => com.mojang.renderpearl.api.commands.GpuQuery
+re:\bcom\.mojang\.blaze3d\.opengl\.GlBuffer\b => com.mojang.renderpearl.backend.opengl.GlBuffer
+re:\bcom\.mojang\.blaze3d\.opengl\.GlDevice\b => com.mojang.renderpearl.backend.opengl.GlDevice
+re:\bcom\.mojang\.blaze3d\.opengl\.GlConst\b => com.mojang.renderpearl.backend.opengl.GlConst
+re:\bcom\.mojang\.blaze3d\.opengl\.GlDebug\b => com.mojang.renderpearl.backend.opengl.GlDebug
+re:\bcom\.mojang\.blaze3d\.opengl\.GlFence\b => com.mojang.renderpearl.backend.opengl.GlFence
+re:\bcom\.mojang\.blaze3d\.opengl\.Uniform\b => com.mojang.renderpearl.backend.opengl.Uniform
+re:\bcom\.mojang\.blaze3d\.opengl\.GlUtil\b => com.mojang.renderpearl.backend.opengl.GlUtil
+re:\bcom\.mojang\.blaze3d\.GpuFormat\b => com.mojang.renderpearl.api.GpuFormat
+re:\bcom\.mojang\.blaze3d\.IndexType\b => com.mojang.renderpearl.api.pipeline.IndexType
+# Tipos de config de FML 12 (26.3): COMMON -> LOCAL, SERVER -> SYNCED
+re:\bModConfig\.Type\.SERVER\b => ModConfig.Type.SYNCED
+re:\bModConfig\.Type\.COMMON\b => ModConfig.Type.LOCAL
+# Player.drop(stack, bool) e Inventory.placeItemBackInInventory(stack) reciben Prediction (en servidor: SERVER_ONLY)
+re:\.drop\(([^;]*?),\s*(true|false)\)(?=\s*[;),])  => .drop($1, $2, net.minecraft.util.Prediction.SERVER_ONLY)
+re:\.placeItemBackInInventory\(([^,;()]+(?:\([^()]*\))?)\) => .placeItemBackInInventory($1, net.minecraft.util.Prediction.SERVER_ONLY)
+# 26.3 cambia GLFW por SDL: teclas via InputConstants (existe en ambas) y tipo KEYBOARD
+re:import org\.lwjgl\.glfw\.GLFW; => // GLFW no existe en 26.3 (SDL)
+re:\bGLFW\.GLFW_KEY_PAGE_DOWN\b => com.mojang.blaze3d.platform.InputConstants.KEY_PAGEDOWN
+re:\bGLFW\.GLFW_KEY_PAGE_UP\b => com.mojang.blaze3d.platform.InputConstants.KEY_PAGEUP
+re:\bGLFW\.GLFW_KEY_KP_ENTER\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMPADENTER
+re:\bGLFW\.GLFW_KEY_ENTER\b => com.mojang.blaze3d.platform.InputConstants.KEY_RETURN
+re:\bGLFW\.GLFW_KEY_LEFT_SHIFT\b => com.mojang.blaze3d.platform.InputConstants.KEY_LSHIFT
+re:\bGLFW\.GLFW_KEY_RIGHT_SHIFT\b => com.mojang.blaze3d.platform.InputConstants.KEY_RSHIFT
+re:\bGLFW\.GLFW_KEY_LEFT_CONTROL\b => com.mojang.blaze3d.platform.InputConstants.KEY_LCONTROL
+re:\bGLFW\.GLFW_KEY_RIGHT_CONTROL\b => com.mojang.blaze3d.platform.InputConstants.KEY_RCONTROL
+re:\bGLFW\.GLFW_KEY_LEFT_ALT\b => com.mojang.blaze3d.platform.InputConstants.KEY_LALT
+re:\bGLFW\.GLFW_KEY_RIGHT_ALT\b => com.mojang.blaze3d.platform.InputConstants.KEY_RALT
+re:\bGLFW\.GLFW_KEY_LEFT_SUPER\b => com.mojang.blaze3d.platform.InputConstants.KEY_LGUI
+re:\bGLFW\.GLFW_KEY_RIGHT_SUPER\b => com.mojang.blaze3d.platform.InputConstants.KEY_RGUI
+re:\bGLFW\.GLFW_KEY_LEFT_BRACKET\b => com.mojang.blaze3d.platform.InputConstants.KEY_LBRACKET
+re:\bGLFW\.GLFW_KEY_RIGHT_BRACKET\b => com.mojang.blaze3d.platform.InputConstants.KEY_RBRACKET
+re:\bGLFW\.GLFW_KEY_GRAVE_ACCENT\b => com.mojang.blaze3d.platform.InputConstants.KEY_GRAVE
+re:\bGLFW\.GLFW_KEY_CAPS_LOCK\b => com.mojang.blaze3d.platform.InputConstants.KEY_CAPSLOCK
+re:\bGLFW\.GLFW_KEY_NUM_LOCK\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMLOCK
+re:\bGLFW\.GLFW_KEY_SCROLL_LOCK\b => com.mojang.blaze3d.platform.InputConstants.KEY_SCROLLLOCK
+re:\bGLFW\.GLFW_KEY_PRINT_SCREEN\b => com.mojang.blaze3d.platform.InputConstants.KEY_PRINTSCREEN
+re:\bGLFW\.GLFW_KEY_EQUAL\b => com.mojang.blaze3d.platform.InputConstants.KEY_EQUALS
+re:\bGLFW\.GLFW_KEY_KP_ADD\b => com.mojang.blaze3d.platform.InputConstants.KEY_ADD
+re:\bGLFW\.GLFW_KEY_KP_MULTIPLY\b => com.mojang.blaze3d.platform.InputConstants.KEY_MULTIPLY
+re:\bGLFW\.GLFW_KEY_KP_0\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMPAD0
+re:\bGLFW\.GLFW_KEY_KP_1\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMPAD1
+re:\bGLFW\.GLFW_KEY_KP_2\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMPAD2
+re:\bGLFW\.GLFW_KEY_KP_3\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMPAD3
+re:\bGLFW\.GLFW_KEY_KP_4\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMPAD4
+re:\bGLFW\.GLFW_KEY_KP_5\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMPAD5
+re:\bGLFW\.GLFW_KEY_KP_6\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMPAD6
+re:\bGLFW\.GLFW_KEY_KP_7\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMPAD7
+re:\bGLFW\.GLFW_KEY_KP_8\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMPAD8
+re:\bGLFW\.GLFW_KEY_KP_9\b => com.mojang.blaze3d.platform.InputConstants.KEY_NUMPAD9
+re:\bGLFW\.GLFW_KEY_ => com.mojang.blaze3d.platform.InputConstants.KEY_
+re:\bInputConstants\.Type\.KEYSYM\b => InputConstants.Type.KEYBOARD
+# Entity.hurtMarked -> syncVelocity (reenviar velocidad al cliente)
+re:\bhurtMarked\b => syncVelocity
+# PushReaction renombrado en 26.3
+re:\bPushReaction\.BLOCK\b => PushReaction.IMMOVEABLE
+re:\bPushReaction\.NORMAL\b => PushReaction.PUSH_PULL
+re:\bPushReaction\.DESTROY\b => PushReaction.POPPED
+re:\bPushReaction\.PUSH_ONLY\b => PushReaction.PUSH
+re:\bPushReaction\.IGNORE\b => PushReaction.IGNORE_ENTITY
+# PoseStack.mulPose(Quaternion) -> rotate(Quaternionfc) en 26.3 (mulPose(Matrix4f) sigue igual)
+re:\.mulPose\(((?:com\.mojang\.math\.)?Axis\.[XYZ][PN]\.rotation) => .rotate($1
+re:\.mulPose\(([\w.()]*\.orientation)\) => .rotate($1)
+# Util.getPlatform().openFile/openUri -> Blaze3D.openPath/openUri en 26.3
+re:\bUtil\.getPlatform\(\)\.openFile\(([^;]*?)\.toFile\(\)\) => com.mojang.blaze3d.Blaze3D.openPath($1)
+re:\bUtil\.getPlatform\(\)\.openFile\(([^;()]+)\) => com.mojang.blaze3d.Blaze3D.openPath(($1).toPath())
+re:\bUtil\.getPlatform\(\)\.openUri\(([^;()]+)\) => com.mojang.blaze3d.Blaze3D.openUri(java.net.URI.create(String.valueOf($1)))
+# LivingEntity.swing(hand) -> swing(hand, SwingAnimation.DEFAULT, false) en 26.3
+re:(?<![\w])swing\(([\w.]+(?:\(\))?)\)(?=\s*[;),]) => swing($1, net.minecraft.world.item.component.SwingAnimation.DEFAULT, false)
+# Entity.setInvulnerable -> setPermanentlyInvulnerable en 26.3
+re:\.setInvulnerable\( => .setPermanentlyInvulnerable(
+# SubmitNodeCollector.submitModel(..., outline, crumbling) -> submitModel(..., outline) en 26.3 (las grietas van aparte;
+# se omiten: solo es el efecto visual de romper el bloque)
+re:\.submitModel\(([^;]*?),\s*null\)\s*; => .submitModel($1);
+re:\.submitModel\(([^;]*?),\s*[\w.]*(?:breakProgress|crumblingOverlay)\)\s*; => .submitModel($1);
+# FriendlyByteBuf.readList/readCollection/writeCollection desaparecen en 26.3 -> helper McBuf inyectado por el preprocesador
+re:\b(\w+)\.readList\( => com.nicktale.mccompat.@MODID@.@SET@.McBuf.readList($1, 
+re:\b(\w+)\.readCollection\( => com.nicktale.mccompat.@MODID@.@SET@.McBuf.readCollection($1, 
+re:\b(\w+)\.writeCollection\( => com.nicktale.mccompat.@MODID@.@SET@.McBuf.writeCollection($1, 
+# KeyEvent.scancode() -> keycode() en 26.3
+re:\.scancode\(\) => .keycode()
+# LivingEntity.randomTeleport(x, y, z, particles) -> variante con predicado de bloque invalido (ninguno) en 26.3
+re:\.randomTeleport\(([^;]*?),\s*(true|false)\)(?=\s*[;),]) => .randomTeleport($1, $2, state -> false)
+# RenderTypes.entityTranslucentCullItemTarget no existe en 26.3 -> entityTranslucentCull
+re:\bRenderTypes\.entityTranslucentCullItemTarget\( => RenderTypes.entityTranslucentCull(
+# 26.3: ConfiguredFeature se fusiona con Feature (registro worldgen/feature, mismo place())
+re:\bRegistries\.CONFIGURED_FEATURE\b => Registries.FEATURE
+re:\.mulPose\((new (?:org\.joml\.)?Quaternionf\b) => .rotate($1
+# --- mas cambios 26.3 ---
+# LootContext.getOptionalParameter -> getOptional (LootParams.Builder lo conserva)
+re:\b(context|ctx|lootContext)\.getOptionalParameter\( => $1.getOptional(
+# BiomeModifier.modify recibe RegistryAccess primero
+re:public void modify\((?:@\w+\s+)?Holder<Biome> (\w+),\s*(?:@\w+\s+)?Phase (\w+), => public void modify(net.minecraft.core.RegistryAccess registries, Holder<Biome> $1, Phase $2,
+# BiomeModifier: getSpawner(cat) devuelve null si el bioma no tiene esa categoria en 26.3 -> addSpawn (peso 1, como add())
+re:\.getSpawner\((MobCategory\.\w+)\)\.add\(new MobSpawnSettings\.SpawnerData\(([^;]*?),\s*(\d+),\s*(\d+)\)\) => .addSpawn($2, $1, 1, net.minecraft.util.valueproviders.UniformInt.of($3, $4))
+# MobSpawnSettings.SpawnerData(type, min, max) -> (type, UniformInt)
+re:new MobSpawnSettings\.SpawnerData\(([^;]*?),\s*(\d+),\s*(\d+)\) => new MobSpawnSettings.SpawnerData($1, net.minecraft.util.valueproviders.UniformInt.of($2, $3))
+# EnderMan -> Enderman
+re:\bEnderMan\b => Enderman
+# BlockState.blocksMotion() -> isSolid()
+re:\.blocksMotion\(\) => .isSolid()
+# LivingEntity.attackAnim -> getSwingAnimation(1)
+re:\.attackAnim\b(?!\s*=[^=]) => .getSwingAnimation(1.0F)
+# new BlockPos(vec3i) (copia) -> constructor de 3 enteros (26.3 quito el de Vec3i)
+re:new BlockPos\(((?:this\.)?\w+(?:\(\))?(?:\.\w+(?:\(\))?)*)\) => new BlockPos(($1).getX(), ($1).getY(), ($1).getZ())
+# Block.playerDestroy(Level, Player, ...) -> (ServerLevel, ServerPlayer, ...)
+re:public void playerDestroy\((?:@\w+\s+)?Level (\w+),\s*(?:@\w+\s+)?Player (\w+), => public void playerDestroy(net.minecraft.server.level.ServerLevel $1, net.minecraft.server.level.ServerPlayer $2,
+# GenerationContext: biomas cercanos via biomeResolver()
+re:(\w+)\.chunkGenerator\(\)\.getBiomeSource\(\)\.getBiomesWithin\(([^;]*?),\s*\1\.randomState\(\)\.sampler\(\)\) => $1.biomeResolver().getBiomesWithin($2)
+# Holder<ConfiguredFeature<?, ?>> -> Holder<Feature>
+re:\bHolder<ConfiguredFeature<\?,\s*\?>> => Holder<net.minecraft.world.level.levelgen.feature.Feature>
+# --- cliente 26.3 ---
+# GameRenderer: efectos de post-proceso -> API de "spectated entity"
+re:\.currentPostEffect\(\) => .spectatedEntityPostEffect()
+re:\.clearPostEffect\(\) => .clearSpectatedEntityPostEffect()
+re:\.setPostEffect\( => .setSpectatedEntityPostEffect(
+# InputConstants.isKeyDown(window, key) -> isKeyDown(key)
+re:InputConstants\.isKeyDown\((?:[^,;()]|\([^()]*\))*,\s* => InputConstants.isKeyDown(
+# EntityRenderer.shouldRender gana partialTicks
+re:public boolean shouldRender\(([^)]*?Frustum[^)]*?double \w+,\s*double \w+,\s*double \w+)\) => public boolean shouldRender($1, float partialTicks)
+re:super\.shouldRender\((\w+),\s*(\w+),\s*(\w+),\s*(\w+),\s*(\w+)\) => super.shouldRender($1, $2, $3, $4, $5, partialTicks)
+# PoseStack.mulPose(camera.rotation()) -> rotate
+re:\.mulPose\(([^;]*?\.rotation\(\))\)\s*; => .rotate($1);
+# render state: attackTime/attackArm -> swingAnimation/currentSwing
+re:\bstate\.attackTime\b => state.swingAnimation
+re:\bstate\.attackArm\b => (state.currentSwing != null ? state.currentSwing.hand().asArm(state.mainArm) : state.mainArm)

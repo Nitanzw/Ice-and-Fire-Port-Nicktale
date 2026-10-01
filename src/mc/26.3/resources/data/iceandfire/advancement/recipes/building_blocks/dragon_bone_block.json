@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dragonbone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "iceandfire:dragonbone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "iceandfire:dragon_bone_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dragonbone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "iceandfire:dragon_bone_block"
+    ]
+  }
+}

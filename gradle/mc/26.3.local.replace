@@ -1,0 +1,14 @@
+# Ice and Fire en 26.3: las features usan el puente world/compat (LegacyFeature + contexto/config propios)
+re:\bnet\.minecraft\.world\.level\.levelgen\.feature\.configurations\.NoneFeatureConfiguration\b => com.github.alexthe666.iceandfire.world.compat.NoneFeatureConfiguration
+re:\bnet\.minecraft\.world\.level\.levelgen\.feature\.configurations\.FeatureConfiguration\b => com.github.alexthe666.iceandfire.world.compat.FeatureConfiguration
+re:\bnet\.minecraft\.world\.level\.levelgen\.feature\.FeaturePlaceContext\b => com.github.alexthe666.iceandfire.world.compat.FeaturePlaceContext
+re:\bextends Feature<(\w+)> => extends com.github.alexthe666.iceandfire.world.compat.LegacyFeature<$1>
+re:\bSupplier<Feature<NoneFeatureConfiguration>> => Supplier<com.github.alexthe666.iceandfire.world.compat.LegacyFeature<NoneFeatureConfiguration>>
+re:java\.util\.List<LootItemCondition> conditionsIn => java.util.Optional<net.minecraft.core.Holder<LootItemCondition>> conditionsIn
+re:\.setRolls\(UniformGenerator\.between\( => .setRolls(net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders.between(
+re:\.setBonusRolls\(UniformGenerator\.between\( => .setBonusRolls(net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProviders.between(
+re:import net\.minecraft\.world\.level\.storage\.loot\.providers\.number\.UniformGenerator; => // UniformGenerator no existe en 26.3
+re:import net\.minecraft\.world\.level\.levelgen\.feature\.ConfiguredFeature; => // ConfiguredFeature no existe en 26.3
+# Shift izquierdo/derecho: 340/344 eran codigos GLFW; en 26.3 (SDL) se usan las constantes de InputConstants
+re:InputConstants\.isKeyDown\(Minecraft\.getInstance\(\)\.getWindow\(\), 340\) => InputConstants.isKeyDown(com.mojang.blaze3d.platform.InputConstants.KEY_LSHIFT)
+re:InputConstants\.isKeyDown\(Minecraft\.getInstance\(\)\.getWindow\(\), 344\) => InputConstants.isKeyDown(com.mojang.blaze3d.platform.InputConstants.KEY_RSHIFT)

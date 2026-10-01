@@ -29,7 +29,13 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class IafWorldRegistry {
+    //#if MC >= 26.3
+    //$$ // 26.3: features are data-driven instances; what a mod registers is the feature TYPE (a MapCodec)
+    //$$ public static final DeferredRegister<com.mojang.serialization.MapCodec<? extends Feature>> FEATURES =
+    //$$         DeferredRegister.create(net.minecraft.core.registries.Registries.FEATURE_TYPE, IceAndFire.MODID);
+    //#else
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(net.minecraft.core.registries.Registries.FEATURE, IceAndFire.MODID);
+    //#endif
 
     public static final Supplier<Feature<NoneFeatureConfiguration>> FIRE_DRAGON_ROOST = register("fire_dragon_roost", () -> new WorldGenFireDragonRoosts(NoneFeatureConfiguration.CODEC));
     public static final Supplier<Feature<NoneFeatureConfiguration>> ICE_DRAGON_ROOST = register("ice_dragon_roost", () -> new WorldGenIceDragonRoosts(NoneFeatureConfiguration.CODEC));
@@ -58,9 +64,17 @@ public class IafWorldRegistry {
     public static final Supplier<Feature<NoneFeatureConfiguration>> SPAWN_WANDERING_CYCLOPS = register("spawn_wandering_cyclops", () -> new SpawnWanderingCyclops(NoneFeatureConfiguration.CODEC));
 
 
+    //#if MC >= 26.3
+    //$$ private static <C extends FeatureConfiguration, F extends com.github.alexthe666.iceandfire.world.compat.LegacyFeature<C>> Supplier<F> register(final String name, final Supplier<? extends F> supplier) {
+    //$$     Supplier<F> feature = com.google.common.base.Suppliers.memoize(supplier::get);
+    //$$     FEATURES.register(name, () -> feature.get().typeCodec());
+    //$$     return feature;
+    //$$ }
+    //#else
     private static <C extends FeatureConfiguration, F extends Feature<C>> Supplier<F> register(final String name, final Supplier<? extends F> supplier) {
         return FEATURES.register(name, supplier);
     }
+    //#endif
 
     public static boolean isFarEnoughFromSpawn(final LevelAccessor level, final BlockPos position) {
         if (com.github.alexthe666.iceandfire.util.WorldUtil.isForcingGeneration()) {

@@ -1,0 +1,6 @@
+# Datagen solo corre en 26.2; los datos generados se reutilizan (los de worldgen 26.3 estan en src/mc/26.3/resources)
+com/github/alexthe666/iceandfire/datagen/DataGenerators.java
+com/github/alexthe666/iceandfire/datagen/IafConfiguredFeatures.java
+com/github/alexthe666/iceandfire/datagen/IafRecipes.java
+com/github/alexthe666/iceandfire/datagen/RegistryDataGenerator.java
+com/github/alexthe666/iceandfire/datagen/ClientDataGenerators.java

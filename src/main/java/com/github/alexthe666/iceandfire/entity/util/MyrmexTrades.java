@@ -15,7 +15,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
+//#if MC < 26.3
 import net.minecraft.world.item.alchemy.PotionBrewing;
+//#endif
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.component.CustomData;
@@ -44,7 +46,11 @@ public class MyrmexTrades {
 
     private static ItemStack createBrewablePotion(Item potionItem, int count, Entity trader, RandomSource random) {
         List<Holder.Reference<Potion>> brewablePotions = BuiltInRegistries.POTION.listElements()
+            //#if MC >= 26.3
+            //$$ .filter(potion -> !potion.value().getEffects().isEmpty())
+            //#else
             .filter(potion -> !potion.value().getEffects().isEmpty() && trader.level().potionBrewing().isBrewablePotion(potion))
+            //#endif
             .toList();
         Holder<Potion> potion = brewablePotions.get(random.nextInt(brewablePotions.size()));
         ItemStack result = new ItemStack(potionItem, count);

@@ -26,7 +26,9 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.MapCodec;
 
 public class BlockPodium extends BaseEntityBlock {
+    //#if MC < 26.3
     private static final MapCodec<BlockPodium> CODEC = MapCodec.unit(BlockPodium::new);
+    //#endif
 
     protected static final VoxelShape AABB = Block.box(2, 0, 2, 14, 23, 14);
 
@@ -43,10 +45,12 @@ public class BlockPodium extends BaseEntityBlock {
         );
     }
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
+    //#endif
 
 
     @Override

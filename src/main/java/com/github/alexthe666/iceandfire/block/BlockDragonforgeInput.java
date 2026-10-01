@@ -36,9 +36,11 @@ import javax.annotation.Nullable;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.DRAGONFORGE_INPUT;
 
 public class BlockDragonforgeInput extends BaseEntityBlock implements IDragonProof {
+    //#if MC < 26.3
     private static final MapCodec<BlockDragonforgeInput> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Codec.INT.fieldOf("dragon_type").forGetter(block -> block.dragonType)
     ).apply(instance, BlockDragonforgeInput::new));
+    //#endif
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
     private final int dragonType;
 
@@ -60,10 +62,12 @@ public class BlockDragonforgeInput extends BaseEntityBlock implements IDragonPro
         return "dragonforge_%s_input".formatted(DragonType.getNameFromInt(dragonType));
     }
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
+    //#endif
 
 
     @Override

@@ -8,7 +8,9 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
+//#if MC < 26.3
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+//#endif
 import net.minecraft.world.level.levelgen.placement.*;
 
 import java.util.List;
@@ -48,6 +50,7 @@ public final class IafPlacedFeatures {
     private static List<PlacementModifier> commonOrePlacement(int pCount, PlacementModifier pHeightRange) {
         return orePlacement(CountPlacement.of(pCount), pHeightRange);
     }
+    //#if MC < 26.3
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> features = context.lookup(Registries.CONFIGURED_FEATURE);
 
@@ -84,6 +87,7 @@ public final class IafPlacedFeatures {
         context.register(PLACED_LIGHTNING_DRAGON_CAVE, new PlacedFeature(features.getOrThrow(IafConfiguredFeatures.LIGHTNING_DRAGON_CAVE), List.of(CustomBiomeFilter.biome())));
 
     }
+    //#endif
 
     public static ResourceKey<PlacedFeature> registerKey(String name) {
         return ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath("iceandfire", name));

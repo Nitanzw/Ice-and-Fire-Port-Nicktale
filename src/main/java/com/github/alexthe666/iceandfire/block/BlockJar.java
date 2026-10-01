@@ -36,7 +36,9 @@ import com.mojang.serialization.Codec;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.PIXIE_JAR;
 
 public class BlockJar extends BaseEntityBlock {
+    //#if MC < 26.3
     private static final MapCodec<BlockJar> CODEC = Codec.INT.fieldOf("pixie_type").xmap(BlockJar::new, block -> block.pixieType);
+    //#endif
     protected static final VoxelShape AABB = Block.box(3, 0, 3, 13, 16, 13);
     public Item itemBlock;
     private final boolean empty;
@@ -72,10 +74,12 @@ public class BlockJar extends BaseEntityBlock {
         return "pixie_jar_%d".formatted(pixieType);
     }
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
+    //#endif
 
     @Override
     public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos, @NotNull CollisionContext context) {

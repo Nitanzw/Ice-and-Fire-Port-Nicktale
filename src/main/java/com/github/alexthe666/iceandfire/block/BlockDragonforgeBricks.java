@@ -31,9 +31,11 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 
 public class BlockDragonforgeBricks extends BaseEntityBlock implements IDragonProof {
+    //#if MC < 26.3
     private static final MapCodec<BlockDragonforgeBricks> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Codec.INT.fieldOf("dragon_type").forGetter(block -> block.isFire)
     ).apply(instance, BlockDragonforgeBricks::new));
+    //#endif
 
     public static final BooleanProperty GRILL = BooleanProperty.create("grill");
     private final int isFire;
@@ -56,10 +58,12 @@ public class BlockDragonforgeBricks extends BaseEntityBlock implements IDragonPr
         return "dragonforge_%s_brick".formatted(DragonType.getNameFromInt(dragonType));
     }
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
+    //#endif
 
     @Override
     public @NotNull PushReaction getPistonPushReaction(@NotNull BlockState state) {

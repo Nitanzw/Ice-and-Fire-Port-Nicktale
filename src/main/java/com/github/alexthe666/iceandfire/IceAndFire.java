@@ -15,7 +15,9 @@ import com.github.alexthe666.iceandfire.loot.IafLootRegistry;
 import com.github.alexthe666.iceandfire.message.IafNetwork;
 import com.github.alexthe666.iceandfire.misc.IafDamageRegistry;
 import com.github.alexthe666.iceandfire.misc.IafSoundRegistry;
+//#if MC < 26.3
 import com.github.alexthe666.iceandfire.datagen.DataGenerators;
+//#endif
 import com.github.alexthe666.iceandfire.recipe.IafBannerPatterns;
 import com.github.alexthe666.iceandfire.recipe.IafRecipeRegistry;
 import com.github.alexthe666.iceandfire.world.*;
@@ -67,8 +69,12 @@ public class IceAndFire {
         modBus.addListener(IafSoundRegistry::registerSoundEvents);
         modBus.addListener(IafTileEntityRegistry::registerCapabilities);
         modBus.addListener(IafRecipeRegistry::preInit);
+        //#if MC < 26.3
         modBus.addListener(GatherDataEvent.Server.class, DataGenerators::gatherData);
+        //#endif
+        //#if MC < 26.3
         NeoForge.EVENT_BUS.addListener(IafRecipeRegistry::registerBrewingRecipes);
+        //#endif
         IafNetwork.init(modBus);
 
         com.github.alexthe666.iceandfire.misc.IafDataSerializers.SERIALIZERS.register(modBus);

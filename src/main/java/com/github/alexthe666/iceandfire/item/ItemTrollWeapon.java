@@ -35,7 +35,9 @@ public class ItemTrollWeapon extends Item {
             if (player.getAttackStrengthScale(0) < 1 && player.attackAnim > 0) {
                 return true;
             } else {
+                //#if MC < 26.3
                 player.swingTime = -1;
+                //#endif
             }
         }
         return false;
@@ -45,7 +47,9 @@ public class ItemTrollWeapon extends Item {
     public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, EquipmentSlot slot) {
         if (entity instanceof Player player && player.getMainHandItem() == stack) {
             if (player.getAttackStrengthScale(0) < 0.95 && player.attackAnim > 0) {
+                //#if MC < 26.3
                 player.swingTime--;
+                //#endif
             }
         }
     }

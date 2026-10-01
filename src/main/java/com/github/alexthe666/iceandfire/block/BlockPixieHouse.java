@@ -24,7 +24,9 @@ import javax.annotation.Nullable;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.PIXIE_HOUSE;
 
 public class BlockPixieHouse extends BaseEntityBlock {
+    //#if MC < 26.3
     private static final MapCodec<BlockPixieHouse> CODEC = MapCodec.unit(BlockPixieHouse::new);
+    //#endif
     public static final net.minecraft.world.level.block.state.properties.EnumProperty<Direction> FACING =
         net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
@@ -42,10 +44,12 @@ public class BlockPixieHouse extends BaseEntityBlock {
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
     }
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
+    //#endif
 
     static String name(String type) {
         return "pixie_house_%s".formatted(type);

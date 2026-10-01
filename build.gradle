@@ -85,6 +85,16 @@ tasks.named('jar', Jar).configure {
     from sourceSets.client.output
 }
 
-tasks.named('processResources') {
+tasks.named('processResources', ProcessResources) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // version and dependency ranges follow gradle.properties (and -P overrides for the 26.3 build)
+    def tomlProperties = [mod_version: mod_version, minecraft_version: minecraft_version,
+                          neoforge_version: neoforge_version, nicktale_api_version: nicktale_api_version]
+    inputs.properties tomlProperties
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand tomlProperties
+    }
 }
+
+// Mismo codigo para Minecraft 26.2 y 26.3 (ver gradle/mc-preprocess.gradle)
+apply from: 'gradle/mc-preprocess.gradle'

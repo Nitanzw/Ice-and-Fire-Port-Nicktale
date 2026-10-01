@@ -7,7 +7,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+//#if MC >= 26.3
+//$$ import net.minecraft.world.level.block.PathBlock;
+//#else
 import net.minecraft.world.level.block.DirtPathBlock;
+//#endif
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,13 +21,21 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.NotNull;
 
+//#if MC >= 26.3
+//$$ public class BlockCharedPath extends PathBlock {
+//#else
 public class BlockCharedPath extends DirtPathBlock {
+//#endif
     public static final BooleanProperty REVERTS = BooleanProperty.create("revert");
     public Item itemBlock;
     public int dragonType;
 
     public BlockCharedPath(int dragonType) {
+        //#if MC >= 26.3
+        //$$ super(net.minecraft.world.level.block.Blocks.DIRT,
+        //#else
         super(
+        //#endif
             com.github.alexthe666.iceandfire.block.IafBlockProps.of()
                 .mapColor(MapColor.PLANT)
                 .pushReaction(PushReaction.DESTROY)

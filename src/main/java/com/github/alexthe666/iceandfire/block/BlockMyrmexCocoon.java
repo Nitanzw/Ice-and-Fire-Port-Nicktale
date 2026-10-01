@@ -20,7 +20,9 @@ import javax.annotation.Nullable;
 import com.mojang.serialization.MapCodec;
 
 public class BlockMyrmexCocoon extends BaseEntityBlock {
+    //#if MC < 26.3
     private static final MapCodec<BlockMyrmexCocoon> CODEC = MapCodec.unit(BlockMyrmexCocoon::new);
+    //#endif
 
 
     public BlockMyrmexCocoon() {
@@ -34,10 +36,12 @@ public class BlockMyrmexCocoon extends BaseEntityBlock {
         );
     }
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
+    //#endif
 
     @Override
     public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {

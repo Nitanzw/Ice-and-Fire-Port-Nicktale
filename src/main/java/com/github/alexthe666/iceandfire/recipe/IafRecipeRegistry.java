@@ -22,7 +22,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+//#if MC < 26.3
 import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
+//#endif
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.Direction;
@@ -57,9 +59,11 @@ public final class IafRecipeRegistry {
         });
     }
 
+    //#if MC < 26.3
     public static void registerBrewingRecipes(RegisterBrewingRecipesEvent event) {
         event.getBuilder().addMix(Potions.WATER, IafItemRegistry.SHINY_SCALES.get(), Potions.WATER_BREATHING);
     }
+    //#endif
 
     private static void registerArrowDispenser(Item item) {
         DispenserBlock.registerBehavior(item, new ProjectileDispenseBehavior(item));

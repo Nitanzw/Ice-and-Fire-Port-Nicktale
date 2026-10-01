@@ -27,7 +27,9 @@ import javax.annotation.Nullable;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.DREAD_PORTAL;
 
 public class BlockDreadPortal extends BaseEntityBlock implements IDreadBlock {
+    //#if MC < 26.3
     private static final MapCodec<BlockDreadPortal> CODEC = MapCodec.unit(BlockDreadPortal::new);
+    //#endif
 
     public BlockDreadPortal() {
         super(
@@ -41,10 +43,12 @@ public class BlockDreadPortal extends BaseEntityBlock implements IDreadBlock {
 		);
     }
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
+    //#endif
 
     @Override
     public void entityInside(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Entity entity, net.minecraft.world.entity.InsideBlockEffectApplier effectApplier, boolean isPrecise) {

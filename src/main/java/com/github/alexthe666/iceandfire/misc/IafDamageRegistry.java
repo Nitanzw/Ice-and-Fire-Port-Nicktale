@@ -96,12 +96,14 @@ public class IafDamageRegistry {
         return new CustomIndirectEntityDamageSource(holder, source, indirectEntityIn);
     }
 
+    //#if MC < 26.3
     public static void gatherData(GatherDataEvent.Server event) {
         event.addProvider(new IafDamageTypeTagsProvider(
             event.getGenerator().getPackOutput(),
             event.getLookupProvider(),
             MODID));
     }
+    //#endif
 
     public static class IafDamageTypeTagsProvider extends DamageTypeTagsProvider {
 

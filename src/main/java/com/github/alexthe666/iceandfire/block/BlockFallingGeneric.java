@@ -13,7 +13,9 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.material.MapColor;
 
 public class BlockFallingGeneric extends FallingBlock {
+    //#if MC < 26.3
     private static final MapCodec<BlockFallingGeneric> CODEC = BlockBehaviour.simpleCodec(BlockFallingGeneric::new);
+    //#endif
     public Item itemBlock;
 
 /*    public BlockFallingGeneric(float hardness, float resistance, SoundType sound) {
@@ -47,10 +49,12 @@ public class BlockFallingGeneric extends FallingBlock {
         super(props);
     }
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends FallingBlock> codec() {
         return CODEC;
     }
+    //#endif
 
     @Override
     public int getDustColor(BlockState blkst, BlockGetter level, BlockPos pos) {

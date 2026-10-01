@@ -23,7 +23,9 @@ import com.mojang.serialization.MapCodec;
 import static com.github.alexthe666.iceandfire.entity.tile.IafTileEntityRegistry.EGG_IN_ICE;
 
 public class BlockEggInIce extends BaseEntityBlock {
+    //#if MC < 26.3
     private static final MapCodec<BlockEggInIce> CODEC = MapCodec.unit(BlockEggInIce::new);
+    //#endif
     public Item itemBlock;
 
     @SuppressWarnings("deprecation")
@@ -39,10 +41,12 @@ public class BlockEggInIce extends BaseEntityBlock {
         );
     }
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
+    //#endif
 
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {

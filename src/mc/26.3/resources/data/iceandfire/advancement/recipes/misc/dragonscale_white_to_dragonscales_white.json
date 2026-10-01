@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dragonscale_white": {
+      "conditions": {
+        "items": [
+          {
+            "items": "iceandfire:dragonscale_white"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipes": "iceandfire:dragonscale_white_to_dragonscales_white"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dragonscale_white"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "iceandfire:dragonscale_white_to_dragonscales_white"
+    ]
+  }
+}

@@ -5,7 +5,7 @@ issueTrackerURL = "https://github.com/Alex-the-666/ice-and-fire/issues"
 
 [[mods]]
 modId = "iceandfire"
-version = "0.1.0-neoforge-26.2"
+version = "${mod_version}"
 displayName = "Ice and Fire"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/ice-and-fire-dragons"
 authors = "Raptorfarian, Alexthe666; Nicktale port by Nicolas"
@@ -14,21 +14,21 @@ description = '''Unofficial NeoForge port of Ice and Fire. Dragons and other myt
 [[dependencies.iceandfire]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.2.0.88,)"
+versionRange = "[${neoforge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.iceandfire]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.2]"
+versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.iceandfire]]
 modId = "nicktaleapi"
 type = "required"
-versionRange = "[0.1.0-neoforge-26.2,)"
+versionRange = "[${nicktale_api_version},)"
 ordering = "AFTER"
 side = "BOTH"
 

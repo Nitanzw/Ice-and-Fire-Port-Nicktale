@@ -18,8 +18,10 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.MapCodec;
 
 public class BlockFallingReturningState extends FallingBlock {
+    //#if MC < 26.3
     private static final MapCodec<BlockFallingReturningState> CODEC = BlockBehaviour.simpleCodec(properties ->
         new BlockFallingReturningState(0.6F, 0.0F, SoundType.GRAVEL, properties, Blocks.GRAVEL.defaultBlockState()));
+    //#endif
     public static final BooleanProperty REVERTS = BooleanProperty.create("revert");
     public Item itemBlock;
     private final BlockState returnState;
@@ -70,10 +72,12 @@ public class BlockFallingReturningState extends FallingBlock {
     }
 
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends FallingBlock> codec() {
         return CODEC;
     }
+    //#endif
 
     @Override
     public int getDustColor(BlockState blkst, BlockGetter level, BlockPos pos) {

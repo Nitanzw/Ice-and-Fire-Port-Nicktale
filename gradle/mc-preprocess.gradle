@@ -1,0 +1,199 @@
+// Nicktale multi-version build: the same sources build for Minecraft 26.2 (default) and 26.3.
+//
+//   gradlew build                                   -> 26.2, sources used as they are
+//   gradlew build -Pminecraft_version=26.3 -Pneoforge_version=26.3.x-beta
+//                                                   -> sources preprocessed into build/mc-src/26.3 first
+//
+// Version-specific code lives in the normal sources between directives; the inactive branch is kept commented with
+// "//$$ " so the default (26.2) tree compiles untouched in the IDE:
+//
+//   //#if MC >= 26.3
+//   //$$ poseStack.rotate(rotation);
+//   //#else
+//   poseStack.mulPose(rotation);
+//   //#endif
+//
+// Mechanical renames (classes that moved package, ...) go to gradle/mc/<version>.replace instead
+// ("literal => replacement" or "re:regex => replacement", applied in order). Apply this file at the END of build.gradle.
+// Per repo (never overwritten by the shared copy):
+//   gradle/mc/<version>.local.replace  extra rules applied BEFORE the shared ones
+//   gradle/mc/<version>.exclude        source paths (relative to the source root, glob) left out for that version
+//   src/mc/<version>/resources         resources added only for that version (e.g. 26.3 worldgen/feature JSON)
+// Configuration-cache safe: the task action only uses the static helper below and plain values.
+
+class NicktaleMcPreprocessor {
+    static List<Integer> key(String v) {
+        v.tokenize('.').collect { it.isInteger() ? it.toInteger() : 0 }
+    }
+
+    static int compare(String a, String b) {
+        def x = key(a), y = key(b)
+        for (int i = 0; i < Math.max(x.size(), y.size()); i++) {
+            int p = i < x.size() ? x[i] : 0, q = i < y.size() ? y[i] : 0
+            if (p != q) return p <=> q
+        }
+        return 0
+    }
+
+    static boolean condition(String mc, String expr) {
+        def m = (expr.trim() =~ /^MC\s*(>=|<=|==|!=|>|<)\s*([0-9.]+)$/)
+        if (!m.matches()) throw new IllegalArgumentException("mc-preprocess: condicion no valida: ${expr}")
+        int c = compare(mc, m.group(2))
+        switch (m.group(1)) {
+            case '>=': return c >= 0
+            case '<=': return c <= 0
+            case '>': return c > 0
+            case '<': return c < 0
+            case '==': return c == 0
+            default: return c != 0
+        }
+    }
+
+    /** Rules as [kind, from, to] string triples. */
+    static List<List<String>> loadRules(File f) {
+        def rules = []
+        if (!f.exists()) return rules
+        f.eachLine('UTF-8') { String line ->
+            if (line.trim().isEmpty() || line.trim().startsWith('#')) return
+            int arrow = line.indexOf(' => ')
+            if (arrow < 0) throw new IllegalArgumentException("mc-preprocess: regla sin ' => ': ${line}")
+            def from = line.substring(0, arrow).trim()
+            def to = line.substring(arrow + 4)
+            rules << (from.startsWith('re:') ? ['re', from.substring(3), to] : ['lit', from, to])
+        }
+        return rules
+    }
+
+    static String process(String mc, String text, String fileName, List<List<String>> rules, String modId, String set) {
+        def out = new StringBuilder()
+        def stack = []           // each: [conditionMet, branchTaken, parentActive]
+        boolean active = true
+        text.readLines().eachWithIndex { String line, int idx ->
+            def t = line.trim()
+            if (t.startsWith('//#if ')) {
+                boolean cond = condition(mc, t.substring(6))
+                stack << [cond, cond, active]
+                active = active && cond
+                out << line << '\n'
+                return
+            }
+            if (t == '//#else' || t.startsWith('//#elif ')) {
+                if (stack.isEmpty()) throw new IllegalStateException("mc-preprocess: ${fileName}:${idx + 1} else sin if")
+                def top = stack[-1]
+                boolean cond = t == '//#else' ? !top[1] : (!top[1] && condition(mc, t.substring(8)))
+                top[1] = top[1] || cond
+                active = top[2] && cond
+                out << line << '\n'
+                return
+            }
+            if (t == '//#endif') {
+                if (stack.isEmpty()) throw new IllegalStateException("mc-preprocess: ${fileName}:${idx + 1} endif sin if")
+                active = stack.remove(stack.size() - 1)[2]
+                out << line << '\n'
+                return
+            }
+            if (stack.isEmpty()) {
+                out << line << '\n'
+                return
+            }
+            def indent = line.takeWhile { it == ' ' || it == '\t' }
+            def body = line.substring(indent.length())
+            if (active) {
+                out << (body.startsWith('//$$ ') ? indent + body.substring(5) : body == '//$$' ? indent : line) << '\n'
+            } else {
+                out << (body.startsWith('//$$') || body.isEmpty() ? line : indent + '//$$ ' + body) << '\n'
+            }
+        }
+        if (!stack.isEmpty()) throw new IllegalStateException("mc-preprocess: ${fileName} tiene //#if sin //#endif")
+        def result = out.toString()
+        for (List<String> rule : rules) {
+            def to = rule[2].replace('@MODID@', modId).replace('@SET@', set)
+            result = rule[0] == 're'
+                    ? java.util.regex.Pattern.compile(rule[1]).matcher(result).replaceAll(to)
+                    : result.replace(rule[1], to)
+        }
+        return result
+    }
+
+    static void run(String mc, List<File> roots, File outDir, List<File> rulesFiles, File compatDir, String modId, String set,
+                    File excludeFile) {
+        def rules = []
+        rulesFiles.each { rules.addAll(loadRules(it)) }
+        def excludes = []
+        if (excludeFile.exists()) {
+            excludeFile.eachLine('UTF-8') { String l ->
+                if (!l.trim().isEmpty() && !l.trim().startsWith('#')) {
+                    excludes << java.nio.file.FileSystems.getDefault().getPathMatcher('glob:' + l.trim())
+                }
+            }
+        }
+        outDir.deleteDir()
+        boolean needsCompat = false
+        roots.each { File root ->
+            if (!root.exists()) return
+            root.eachFileRecurse(groovy.io.FileType.FILES) { File f ->
+                def relPath = root.toPath().relativize(f.toPath())
+                if (excludes.any { it.matches(relPath) }) return
+                def rel = relPath.toString()
+                def target = new File(outDir, rel)
+                target.parentFile.mkdirs()
+                if (f.name.endsWith('.java')) {
+                    def text = process(mc, f.getText('UTF-8'), rel, rules, modId, set)
+                    needsCompat |= text.contains("com.nicktale.mccompat.${modId}.${set}.")
+                    target.setText(text, 'UTF-8')
+                } else {
+                    target.bytes = f.bytes
+                }
+            }
+        }
+        // helpers used by the rules (e.g. McBuf), generated per mod and source set so packages never clash
+        if (needsCompat && compatDir.isDirectory()) {
+            def pkgDir = new File(outDir, "com/nicktale/mccompat/${modId}/${set}")
+            pkgDir.mkdirs()
+            compatDir.eachFileMatch(~/.*\.java/) { File t ->
+                new File(pkgDir, t.name).setText(t.getText('UTF-8').replace('@MODID@', modId).replace('@SET@', set), 'UTF-8')
+            }
+        }
+    }
+}
+
+def nicktaleMc = (project.findProperty('minecraft_version') ?: '26.2').toString()
+project.ext.nicktaleMc = nicktaleMc
+
+if (nicktaleMc != '26.2') {
+    def rulesFile = rootProject.file("gradle/mc/${nicktaleMc}.replace")
+    def localRulesFile = rootProject.file("gradle/mc/${nicktaleMc}.local.replace")
+    def excludeFile = rootProject.file("gradle/mc/${nicktaleMc}.exclude")
+    def overlay = project.file("src/mc/${nicktaleMc}/resources")
+    if (overlay.isDirectory()) {
+        // first so its files win over the 26.2 ones with the same path (processResources keeps the first copy)
+        sourceSets.named('main') { it.resources.setSrcDirs([overlay] + it.resources.srcDirs) }
+        tasks.named('processResources') { duplicatesStrategy = DuplicatesStrategy.EXCLUDE }
+    }
+    def compatDir = rootProject.file("gradle/mc/${nicktaleMc}-compat")
+    def modId = (project.findProperty('mod_id') ?: project.name).toString().replaceAll('[^A-Za-z0-9_]', '_').toLowerCase()
+    sourceSets.configureEach { ss ->
+        def originals = ss.java.srcDirs.findAll { it.exists() }.collect { it }
+        if (originals.isEmpty()) return
+        def outDir = layout.buildDirectory.dir("mc-src/${nicktaleMc}/${ss.name}/java").get().asFile
+        def mc = nicktaleMc
+        def setName = ss.name.replaceAll('[^A-Za-z0-9_]', '_').toLowerCase()
+        def task = tasks.register("mcPreprocess${ss.name.capitalize()}Java") {
+            group = 'build'
+            description = "Prepara las fuentes ${ss.name} para Minecraft ${mc}"
+            inputs.files(originals)
+            inputs.property('mc', mc)
+            if (rulesFile.exists()) inputs.file(rulesFile)
+            if (localRulesFile.exists()) inputs.file(localRulesFile)
+            if (excludeFile.exists()) inputs.file(excludeFile)
+            if (compatDir.isDirectory()) inputs.dir(compatDir)
+            outputs.dir(outDir)
+            doLast {
+                NicktaleMcPreprocessor.run(mc, originals, outDir, [localRulesFile, rulesFile], compatDir, modId, setName, excludeFile)
+            }
+        }
+        ss.java.srcDirs = [outDir]
+        tasks.named(ss.compileJavaTaskName) { dependsOn task }
+        tasks.matching { it.name == ss.sourcesJarTaskName }.configureEach { dependsOn task }
+    }
+}

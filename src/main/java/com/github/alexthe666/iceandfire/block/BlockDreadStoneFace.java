@@ -18,7 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.MapCodec;
 
 public class BlockDreadStoneFace extends HorizontalDirectionalBlock implements IDreadBlock, IDragonProof {
+    //#if MC < 26.3
     private static final MapCodec<BlockDreadStoneFace> CODEC = MapCodec.unit(BlockDreadStoneFace::new);
+    //#endif
     public static final BooleanProperty PLAYER_PLACED = BooleanProperty.create("player_placed");
 
     public BlockDreadStoneFace() {
@@ -33,10 +35,12 @@ public class BlockDreadStoneFace extends HorizontalDirectionalBlock implements I
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(PLAYER_PLACED, Boolean.FALSE));
     }
 
+    //#if MC < 26.3
     @Override
     protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
         return CODEC;
     }
+    //#endif
 
     @SuppressWarnings("deprecation")
     @Override
