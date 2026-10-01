@@ -2,7 +2,6 @@
   "itemGroup.iceandfire.items": "Ítems de Ice And Fire",
   "itemGroup.iceandfire.blocks": "Bloques de Ice And Fire",
   "iceandfire.empty": "Vacío",
-
   "block.iceandfire.lectern": "Atril del Bestiario",
   "block.iceandfire.podium": "Podio",
   "block.iceandfire.podium_oak": "Podio de madera de roble",
@@ -516,7 +515,6 @@
   "item.iceandfire.banner_pattern_troll.desc": "Cabeza de trol",
   "item.iceandfire.banner_pattern_dread": "Diseño de estandarte",
   "item.iceandfire.banner_pattern_dread.desc": "Terror",
-
   "entity.iceandfire.dragon_multipart": "Parte de dragón",
   "entity.iceandfire.multipart": "Parte",
   "entity.iceandfire.hydra_multipart": "Cuello de hidra",
@@ -695,7 +693,6 @@
   "amphithere.command.0": "Este anfíptero está deambulando.",
   "amphithere.command.1": "Este anfíptero está esperando.",
   "amphithere.command.2": "Este anfíptero te está siguiendo.",
-
   "container.lectern.no_bestiary": "Se necesita un bestiario.",
   "container.lectern.costs": "Costo:",
   "container.lectern.manuscript.many": "%s manuscritos",
@@ -754,7 +751,6 @@
   "message.iceandfire.dragonGrown": "¡Este dragón ha crecido a la etapa",
   "message.iceandfire.dragonGrownEnd": "!",
   "message.iceandfire.dragonGrownName": "ha crecido a la etapa",
-
   "death.attack.dragon.0": "%s fue partido en dos por un dragón",
   "death.attack.dragon.1": "%s fue hecho trizas por un dragón",
   "death.attack.dragon.2": "%s fue devorado por un dragón",
@@ -785,15 +781,12 @@
   "death.attack.dragon_lightning.attacker_0": "%s fue energizado por %s",
   "death.attack.dragon_lightning.attacker_1": "%s fue azotado con un rayo por %s",
   "death.attack.dragon_lightning.attacker_2": "%s fue electrocutado por %s",
-
   "key.dragon_strike": "Ataque de dragón",
   "key.dragon_fireAttack": "Aliento de dragón",
   "key.dragon_down": "Descender con el dragón",
   "key.dragon_change_view": "Cambiar la cámara para el dragón",
-
   "tc.aspect.mythus": "Criatura mitológica, Ser legendario, Críptido, Bicho temible",
   "tc.aspect.draco": "Dragón",
-
   "advancements.iceandfire.root.title": "Ice and Fire",
   "advancements.iceandfire.root.description": "Entrá a un mundo de criaturas mágicas. Traducido por GGSANTY28 y Orekuram.",
   "advancements.iceandfire.bestiary.title": "Libro de monstruos",
@@ -946,7 +939,6 @@
   "block.minecraft.banner.fire.green": "Dragón de fuego verde",
   "block.minecraft.banner.fire.red": "Dragón de fuego rojo",
   "block.minecraft.banner.fire.black": "Dragón de fuego negro",
-
   "block.minecraft.banner.ice.white": "Dragón de hielo blanco",
   "block.minecraft.banner.ice.orange": "Dragón de hielo naranja",
   "block.minecraft.banner.ice.magenta": "Dragón de hielo magenta",
@@ -963,7 +955,6 @@
   "block.minecraft.banner.ice.green": "Dragón de hielo verde",
   "block.minecraft.banner.ice.red": "Dragón de hielo rojo",
   "block.minecraft.banner.ice.black": "Dragón de hielo negro",
-
   "block.minecraft.banner.lightning.white": "Dragón eléctrico blanco",
   "block.minecraft.banner.lightning.orange": "Dragón eléctrico naranja",
   "block.minecraft.banner.lightning.magenta": "Dragón eléctrico magenta",
@@ -980,7 +971,6 @@
   "block.minecraft.banner.lightning.green": "Dragón eléctrico verde",
   "block.minecraft.banner.lightning.red": "Dragón eléctrico rojo",
   "block.minecraft.banner.lightning.black": "Dragón eléctrico negro",
-
   "block.minecraft.banner.fire_head.white": "Cabeza de dragón de fuego blanco",
   "block.minecraft.banner.fire_head.orange": "Cabeza de dragón de fuego naranja",
   "block.minecraft.banner.fire_head.magenta": "Cabeza de dragón de fuego magenta",
@@ -997,7 +987,6 @@
   "block.minecraft.banner.fire_head.green": "Cabeza de dragón de fuego verde",
   "block.minecraft.banner.fire_head.red": "Cabeza de dragón de fuego rojo",
   "block.minecraft.banner.fire_head.black": "Cabeza de dragón de fuego negro",
-
   "block.minecraft.banner.ice_head.white": "Cabeza de dragón de hielo blanco",
   "block.minecraft.banner.ice_head.orange": "Cabeza de dragón de hielo naranja",
   "block.minecraft.banner.ice_head.magenta": "Cabeza de dragón de hielo magenta",
@@ -1014,7 +1003,6 @@
   "block.minecraft.banner.ice_head.green": "Cabeza de dragón de hielo verde",
   "block.minecraft.banner.ice_head.red": "Cabeza de dragón de hielo rojo",
   "block.minecraft.banner.ice_head.black": "Cabeza de dragón de hielo negro",
-
   "block.minecraft.banner.lightning_head.white": "Cabeza de dragón eléctrico blanco",
   "block.minecraft.banner.lightning_head.orange": "Cabeza de dragón eléctrico naranja",
   "block.minecraft.banner.lightning_head.magenta": "Cabeza de dragón eléctrico magenta",
@@ -1031,7 +1019,6 @@
   "block.minecraft.banner.lightning_head.green": "Cabeza de dragón eléctrico verde",
   "block.minecraft.banner.lightning_head.red": "Cabeza de dragón eléctrico rojo",
   "block.minecraft.banner.lightning_head.black": "Cabeza de dragón eléctrico negro",
-
   "block.minecraft.banner.gorgon.white": "Gorgona blanca",
   "block.minecraft.banner.gorgon.orange": "Gorgona naranja",
   "block.minecraft.banner.gorgon.magenta": "Gorgona magenta",
@@ -1048,7 +1035,6 @@
   "block.minecraft.banner.gorgon.green": "Gorgona verde",
   "block.minecraft.banner.gorgon.red": "Gorgona roja",
   "block.minecraft.banner.gorgon.black": "Gorgon negra",
-
   "block.minecraft.banner.fae.white": "Fae blanco",
   "block.minecraft.banner.fae.orange": "Fae naranja",
   "block.minecraft.banner.fae.magenta": "Fae magenta",
@@ -1065,7 +1051,6 @@
   "block.minecraft.banner.fae.green": "Fae verde",
   "block.minecraft.banner.fae.red": "Fae rojo",
   "block.minecraft.banner.fae.black": "Fae negro",
-
   "block.minecraft.banner.hippogryph_head.white": "Cabeza de hipogrifo blanco",
   "block.minecraft.banner.hippogryph_head.orange": "Cabeza de hipogrifo naranja",
   "block.minecraft.banner.hippogryph_head.magenta": "Cabeza de hipogrifo magenta",
@@ -1082,7 +1067,6 @@
   "block.minecraft.banner.hippogryph_head.green": "Cabeza de hipogrifo verde",
   "block.minecraft.banner.hippogryph_head.red": "Cabeza de hipogrifo rojo",
   "block.minecraft.banner.hippogryph_head.black": "Cabeza de hipogrifo negro",
-
   "block.minecraft.banner.hippocampus.white": "Hipocampo blanco",
   "block.minecraft.banner.hippocampus.orange": "Hipocampo naranja",
   "block.minecraft.banner.hippocampus.magenta": "Hipocampo magenta",
@@ -1099,7 +1083,6 @@
   "block.minecraft.banner.hippocampus.green": "Hipocampo verde",
   "block.minecraft.banner.hippocampus.red": "Hipocampo rojo",
   "block.minecraft.banner.hippocampus.black": "Hipocampo negro",
-
   "block.minecraft.banner.mermaid.white": "Sirena blanca",
   "block.minecraft.banner.mermaid.orange": "Sirena naranja",
   "block.minecraft.banner.mermaid.magenta": "Sirena magenta",
@@ -1116,7 +1099,6 @@
   "block.minecraft.banner.mermaid.green": "Sirena verde",
   "block.minecraft.banner.mermaid.red": "Sirena roja",
   "block.minecraft.banner.mermaid.black": "Sirena negra",
-
   "block.minecraft.banner.troll.white": "Trol blanco",
   "block.minecraft.banner.troll.orange": "Trol naranja",
   "block.minecraft.banner.troll.magenta": "Trol magenta",
@@ -1133,7 +1115,6 @@
   "block.minecraft.banner.troll.green": "Trol verde",
   "block.minecraft.banner.troll.red": "Trol rojo",
   "block.minecraft.banner.troll.black": "Trol negro",
-
   "block.minecraft.banner.eye.white": "Ojo blanco",
   "block.minecraft.banner.eye.orange": "Ojo naranja",
   "block.minecraft.banner.eye.magenta": "Ojo magenta",
@@ -1150,7 +1131,6 @@
   "block.minecraft.banner.eye.green": "Ojo verde",
   "block.minecraft.banner.eye.red": "Ojo rojo",
   "block.minecraft.banner.eye.black": "Ojo negro",
-
   "block.minecraft.banner.feather.white": "Pluma blanca",
   "block.minecraft.banner.feather.orange": "Pluma naranja",
   "block.minecraft.banner.feather.magenta": "Pluma magenta",
@@ -1167,7 +1147,6 @@
   "block.minecraft.banner.feather.green": "Pluma verde",
   "block.minecraft.banner.feather.red": "Pluma roja",
   "block.minecraft.banner.feather.black": "Pluma negra",
-
   "block.minecraft.banner.bird.white": "Ave blanca",
   "block.minecraft.banner.bird.orange": "Ave naranja",
   "block.minecraft.banner.bird.magenta": "Ave magenta",
@@ -1184,7 +1163,6 @@
   "block.minecraft.banner.bird.green": "Ave verde",
   "block.minecraft.banner.bird.red": "Ave roja",
   "block.minecraft.banner.bird.black": "Ave negra",
-
   "block.minecraft.banner.amphithere.white": "Anfíptero blanco",
   "block.minecraft.banner.amphithere.orange": "Anfíptero naranja",
   "block.minecraft.banner.amphithere.magenta": "Anfíptero magenta",
@@ -1201,7 +1179,6 @@
   "block.minecraft.banner.amphithere.green": "Anfíptero verde",
   "block.minecraft.banner.amphithere.red": "Anfíptero rojo",
   "block.minecraft.banner.amphithere.black": "Anfíptero negro",
-
   "block.minecraft.banner.sea_serpent.white": "Serpiente marina blanca",
   "block.minecraft.banner.sea_serpent.orange": "Serpiente marina naranja",
   "block.minecraft.banner.sea_serpent.magenta": "Serpiente marina magenta",
@@ -1218,7 +1195,6 @@
   "block.minecraft.banner.sea_serpent.green": "Serpiente marina verde",
   "block.minecraft.banner.sea_serpent.red": "Serpiente marina roja",
   "block.minecraft.banner.sea_serpent.black": "Serpiente marina negra",
-
   "block.minecraft.banner.weezer.white": "Weezer blanco",
   "block.minecraft.banner.weezer.orange": "Weezer naranja",
   "block.minecraft.banner.weezer.magenta": "Weezer magenta",
@@ -1235,7 +1211,6 @@
   "block.minecraft.banner.weezer.green": "Weezer verde",
   "block.minecraft.banner.weezer.red": "Weezer rojo",
   "block.minecraft.banner.weezer.black": "Weezer negro",
-
   "block.minecraft.banner.dread.white": "Cráneo aterrador blanco",
   "block.minecraft.banner.dread.orange": "Cráneo aterrador naranja",
   "block.minecraft.banner.dread.magenta": " Cráneo aterrador magenta",
@@ -1252,7 +1227,6 @@
   "block.minecraft.banner.dread.green": "Cráneo aterrador verde",
   "block.minecraft.banner.dread.red": "Cráneo aterrador rojo",
   "block.minecraft.banner.dread.black": "Cráneo aterrador negro",
-
   "iceandfire.sound.subtitle.ghost_attack": "Fantasma ataca",
   "iceandfire.sound.subtitle.ghost_idle": "Fantasma exhala",
   "iceandfire.sound.subtitle.ghost_hurt": "Fantasma herido",
@@ -1346,5 +1320,9 @@
   "iceandfire.sound.subtitle.icedragon_death": "Dragón de hielo muere",
   "iceandfire.sound.subtitle.dragonegg_hatch": "Huevo de dragón eclosiona",
   "iceandfire.sound.subtitle.dragonflute": "Flauta de hueso de dragón suena",
-  "bestiary_gui": "Bestiario"
+  "bestiary_gui": "Bestiario",
+  "block.iceandfire.podium_crimson": "Podio de madera carmesí",
+  "block.iceandfire.podium_warped": "Podio de madera distorsionada",
+  "block.iceandfire.podium_mangrove": "Podio de madera de mangle",
+  "block.iceandfire.podium_cherry": "Podio de madera de cerezo"
 }

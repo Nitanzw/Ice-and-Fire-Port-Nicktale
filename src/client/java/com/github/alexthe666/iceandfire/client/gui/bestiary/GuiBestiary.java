@@ -799,6 +799,11 @@ public class GuiBestiary extends Screen {
 
         resource = Minecraft.getInstance().getResourceManager().getResource(fileLoc);
         if (resource.isEmpty()) {
+            // regional variants (es_cl, es_mx, pt_pt...) use the main translation of their language before English
+            resource = Minecraft.getInstance().getResourceManager().getResource(Identifier.parse(
+                    "iceandfire:lang/bestiary/" + sameLanguageFolder(languageName) + "/" + fileName));
+        }
+        if (resource.isEmpty()) {
             resource = Minecraft.getInstance().getResourceManager().getResource(backupLoc);
         }
         try {
@@ -893,6 +898,11 @@ public class GuiBestiary extends Screen {
 
         resource = Minecraft.getInstance().getResourceManager().getResource(fileLoc);
         if (resource.isEmpty()) {
+            // regional variants (es_cl, es_mx, pt_pt...) use the main translation of their language before English
+            resource = Minecraft.getInstance().getResourceManager().getResource(Identifier.parse(
+                    "iceandfire:lang/bestiary/" + sameLanguageFolder(languageName) + "/" + fileName));
+        }
+        if (resource.isEmpty()) {
             resource = Minecraft.getInstance().getResourceManager().getResource(backupLoc);
         }
         try {
@@ -952,5 +962,17 @@ public class GuiBestiary extends Screen {
         ms.pose().translate(0, 0);
         ms.item(stack, x, y);
         ms.pose().popMatrix();
+    }
+
+    /** Bestiary folder of the main variant of a language: es_cl -> es_es_0, pt_pt -> pt_br_0 (falls back to English). */
+    private static String sameLanguageFolder(String languageName) {
+        String prefix = languageName.contains("_") ? languageName.substring(0, languageName.indexOf('_')) : languageName;
+        return switch (prefix) {
+            case "es" -> "es_es_0";
+            case "pt" -> "pt_br_0";
+            case "fr" -> "fr_fr_0";
+            case "zh" -> "zh_cn_0";
+            default -> "en_us_0";
+        };
     }
 }
