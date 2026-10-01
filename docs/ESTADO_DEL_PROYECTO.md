@@ -3,14 +3,12 @@
 ## Dónde está todo
 
 - **Repositorio:** https://github.com/Nitanzw/Ice-and-Fire-Port-Nicktale
-- **Rama con TODO el trabajo:** `main` (no está en `main`).
-  `main` sigue en el commit viejo `46abb1d`. Para ver lo nuevo hay que abrir esa rama en GitHub
-  (selector de ramas) o hacer un merge/PR hacia `main` (pendiente de tu autorización: no creo PRs ni empujo a `main` sin que lo pidas).
-- **Jars para probar:** carpeta `dist/` del repo (ignorada por git) y los que te mandé por el chat:
+- **Rama principal:** `main` (contiene todo el trabajo).
+- **Jars para probar:** carpeta `dist/` del repo (ignorada por git) y los que se enviaron por separado:
   `iceandfire-nicktale-0.1.0-neoforge-26.2.jar` + `nicktaleapi-0.1.0-neoforge-26.2.jar` (van **los dos** en `mods/`).
   Los jars de `dist/` hay que regenerarlos con `./gradlew build` si cambias algo.
 - **Nicktale API:** repo propio https://github.com/Nitanzw/Nicktale-API (privado), incluido aquí como submódulo en `nicktale-api/`.
-- **Documentos:** `docs/AGENT_TEST_PLAN.md` (plan para que otras IAs testeen), este archivo, `docs/reports/` (para reportes de QA).
+- **Documentos:** `docs/TEST_PLAN.md` (plan de pruebas), este archivo, `docs/reports/` (para reportes de QA).
 
 ## Qué se hizo (resumen por bloques)
 

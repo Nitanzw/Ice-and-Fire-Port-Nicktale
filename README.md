@@ -4,7 +4,7 @@
 to Minecraft **26.2** (26.3 planned, as a dual build), by Nicktale. It is **not affiliated with, endorsed by or supported by the original authors.**
 
 > **Status: compiles and boots on NeoForge 26.2** (server and client smoke tests pass); it still needs hands-on play testing and visual QA.
-> See `docs/ESTADO_DEL_PROYECTO.md` (current state) and `docs/AGENT_TEST_PLAN.md` (test plan). No release jars are published yet.
+> See `docs/ESTADO_DEL_PROYECTO.md` (current state) and `docs/TEST_PLAN.md` (test plan). No release jars are published yet.
 
 ## Credits
 Ice and Fire is created by **Raptorfarian** and **Alexthe666** and their contributors. All original content, code and art belong to them and are used
@@ -15,7 +15,7 @@ under the terms of the license below. This port only adapts the code to NeoForge
 
 ## Project layout
 - `src/main`, `src/client` — the mod (client-only code lives in the `client` source set).
-- `docs/ESTADO_DEL_PROYECTO.md` — current state and what remains.
+- `docs/ESTADO_DEL_PROYECTO.md` — current state and what remains; `docs/TEST_PLAN.md` — test plan.
 - `tools/` — helper scripts used for the mass migration (import relocation, API renames, diagnostic-driven fixers).
 - Depends on **Nicktale API** (own animation / model / respawn library that replaces Citadel), kept in its own repository
   [Nitanzw/Nicktale-API](https://github.com/Nitanzw/Nicktale-API) and included here as the git submodule `nicktale-api/`.

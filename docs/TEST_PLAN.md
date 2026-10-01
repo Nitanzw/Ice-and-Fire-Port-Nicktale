@@ -1,6 +1,6 @@
-# Plan de pruebas para agentes — Ice and Fire Port (NeoForge 26.2)
+# Plan de pruebas — Ice and Fire Port (NeoForge 26.2)
 
-Documento para pasarle a una IA con agentes. **Objetivo: buscar bugs y verificar funciones, no arreglar nada.**
+Documento para quien vaya a probar el mod (una persona o una IA con agentes). **Objetivo: buscar bugs y verificar funciones, no arreglar nada.**
 Al terminar, cada agente entrega un reporte en Markdown (formato al final) y la IA principal junta todo en
 `docs/reports/REPORTE_FINAL.md`.
 
@@ -18,7 +18,7 @@ Al terminar, cada agente entrega un reporte en Markdown (formato al final) y la 
 
 ## 1. Proyecto
 
-- Repo: `/home/user/Ice-and-Fire-Port-Nicktale`, rama `main`.
+- Repo: Nitanzw/Ice-and-Fire-Port-Nicktale, rama `main`.
 - Mod: port no oficial de Ice and Fire a **NeoForge 26.2 (MC 26.2)**. Necesita la **Nicktale API** (submódulo `nicktale-api/` → repo Nitanzw/Nicktale-API; clonar con `--recurse-submodules`).
 - Java 25 (toolchain de Gradle), Gradle wrapper en la raíz. Código: `src/main` (común), `src/client` (cliente).
 - Jars ya construidos en `dist/` (`iceandfire-nicktale-…jar` y `nicktaleapi-…jar`, van los dos en `mods/`).

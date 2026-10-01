@@ -12,7 +12,7 @@ import sys
 import zipfile
 
 HOME = os.path.expanduser('~')
-MC_JAR = 'nicktale-api/build/moddev/artifacts/minecraft-patched-26.2.0.88.jar'
+MC_JAR = os.environ.get('MC_PATCHED_JAR', 'nicktale-api/build/moddev/artifacts/minecraft-patched-26.2.0.88.jar')
 JARS = [MC_JAR] + glob.glob(HOME + '/.gradle/caches/modules-2/files-2.1/net.neoforged/neoforge/26.2.0.88/*/neoforge-26.2.0.88-universal.jar') \
     + [j for j in glob.glob(HOME + '/.gradle/caches/modules-2/files-2.1/net.neoforged*/**/*.jar', recursive=True)
        if not j.endswith(('-sources.jar', '-javadoc.jar', '-userdev.jar'))]
