@@ -68,7 +68,7 @@ public class ItemDragonHorn extends Item {
         if (!playerIn.level().isClientSide() && hand == InteractionHand.MAIN_HAND && target instanceof EntityDragonBase && ((EntityDragonBase) target).isOwnedBy(playerIn) && data.getCompoundOrEmpty("EntityTag").isEmpty()) {
             CompoundTag newTag = new CompoundTag();
 
-            CompoundTag entityTag = com.github.alexthe666.iceandfire.entity.util.EntityDataIO.saveWithoutId(target);
+            CompoundTag entityTag = com.nicktale.api.server.entity.EntityDataIO.saveWithoutId(target);
             newTag.put("EntityTag", entityTag);
 
             newTag.putString("DragonHornEntityID", BuiltInRegistries.ENTITY_TYPE.getKey(target.getType()).toString());
@@ -98,7 +98,7 @@ public class ItemDragonHorn extends Item {
                 Entity entity = type.create(world, EntitySpawnReason.EVENT);
                 if (entity instanceof EntityDragonBase) {
                     EntityDragonBase dragon = (EntityDragonBase) entity;
-                    dragon.load(com.github.alexthe666.iceandfire.entity.util.EntityDataIO.input(world.registryAccess(), data.getCompoundOrEmpty("EntityTag")));
+                    dragon.load(com.nicktale.api.server.entity.EntityDataIO.input(world.registryAccess(), data.getCompoundOrEmpty("EntityTag")));
                 }
                 //Still needed to allow for intercompatibility
                 if (data.contains("EntityUUID"))

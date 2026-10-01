@@ -1,4 +1,4 @@
-package com.github.alexthe666.iceandfire.client.model.armor;
+package com.nicktale.api.client.model.armor;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;

@@ -7,7 +7,7 @@ import com.nicktale.api.animation.Animation;
 import com.nicktale.api.animation.AnimationSync;
 import com.nicktale.api.animation.AnimationHandler;
 import com.nicktale.api.animation.IAnimatedEntity;
-import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
+import com.nicktale.api.server.entity.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.ai.AquaticAIGetInWater;

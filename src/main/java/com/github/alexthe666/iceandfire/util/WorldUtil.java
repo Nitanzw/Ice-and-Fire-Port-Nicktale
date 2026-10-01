@@ -220,19 +220,13 @@ public class WorldUtil {
     /** Development aid: with the IAF_WORLDGEN environment variable set every chance roll succeeds. */
     private static final boolean FORCE_GEN = System.getenv("IAF_WORLDGEN") != null;
 
-    /** Set while a dragon site is regenerated: every chance roll and distance check succeeds on this thread. */
-    private static final ThreadLocal<Boolean> FORCING = ThreadLocal.withInitial(() -> false);
-
-    public static void setForceGeneration(boolean force) {
-        FORCING.set(force);
-    }
-
+    /** On while a dragon site is regenerated (see the Nicktale API): every chance roll and distance check succeeds. */
     public static boolean isForcingGeneration() {
-        return FORCING.get();
+        return com.nicktale.api.server.worldgen.ForcedGeneration.isForcing();
     }
 
     public static int forceChance(int configChance) {
-        return FORCE_GEN || FORCING.get() ? 1 : configChance;
+        return FORCE_GEN || isForcingGeneration() ? 1 : configChance;
     }
 
     public static boolean canGenerate(int configChance, final WorldGenLevel level, final RandomSource random, final BlockPos origin, final String id, boolean checkFluid) {

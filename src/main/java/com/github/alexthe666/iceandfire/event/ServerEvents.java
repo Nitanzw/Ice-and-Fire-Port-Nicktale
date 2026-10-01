@@ -377,7 +377,7 @@ public class ServerEvents {
                     statue.setCrackAmount(statue.getCrackAmount() + 1);
 
                     if (statue.getCrackAmount() > 9) {
-                        CompoundTag writtenTag = com.github.alexthe666.iceandfire.entity.util.EntityDataIO.saveWithoutId(event.getTarget());
+                        CompoundTag writtenTag = com.nicktale.api.server.entity.EntityDataIO.saveWithoutId(event.getTarget());
                         event.getTarget().playSound(SoundEvents.STONE_BREAK, 2, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 0.5F);
                         event.getTarget().remove(Entity.RemovalReason.KILLED);
 
@@ -387,7 +387,7 @@ public class ServerEvents {
                             tag.putBoolean("IAFStoneStatuePlayerEntity", statue.getTrappedEntityTypeString().equalsIgnoreCase("minecraft:player"));
                             tag.putString("IAFStoneStatueEntityID", statue.getTrappedEntityTypeString());
                             tag.put("IAFStoneStatueNBT", writtenTag);
-                            tag.merge(com.github.alexthe666.iceandfire.entity.util.EntityDataIO.saveAdditional(statue, statue::addAdditionalSaveData));
+                            tag.merge(com.nicktale.api.server.entity.EntityDataIO.saveAdditional(statue, statue::addAdditionalSaveData));
                             com.github.alexthe666.iceandfire.item.ItemStackData.set(statuette, tag);
 
                             if (!statue.level().isClientSide()) {

@@ -11,7 +11,7 @@ public class ParticleSirenAppearance extends Particle {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn);
         this.gravity = 0.0F;
         this.lifetime = 30;
-        com.github.alexthe666.iceandfire.client.gui.ScareOverlay.trigger(30, 0x6A3FA0);
+        com.nicktale.api.client.gui.ScareOverlay.trigger(30, 0x6A3FA0);
     }
 
     @Override

@@ -1,6 +1,6 @@
-package com.github.alexthe666.iceandfire.client.gui;
+package com.nicktale.api.client.gui;
 
-import com.github.alexthe666.iceandfire.IceAndFire;
+import com.nicktale.api.NicktaleApi;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
@@ -10,10 +10,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 
 /**
- * First-person ghost / siren scare. The 1.20 particles drew a model in front of the camera, which the 26.x particle
- * pipeline no longer allows, so the scare is shown as a fading full-screen flash instead.
+ * First-person scare shown as a fading full-screen colour flash. Replaces particles that drew a model in front of the
+ * camera, which the 26.x particle pipeline no longer allows. Call {@link #trigger} from anywhere on the client.
  */
-@EventBusSubscriber(value = Dist.CLIENT, modid = IceAndFire.MODID)
+@EventBusSubscriber(value = Dist.CLIENT, modid = NicktaleApi.MOD_ID)
 public final class ScareOverlay {
     private static long startMillis;
     private static long durationMillis;
@@ -30,7 +30,7 @@ public final class ScareOverlay {
 
     @SubscribeEvent
     public static void registerLayer(RegisterGuiLayersEvent event) {
-        event.registerAboveAll(Identifier.fromNamespaceAndPath(IceAndFire.MODID, "scare"), ScareOverlay::render);
+        event.registerAboveAll(Identifier.fromNamespaceAndPath(NicktaleApi.MOD_ID, "scare"), ScareOverlay::render);
     }
 
     private static void render(GuiGraphicsExtractor graphics, DeltaTracker delta) {

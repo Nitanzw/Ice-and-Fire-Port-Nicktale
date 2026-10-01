@@ -4,7 +4,7 @@ import com.github.alexthe666.iceandfire.misc.IafDataSerializers;
 import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
-import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
+import com.nicktale.api.server.entity.EntityDataIO;
 import com.github.alexthe666.iceandfire.entity.ai.*;
 import com.github.alexthe666.iceandfire.pathfinding.raycoms.AdvancedPathNavigate;
 import net.minecraft.core.BlockPos;

@@ -3,7 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
-import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
+import com.nicktale.api.server.entity.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.api.event.GenericGriefEvent;
 import com.github.alexthe666.iceandfire.entity.ai.*;

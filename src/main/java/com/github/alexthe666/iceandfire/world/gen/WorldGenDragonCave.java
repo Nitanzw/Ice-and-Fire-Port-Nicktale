@@ -88,7 +88,7 @@ public abstract class WorldGenDragonCave extends Feature<NoneFeatureConfiguratio
         generateCave(worldIn, radius, 3, position, rand);
         EntityDragonBase dragon = createDragon(worldIn, rand, position, dragonAge);
         worldIn.addFreshEntity(dragon);
-        com.github.alexthe666.iceandfire.world.DragonRespawnData.register(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(getDragonType()).withSuffix("_cave").toString(), worldIn.getLevel().dimension().identifier().toString(), context.origin(), dragon.getUUID());
+        com.github.alexthe666.iceandfire.event.DragonRespawnEvents.registerSite(worldIn.getLevel(), dragon, "_cave", context.origin());
         return true;
     }
 

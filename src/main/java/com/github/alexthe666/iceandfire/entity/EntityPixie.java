@@ -3,7 +3,7 @@ package com.github.alexthe666.iceandfire.entity;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EntitySpawnReason;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
-import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
+import com.nicktale.api.server.entity.EntityDataIO;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.block.IafBlockRegistry;
 import com.github.alexthe666.iceandfire.datagen.tags.IafItemTags;

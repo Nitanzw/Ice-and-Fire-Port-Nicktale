@@ -4,7 +4,7 @@ import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import net.minecraft.server.level.ServerLevel;
 import com.github.alexthe666.iceandfire.util.IafDamage;
 import com.nicktale.api.animation.Animation;
-import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
+import com.nicktale.api.server.entity.EntityDataIO;
 import com.github.alexthe666.iceandfire.IafConfig;
 import com.github.alexthe666.iceandfire.entity.ai.*;
 import com.github.alexthe666.iceandfire.entity.util.DragonUtils;

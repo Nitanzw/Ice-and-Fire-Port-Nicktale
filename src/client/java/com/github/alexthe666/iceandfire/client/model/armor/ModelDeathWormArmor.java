@@ -1,5 +1,6 @@
 package com.github.alexthe666.iceandfire.client.model.armor;
 
+import com.nicktale.api.client.model.armor.ArmorModelBase;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;

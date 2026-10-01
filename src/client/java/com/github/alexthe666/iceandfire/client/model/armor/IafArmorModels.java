@@ -2,30 +2,24 @@ package com.github.alexthe666.iceandfire.client.model.armor;
 
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.item.ItemModArmor;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.resources.model.EquipmentClientInfo;
+import com.nicktale.api.client.model.armor.ArmorModelBase;
+import com.nicktale.api.client.model.armor.ArmorModels;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Connects the mod's custom armor geometry (crests, horns, spines...) to its armor items. Their textures are laid out
- * for these models, so the vanilla humanoid armor model scrambles them.
+ * Maps the mod's armor items to their custom armor geometry (crests, horns, spines...). Their textures are laid out
+ * for these models, so the vanilla humanoid armor model scrambles them. The registration mechanics live in the
+ * Nicktale API ({@code ArmorModels}).
  */
 @EventBusSubscriber(value = Dist.CLIENT, modid = IceAndFire.MODID)
 public final class IafArmorModels {
-    private static final Map<String, Model> CACHE = new HashMap<>();
-
     private IafArmorModels() {
     }
 
@@ -71,17 +65,6 @@ public final class IafArmorModels {
         return null;
     }
 
-    /** Same part split as the vanilla per-slot armor models. */
-    private static void showOnly(ArmorModelBase model, ArmorType type) {
-        model.head.visible = type == ArmorType.HELMET;
-        model.hat.visible = type == ArmorType.HELMET;
-        model.body.visible = type == ArmorType.CHESTPLATE || type == ArmorType.LEGGINGS;
-        model.rightArm.visible = type == ArmorType.CHESTPLATE;
-        model.leftArm.visible = type == ArmorType.CHESTPLATE;
-        model.rightLeg.visible = type == ArmorType.LEGGINGS || type == ArmorType.BOOTS;
-        model.leftLeg.visible = type == ArmorType.LEGGINGS || type == ArmorType.BOOTS;
-    }
-
     @SubscribeEvent
     public static void register(RegisterClientExtensionsEvent event) {
         for (Item item : BuiltInRegistries.ITEM) {
@@ -93,18 +76,7 @@ public final class IafArmorModels {
             if (factory == null) {
                 continue;
             }
-            event.registerItem(new IClientItemExtensions() {
-                @Override
-                public Model getHumanoidArmorModel(ItemStack stack, EquipmentClientInfo.LayerType layerType, Model original) {
-                    boolean inner = layerType == EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS;
-                    // One instance per slot: rendering is deferred, so a shared model would show whichever visibility was set last.
-                    return CACHE.computeIfAbsent(asset + inner + armor.getArmorType(), key -> {
-                        ArmorModelBase model = factory.apply(inner);
-                        showOnly(model, armor.getArmorType());
-                        return model;
-                    });
-                }
-            }, item);
+            ArmorModels.register(event, item, armor.getArmorType(), asset, factory);
         }
     }
 }

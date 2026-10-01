@@ -1,8 +1,4 @@
-/*
- * Ice and Fire NeoForge port
- * SPDX-License-Identifier: LGPL-3.0-or-later
- */
-package com.github.alexthe666.iceandfire.entity.util;
+package com.nicktale.api.server.entity;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.nbt.CompoundTag;

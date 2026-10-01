@@ -1,6 +1,6 @@
-package com.github.alexthe666.iceandfire.world;
+package com.nicktale.api.server.respawn;
 
-import com.github.alexthe666.iceandfire.IceAndFire;
+import com.nicktale.api.NicktaleApi;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
@@ -17,21 +17,20 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Remembers every dragon cave / roost that spawned a dragon so the site (structure and dragon) can be generated again
- * twelve real-time hours after the dragon died or was tamed.
+ * Saved record of world-generated sites (a configured feature placed at an origin, guarding one entity) that
+ * regenerate a fixed real-time delay after their entity is gone.
  */
-public class DragonRespawnData extends SavedData {
-    /** Real time (not game time) after which an emptied site regenerates. */
-    public static final long RESPAWN_MILLIS = Long.getLong("iaf.dragonRespawnMillis", 12L * 60L * 60L * 1000L);
-
-    public record Site(String featureId, String dimension, BlockPos origin, UUID dragon, long freedAt) {
+public class SiteRespawnData extends SavedData {
+    /** A site: the configured feature that builds it, where, the entity it spawned, when that entity was lost (0 = alive). */
+    public record Site(String featureId, String dimension, BlockPos origin, UUID entity, long freedAt, long delayMillis) {
         private static final Codec<Site> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.STRING.fieldOf("feature").forGetter(Site::featureId),
                 Codec.STRING.fieldOf("dimension").forGetter(Site::dimension),
                 BlockPos.CODEC.fieldOf("origin").forGetter(Site::origin),
-                UUIDUtil.CODEC.optionalFieldOf("dragon").forGetter(site -> Optional.ofNullable(site.dragon())),
-                Codec.LONG.optionalFieldOf("freed_at", 0L).forGetter(Site::freedAt)
-        ).apply(instance, (feature, dim, origin, dragon, freed) -> new Site(feature, dim, origin, dragon.orElse(null), freed)));
+                UUIDUtil.CODEC.optionalFieldOf("entity").forGetter(site -> Optional.ofNullable(site.entity())),
+                Codec.LONG.optionalFieldOf("freed_at", 0L).forGetter(Site::freedAt),
+                Codec.LONG.fieldOf("delay_millis").forGetter(Site::delayMillis)
+        ).apply(instance, (feature, dim, origin, entity, freed, delay) -> new Site(feature, dim, origin, entity.orElse(null), freed, delay)));
 
         boolean sameSite(String feature, String dim, BlockPos pos) {
             return featureId.equals(feature) && dimension.equals(dim) && origin.equals(pos);
@@ -41,31 +40,31 @@ public class DragonRespawnData extends SavedData {
     /** Sites registered from worldgen threads; merged into the saved data on the server thread. */
     private static final ConcurrentLinkedQueue<Site> PENDING = new ConcurrentLinkedQueue<>();
 
-    private static final Codec<DragonRespawnData> CODEC = Site.CODEC.listOf().fieldOf("sites").codec()
-            .xmap(DragonRespawnData::new, data -> data.sites);
-    private static final SavedDataType<DragonRespawnData> TYPE = new SavedDataType<>(
-            Identifier.fromNamespaceAndPath(IceAndFire.MODID, "dragon_respawn"),
-            DragonRespawnData::new,
+    private static final Codec<SiteRespawnData> CODEC = Site.CODEC.listOf().fieldOf("sites").codec()
+            .xmap(SiteRespawnData::new, data -> data.sites);
+    private static final SavedDataType<SiteRespawnData> TYPE = new SavedDataType<>(
+            Identifier.fromNamespaceAndPath(NicktaleApi.MOD_ID, "site_respawn"),
+            SiteRespawnData::new,
             CODEC
     );
 
     private final List<Site> sites;
 
-    public DragonRespawnData() {
+    public SiteRespawnData() {
         this.sites = new ArrayList<>();
     }
 
-    private DragonRespawnData(List<Site> sites) {
+    private SiteRespawnData(List<Site> sites) {
         this.sites = new ArrayList<>(sites);
     }
 
-    public static DragonRespawnData get(MinecraftServer server) {
+    public static SiteRespawnData get(MinecraftServer server) {
         return server.overworld().getDataStorage().computeIfAbsent(TYPE);
     }
 
     /** Safe to call from any thread. */
-    public static void register(String featureId, String dimension, BlockPos origin, UUID dragon) {
-        PENDING.add(new Site(featureId, dimension, origin.immutable(), dragon, 0L));
+    static void queue(String featureId, String dimension, BlockPos origin, UUID entity, long delayMillis) {
+        PENDING.add(new Site(featureId, dimension, origin.immutable(), entity, 0L, delayMillis));
     }
 
     public void drainPending() {
@@ -78,23 +77,25 @@ public class DragonRespawnData extends SavedData {
         }
     }
 
-    /** The dragon of a site died or was tamed: start the respawn timer. */
-    public void markFreed(UUID dragon) {
+    /** The entity of a site is gone: start the respawn timer. Returns the site it belonged to, if any. */
+    public Optional<Site> markFreed(UUID entity) {
         for (int i = 0; i < sites.size(); i++) {
             Site site = sites.get(i);
-            if (dragon.equals(site.dragon()) && site.freedAt() == 0L) {
-                sites.set(i, new Site(site.featureId(), site.dimension(), site.origin(), site.dragon(), System.currentTimeMillis()));
-                IceAndFire.LOGGER.info("Dragon site {} at {} freed, respawning in {} ms", site.featureId(), site.origin(), RESPAWN_MILLIS);
+            if (entity.equals(site.entity()) && site.freedAt() == 0L) {
+                Site freed = new Site(site.featureId(), site.dimension(), site.origin(), site.entity(), System.currentTimeMillis(), site.delayMillis());
+                sites.set(i, freed);
                 setDirty();
+                return Optional.of(freed);
             }
         }
+        return Optional.empty();
     }
 
     /** Sites whose timer ran out; they are removed and re-registered by the feature that regenerates them. */
-    public List<Site> takeDue(long now, long delay) {
+    public List<Site> takeDue(long now) {
         List<Site> due = new ArrayList<>();
         for (Site site : sites) {
-            if (site.freedAt() > 0L && now - site.freedAt() >= delay) {
+            if (site.freedAt() > 0L && now - site.freedAt() >= site.delayMillis()) {
                 due.add(site);
             }
         }

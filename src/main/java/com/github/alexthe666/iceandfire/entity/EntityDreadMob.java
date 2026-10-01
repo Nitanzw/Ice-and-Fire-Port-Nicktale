@@ -4,7 +4,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.entity.EntitySpawnReason;
 import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.misc.IafDataSerializers;
-import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
+import com.nicktale.api.server.entity.EntityDataIO;
 import com.github.alexthe666.iceandfire.entity.util.IDreadMob;
 import com.github.alexthe666.iceandfire.entity.util.IHumanoid;
 import net.minecraft.nbt.CompoundTag;

@@ -4,7 +4,7 @@ import com.github.alexthe666.iceandfire.util.IafEntityUtil;
 import com.github.alexthe666.iceandfire.misc.IafDataSerializers;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
-import com.github.alexthe666.iceandfire.entity.util.EntityDataIO;
+import com.nicktale.api.server.entity.EntityDataIO;
 import com.github.alexthe666.iceandfire.IceAndFire;
 import com.github.alexthe666.iceandfire.entity.util.IBlacklistedFromStatues;
 import com.google.common.collect.ImmutableList;
@@ -52,7 +52,7 @@ public class EntityStoneStatue extends LivingEntity implements IBlacklistedFromS
         CompoundTag entityTag = new CompoundTag();
         try {
             if (!(parent instanceof Player)) {
-                entityTag = com.github.alexthe666.iceandfire.entity.util.EntityDataIO.saveWithoutId(parent);
+                entityTag = com.nicktale.api.server.entity.EntityDataIO.saveWithoutId(parent);
             }
         } catch (Exception e) {
             IceAndFire.LOGGER.debug("Encountered issue creating stone statue from {}", parent);

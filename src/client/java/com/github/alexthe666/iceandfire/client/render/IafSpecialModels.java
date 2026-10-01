@@ -16,13 +16,12 @@ import com.github.alexthe666.iceandfire.item.ItemStackData;
 import com.github.alexthe666.iceandfire.item.ItemTrollWeapon;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.mojang.serialization.MapCodec;
+import com.nicktale.api.client.item.StackSpecialModel;
 import com.nicktale.api.client.model.AdvancedEntityModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
@@ -31,11 +30,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3fc;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Special item model renderers replacing the 1.20 BlockEntityWithoutLevelRenderer classes. Each is referenced from an
@@ -46,64 +41,7 @@ public final class IafSpecialModels {
     private IafSpecialModels() {
     }
 
-    /** Draws an item from its stack. */
-    @FunctionalInterface
-    public interface StackDrawer {
-        void submit(ItemStack stack, PoseStack poseStack, SubmitNodeCollector collector, int light, int overlay, boolean foil, int outline);
-    }
-
-    private static final class Renderer implements SpecialModelRenderer<ItemStack> {
-        private final StackDrawer drawer;
-
-        private Renderer(StackDrawer drawer) {
-            this.drawer = drawer;
-        }
-
-        @Override
-        public void submit(@Nullable ItemStack stack, PoseStack poseStack, SubmitNodeCollector collector, int light, int overlay, boolean foil, int outline) {
-            this.drawer.submit(stack == null ? ItemStack.EMPTY : stack, poseStack, collector, light, overlay, foil, outline);
-        }
-
-        @Override
-        public void getExtents(Consumer<Vector3fc> output) {
-            PoseStack poseStack = new PoseStack();
-            org.joml.Vector3f v = new org.joml.Vector3f();
-            for (float x : new float[]{0F, 1F}) {
-                for (float y : new float[]{0F, 1F}) {
-                    for (float z : new float[]{0F, 1F}) {
-                        output.accept(poseStack.last().pose().transformPosition(x, y, z, v));
-                    }
-                }
-            }
-        }
-
-        @Override
-        public ItemStack extractArgument(ItemStack stack) {
-            return stack;
-        }
-    }
-
-    private static final class Unbaked implements SpecialModelRenderer.Unbaked<ItemStack> {
-        private final Supplier<StackDrawer> drawerFactory;
-        private final MapCodec<Unbaked> codec;
-
-        private Unbaked(Supplier<StackDrawer> drawerFactory) {
-            this.drawerFactory = drawerFactory;
-            this.codec = MapCodec.unit(this);
-        }
-
-        @Override
-        public SpecialModelRenderer<ItemStack> bake(SpecialModelRenderer.BakingContext context) {
-            return new Renderer(this.drawerFactory.get());
-        }
-
-        @Override
-        public MapCodec<? extends SpecialModelRenderer.Unbaked<ItemStack>> type() {
-            return this.codec;
-        }
-    }
-
-    private static final Unbaked TIDE_TRIDENT = new Unbaked(() -> {
+    private static final StackSpecialModel.Unbaked TIDE_TRIDENT = new StackSpecialModel.Unbaked(() -> {
         ModelTideTrident model = new ModelTideTrident();
         return (stack, pose, collector, light, overlay, foil, outline) -> {
             pose.pushPose();
@@ -114,7 +52,7 @@ public final class IafSpecialModels {
         };
     });
 
-    private static final Unbaked GORGON_HEAD = new Unbaked(() -> {
+    private static final StackSpecialModel.Unbaked GORGON_HEAD = new StackSpecialModel.Unbaked(() -> {
         AdvancedEntityModel<?> active = new ModelGorgonHeadActive();
         AdvancedEntityModel<?> inactive = new ModelGorgonHead();
         RenderType activeType = RenderTypes.entityCutout(Identifier.parse("iceandfire:textures/models/gorgon/head_active.png"));
@@ -130,7 +68,7 @@ public final class IafSpecialModels {
         };
     });
 
-    private static final Unbaked DEATHWORM_GAUNTLET = new Unbaked(() -> {
+    private static final StackSpecialModel.Unbaked DEATHWORM_GAUNTLET = new StackSpecialModel.Unbaked(() -> {
         ModelDeathWormGauntlet model = new ModelDeathWormGauntlet();
         return (stack, pose, collector, light, overlay, foil, outline) -> {
             RenderType texture;
@@ -150,7 +88,7 @@ public final class IafSpecialModels {
         };
     });
 
-    private static final Unbaked TROLL_WEAPON = new Unbaked(() -> {
+    private static final StackSpecialModel.Unbaked TROLL_WEAPON = new StackSpecialModel.Unbaked(() -> {
         ModelTrollWeapon model = new ModelTrollWeapon();
         return (stack, pose, collector, light, overlay, foil, outline) -> {
             com.github.alexthe666.iceandfire.enums.EnumTroll.Weapon weapon = com.github.alexthe666.iceandfire.enums.EnumTroll.Weapon.AXE;
@@ -164,7 +102,7 @@ public final class IafSpecialModels {
         };
     });
 
-    private static final Unbaked PIXIE_HOUSE = new Unbaked(() -> (stack, pose, collector, light, overlay, foil, outline) -> {
+    private static final StackSpecialModel.Unbaked PIXIE_HOUSE = new StackSpecialModel.Unbaked(() -> (stack, pose, collector, light, overlay, foil, outline) -> {
         if (stack.getItem() instanceof BlockItem blockItem) {
             RenderPixieHouse.submitItemHouse(blockItem, pose, collector, light, overlay);
         }
