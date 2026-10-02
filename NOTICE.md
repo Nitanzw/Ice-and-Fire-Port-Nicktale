@@ -9,7 +9,7 @@ This is an **unofficial** port. It is not affiliated with, endorsed by or suppor
 Please report problems of this port at https://github.com/Nitanzw/Ice-and-Fire-Port-Nicktale/issues, not to them.
 
 ## Modifications (LGPL-3.0 / GPL-3.0 section 5a)
-Modified by Nicktale, 2026-09-26 to 2026-10-01, starting from the original `1.20` branch (Forge 1.20.1):
+Modified by Nicktale, 2026-09-26 to 2026-10-02, starting from the original `1.20` branch (Forge 1.20.1):
 - Ported to NeoForge for Minecraft 26.2 and 26.3 (one source tree, one jar per Minecraft version).
 - Replaced the Citadel dependency with Nicktale API (a separate library written from scratch).
 - Updated code, registries, rendering, networking, worldgen and data files to the 26.x APIs and formats.

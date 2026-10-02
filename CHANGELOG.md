@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2 (2026-10-02)
+- Silver ore, deepslate silver ore, sapphire ore and dragon ice spikes always dropped themselves as if mined with Silk
+  Touch: their loot tables now use the current tool predicate format, so they drop raw silver / sapphires again.
+
 ## 0.1.1 (2026-10-01)
 - Minecraft 26.3 support: the same version is published as two jars, `-neoforge-26.2` and `-neoforge-26.3`.
 - 26.3: worldgen features, block states, loot tables, advancements and recipes converted to the new data formats.
